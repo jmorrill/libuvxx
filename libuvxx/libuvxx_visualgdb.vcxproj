@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4D0D3F6F-C046-4C23-B9CA-C11B70D1D0D5}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeIncludeSearchPath>c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.2;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.2\arm-linux-gnueabihf;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.2\backward;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.2\include;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.2\include-fixed;c:\sysgcc\linaro\arm-linux-gnueabihf\include;c:\sysgcc\linaro\arm-linux-gnueabihf\libc\usr\include;$(ProjectDir)\include;$(ProjectDir)\include/internal;$(ProjectDir)\../libuv/include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Debug.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
+    <NMakeOutput>$(ProjectDir)libuvxx_visualgdb-Debug.vgdbsettings</NMakeOutput>
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Debug;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeIncludeSearchPath>$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\10.1.30.254\0000\include\c++\4.8;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\10.1.30.254\0000\include\x86_64-linux-gnu\c++\4.8;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\10.1.30.254\0000\include\c++\4.8\backward;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\10.1.30.254\0001\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\10.1.30.254\0003\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\10.1.30.254\0002\include-fixed;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\10.1.30.254\0000\include\x86_64-linux-gnu;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\10.1.30.254\0000\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Release.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
+    <NMakeOutput>$(ProjectDir)libuvxx_visualgdb-Release.vgdbsettings</NMakeOutput>
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Release;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="debug.mak" />
+    <None Include="Makefile" />
+    <None Include="release.mak" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\compat\linux_compat.h" />
+    <ClInclude Include="include\compat\nosal.h" />
+    <ClInclude Include="include\compat\pplxtasks.h" />
+    <ClInclude Include="include\compat\SafeInt3.hpp" />
+    <ClInclude Include="include\delegate.hpp" />
+    <ClInclude Include="include\details\ltalloc\ltalloc.h" />
+    <ClInclude Include="include\details\_event_dispatcher_frame_impl.hpp" />
+    <ClInclude Include="include\details\_event_dispatcher_impl.hpp" />
+    <ClInclude Include="include\details\_event_dispatcher_object_impl.hpp" />
+    <ClInclude Include="include\details\_event_dispatcher_timer_impl.hpp" />
+    <ClInclude Include="include\details\_utilities.hpp" />
+    <ClInclude Include="include\details\_uvxx_internal.hpp" />
+    <ClInclude Include="include\details\_uvxx_loop_callback.hpp" />
+    <ClInclude Include="include\details\_uv_async.hpp" />
+    <ClInclude Include="include\details\_uv_file.hpp" />
+    <ClInclude Include="include\details\_uv_handle.hpp" />
+    <ClInclude Include="include\details\_uv_loop.hpp" />
+    <ClInclude Include="include\details\_uv_net_functions.hpp" />
+    <ClInclude Include="include\details\_uv_stream.hpp" />
+    <ClInclude Include="include\details\_uv_tcp.hpp" />
+    <ClInclude Include="include\details\_uv_timer.hpp" />
+    <ClInclude Include="include\details\_uv_work.hpp" />
+    <ClInclude Include="include\event_dispatcher.hpp" />
+    <ClInclude Include="include\event_dispatcher_frame.hpp" />
+    <ClInclude Include="include\event_dispatcher_object.hpp" />
+    <ClInclude Include="include\event_dispatcher_timer.hpp" />
+    <ClInclude Include="include\fs\details\_file_impl.hpp" />
+    <ClInclude Include="include\fs\file.hpp" />
+    <ClInclude Include="include\io\memory_buffer.hpp" />
+    <ClInclude Include="include\net\details\_dns_impl.hpp" />
+    <ClInclude Include="include\net\details\_stream_socket_impl.hpp" />
+    <ClInclude Include="include\net\dns.hpp" />
+    <ClInclude Include="include\net\stream_socket.hpp" />
+    <ClInclude Include="include\pplx\pplpp.hpp" />
+    <ClInclude Include="include\pplx\pplx.h" />
+    <ClInclude Include="include\pplx\pplxcancellation_token.h" />
+    <ClInclude Include="include\pplx\pplxconv.h" />
+    <ClInclude Include="include\pplx\pplxinterface.h" />
+    <ClInclude Include="include\pplx\pplxlinux.h" />
+    <ClInclude Include="include\pplx\pplxtasks.h" />
+    <ClInclude Include="include\pplx\threadpool.h" />
+    <ClInclude Include="include\streams\astreambuf.h" />
+    <ClInclude Include="include\streams\asyncrt_utils.h" />
+    <ClInclude Include="include\streams\basic_types.h" />
+    <ClInclude Include="include\streams\fileio.h" />
+    <ClInclude Include="include\streams\filestream.h" />
+    <ClInclude Include="include\streams\streams.h" />
+    <ClInclude Include="include\streams\xxpublic.h" />
+    <ClInclude Include="include\uvxx.hpp" />
+    <ClInclude Include="include\uvxx_exception.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="include\details\ltalloc\ltalloc.cc" />
+    <ClCompile Include="src\details\_event_dispatcher_frame_impl.cpp" />
+    <ClCompile Include="src\details\_event_dispatcher_impl.cpp" />
+    <ClCompile Include="src\details\_event_dispatcher_object_impl.cpp" />
+    <ClCompile Include="src\details\_event_dispatcher_timer_impl.cpp" />
+    <ClCompile Include="src\details\_uv_async.cpp" />
+    <ClCompile Include="src\details\_uv_file.cpp" />
+    <ClCompile Include="src\details\_uv_loop.cpp" />
+    <ClCompile Include="src\details\_uv_net_functions.cpp" />
+    <ClCompile Include="src\details\_uv_tcp.cpp" />
+    <ClCompile Include="src\details\_uv_timer.cpp" />
+    <ClCompile Include="src\details\_uv_work.cpp" />
+    <ClCompile Include="src\event_dispatcher.cpp" />
+    <ClCompile Include="src\event_dispatcher_frame.cpp" />
+    <ClCompile Include="src\event_dispatcher_object.cpp" />
+    <ClCompile Include="src\event_dispatcher_timer.cpp" />
+    <ClCompile Include="src\fs\details\_file_impl.cpp" />
+    <ClCompile Include="src\fs\file.cpp" />
+    <ClCompile Include="src\io\memory_buffer.cpp" />
+    <ClCompile Include="src\net\details\_dns_impl.cpp" />
+    <ClCompile Include="src\net\details\_stream_socket_impl.cpp" />
+    <ClCompile Include="src\net\dns.cpp" />
+    <ClCompile Include="src\net\stream_socket.cpp" />
+    <ClCompile Include="src\pplx\linux\pplxlinux.cpp" />
+    <ClCompile Include="src\pplx\pplx.cpp" />
+    <ClCompile Include="src\pplx\pplxtasks.cpp" />
+    <ClCompile Include="src\pplx\threadpool.cpp" />
+    <ClCompile Include="src\streams\fileio.cpp" />
+    <ClCompile Include="src\uvxx_exception.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

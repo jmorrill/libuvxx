@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source files">
+      <UniqueIdentifier>{77009394-932a-4674-86bf-544721e41f67}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header files">
+      <UniqueIdentifier>{aef3ffa1-d112-42f6-b14a-1ba72dcf1ed3}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource files">
+      <UniqueIdentifier>{11a018d0-f8c3-4940-9828-30be972e9f10}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Make files">
+      <UniqueIdentifier>{a0609245-30b6-4c41-ac31-2c69ee29fc1c}</UniqueIdentifier>
+      <Extensions>*.mak</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+    <None Include="debug.mak">
+      <Filter>Make files</Filter>
+    </None>
+    <None Include="release.mak">
+      <Filter>Make files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\fs-poll.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\inet.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\threadpool.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\uv-common.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\version.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\async.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\core.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\dl.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\fs.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\getaddrinfo.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\getnameinfo.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\linux-core.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\linux-inotify.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\linux-syscalls.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\loop.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\loop-watcher.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\pipe.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\poll.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\process.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\proctitle.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\signal.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\stream.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\tcp.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\thread.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\timer.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\tty.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix\udp.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\heap-inl.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\queue.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\uv-common.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\unix\atomic-ops.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\unix\internal.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\unix\linux-syscalls.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\unix\spinlock.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tree.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\uv.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\uv-errno.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\uv-linux.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\uv-threadpool.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\uv-unix.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\uv-version.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

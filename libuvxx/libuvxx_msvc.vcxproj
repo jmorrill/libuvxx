@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Galileo_Debug|Win32">
+      <Configuration>Galileo_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Galileo_Release|Win32">
+      <Configuration>Galileo_Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{79198E06-7990-4ACC-A624-6631E00BCC4F}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Galileo_Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Galileo_Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\build\msvc\libuvxx.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Galileo_Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\build\msvc\libuvxx.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\build\msvc\libuvxx.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Galileo_Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\build\msvc\libuvxx.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>libuvxx</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Galileo_Debug|Win32'">
+    <TargetName>libuvxx</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>libuvxx</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Galileo_Release|Win32'">
+    <TargetName>libuvxx</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\libuv\include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE;_PPLX_EXPORT;_ASYNCRT_EXPORT</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Galileo_Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\libuv\include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE;_PPLX_EXPORT;_ASYNCRT_EXPORT</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Lib>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>..\libuv\include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PreprocessorDefinitions>LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE;_NO_ASYNCRTIMP;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+    </ClCompile>
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Galileo_Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>..\libuv\include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PreprocessorDefinitions>LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE;_NO_ASYNCRTIMP;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+    </ClCompile>
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ItemGroup>
+    <ClInclude Include="include\delegate.hpp" />
+    <ClInclude Include="include\details\ltalloc\ltalloc.h" />
+    <ClInclude Include="include\details\_event_dispatcher_frame_impl.hpp" />
+    <ClInclude Include="include\details\_event_dispatcher_impl.hpp" />
+    <ClInclude Include="include\details\_event_dispatcher_object_impl.hpp" />
+    <ClInclude Include="include\details\_event_dispatcher_timer_impl.hpp" />
+    <ClInclude Include="include\details\_uv_file.hpp" />
+    <ClInclude Include="include\fs\details\_directory_impl.hpp" />
+    <ClInclude Include="include\fs\details\_file_impl.hpp" />
+    <ClInclude Include="include\fs\details\_static_file_impl.hpp" />
+    <ClInclude Include="include\fs\directory.hpp" />
+    <ClInclude Include="include\fs\file.hpp" />
+    <ClInclude Include="include\fs\path.hpp" />
+    <ClInclude Include="include\io\memory_buffer.hpp" />
+    <ClInclude Include="include\net\details\_dns_impl.hpp" />
+    <ClInclude Include="include\net\details\_stream_socket_impl.hpp" />
+    <ClInclude Include="include\event_dispatcher.hpp" />
+    <ClInclude Include="include\event_dispatcher_frame.hpp" />
+    <ClInclude Include="include\event_dispatcher_object.hpp" />
+    <ClInclude Include="include\event_dispatcher_timer.hpp" />
+    <ClInclude Include="include\streams\astreambuf.h" />
+    <ClInclude Include="include\streams\asyncrt_utils.h" />
+    <ClInclude Include="include\streams\basic_types.h" />
+    <ClInclude Include="include\streams\fileio.h" />
+    <ClInclude Include="include\streams\filestream.h" />
+    <ClInclude Include="include\streams\streams.h" />
+    <ClInclude Include="include\streams\xxpublic.h" />
+    <ClInclude Include="include\details\_uvxx_loop_callback.hpp" />
+    <ClInclude Include="include\details\_uv_timer.hpp" />
+    <ClInclude Include="include\details\_utilities.hpp" />
+    <ClInclude Include="include\details\_uv_work.hpp" />
+    <ClInclude Include="include\net\dns.hpp" />
+    <ClInclude Include="include\net\stream_socket.hpp" />
+    <ClInclude Include="include\pplx\pplpp.hpp" />
+    <ClInclude Include="include\pplx\pplx.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pplx\pplxcancellation_token.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pplx\pplxconv.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pplx\pplxinterface.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pplx\pplxlinux.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pplx\pplxtasks.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pplx\threadpool.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\compat\linux_compat.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\compat\nosal.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\compat\pplxtasks.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\compat\SafeInt3.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_uv_loop.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_uv_net_functions.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_uv_stream.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_uv_tcp.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_uvxx_internal.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_uv_handle.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_uv_async.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\uvxx.hpp" />
+    <ClInclude Include="include\uvxx_exception.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="include\details\ltalloc\ltalloc.cc" />
+    <ClCompile Include="src\details\_uv_async.cpp" />
+    <ClCompile Include="src\details\_uv_file.cpp" />
+    <ClCompile Include="src\details\_uv_loop.cpp" />
+    <ClCompile Include="src\details\_uv_net_functions.cpp" />
+    <ClCompile Include="src\details\_uv_tcp.cpp" />
+    <ClCompile Include="src\details\_uv_timer.cpp" />
+    <ClCompile Include="src\details\_uv_work.cpp" />
+    <ClCompile Include="src\details\_event_dispatcher_frame_impl.cpp" />
+    <ClCompile Include="src\details\_event_dispatcher_impl.cpp" />
+    <ClCompile Include="src\details\_event_dispatcher_object_impl.cpp" />
+    <ClCompile Include="src\details\_event_dispatcher_timer_impl.cpp" />
+    <ClCompile Include="src\directory.cpp" />
+    <ClCompile Include="src\fs\details\_static_file_impl.cpp" />
+    <ClCompile Include="src\fs\path.cpp" />
+    <ClCompile Include="src\fs\details\_directory_impl.cpp" />
+    <ClCompile Include="src\fs\details\_file_impl.cpp" />
+    <ClCompile Include="src\fs\file.cpp" />
+    <ClCompile Include="src\io\memory_buffer.cpp" />
+    <ClCompile Include="src\net\details\_dns_impl.cpp" />
+    <ClCompile Include="src\net\details\_stream_socket_impl.cpp" />
+    <ClCompile Include="src\event_dispatcher.cpp" />
+    <ClCompile Include="src\event_dispatcher_frame.cpp" />
+    <ClCompile Include="src\event_dispatcher_object.cpp" />
+    <ClCompile Include="src\event_dispatcher_timer.cpp" />
+    <ClCompile Include="src\net\dns.cpp" />
+    <ClCompile Include="src\net\stream_socket.cpp" />
+    <ClCompile Include="src\pplx\pplx.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pplx\threadpool.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pplx\linux\pplxlinux.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pplx\pplxtasks.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\streams\fileio.cpp" />
+    <ClCompile Include="src\uvxx_exception.cpp" />
+  </ItemGroup>
+</Project>

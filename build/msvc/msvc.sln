@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuv", "..\..\libuv\build\win32\libuv.vcxproj", "{33066374-88CB-CB8D-15DA-61032886329A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuvxx_msvc", "..\..\libuvxx\libuvxx_msvc.vcxproj", "{79198E06-7990-4ACC-A624-6631E00BCC4F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{33066374-88CB-CB8D-15DA-61032886329A} = {33066374-88CB-CB8D-15DA-61032886329A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestApplication", "..\..\TestApplication\TestApplication.vcxproj", "{25FA5EB3-F335-4F61-8D31-658C8EC08186}"
+	ProjectSection(ProjectDependencies) = postProject
+		{79198E06-7990-4ACC-A624-6631E00BCC4F} = {79198E06-7990-4ACC-A624-6631E00BCC4F}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Galileo_Debug|Win32 = Galileo_Debug|Win32
+		Galileo_Release|Win32 = Galileo_Release|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33066374-88CB-CB8D-15DA-61032886329A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{33066374-88CB-CB8D-15DA-61032886329A}.Debug|Win32.Build.0 = Debug|Win32
+		{33066374-88CB-CB8D-15DA-61032886329A}.Galileo_Debug|Win32.ActiveCfg = Galileo_Debug|Win32
+		{33066374-88CB-CB8D-15DA-61032886329A}.Galileo_Debug|Win32.Build.0 = Galileo_Debug|Win32
+		{33066374-88CB-CB8D-15DA-61032886329A}.Galileo_Release|Win32.ActiveCfg = Galileo_Release|Win32
+		{33066374-88CB-CB8D-15DA-61032886329A}.Galileo_Release|Win32.Build.0 = Galileo_Release|Win32
+		{33066374-88CB-CB8D-15DA-61032886329A}.Release|Win32.ActiveCfg = Release|Win32
+		{33066374-88CB-CB8D-15DA-61032886329A}.Release|Win32.Build.0 = Release|Win32
+		{79198E06-7990-4ACC-A624-6631E00BCC4F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{79198E06-7990-4ACC-A624-6631E00BCC4F}.Debug|Win32.Build.0 = Debug|Win32
+		{79198E06-7990-4ACC-A624-6631E00BCC4F}.Galileo_Debug|Win32.ActiveCfg = Galileo_Debug|Win32
+		{79198E06-7990-4ACC-A624-6631E00BCC4F}.Galileo_Debug|Win32.Build.0 = Galileo_Debug|Win32
+		{79198E06-7990-4ACC-A624-6631E00BCC4F}.Galileo_Release|Win32.ActiveCfg = Galileo_Release|Win32
+		{79198E06-7990-4ACC-A624-6631E00BCC4F}.Galileo_Release|Win32.Build.0 = Galileo_Release|Win32
+		{79198E06-7990-4ACC-A624-6631E00BCC4F}.Release|Win32.ActiveCfg = Release|Win32
+		{79198E06-7990-4ACC-A624-6631E00BCC4F}.Release|Win32.Build.0 = Release|Win32
+		{25FA5EB3-F335-4F61-8D31-658C8EC08186}.Debug|Win32.ActiveCfg = Debug|Win32
+		{25FA5EB3-F335-4F61-8D31-658C8EC08186}.Debug|Win32.Build.0 = Debug|Win32
+		{25FA5EB3-F335-4F61-8D31-658C8EC08186}.Galileo_Debug|Win32.ActiveCfg = Galileo_Debug|Win32
+		{25FA5EB3-F335-4F61-8D31-658C8EC08186}.Galileo_Debug|Win32.Build.0 = Galileo_Debug|Win32
+		{25FA5EB3-F335-4F61-8D31-658C8EC08186}.Galileo_Release|Win32.ActiveCfg = Galileo_Release|Win32
+		{25FA5EB3-F335-4F61-8D31-658C8EC08186}.Galileo_Release|Win32.Build.0 = Galileo_Release|Win32
+		{25FA5EB3-F335-4F61-8D31-658C8EC08186}.Release|Win32.ActiveCfg = Release|Win32
+		{25FA5EB3-F335-4F61-8D31-658C8EC08186}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+EndGlobal
