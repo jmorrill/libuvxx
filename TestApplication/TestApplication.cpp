@@ -23,7 +23,6 @@ class application : public event_dispatcher_object
             return 69;
         }).then([](int value)
         {
-            cout << "I'm on a thread pool thread" << endl;
             return 42.0;
         }).then([](double value)
         {

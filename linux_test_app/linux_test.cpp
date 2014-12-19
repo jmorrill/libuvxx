@@ -15,13 +15,6 @@ int host_port = 80;
 
 string http_command = "GET /movie.mp4 HTTP/1.0\r\n\r\n";
 
-
-//inline void* operator new(size_t size){ return ltalloc(size); }
-//inline void* operator new[](size_t size) { return ltalloc(size); }
-//inline void  operator delete  (void* ptr) { ltfree(ptr); }
-//inline void  operator delete[](void* ptr) { ltfree(ptr); }
-
-
 void test_method()
 {
     struct socket_file_holder

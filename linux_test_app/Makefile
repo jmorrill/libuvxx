@@ -24,7 +24,7 @@ error:
 endif
 
 SOURCEFILES := linux_test.cpp
-EXTERNAL_LIBS := ../libuv/$(BINARYDIR)/libuv.a ../libuvxx/$(BINARYDIR)/libuvxx.a ../Live555/$(BINARYDIR)/libLive555.a
+EXTERNAL_LIBS := ../libuv/$(BINARYDIR)/libuv.a ../libuvxx/$(BINARYDIR)/libuvxx.a
 EXTERNAL_LIBS_COPIED := $(foreach lib, $(EXTERNAL_LIBS),$(BINARYDIR)/$(notdir $(lib)))
 
 CFLAGS += $(COMMONFLAGS)
@@ -168,7 +168,4 @@ $(BINARYDIR)/libuv.a : ../libuv/$(BINARYDIR)/libuv.a
 
 $(BINARYDIR)/libuvxx.a : ../libuvxx/$(BINARYDIR)/libuvxx.a
 	$(CP) ../libuvxx/$(BINARYDIR)/libuvxx.a $(BINARYDIR)/libuvxx.a
-
-$(BINARYDIR)/libLive555.a : ../Live555/$(BINARYDIR)/libLive555.a
-	$(CP) ../Live555/$(BINARYDIR)/libLive555.a $(BINARYDIR)/libLive555.a
 
