@@ -10,7 +10,7 @@ using namespace uvxx::pplx;
 int counter = 0;
 uint64_t total_bytes_read = 0;
 
-string host_name = "192.168.1.129";
+string host_name = "192.168.1.170";
 int host_port = 80;
 
 string http_command = "GET /movie.mp4 HTTP/1.0\r\n\r\n";

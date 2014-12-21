@@ -219,7 +219,7 @@ namespace uvxx { namespace details
           
             if (fill_buffer && !result)
             {
-                _read_timeout_timer.start(1, 1);
+                _read_timeout_timer.start(1, 0);
             }
 
             return result;

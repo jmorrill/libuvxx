@@ -5,7 +5,7 @@
 
 #VisualGDB: AutoSourceFiles		#<--- remove this line to disable auto-updating of SOURCEFILES and EXTERNAL_LIBS
 
-TARGETNAME := MediaServerService
+TARGETNAME := libuvxx_test_app
 #TARGETTYPE can be APP, STATIC or SHARED
 TARGETTYPE := APP
 
