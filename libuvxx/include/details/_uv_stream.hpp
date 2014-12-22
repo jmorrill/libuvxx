@@ -32,11 +32,11 @@ namespace uvxx { namespace details
             int read_call_count = 0;
             int64_t total_bytes_read = 0ll;
         };
-
+         
     public:
-        using read_callback_t     = std::function<void(int len, int)>;
-        using write_callback_t    = std::function<void(int)>;
-        using shutdown_callback_t = std::function<void(int)>;
+        using read_callback_t     = std::function<void(int len, int status)>;
+        using write_callback_t    = std::function<void(int status)>;
+        using shutdown_callback_t = std::function<void(int status)>;
 
     private:
         using read_callback_delegate         = _extra_data_uvxx_loop_callback<read_callback_t, stream_read_info>;
@@ -59,6 +59,17 @@ namespace uvxx { namespace details
             read_stop_if_read_any();
         }
 
+        void read_stop_if_read_any()
+        {
+            assert(_read_callback->busy_get());
+            
+            stream_read_info* read_info = _read_callback->extra_data_get();
+
+            if (read_info->bytes_read_this_request > 0)
+            {
+                read_stop();
+            }
+        }
 
     protected:
         _uv_stream(_uv_loop* loop) :
@@ -82,13 +93,13 @@ namespace uvxx { namespace details
 
         void set_read_callback(read_callback_t read_callback)
         {
-            auto func = std::bind([this](int len, int status, read_callback_t read_callback)
+            auto func = std::bind([this](int len, int status, read_callback_t const& read_callback)
             {
                 _read_timeout_timer.stop();
                 read_callback(len, status);
             }, std::placeholders::_1, std::placeholders::_2, std::move(read_callback));
 
-           _read_callback->callback_set(func);
+           _read_callback->callback_set(std::move(func));
         }
 
         void set_write_callback(write_callback_t write_callback)
@@ -135,11 +146,11 @@ namespace uvxx { namespace details
             this->_handle->data = _read_callback.get();
 
             auto result = uv_read_start(reinterpret_cast<uv_stream_t*>(this->_handle),
-            [](uv_handle_t* h, size_t suggested_size, uv_buf_t* buf)
+            [](uv_handle_t* stream_handle, size_t suggested_size, uv_buf_t* buf)
             {
-                auto callback = reinterpret_cast<read_callback_delegate*>(h->data);
+                auto callback = reinterpret_cast<read_callback_delegate*>(stream_handle->data);
 
-                if (!callback || callback->abort_get())
+                if (!callback || callback->abort_get() || !callback->busy_get())
                 {
                     buf->len = 0;
 
@@ -159,13 +170,13 @@ namespace uvxx { namespace details
 
                 buf->len = read_count - bytes_read;
             },
-            [](uv_stream_t* h, ssize_t nread, const uv_buf_t* buf) 
+            [](uv_stream_t* stream_handle, ssize_t nread, const uv_buf_t* buf) 
             {
-                auto callback = reinterpret_cast<read_callback_delegate*>(h->data);
+                auto callback = reinterpret_cast<read_callback_delegate*>(stream_handle->data);
 
                 if (!callback)
                 {
-                    uv_read_stop(reinterpret_cast<uv_stream_t*>(h));
+                    uv_read_stop(reinterpret_cast<uv_stream_t*>(stream_handle));
                     return;
                 }
 
@@ -174,9 +185,9 @@ namespace uvxx { namespace details
                 read_info->total_bytes_read += nread;
                 read_info->read_call_count++;
 
-                if (read_info->read_call_count % 80000 == 0)
+                if (read_info->read_call_count % 20000 == 0)
                 {
-                    int64_t avg = read_info->total_bytes_read/read_info->read_call_count;
+                    int64_t avg = read_info->total_bytes_read / read_info->read_call_count;
                     printf("avg pkt size: %llu\n", avg);
                     read_info->read_call_count  = 0;
                     read_info->total_bytes_read = 0;
@@ -184,9 +195,9 @@ namespace uvxx { namespace details
                
                 if (nread < 0 || callback->abort_get())
                 {
-                    uv_read_stop(reinterpret_cast<uv_stream_t*>(h));
+                    uv_read_stop(reinterpret_cast<uv_stream_t*>(stream_handle));
 
-                    if (nread < 0 && read_info->bytes_read_this_request > 0)
+                    if (read_info->bytes_read_this_request > 0)
                     {
                         callback->execute(read_info->bytes_read_this_request, 0);
                     }
@@ -203,11 +214,9 @@ namespace uvxx { namespace details
                     if(read_info->bytes_read_this_request - read_info->read_requested_bytes == 0 || 
                       !read_info->try_fill_read_buffer)
                     {
-                        uv_read_stop(reinterpret_cast<uv_stream_t*>(h));
+                        uv_read_stop(reinterpret_cast<uv_stream_t*>(stream_handle));
 
                         callback->execute(read_info->bytes_read_this_request, 0);
-
-                        read_info->bytes_read_this_request = 0;
                     }
                 }
             });
@@ -216,10 +225,10 @@ namespace uvxx { namespace details
             {
                 _read_callback->busy_set(true);
             }
-          
+
             if (fill_buffer && !result)
             {
-                _read_timeout_timer.start(1, 0);
+                _read_timeout_timer.start(100, 100);
             }
 
             return result;
@@ -227,30 +236,17 @@ namespace uvxx { namespace details
 
         int read_stop()
         {
+            assert(_read_callback->busy_get());
+
             uv_read_stop(reinterpret_cast<uv_stream_t*>(this->_handle));
 
-            if (_read_callback->busy_get())
-            {
-                stream_read_info* read_info = _read_callback->extra_data_get();
+            stream_read_info* read_info = _read_callback->extra_data_get();
 
-                _read_callback->execute(read_info->bytes_read_this_request, 0);
-            }
+            assert(read_info->bytes_read_this_request > 0);
+
+            _read_callback->execute(read_info->bytes_read_this_request, 0);
 
             return 0;
-        }
-
-        void read_stop_if_read_any()
-        {
-            if (_read_callback->busy_get())
-            {
-                stream_read_info* read_info = _read_callback->extra_data_get();
-
-                if (read_info->bytes_read_this_request > 0)
-                {
-                    uv_read_stop(reinterpret_cast<uv_stream_t*>(this->_handle));
-                    _read_callback->execute(read_info->bytes_read_this_request, 0);
-                }
-            }
         }
 
         int write(const std::string& buf)
@@ -266,11 +262,11 @@ namespace uvxx { namespace details
             write_handle->data = _write_callback.get();
 
             auto result = uv_write(write_handle, reinterpret_cast<uv_stream_t*>(this->_handle), bufs, 1, 
-            [](uv_write_t* h, int status)
+            [](uv_write_t* write_handle, int status)
             {
-                auto write_callback = reinterpret_cast<write_callback_delegate*>(h->data);
+                auto write_callback = reinterpret_cast<write_callback_delegate*>(write_handle->data);
 
-                SCOPE_EXIT(delete h);
+                SCOPE_EXIT(delete write_handle);
 
                 write_callback->execute(status);
             });

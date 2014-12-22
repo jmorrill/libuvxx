@@ -7,10 +7,12 @@
 using namespace std;
 using namespace uvxx;
 using namespace uvxx::pplx;
+
+
 int counter = 0;
 uint64_t total_bytes_read = 0;
 
-string host_name = "192.168.1.170";
+string host_name = "192.168.1.129";
 int host_port = 80;
 
 string http_command = "GET /movie.mp4 HTTP/1.0\r\n\r\n";
@@ -64,27 +66,18 @@ void test_method()
         {
             return holder->socket.read_async(holder->io_buff, 0, holder->io_buff.length_get()).
 
-            then([holder](int bytes)
+            then([holder](int bytes_read)
             {
-                int bytes_read = 0;
-
-                bytes_read = bytes;
-
                 counter++;
 
                 if (counter % 3000 == 0)
                 {
-                    cout << "bytes read: " << total_bytes_read << endl;
+                    printf("bytes read: %llu\n", total_bytes_read);
                 }
 
                 total_bytes_read += bytes_read;
-
+              
                 return holder->file.write_async(holder->io_buff, 0, bytes_read);
-            }).
-            then([](task<int> t)
-            {
-                t.get();
-                return create_timer_task(std::chrono::milliseconds(1));
             });
 
         }, task_continuation_context::use_current());
@@ -113,7 +106,7 @@ void test_method()
 
     then([socket](task<void> shutdown_task)
     {
-        cout << "done" << endl;
+        printf("done\n");
 
         try
         {
@@ -146,7 +139,7 @@ int main(int argc, char** argv)
         cout << "thread id 3 - " << this_thread::get_id() << endl;
     }, task_continuation_context::use_current());
 
-    //
+   
     test_method();
 
     event_dispatcher::run();

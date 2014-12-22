@@ -10,9 +10,9 @@
       <Transport>None</Transport>
     </BuildHost>
     <DeploymentHost>
-      <HostName>192.168.1.153</HostName>
+      <HostName>192.168.1.109</HostName>
       <Transport>SSH</Transport>
-      <UserName>ubuntu</UserName>
+      <UserName>odroid</UserName>
     </DeploymentHost>
     <MainSourceTransferCommand>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
