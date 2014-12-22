@@ -1032,6 +1032,7 @@ TEST_IMPL(spawn_with_an_odd_path) {
 #ifndef _WIN32
 TEST_IMPL(spawn_setuid_setgid) {
   int r;
+  struct passwd* pw;
 
   /* if not root, then this will fail. */
   uv_uid_t uid = getuid();
@@ -1043,7 +1044,6 @@ TEST_IMPL(spawn_setuid_setgid) {
   init_process_options("spawn_helper1", exit_cb);
 
   /* become the "nobody" user. */
-  struct passwd* pw;
   pw = getpwnam("nobody");
   ASSERT(pw != NULL);
   options.uid = pw->pw_uid;
@@ -1051,6 +1051,9 @@ TEST_IMPL(spawn_setuid_setgid) {
   options.flags = UV_PROCESS_SETUID | UV_PROCESS_SETGID;
 
   r = uv_spawn(uv_default_loop(), &process, &options);
+  if (r == UV_EACCES)
+    RETURN_SKIP("user 'nobody' cannot access the test runner");
+
   ASSERT(r == 0);
 
   r = uv_run(uv_default_loop(), UV_RUN_DEFAULT);

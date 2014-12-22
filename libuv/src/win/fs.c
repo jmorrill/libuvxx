@@ -283,7 +283,7 @@ INLINE static int fs__readlink_handle(HANDLE handle, char** target_ptr,
            (w_target[4] >= L'a' && w_target[4] <= L'z')) &&
           w_target[5] == L':' &&
           (w_target_len == 6 || w_target[6] == L'\\')) {
-        /* \??\«drive»:\ */
+        /* \??\<drive>:\ */
         w_target += 4;
         w_target_len -= 4;
 
@@ -292,8 +292,8 @@ INLINE static int fs__readlink_handle(HANDLE handle, char** target_ptr,
                  (w_target[5] == L'N' || w_target[5] == L'n') &&
                  (w_target[6] == L'C' || w_target[6] == L'c') &&
                  w_target[7] == L'\\') {
-        /* \??\UNC\«server»\«share»\ - make sure the final path looks like */
-        /* \\«server»\«share»\ */
+        /* \??\UNC\<server>\<share>\ - make sure the final path looks like */
+        /* \\<server>\<share>\ */
         w_target += 6;
         w_target[0] = L'\\';
         w_target_len -= 6;
@@ -308,8 +308,8 @@ INLINE static int fs__readlink_handle(HANDLE handle, char** target_ptr,
     w_target_len = reparse_data->MountPointReparseBuffer.SubstituteNameLength /
         sizeof(WCHAR);
 
-    /* Only treat junctions that look like \??\«drive»:\ as symlink. */
-    /* Junctions can also be used as mount points, like \??\Volume{«guid»}, */
+    /* Only treat junctions that look like \??\<drive>:\ as symlink. */
+    /* Junctions can also be used as mount points, like \??\Volume{<guid>}, */
     /* but that's confusing for programs since they wouldn't be able to */
     /* actually understand such a path when returned by uv_readlink(). */
     /* UNC paths are never valid for junctions so we don't care about them. */
@@ -802,9 +802,9 @@ void fs__scandir(uv_fs_t* req) {
   if (len == 0) {
     fmt = L"./*";
   } else if (pathw[len - 1] == L'/' || pathw[len - 1] == L'\\') {
-    fmt = L"%s*";
+    fmt = L"%ls*";
   } else {
-    fmt = L"%s\\*";
+    fmt = L"%ls\\*";
   }
 
   /* Figure out whether path is a file or a directory. */
@@ -947,7 +947,7 @@ INLINE static int fs__stat_handle(HANDLE handle, uv_stat_t* statbuf) {
    *
    * Currently it's based on whether the 'readonly' attribute is set, which
    * makes little sense because the semantics are so different: the 'read-only'
-   * flag is just a way for a user to protect against accidental deleteion, and
+   * flag is just a way for a user to protect against accidental deletion, and
    * serves no security purpose. Windows uses ACLs for that.
    *
    * Also people now use uv_fs_chmod() to take away the writable bit for good
@@ -956,7 +956,7 @@ INLINE static int fs__stat_handle(HANDLE handle, uv_stat_t* statbuf) {
    * deleted.
    *
    * IOW it's all just a clusterfuck and we should think of something that
-   * makes slighty more sense.
+   * makes slightly more sense.
    *
    * And uv_fs_chmod should probably just fail on windows or be a total no-op.
    * There's nothing sensible it can do anyway.

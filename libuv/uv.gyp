@@ -17,28 +17,8 @@
       }],
     ],
     'xcode_settings': {
-        'conditions': [
-          [ 'clang==1', {
-            'WARNING_CFLAGS': [
-              '-Wall',
-              '-Wextra',
-              '-Wno-unused-parameter',
-              '-Wno-dollar-in-identifier-extension'
-            ]}, {
-           'WARNING_CFLAGS': [
-             '-Wall',
-             '-Wextra',
-             '-Wno-unused-parameter'
-          ]}
-        ]
-      ],
-      'OTHER_LDFLAGS': [
-      ],
-      'OTHER_CFLAGS': [
-        '-g',
-        '--std=gnu89',
-        '-pedantic'
-      ],
+      'WARNING_CFLAGS': [ '-Wall', '-Wextra', '-Wno-unused-parameter' ],
+      'OTHER_CFLAGS': [ '-g', '--std=gnu89', '-pedantic' ],
     }
   },
 
@@ -350,6 +330,7 @@
         'test/test-platform-output.c',
         'test/test-poll.c',
         'test/test-poll-close.c',
+        'test/test-poll-close-doesnt-corrupt-stack.c',
         'test/test-poll-closesocket.c',
         'test/test-process-title.c',
         'test/test-ref.c',

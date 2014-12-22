@@ -143,7 +143,7 @@ static int uv__create_stdio_pipe_pair(uv_loop_t* loop,
     goto error;
   }
 
-#if 0
+#ifndef NDEBUG
   /* Validate that the pipe was opened in the right mode. */
   {
     DWORD mode;

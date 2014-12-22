@@ -172,6 +172,7 @@ test_run_tests_SOURCES = test/blackhole-server.c \
                          test/test-pipe-close-stdout-read-stdin.c \
                          test/test-platform-output.c \
                          test/test-poll-close.c \
+                         test/test-poll-close-doesnt-corrupt-stack.c \
                          test/test-poll-closesocket.c \
                          test/test-poll.c \
                          test/test-process-title.c \
@@ -274,7 +275,6 @@ endif
 
 if DRAGONFLY
 include_HEADERS += include/uv-bsd.h
-libuv_la_SOURCES += src/unix/kqueue.c src/unix/freebsd.c
 endif
 
 if FREEBSD
