@@ -8,7 +8,6 @@ using namespace std;
 using namespace uvxx;
 using namespace uvxx::pplx;
 
-
 int counter = 0;
 uint64_t total_bytes_read = 0;
 
@@ -125,7 +124,7 @@ int main(int argc, char** argv)
 {
     auto dispatcher = event_dispatcher::current_dispatcher();
     cout << "thread id - " << this_thread::get_id() << endl;
-    // this_thread::sleep_for(chrono::milliseconds(1));
+
     create_task([]
     {
         cout << "thread id 1 - " << this_thread::get_id() << endl;
@@ -138,7 +137,6 @@ int main(int argc, char** argv)
     {
         cout << "thread id 3 - " << this_thread::get_id() << endl;
     }, task_continuation_context::use_current());
-
    
     test_method();
 
@@ -146,5 +144,6 @@ int main(int argc, char** argv)
 
     cout << "total bytes read " << total_bytes_read << endl;
     cout << "exiting..." << endl;
+
     return 0;
 }
