@@ -71,7 +71,7 @@ namespace uvxx { namespace fs { namespace details
 
         _unlink_task_completion.reset();
 
-        return create_task(_unlink_task_completion);
+        return create_task(_unlink_task_completion, uvxx::pplx::task_continuation_context::use_current());
     }
 
     void _file_move_async::move_callback(int exception_code)
@@ -143,7 +143,7 @@ namespace uvxx { namespace fs { namespace details
 
         _move_task_completion.reset();
 
-        return create_task(_move_task_completion);
+        return create_task(_move_task_completion, uvxx::pplx::task_continuation_context::use_current());
     }
 
 
@@ -165,7 +165,7 @@ namespace uvxx { namespace fs { namespace details
 
             SCOPE_EXIT(uv_fs_req_cleanup(req); delete req);
 
-            callback->execute(&req->statbuf, result);
+            callback->execute(req, result);
         });
 
         if (result)
@@ -178,9 +178,9 @@ namespace uvxx { namespace fs { namespace details
 
     _uv_file_stat::_uv_file_stat() : _stat_callback_delegate(stat_callback_delegate_t::create())
     {
-        _stat_callback_delegate->callback_set([=](uv_stat_t* stat, int status)
+        _stat_callback_delegate->callback_set([=](uv_fs_t* req, int status)
         {
-            fs_stat_callback(stat, status);
+            fs_stat_callback(req, status);
         });
     }
 
@@ -195,11 +195,19 @@ namespace uvxx { namespace fs { namespace details
         return create_task(_stat_task_completion, uvxx::pplx::task_continuation_context::use_current());
     }
 
-    void _uv_file_stat::fs_stat_callback(uv_stat_t* stat, int status)
+    void _uv_file_stat::fs_stat_callback(uv_fs_t* req, int status)
     {
+        uv_stat_t& stat = req->statbuf;
+
+        uvxx::fs::file_info info(stat.st_size, 
+                                 stat.st_birthtim.tv_sec, 
+                                 stat.st_atim.tv_sec, 
+                                 stat.st_mtim.tv_sec, 
+                                 req->path);
+
         if (status)
         {
-            //_stat_task_completion.set()
+            _stat_task_completion.set(std::move(info));
         }
         else
         {

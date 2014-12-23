@@ -49,7 +49,7 @@ namespace uvxx { namespace fs { namespace details
     class _uv_file_stat :  public uvxx::details::_event_dispatcher_object_impl
     {
     private:
-        using stat_callback_t            = std::function<void(uv_stat_t*, int)>;
+        using stat_callback_t            = std::function<void(uv_fs_t*, int)>;
         using stat_callback_delegate_t   = uvxx::details::_uvxx_loop_callback<stat_callback_t>;
         using stat_callback_delegate_ptr = uvxx::details::callback_unique_ptr<stat_callback_delegate_t >;
 
@@ -57,7 +57,7 @@ namespace uvxx { namespace fs { namespace details
 
         uvxx::pplx::task_completion_event<file_info> _stat_task_completion;
 
-        void fs_stat_callback(uv_stat_t* stat, int status);
+        void fs_stat_callback(uv_fs_t* stat, int status);
 
         void stat_get(std::string const& filename);
 

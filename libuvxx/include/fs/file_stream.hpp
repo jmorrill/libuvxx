@@ -715,7 +715,7 @@ namespace uvxx { namespace fs {
             return bfb.then([](pplx::task<std::shared_ptr<uvxx::streams::details::basic_streambuf<_CharType>>> op)  mutable -> uvxx::streams::streambuf<_CharType>
                             {
                                 return uvxx::streams::streambuf<_CharType>(op.get());
-                            });
+                            },uvxx::pplx::task_continuation_context::use_current());
         }
     };
 
