@@ -75,4 +75,14 @@ namespace uvxx { namespace fs
         });
     }
 
+    uvxx::pplx::task<uvxx::fs::file_info> file::get_file_info_async(std::string const& filename)
+    {
+        auto file_stat = std::make_shared<details::_uv_file_stat>();
+
+        return file_stat->get_file_info_async(filename).then([file_stat](task<uvxx::fs::file_info> t)
+        {
+            return t.get();
+        });
+    }
+
 }}

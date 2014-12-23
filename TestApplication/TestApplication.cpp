@@ -236,7 +236,13 @@ int main(int argc, _TCHAR* argv[])
         }
     });
     */
-    test_method();
+    //test_method();
+
+    fs::file::get_file_info_async("C:\\inetpub\\wwwroot\\movie.mp4").
+    then([](task<fs::file_info> info_task)
+    {
+        auto info = info_task.get();
+    });;
 
     event_dispatcher::run();
 

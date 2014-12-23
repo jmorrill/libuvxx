@@ -20,4 +20,5 @@
 #include "fs/file.hpp"
 #include "fs/directory.hpp"
 #include "fs/file_stream.hpp"
+#include "fs/fs_info.hpp"
 

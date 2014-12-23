@@ -122,6 +122,8 @@ namespace uvxx { namespace fs { namespace details
     {
         verify_access();
 
+        _file_name = file_name;
+
         int flags = get_open_flags(mode);
 
         _file.open(file_name, flags, 0);

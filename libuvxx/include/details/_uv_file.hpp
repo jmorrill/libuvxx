@@ -4,9 +4,12 @@
 #include "_uv_loop.hpp"
 #include "_uvxx_loop_callback.hpp"
 #include "uvxx_exception.hpp"
+#include "_utilities.hpp"
 
 namespace uvxx { namespace details
 {
+    
+
     class _uv_file : public _uv_handle<uv_fs_t>
     {
     public:
@@ -22,9 +25,9 @@ namespace uvxx { namespace details
         using read_callback_delegate_t    = _uvxx_loop_callback<read_callback_t>;
         using read_callback_delegate_ptr  = callback_unique_ptr<read_callback_delegate_t>;
 
-        using write_callback_t = std::function<void(const uint8_t* buf, int len, int)>;
-        using write_callback_delegate_t    = _uvxx_loop_callback<write_callback_t>;
-        using write_callback_delegate_ptr  = callback_unique_ptr<write_callback_delegate_t>;
+        using write_callback_t            = std::function<void(const uint8_t* buf, int len, int)>;
+        using write_callback_delegate_t   = _uvxx_loop_callback<write_callback_t>;
+        using write_callback_delegate_ptr = callback_unique_ptr<write_callback_delegate_t>;
 
     private:
         open_callback_delegate_ptr  _open_callback_delegate;
@@ -34,6 +37,8 @@ namespace uvxx { namespace details
         read_callback_delegate_ptr  _read_callback_delegate;
 
         write_callback_delegate_ptr _write_callback_delegate;
+
+
     public:
         _uv_file(_uv_loop* l);
 

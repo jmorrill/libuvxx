@@ -6,6 +6,7 @@
 #include "uvxx_exception.hpp"
 #include "io/memory_buffer.hpp"
 #include "details/_uvxx_loop_callback.hpp"
+#include "fs/fs_info.hpp"
 
 namespace uvxx { namespace fs { namespace details
 {
@@ -18,6 +19,8 @@ namespace uvxx { namespace fs { namespace details
         void write_callback(const uint8_t* buf, int len, int exception_code);
 
         void close_callback(int exception_code);
+
+        void file_info_callback(file_info fileinfo, int exception_code);
 
     public:
         _file_impl();
@@ -48,6 +51,8 @@ private:
         uvxx::pplx::task_completion_event<int> _write_event;
 
         uvxx::pplx::task_continuation_context _task_context;
+
+        std::string _file_name;
 
         uvxx::details::_uv_file _file;
 

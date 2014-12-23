@@ -3,6 +3,7 @@
 #include "event_dispatcher_object.hpp"
 #include "pplx/pplxtasks.h"
 #include "io/memory_buffer.hpp"
+#include "fs_info.hpp"
 
 namespace uvxx { namespace fs { namespace details
 {
@@ -39,6 +40,8 @@ namespace uvxx { namespace fs
         static uvxx::pplx::task<void> delete_async(std::string const& file_name);
 
         static uvxx::pplx::task<void> move_async(std::string const& source_file, std::string const& destination_file);
+
+        static uvxx::pplx::task<uvxx::fs::file_info> get_file_info_async(std::string const& filename);
 
 private:
         std::shared_ptr<uvxx::fs::details::_file_impl> __file_impl;

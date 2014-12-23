@@ -623,7 +623,7 @@ namespace uvxx { namespace fs { namespace details
         auto callback = static_cast<stat_callback_delegate_t*>(req->data);
 
         SCOPE_EXIT(uv_fs_req_cleanup(req); delete req;);
-
+        
         if (status < 0)
         {
             callback->execute(status);

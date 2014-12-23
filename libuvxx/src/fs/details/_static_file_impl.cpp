@@ -146,4 +146,65 @@ namespace uvxx { namespace fs { namespace details
         return create_task(_move_task_completion);
     }
 
+
+    void _uv_file_stat::stat_get(std::string const& filename)
+    {
+        auto req = new uv_fs_t;
+
+        req->data = _stat_callback_delegate.get();
+
+        uv_loop_t* ploop = dispatcher()->_loop;
+
+        int result = uv_fs_stat(ploop, req, filename.c_str(), [](uv_fs_t* req)
+        {
+            using namespace uvxx::details;
+
+            int result = req->result;
+
+            auto callback = static_cast<stat_callback_delegate_t*>(req->data);
+
+            SCOPE_EXIT(uv_fs_req_cleanup(req); delete req);
+
+            callback->execute(&req->statbuf, result);
+        });
+
+        if (result)
+        {
+            throw uv_exception_with_code(result);
+        }
+
+        _stat_callback_delegate->busy_set(true);
+    }
+
+    _uv_file_stat::_uv_file_stat() : _stat_callback_delegate(stat_callback_delegate_t::create())
+    {
+        _stat_callback_delegate->callback_set([=](uv_stat_t* stat, int status)
+        {
+            fs_stat_callback(stat, status);
+        });
+    }
+
+    uvxx::pplx::task<file_info> _uv_file_stat::get_file_info_async(std::string const& filename)
+    {
+        verify_access();
+
+        stat_get(filename);
+
+        _stat_task_completion.reset();
+
+        return create_task(_stat_task_completion, uvxx::pplx::task_continuation_context::use_current());
+    }
+
+    void _uv_file_stat::fs_stat_callback(uv_stat_t* stat, int status)
+    {
+        if (status)
+        {
+            //_stat_task_completion.set()
+        }
+        else
+        {
+            throw_for_code(status, _stat_task_completion);
+        }
+    }
+
 }}}

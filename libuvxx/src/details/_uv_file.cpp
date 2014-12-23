@@ -2,13 +2,13 @@
 
 namespace uvxx { namespace details 
 {
-    _uv_file::_uv_file(_uv_loop* l) :
+    _uv_file::_uv_file(_uv_loop* loop) :
         _open_callback_delegate(open_callback_delegate_t::create()),
         _close_callback_delegate(close_callback_delegate_t::create()),
         _read_callback_delegate(read_callback_delegate_t::create()),
         _write_callback_delegate(write_callback_delegate_t::create())
     {
-        _loop = l;
+        _loop = loop;
         _handle->data = this;
     }
 
@@ -202,5 +202,4 @@ namespace uvxx { namespace details
 
         _write_callback_delegate->busy_set(true);
     }
-
 }}

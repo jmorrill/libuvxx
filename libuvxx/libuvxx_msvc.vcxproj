@@ -159,8 +159,6 @@
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
@@ -178,6 +176,7 @@
     <ClInclude Include="include\fs\directory.hpp" />
     <ClInclude Include="include\fs\file.hpp" />
     <ClInclude Include="include\fs\file_stream.hpp" />
+    <ClInclude Include="include\fs\fs_info.hpp" />
     <ClInclude Include="include\fs\path.hpp" />
     <ClInclude Include="include\io\memory_buffer.hpp" />
     <ClInclude Include="include\net\details\_dns_impl.hpp" />
@@ -272,6 +271,7 @@
     <ClCompile Include="src\details\_event_dispatcher_timer_impl.cpp" />
     <ClCompile Include="src\directory.cpp" />
     <ClCompile Include="src\fs\details\_static_file_impl.cpp" />
+    <ClCompile Include="src\fs\fs_info.cpp" />
     <ClCompile Include="src\fs\path.cpp" />
     <ClCompile Include="src\fs\details\_directory_impl.cpp" />
     <ClCompile Include="src\fs\details\_file_impl.cpp" />
