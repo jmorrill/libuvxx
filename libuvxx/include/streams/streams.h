@@ -1,4 +1,3 @@
-#if 0
 /***
 * ==++==
 *
@@ -1813,4 +1812,3 @@ private:
 }}
 
 #endif  /* _CASA_STREAMS_H */
-#endif

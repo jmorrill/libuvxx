@@ -1,4 +1,3 @@
-#if 0
 /***
 * ==++==
 *
@@ -66,4 +65,3 @@
 #include <cstdio>
 #endif
 
-#endif

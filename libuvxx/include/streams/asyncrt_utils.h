@@ -1,4 +1,3 @@
-#if 0
 /***
 * ==++==
 *
@@ -216,10 +215,12 @@ namespace details
     /// <returns>true if the strings are equivalent, false otherwise</returns>
     inline bool str_icmp(const utility::string_t &left, const utility::string_t &right)
     {
+
+        return true;
 #ifdef _MS_WINDOWS
-        return _wcsicmp(left.c_str(), right.c_str()) == 0;
+        //return _wcsicmp(left.c_str(), right.c_str()) == 0;
 #else
-        return boost::iequals(left, right);
+       // return boost::iequals(left, right);
 #endif
     }
 
@@ -513,4 +514,3 @@ private:
 };
 
 } // namespace utility;
-#endif

@@ -1,4 +1,3 @@
-#ifdef 0
 /***
 * ==++==
 *
@@ -1188,4 +1187,3 @@ namespace uvxx { namespace streams
 }}
 
 #pragma warning(pop) // 4100
-#endif

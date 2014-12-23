@@ -1,4 +1,3 @@
-#if 0
 /***
 * ==++==
 *
@@ -59,7 +58,7 @@ typedef uint64_t size64_t;
 typedef uint32_t HRESULT; // Needed for PPLX
 #endif
 
-#ifdef _UTF16_STRINGS
+#ifdef _UTF16_STRINGS_DISABLE
 //
 // On Windows, all strings are wide
 //
@@ -100,4 +99,3 @@ typedef std::stringstream stringstream_t;
 #endif // !_TURN_OFF_PLATFORM_STRING
 
 }// namespace utility
-#endif

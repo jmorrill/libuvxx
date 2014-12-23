@@ -200,6 +200,18 @@ int main(int argc, _TCHAR* argv[])
 
     printf("starting libuvxx\n\n");
 
+    fs::file_buffer<uint8_t>::open("test1.bin").
+    then([](task<uvxx::streams::streambuf<uint8_t>> t)
+    {
+        try
+        {
+            t.get();
+        }
+        catch (std::exception& e)
+        {
+        	cout << e.what() << endl;
+        }
+    });
    /*uvxx::fs::directory::create_directory_async("c:\\users\\jeremiah\\desktop\\abc\\def\\ghi\\jkl").
     then([](task<void> t)
     {

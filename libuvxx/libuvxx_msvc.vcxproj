@@ -177,6 +177,7 @@
     <ClInclude Include="include\fs\details\_static_file_impl.hpp" />
     <ClInclude Include="include\fs\directory.hpp" />
     <ClInclude Include="include\fs\file.hpp" />
+    <ClInclude Include="include\fs\file_stream.hpp" />
     <ClInclude Include="include\fs\path.hpp" />
     <ClInclude Include="include\io\memory_buffer.hpp" />
     <ClInclude Include="include\net\details\_dns_impl.hpp" />

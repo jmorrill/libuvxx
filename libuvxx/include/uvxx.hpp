@@ -1,9 +1,5 @@
 #pragma once
 
-//#if defined(__GNUC__) 
-//#undef __cplusplus
-//#define __cplusplus 201103L
-//#endif
 #define LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE
 
 #include "uvxx_exception.hpp"
@@ -23,4 +19,5 @@
 #include "fs/path.hpp"
 #include "fs/file.hpp"
 #include "fs/directory.hpp"
+#include "fs/file_stream.hpp"
 
