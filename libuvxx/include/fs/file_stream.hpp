@@ -20,13 +20,12 @@ namespace uvxx { namespace fs {
             m_wrpos(0), 
             m_atend(false), 
             m_buffer_size(buffer_size),
-            m_buffer(new char[buffer_size]),
+           /* m_buffer(new char[buffer_size]),*/
             m_bufoff(0), 
             m_bufsize(0),
             m_buffill(0),
             m_mode(mode),
-            m_memory_buffer(buffer_size),
-            m_overflow_buffer(buffer_size)
+            m_memory_buffer(buffer_size)
         {
         }
             
@@ -42,9 +41,8 @@ namespace uvxx { namespace fs {
         SafeSize m_bufsize;    // Buffer allocated size, as actually allocated.
 
         uvxx::io::memory_buffer m_memory_buffer;
-        uvxx::io::memory_buffer m_overflow_buffer;
 
-        char   *m_buffer;
+        /*char   *m_buffer;*/
         size_t m_bufoff;    // File position that the start of the buffer represents.
         size_t m_buffill;   // Amount of file data actually in the buffer
 
@@ -127,11 +125,7 @@ namespace uvxx { namespace fs {
 
             m_info->m_buffer_size = size;
 
-            if ( size == 0 && m_info->m_buffer != nullptr )
-            {
-               delete m_info->m_buffer;
-               m_info->m_buffer = nullptr;
-            }
+            m_info->m_memory_buffer.length_set(size);
         }
 
         /// <summary>
@@ -150,7 +144,7 @@ namespace uvxx { namespace fs {
         {
             if ( !this->is_open() ) return 0;
 
-            if ( m_info->m_buffer == nullptr || m_info->m_buffill == 0 ) return 0;
+            if ( !m_info->m_memory_buffer.length_get() || m_info->m_buffill == 0 ) return 0;
             if ( m_info->m_bufoff > m_info->m_rdpos || (m_info->m_bufoff+m_info->m_buffill) < m_info->m_rdpos ) return 0;
 
             SafeInt<size_t> rdpos(m_info->m_rdpos);
@@ -431,9 +425,9 @@ namespace uvxx { namespace fs {
                     if ( _in_avail_unprot() > 0 )
                     {
                         auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
-                        _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];
-                        m_info->m_rdpos += 1;
-                        return pplx::task_from_result<int_type>(ch);
+                       // _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];
+                        //m_info->m_rdpos += 1;
+                        //return pplx::task_from_result<int_type>(ch);
                     }
                 }
 
@@ -470,10 +464,12 @@ namespace uvxx { namespace fs {
 
             if ( _in_avail_unprot() == 0 ) return traits::requires_async();
 
-            auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
+            /*auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
             _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];
             m_info->m_rdpos += 1;
-            return (int_type)ch;
+            return (int_type)ch;*/
+
+            return 0;
         }
 
         pplx::task<int_type> _getcImpl()
@@ -486,9 +482,10 @@ namespace uvxx { namespace fs {
 
                 if ( _in_avail_unprot() > 0 )
                 {
-                    auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
+                    /*auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
                     _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];
-                    return pplx::task_from_result<int_type>(ch);
+                    return pplx::task_from_result<int_type>(ch);*/
+                    return pplx::task_from_result<int_type>(0);
                 }
             }
 
@@ -526,6 +523,7 @@ namespace uvxx { namespace fs {
         /// <remarks>This is a synchronous operation, but is guaranteed to never block.</remarks>
         int_type _sgetc()
         {
+            
             /*m_readOps.wait();*/
             if ( m_info->m_atend ) return traits::eof();
 
@@ -535,9 +533,10 @@ namespace uvxx { namespace fs {
 
             if ( _in_avail_unprot() == 0 ) return traits::requires_async();
 
-            auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
-            _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];
-            return (int_type)ch;
+           /* auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
+            _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];*/
+            /*return (int_type)ch;*/
+            return (int_type)0;
         }
 
         /// <summary>
@@ -793,18 +792,29 @@ namespace uvxx { namespace fs {
 
         pplx::task<void> flush_internal()
         {
-            pplx::task_completion_event<void> result_tce;
-            /*auto callback = new _filestream_callback_write_b(m_info, result_tce);
+            uvxx::pplx::task<size_t> task_chain = uvxx::pplx::task_from_result(static_cast<size_t>(0));
 
-            if ( !_sync_fsb(m_info, callback) )
+            if (m_info->m_wrpos > 0)
             {
-                delete callback;
-                return pplx::task_from_exception<void>(std::runtime_error("failure to flush stream"));
-            }*/
-            return pplx::create_task(result_tce);
+                return task_chain = flush_write().then([]{});
+            }
+
+            if (m_info->m_rdpos < m_info->m_read_length)
+            {
+                if (!can_seek())
+                {
+                    return task_chain.then([]{});
+                }
+
+                return flush_read();
+            }
+
+            m_info->m_wrpos = m_info->m_rdpos = m_info->m_read_length = 0;
+
+            return task_chain.then([]{});
         }
 
-        basic_file_buffer(_file_info *info, file _file) : m_info(info), m_file(_file), uvxx::streams::details::streambuf_state_manager<_CharType>(info->m_mode) { }
+        basic_file_buffer(std::unique_ptr<_file_info> info, file _file) : m_info(info), m_file(_file), uvxx::streams::details::streambuf_state_manager<_CharType>(info->m_mode) { }
 
         static pplx::task<std::shared_ptr<uvxx::streams::details::basic_streambuf<_CharType>>> open(
             const utility::string_t &_Filename,
@@ -831,19 +841,19 @@ namespace uvxx { namespace fs {
                 	
                 }
 
-                auto info = new _file_info(_Mode, 1024 * 1024);
+                auto info = std::unique_ptr<_file_info>(new _file_info(_Mode, 1024 * 1024));
 
                 info->m_file_size = fileinfo.length_get();
 
-                auto file_buff = new basic_file_buffer<_CharType>(info, _file);
+                auto file_buff = std::make_shared<basic_file_buffer<_CharType>>(info, std::move(_file));
 
-                return std::shared_ptr<uvxx::streams::details::basic_streambuf<_CharType>>(file_buff);
+                return std::dynamic_pointer_cast<uvxx::streams::details::basic_streambuf<_CharType>>(file_buff);
             });
 
         }
 
-         uvxx::fs::file m_file;
-        _file_info *m_info;
+        uvxx::fs::file m_file;
+        std::unique_ptr<_file_info> m_info;
      
     };
 
