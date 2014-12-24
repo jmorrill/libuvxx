@@ -199,18 +199,36 @@ int main(int argc, _TCHAR* argv[])
     auto dispatcher = event_dispatcher::current_dispatcher();
 
     printf("starting libuvxx\n\n");
+    io::memory_buffer mem_buffer(1024 * 1000);
+
+    struct stream_holder
+    {
+        uvxx::streams::streambuf<uint8_t> buff;
+    };
+
+    auto holder = std::make_shared<stream_holder>();
+
 
     fs::file_buffer<uint8_t>::open("test1.bin").
-    then([](task<uvxx::streams::streambuf<uint8_t>> t)
+    then([=](task<uvxx::streams::streambuf<uint8_t>> t)
     {
         try
         {
-            t.get();
+            auto b = t.get();
+            holder->buff = b;
+            return holder->buff.putn(mem_buffer, mem_buffer.length_get());
         }
         catch (std::exception& e)
         {
         	cout << e.what() << endl;
+            throw;
         }
+    }).
+    then([=](task<size_t> t)
+    {
+        t.get();
+
+        return holder->buff.putn(mem_buffer, mem_buffer.length_get());
     });
    /*uvxx::fs::directory::create_directory_async("c:\\users\\jeremiah\\desktop\\abc\\def\\ghi\\jkl").
     then([](task<void> t)
@@ -238,11 +256,11 @@ int main(int argc, _TCHAR* argv[])
     */
     //test_method();
 
-    fs::file::get_file_info_async("C:\\inetpub\\wwwroot\\movie.mp4").
-    then([](task<fs::file_info> info_task)
-    {
-        auto info = info_task.get();
-    });;
+    //fs::file::get_file_info_async("C:\\inetpub\\wwwroot\\movie.mp4").
+    //then([](task<fs::file_info> info_task)
+    //{
+    //    auto info = info_task.get();
+    //});;
 
     event_dispatcher::run();
 

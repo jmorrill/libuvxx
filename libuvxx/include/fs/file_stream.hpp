@@ -24,7 +24,9 @@ namespace uvxx { namespace fs {
             m_bufoff(0), 
             m_bufsize(0),
             m_buffill(0),
-            m_mode(mode)
+            m_mode(mode),
+            m_memory_buffer(buffer_size),
+            m_overflow_buffer(buffer_size)
         {
         }
             
@@ -39,10 +41,14 @@ namespace uvxx { namespace fs {
         size_t m_buffer_size;  // The intended size of the buffer to read into.
         SafeSize m_bufsize;    // Buffer allocated size, as actually allocated.
 
+        uvxx::io::memory_buffer m_memory_buffer;
+        uvxx::io::memory_buffer m_overflow_buffer;
+
         char   *m_buffer;
         size_t m_bufoff;    // File position that the start of the buffer represents.
         size_t m_buffill;   // Amount of file data actually in the buffer
 
+        size_t m_file_size = 0;
         std::ios_base::openmode m_mode;
 
         pplx::extensibility::recursive_lock_t m_lock;
@@ -164,6 +170,8 @@ namespace uvxx { namespace fs {
 
         static pplx::task<void> _close_file(_In_ _file_info * fileInfo)
         {
+
+            
             pplx::task_completion_event<void> result_tce;
            /* auto callback = new _filestream_callback_close(result_tce);
 
@@ -300,6 +308,23 @@ namespace uvxx { namespace fs {
             (void)(count);
         }
 
+        void write_to_buffer(const _CharType *ptr, size_t& count)
+        {
+            size_t user_bytes = count * sizeof(_CharType);
+
+            size_t bytes_to_write = std::min(static_cast<size_t>(m_info->m_buffer_size - m_info->m_wrpos), user_bytes);
+
+            if (user_bytes == 0)
+            {
+                return;
+            }
+
+            memcpy(m_info->m_memory_buffer.operator char *() + m_info->m_wrpos, ptr, user_bytes);
+
+            m_info->m_wrpos += bytes_to_write;
+            count -= bytes_to_write;
+        }
+
         /// <summary>
         /// Writes a number of characters to the stream.
         /// </summary>
@@ -308,18 +333,56 @@ namespace uvxx { namespace fs {
         /// <returns>A <c>task</c> that holds the number of characters actually written, either 'count' or 0.</returns>
         virtual pplx::task<size_t> _putn(const _CharType *ptr, size_t count)
         {
-            auto result_tce = pplx::task_completion_event<size_t>();
-            /*auto callback = new _filestream_callback_write<size_t>(m_info, result_tce);
+            size_t total_user_bytes = 0;
 
-            size_t written = _putn_fsb(m_info, callback, ptr, count, sizeof(_CharType));
+            size_t user_bytes = count * sizeof(_CharType);
 
-            if ( written != 0 && written != -1 )
+            bool use_buffer = false;
+
+
+            total_user_bytes = m_info->m_wrpos + user_bytes;
+
+            use_buffer = (total_user_bytes + user_bytes < (size_t)(m_info->m_buffer_size + m_info->m_buffer_size));
+
+            if (use_buffer)
             {
-                delete callback;
-                written = written/sizeof(_CharType);
-                return pplx::task_from_result<size_t>(written);
-            }*/
-            return pplx::create_task(result_tce);
+                write_to_buffer(ptr, user_bytes);
+
+                if (m_info->m_wrpos < m_info->m_buffer_size)
+                {
+                    return pplx::task_from_result(user_bytes);
+                }
+
+                return m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
+                then([=](size_t bytes_wrote) mutable
+                {
+                    m_info->m_wrpos = 0;
+                    write_to_buffer(ptr, user_bytes);
+
+                    return bytes_wrote;
+                });
+            }
+            else
+            {
+                uvxx::pplx::task<size_t> t = uvxx::pplx::task_from_result(static_cast<size_t>(0));
+
+                if (m_info->m_wrpos > 0)
+                {
+                    t = m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
+                    then([=](task<size_t> t)
+                    {
+                        t.get();
+
+                        m_info->m_wrpos = 0;
+                    });
+                }
+
+                return t.then([=](size_t bytes) mutable
+                {
+                     return m_file.write_async(reinterpret_cast<const uint8_t*>(const_cast<_CharType*>(ptr)), m_info->m_buffer_size, 0, user_bytes);
+                });
+            }
+
         }
 
         /// <summary>
@@ -659,21 +722,36 @@ namespace uvxx { namespace fs {
             return pplx::create_task(result_tce);
         }
 
-        basic_file_buffer(_file_info *info, file _file) : m_info(info), streambuf_state_manager<_CharType>(info->m_mode) { }
+        basic_file_buffer(_file_info *info, file _file) : m_info(info), m_file(_file), streambuf_state_manager<_CharType>(info->m_mode) { }
 
         static pplx::task<std::shared_ptr<basic_streambuf<_CharType>>> open(
             const utility::string_t &_Filename,
             std::ios_base::openmode _Mode = std::ios_base::out,
             int _Prot = 0 /* unsupported on Linux, for now */ )
         {
-            file _file;
+             uvxx::fs::file _file;
 
             return _file.open_async(_Filename, _Mode).
-            then([=](uvxx::pplx::task<void> t) mutable -> std::shared_ptr<basic_streambuf<_CharType>>
+            then([=](uvxx::pplx::task<void> t)
             {
                 t.get();
+                return uvxx::fs::file::get_file_info_async(_Filename);
+            }).
+            then([=](uvxx::pplx::task<file_info> t) mutable -> std::shared_ptr<basic_streambuf<_CharType>>
+            {
+                file_info fileinfo;
+                try
+                {
+                    fileinfo = t.get();
+                }
+                catch (...)
+                {
+                	
+                }
 
                 auto info = new _file_info(_Mode, 1024 * 1024);
+
+                info->m_file_size = fileinfo.length_get();
 
                 auto file_buff = new basic_file_buffer<_CharType>(info, _file);
 
@@ -682,7 +760,7 @@ namespace uvxx { namespace fs {
 
         }
 
-
+         uvxx::fs::file m_file;
         _file_info *m_info;
      
     };

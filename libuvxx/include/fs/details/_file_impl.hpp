@@ -14,9 +14,9 @@ namespace uvxx { namespace fs { namespace details
     {
         void open_callback(int exception_code);
 
-        void read_callback(const uint8_t* buf, int len, int exception_code);
+        void read_callback(const uint8_t* buf, size_t len, int exception_code);
 
-        void write_callback(const uint8_t* buf, int len, int exception_code);
+        void write_callback(const uint8_t* buf, size_t len, int exception_code);
 
         void close_callback(int exception_code);
 
@@ -31,9 +31,11 @@ namespace uvxx { namespace fs { namespace details
 
         uvxx::pplx::task<void> close_async();
 
-        uvxx::pplx::task<int> read_async(uvxx::io::memory_buffer const& buffer, int start_pos, int count);
+        uvxx::pplx::task<size_t> read_async(uvxx::io::memory_buffer const& buffer, size_t start_pos, size_t count);
 
-        uvxx::pplx::task<int> write_async(uvxx::io::memory_buffer const& buffer, int start_pos, int count);
+        uvxx::pplx::task<size_t> write_async(uvxx::io::memory_buffer const& buffer, size_t start_pos, size_t count);
+
+        uvxx::pplx::task<size_t> write_async(const uint8_t* buffer, size_t buffer_size, size_t start_pos, size_t count);
 
         int64_t file_position_get();
 
@@ -46,9 +48,9 @@ private:
 
         uvxx::pplx::task_completion_event<void> _close_event;
 
-        uvxx::pplx::task_completion_event<int> _read_event;
+        uvxx::pplx::task_completion_event<size_t> _read_event;
 
-        uvxx::pplx::task_completion_event<int> _write_event;
+        uvxx::pplx::task_completion_event<size_t> _write_event;
 
         uvxx::pplx::task_continuation_context _task_context;
 

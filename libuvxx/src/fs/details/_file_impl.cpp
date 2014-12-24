@@ -47,7 +47,7 @@ namespace uvxx { namespace fs { namespace details
         }
     }
 
-    void _file_impl::read_callback(const uint8_t* buf, int len, int exception_code)
+    void _file_impl::read_callback(const uint8_t* buf, size_t len, int exception_code)
     {
         if (exception_code)
         {
@@ -60,7 +60,7 @@ namespace uvxx { namespace fs { namespace details
         }
     }
 
-    void _file_impl::write_callback(const uint8_t* buf, int len, int exception_code)
+    void _file_impl::write_callback(const uint8_t* buf, size_t len, int exception_code)
     {
         if (exception_code)
         {
@@ -144,7 +144,7 @@ namespace uvxx { namespace fs { namespace details
         return uvxx::pplx::task<void>(_close_event, _task_context);
     }
 
-    uvxx::pplx::task<int> _file_impl::read_async(io::memory_buffer const& buffer, int start_pos, int count)
+    uvxx::pplx::task<size_t> _file_impl::read_async(io::memory_buffer const& buffer, size_t start_pos, size_t count)
     {
         verify_access();
 
@@ -155,11 +155,23 @@ namespace uvxx { namespace fs { namespace details
         return uvxx::pplx::create_task(_read_event, _task_context);
     }
 
-    uvxx::pplx::task<int> _file_impl::write_async(io::memory_buffer const& buffer, int start_pos, int count)
+    uvxx::pplx::task<size_t> _file_impl::write_async(io::memory_buffer const& buffer, size_t start_pos, size_t count)
     {
          verify_access();
         
          _file.write(buffer, buffer.length_get(), start_pos, count, _file_position);
+        
+         _write_event.reset();
+
+         return uvxx::pplx::create_task(_write_event, _task_context);
+    }
+
+    
+    uvxx::pplx::task<size_t> _file_impl::write_async(const uint8_t* buffer, size_t buffer_size, size_t start_pos, size_t count)
+    {
+         verify_access();
+        
+         _file.write(buffer, buffer_size, start_pos, count, _file_position);
         
          _write_event.reset();
 

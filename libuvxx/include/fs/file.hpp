@@ -29,9 +29,11 @@ namespace uvxx { namespace fs
 
         uvxx::pplx::task<void> close_async() const;
 
-        uvxx::pplx::task<int> read_async(io::memory_buffer const & buffer, int start_pos, int count) const;
+        uvxx::pplx::task<size_t> read_async(io::memory_buffer const & buffer, size_t start_pos, size_t count) const;
 
-        uvxx::pplx::task<int> write_async(io::memory_buffer const & buffer, int start_pos, int count) const;
+        uvxx::pplx::task<size_t> write_async(io::memory_buffer const & buffer, size_t start_pos, size_t count) const;
+
+        uvxx::pplx::task<size_t> write_async(const uint8_t* buffer, size_t buffer_size, size_t start_pos, size_t count) const;
 
         int64_t file_position_get() const;
 

@@ -92,7 +92,7 @@ namespace uvxx { namespace details
         _close_callback_delegate->busy_set(true);
     }
 
-    void _uv_file::read(uint8_t* buffer, int buffer_size, int start_pos, int count, int64_t file_position)
+    void _uv_file::read(uint8_t* buffer, size_t buffer_size, size_t start_pos, size_t count, int64_t file_position)
     {
         if (!buffer)
         {
@@ -151,7 +151,7 @@ namespace uvxx { namespace details
         _read_callback_delegate->busy_set(true);
     }
 
-    void _uv_file::write(uint8_t* buffer, int buffer_size, int start_pos, int count, int64_t file_position)
+    void _uv_file::write(const uint8_t* buffer, size_t buffer_size, size_t start_pos, size_t count, int64_t file_position)
     {
         if (!buffer)
         {
@@ -175,7 +175,7 @@ namespace uvxx { namespace details
 
         uv_buf_t bufs[1];
 
-        bufs[0].base = reinterpret_cast<char*>(buffer + start_pos);
+        bufs[0].base = reinterpret_cast<char*>(const_cast<uint8_t*>(buffer) + start_pos);
 
         bufs[0].len = count;
 

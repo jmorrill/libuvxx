@@ -76,7 +76,7 @@ namespace uvxx { namespace fs
                   std::string const& full_name) : fs_info(creation_time, 
                                                           last_access_time,
                                                           last_write_time,
-                                                          full_name)
+                                                          full_name), _length(length)
 
         {
             
@@ -85,7 +85,7 @@ namespace uvxx { namespace fs
         file_info() : fs_info(0,
             0,
             0,
-            "")
+            ""), _length(0)
         {
 
         }

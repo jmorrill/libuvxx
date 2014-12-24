@@ -21,11 +21,11 @@ namespace uvxx { namespace details
         using close_callback_delegate_t   = _uvxx_loop_callback<close_callback_t>;
         using close_callback_delegate_ptr = callback_unique_ptr<close_callback_delegate_t>;
 
-        using read_callback_t             = std::function<void(const uint8_t* buf, int len, int)>;
+        using read_callback_t             = std::function<void(const uint8_t* buf, size_t len, int)>;
         using read_callback_delegate_t    = _uvxx_loop_callback<read_callback_t>;
         using read_callback_delegate_ptr  = callback_unique_ptr<read_callback_delegate_t>;
 
-        using write_callback_t            = std::function<void(const uint8_t* buf, int len, int)>;
+        using write_callback_t            = std::function<void(const uint8_t* buf, size_t len, int)>;
         using write_callback_delegate_t   = _uvxx_loop_callback<write_callback_t>;
         using write_callback_delegate_ptr = callback_unique_ptr<write_callback_delegate_t>;
 
@@ -56,9 +56,9 @@ namespace uvxx { namespace details
 
         void close();
 
-        void read(uint8_t* buffer, int buffer_size, int start_pos, int count, int64_t file_position = -1);
+        void read(uint8_t* buffer, size_t buffer_size, size_t start_pos, size_t count, int64_t file_position = -1);
       
-        void write(uint8_t* buffer, int buffer_size, int start_pos, int count, int64_t file_position = -1);
+        void write(const uint8_t* buffer, size_t buffer_size, size_t start_pos, size_t count, int64_t file_position = -1);
     private:
         uint8_t * _read_buffer;
 
