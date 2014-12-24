@@ -42,7 +42,7 @@
 #if !defined(_MS_WINDOWS) || (_MSC_VER >= 1700)
 #include <chrono>
 #endif
-
+#ifdef _MS_WINDOWS
 typedef wchar_t utf16char;
 typedef std::wstring utf16string;
 typedef std::wstringstream utf16stringstream;
@@ -50,7 +50,7 @@ typedef std::wostringstream utf16ostringstream;
 typedef std::wostream utf16ostream;
 typedef std::wistream utf16istream;
 typedef std::wistringstream utf16istringstream;
-
+#endif
 namespace utility
 {
 

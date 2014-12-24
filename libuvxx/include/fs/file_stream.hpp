@@ -62,10 +62,10 @@ namespace uvxx { namespace fs {
     class basic_file_buffer : public uvxx::streams::details::streambuf_state_manager<_CharType>
     {
     public:
-        typedef typename basic_streambuf<_CharType>::traits traits;
-        typedef typename basic_streambuf<_CharType>::int_type int_type;
-        typedef typename basic_streambuf<_CharType>::pos_type pos_type;
-        typedef typename basic_streambuf<_CharType>::off_type off_type;
+        typedef typename uvxx::streams::details::basic_streambuf<_CharType>::traits traits;
+        typedef typename uvxx::streams::details::basic_streambuf<_CharType>::int_type int_type;
+        typedef typename uvxx::streams::details::basic_streambuf<_CharType>::pos_type pos_type;
+        typedef typename uvxx::streams::details::basic_streambuf<_CharType>::off_type off_type;
 
         virtual ~basic_file_buffer() 
         {
@@ -186,7 +186,7 @@ namespace uvxx { namespace fs {
             // Use a separated function for working around Dev10's ICE
         pplx::task<void> _close_read_impl()
         {
-                streambuf_state_manager<_CharType>::_close_read();
+                uvxx::streams::details::streambuf_state_manager<_CharType>::_close_read();
 
                 if (this->can_write()) 
                 {
@@ -209,7 +209,7 @@ namespace uvxx { namespace fs {
 
         pplx::task<void> _close_write()
         {
-            streambuf_state_manager<_CharType>::_close_write();
+            uvxx::streams::details::streambuf_state_manager<_CharType>::_close_write();
             if (this->can_read()) 
             {
                 // Read head is still open. Just flush the write data
@@ -350,7 +350,7 @@ namespace uvxx { namespace fs {
 
                 if (m_info->m_wrpos < m_info->m_buffer_size)
                 {
-                    return pplx::task_from_result(user_bytes);
+                    return uvxx::pplx::task_from_result(user_bytes);
                 }
 
                 return m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
@@ -369,7 +369,7 @@ namespace uvxx { namespace fs {
                 if (m_info->m_wrpos > 0)
                 {
                     t = m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
-                    then([=](task<size_t> t)
+                    then([=](uvxx::pplx::task<size_t> t)
                     {
                         auto bytes = t.get();
 
@@ -792,9 +792,9 @@ namespace uvxx { namespace fs {
             return pplx::create_task(result_tce);
         }
 
-        basic_file_buffer(_file_info *info, file _file) : m_info(info), m_file(_file), streambuf_state_manager<_CharType>(info->m_mode) { }
+        basic_file_buffer(_file_info *info, file _file) : m_info(info), m_file(_file), uvxx::streams::details::streambuf_state_manager<_CharType>(info->m_mode) { }
 
-        static pplx::task<std::shared_ptr<basic_streambuf<_CharType>>> open(
+        static pplx::task<std::shared_ptr<uvxx::streams::details::basic_streambuf<_CharType>>> open(
             const utility::string_t &_Filename,
             std::ios_base::openmode _Mode = std::ios_base::out,
             int _Prot = 0 /* unsupported on Linux, for now */ )
@@ -807,7 +807,7 @@ namespace uvxx { namespace fs {
                 t.get();
                 return uvxx::fs::file::get_file_info_async(_Filename);
             }).
-            then([=](uvxx::pplx::task<file_info> t) mutable -> std::shared_ptr<basic_streambuf<_CharType>>
+            then([=](uvxx::pplx::task<file_info> t) mutable -> std::shared_ptr<uvxx::streams::details::basic_streambuf<_CharType>>
             {
                 file_info fileinfo;
                 try
@@ -825,7 +825,7 @@ namespace uvxx { namespace fs {
 
                 auto file_buff = new basic_file_buffer<_CharType>(info, _file);
 
-                return std::shared_ptr<basic_streambuf<_CharType>>(file_buff);
+                return std::shared_ptr<uvxx::streams::details::basic_streambuf<_CharType>>(file_buff);
             });
 
         }
