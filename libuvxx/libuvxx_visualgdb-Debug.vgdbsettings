@@ -7,9 +7,7 @@
       <PathStyle>MinGWUnixSlash</PathStyle>
     </CustomSourceDirectories>
     <BuildHost>
-      <HostName>192.168.1.109</HostName>
-      <Transport>SSH</Transport>
-      <UserName>odroid</UserName>
+      <Transport>None</Transport>
     </BuildHost>
     <DeploymentHost>
       <HostName>192.168.1.108</HostName>
@@ -19,9 +17,7 @@
     <MainSourceTransferCommand>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
       <RemoteHost>
-        <HostName>192.168.1.109</HostName>
-        <Transport>SSH</Transport>
-        <UserName>odroid</UserName>
+        <Transport>None</Transport>
       </RemoteHost>
       <LocalDirectory>$(ProjectDir)</LocalDirectory>
       <RemoteDirectory>/tmp/VisualGDB/$(ProjectDirUnixStyle)</RemoteDirectory>

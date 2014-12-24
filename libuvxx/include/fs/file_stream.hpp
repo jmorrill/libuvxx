@@ -325,6 +325,30 @@ namespace uvxx { namespace fs {
             count -= bytes_to_write;
         }
 
+        void flush_read()
+        {
+            if (m_info->m_rdpos - m_info->m_read_length)
+            {
+                auto current_pos = m_file.file_position_get();
+                m_file.file_position_set(current_pos + (m_info->m_rdpos - m_info->m_read_length));
+            }
+
+            m_info->m_rdpos = m_info->m_read_length = 0;
+        }
+
+        void clear_read_buffer_before_write()
+        {
+            if (m_info->m_rdpos == m_info->m_read_length)
+            {
+                m_info->m_rdpos = m_info->m_read_length = 0;
+            }
+
+            if (!this->can_seek())
+                throw uvxx_exception("cannot seek");
+
+            flush_read();
+        }
+
         /// <summary>
         /// Writes a number of characters to the stream.
         /// </summary>
@@ -333,12 +357,16 @@ namespace uvxx { namespace fs {
         /// <returns>A <c>task</c> that holds the number of characters actually written, either 'count' or 0.</returns>
         virtual pplx::task<size_t> _putn(const _CharType *ptr, size_t count)
         {
+            if (m_info->m_wrpos == 0)
+            {
+                clear_read_buffer_before_write();
+            }
+
             size_t total_user_bytes = 0;
 
             size_t user_bytes = count * sizeof(_CharType);
 
             bool use_buffer = false;
-
 
             total_user_bytes = m_info->m_wrpos + user_bytes;
 
@@ -562,12 +590,24 @@ namespace uvxx { namespace fs {
             return static_cast<size_t>(read_bytes);
         }
 
+        pplx::task<size_t> flush_write()
+        {
+            m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
+                then([](uvxx::pplx::task<size_t> t)
+            {
+                auto bytes_wrote = t.get();
+
+
+                return bytes_wrote;
+            });
+        }
+
         /// <summary>
         /// Reads up to a given number of characters from the stream.
         /// </summary>
         /// <param name="ptr">The address of the target memory area</param>
         /// <param name="count">The maximum number of characters to read</param>
-            /// <returns>A <c>task</c> that holds the number of characters read. This number is O if the end of the stream is reached, EOF if there is some error.</returns>
+        /// <returns>A <c>task</c> that holds the number of characters read. This number is O if the end of the stream is reached, EOF if there is some error.</returns>
         virtual pplx::task<size_t> _getn(_Out_writes_ (count) _CharType *ptr, _In_ size_t count)
         {
             size_t user_byte_count = count * sizeof(_CharType);
@@ -588,14 +628,19 @@ namespace uvxx { namespace fs {
 
             m_info->m_read_length = m_info->m_rdpos = 0;
 
+            auto task_chain = uvxx::pplx::task_from_result(static_cast<size_t>(0));
+
             if (m_info->m_wrpos > 0)
             {
-                //flush write
+                task_chain = flush_write();
             }
 
             if (user_byte_count >= m_info->m_buffer_size)
             {
-                return m_file.read_async(m_info->m_memory_buffer, 0, user_byte_count).
+                task_chain.then([=](size_t bytes)
+                {
+                    return m_file.read_async(m_info->m_memory_buffer, 0, user_byte_count);
+                }).
                 then([=](uvxx::pplx::task<size_t> t)
                 {
                     auto bytes_read = t.get();
@@ -606,7 +651,10 @@ namespace uvxx { namespace fs {
                 });
             }
 
-            m_file.read_async(m_info->m_memory_buffer, 0, m_info->m_buffer_size).
+            task_chain.then([=](size_t bytes)
+            {
+                return m_file.read_async(m_info->m_memory_buffer, 0, m_info->m_buffer_size);
+            }).
             then([=](uvxx::pplx::task<size_t> t) mutable
             {
                 size_t bytes_read = t.get();
@@ -615,42 +663,6 @@ namespace uvxx { namespace fs {
                 bytes_from_buffer = read_from_buffer(ptr, user_byte_count);
 
                 return static_cast<size_t>(bytes_from_buffer + already_satisfied);
-            });
-
-            return create_task([=] ()-> pplx::task<size_t>{
-                if ( m_info->m_atend || count == 0 )
-                    return pplx::task_from_result<size_t>(0);
-
-                if ( _in_avail_unprot() >= count )
-                {
-                    pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
-
-                    // Check again once the lock is held.
-
-                    if ( _in_avail_unprot() >= count )
-                    {
-                        auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
-                        std::memcpy((void *)ptr, this->m_info->m_buffer+bufoff*sizeof(_CharType), count*sizeof(_CharType));
-            
-                        m_info->m_rdpos += count;
-                        return pplx::task_from_result<size_t>(count);
-                    }
-                }
-
-                auto result_tce = pplx::task_completion_event<size_t>();
-                /*
-                auto callback = new _filestream_callback_read(m_info, result_tce);
-
-                size_t read = _getn_fsb(m_info, callback, ptr, count, sizeof(_CharType));
-
-                if ( read != 0 && read != -1)
-                {
-                    delete callback;
-                    pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
-                    m_info->m_rdpos += read/sizeof(_CharType);
-                    return pplx::task_from_result<size_t>(read/sizeof(_CharType));
-                }*/
-                return pplx::create_task(result_tce);
             });
         }
 
