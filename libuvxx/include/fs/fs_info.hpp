@@ -104,7 +104,7 @@ namespace uvxx { namespace fs
              return static_cast<fs_info&>(fs_info::operator=(std::move(rhs))); 
         }
 
-        std::size_t length_get()
+        int64_t length_get()
         {
             return _length;
         }
