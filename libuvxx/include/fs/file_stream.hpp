@@ -232,17 +232,38 @@ namespace uvxx { namespace fs {
         /// <returns>A <c>task</c> that holds the value of the byte written. This is EOF if the write operation fails.</returns>
         virtual pplx::task<int_type> _putc(_CharType ch)
         {
-            auto result_tce = pplx::task_completion_event<int_type>();
-           /* auto callback = new _filestream_callback_putc(m_info, result_tce, ch);
-             
-            size_t written = _putc_fsb(m_info, callback, ch, sizeof(_CharType));
-
-            if ( written == sizeof(_CharType) )
+            if (!this->is_open())
             {
-                delete callback;
-                return pplx::task_from_result<int_type>(ch);
-            }*/
-            return pplx::create_task(result_tce);
+                throw uvxx_exception("stream is closed");
+            }
+
+            if (m_info->m_wrpos == 0)
+            {
+                clear_read_buffer_before_write();
+            }
+
+            auto task_chain = pplx::task_from_result(static_cast<size_t>(0));
+
+            if (m_info->m_wrpos >= m_info->m_memory_buffer.length_get() - 1)
+            {
+                task_chain = flush_write();
+            }
+
+            return task_chain.then([=](pplx::task<size_t> t)
+            {
+                try
+                {
+                    auto value = t.get();
+
+                    m_info->m_memory_buffer.operator uint8_t*()[m_info->m_wrpos++] = ch;
+
+                    return static_cast<int_type>(ch);
+                }
+                catch (...)
+                {
+                    return static_cast<int_type>(traits::eof());
+                }
+            });
         }
 
         /// <summary>
@@ -397,7 +418,10 @@ namespace uvxx { namespace fs {
 
                 return t.then([=](size_t bytes) mutable
                 {
-                     return m_file.write_async(reinterpret_cast<const uint8_t*>(const_cast<_CharType*>(ptr)), m_info->m_memory_buffer.length_get(), 0, user_bytes);
+                     return m_file.write_async(reinterpret_cast<const uint8_t*>(const_cast<_CharType*>(ptr)), 
+                                               m_info->m_memory_buffer.length_get(),
+                                               0, 
+                                               user_bytes);
                 });
             }
 
@@ -409,36 +433,49 @@ namespace uvxx { namespace fs {
         /// <returns>A <c>task</c> that holds the value of the byte read. This is EOF if the read fails.</returns>
         virtual pplx::task<int_type> _bumpc()
         {
-            return create_task([this]()-> pplx::task<int_type> {
-                if ( _in_avail_unprot() > 0 )
+            auto task_chain = pplx::task_from_result(static_cast<size_t>(0));
+
+            if (m_info->m_rdpos == m_info->m_read_length)
+            {
+                if (m_info->m_wrpos > 0)
                 {
-                    pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
-
-                    // Check again once the lock is held.
-
-                    if ( _in_avail_unprot() > 0 )
-                    {
-                        auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
-                       // _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];
-                        //m_info->m_rdpos += 1;
-                        //return pplx::task_from_result<int_type>(ch);
-                    }
+                    task_chain = flush_write();
                 }
 
-                auto result_tce = pplx::task_completion_event<int_type>();
-               /* auto callback = new _filestream_callback_bumpc(m_info, result_tce);
-
-                size_t ch = _getn_fsb(m_info, callback, &callback->m_ch, 1, sizeof(_CharType));
-
-                if ( ch == sizeof(_CharType) )
+                task_chain.
+                then([=](uvxx::pplx::task<size_t> t)
                 {
-                    pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
-                    m_info->m_rdpos += 1;
-                    _CharType ch1 = (_CharType)callback->m_ch;
-                    delete callback;
-                    return pplx::task_from_result<int_type>(ch1);
-                }*/
-                return pplx::create_task(result_tce);
+                    t.get();
+
+                    return m_file.read_async(m_info->m_memory_buffer, 0, m_info->m_memory_buffer.length_get());
+                }).
+                then([=](uvxx::pplx::task<size_t> t)
+                {
+                    m_info->m_read_length = t.get();
+
+                    m_info->m_rdpos = 0;
+                });
+            }
+
+            return task_chain.then([=](pplx::task<size_t> t)
+            {
+                try
+                {
+                    t.get();
+                }
+                catch (...)
+                {
+                    return static_cast<int_type>(traits::eof());
+                }
+
+                if (m_info->m_rdpos == m_info->m_read_length)
+                {
+                    static_cast<int_type>(traits::eof());
+                }
+
+                int_type ret_val = m_info->m_memory_buffer.operator uint8_t *()[m_info->m_rdpos++];
+
+                return static_cast<int_type>(ret_val);
             });
         }
 
