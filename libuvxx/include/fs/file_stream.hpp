@@ -31,7 +31,7 @@ namespace uvxx { namespace fs {
         }
             
         // Positional data
-
+        size_t m_read_length = 0;
         size_t m_rdpos;
         size_t m_wrpos;
         bool   m_atend;
@@ -371,9 +371,11 @@ namespace uvxx { namespace fs {
                     t = m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
                     then([=](task<size_t> t)
                     {
-                        t.get();
+                        auto bytes = t.get();
 
                         m_info->m_wrpos = 0;
+
+                        return bytes;
                     });
                 }
 
@@ -539,6 +541,27 @@ namespace uvxx { namespace fs {
             });
         }
 
+        size_t read_from_buffer(_CharType *ptr, size_t count)
+        {
+            int64_t read_bytes = m_info->m_read_length - m_info->m_rdpos;
+
+            if (read_bytes == 0)
+            {
+                return 0;
+            }
+
+            if (read_bytes > count)
+            {
+                read_bytes = count;
+            }
+
+            memcpy(ptr, m_info->m_memory_buffer.operator char *() + m_info->m_rdpos, static_cast<size_t>(read_bytes));
+
+            m_info->m_rdpos += static_cast<size_t>(read_bytes);
+
+            return static_cast<size_t>(read_bytes);
+        }
+
         /// <summary>
         /// Reads up to a given number of characters from the stream.
         /// </summary>
@@ -547,6 +570,53 @@ namespace uvxx { namespace fs {
             /// <returns>A <c>task</c> that holds the number of characters read. This number is O if the end of the stream is reached, EOF if there is some error.</returns>
         virtual pplx::task<size_t> _getn(_Out_writes_ (count) _CharType *ptr, _In_ size_t count)
         {
+            size_t user_byte_count = count * sizeof(_CharType);
+
+            size_t bytes_from_buffer = read_from_buffer(ptr, user_byte_count);
+
+            if (bytes_from_buffer == user_byte_count)
+            {
+                return uvxx::pplx::task_from_result(bytes_from_buffer);
+            }
+
+            int64_t already_satisfied = bytes_from_buffer;
+
+            if (bytes_from_buffer > 0)
+            {
+                user_byte_count -= bytes_from_buffer;
+            }
+
+            m_info->m_read_length = m_info->m_rdpos = 0;
+
+            if (m_info->m_wrpos > 0)
+            {
+                //flush write
+            }
+
+            if (user_byte_count >= m_info->m_buffer_size)
+            {
+                return m_file.read_async(m_info->m_memory_buffer, 0, user_byte_count).
+                then([=](uvxx::pplx::task<size_t> t)
+                {
+                    auto bytes_read = t.get();
+
+                    memcpy(ptr + user_byte_count, m_info->m_memory_buffer.operator char *(), bytes_read);
+
+                    return static_cast<size_t>(bytes_read + already_satisfied);
+                });
+            }
+
+            m_file.read_async(m_info->m_memory_buffer, 0, m_info->m_buffer_size).
+            then([=](uvxx::pplx::task<size_t> t) mutable
+            {
+                size_t bytes_read = t.get();
+                m_info->m_read_length = bytes_read;
+
+                bytes_from_buffer = read_from_buffer(ptr, user_byte_count);
+
+                return static_cast<size_t>(bytes_from_buffer + already_satisfied);
+            });
+
             return create_task([=] ()-> pplx::task<size_t>{
                 if ( m_info->m_atend || count == 0 )
                     return pplx::task_from_result<size_t>(0);
