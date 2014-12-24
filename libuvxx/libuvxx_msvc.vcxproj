@@ -269,8 +269,8 @@
     <ClCompile Include="src\details\_event_dispatcher_impl.cpp" />
     <ClCompile Include="src\details\_event_dispatcher_object_impl.cpp" />
     <ClCompile Include="src\details\_event_dispatcher_timer_impl.cpp" />
-    <ClCompile Include="src\directory.cpp" />
     <ClCompile Include="src\fs\details\_static_file_impl.cpp" />
+    <ClCompile Include="src\fs\directory.cpp" />
     <ClCompile Include="src\fs\fs_info.cpp" />
     <ClCompile Include="src\fs\path.cpp" />
     <ClCompile Include="src\fs\details\_directory_impl.cpp" />
