@@ -39,7 +39,7 @@ namespace uvxx { namespace fs { namespace details
 
         int64_t file_position_get();
 
-        void file_position_set(size_t position);
+        void file_position_set(int64_t position);
         
         uvxx::pplx::task<void> delete_async(std::string const& file_name);
 

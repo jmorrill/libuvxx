@@ -19,10 +19,7 @@ namespace uvxx { namespace fs {
             m_rdpos(0), 
             m_wrpos(0), 
             m_atend(false), 
-            m_buffer_size(buffer_size),
-           /* m_buffer(new char[buffer_size]),*/
             m_bufoff(0), 
-            m_bufsize(0),
             m_buffill(0),
             m_mode(mode),
             m_memory_buffer(buffer_size)
@@ -36,17 +33,12 @@ namespace uvxx { namespace fs {
         bool   m_atend;
 
         // Input buffer
-
-        size_t m_buffer_size;  // The intended size of the buffer to read into.
-        SafeSize m_bufsize;    // Buffer allocated size, as actually allocated.
-
         uvxx::io::memory_buffer m_memory_buffer;
 
-        /*char   *m_buffer;*/
         size_t m_bufoff;    // File position that the start of the buffer represents.
         size_t m_buffill;   // Amount of file data actually in the buffer
 
-        size_t m_file_size = 0;
+        uint64_t m_file_size = 0;
         std::ios_base::openmode m_mode;
 
         pplx::extensibility::recursive_lock_t m_lock;
@@ -107,7 +99,7 @@ namespace uvxx { namespace fs {
         virtual size_t buffer_size(std::ios_base::openmode direction = std::ios_base::in) const
         {
             if ( direction == std::ios_base::in )
-                return m_info->m_buffer_size;
+                return m_info->m_memory_buffer.length_get();
             else
                 return 0;
         }
@@ -122,8 +114,6 @@ namespace uvxx { namespace fs {
         virtual void set_buffer_size(size_t size, std::ios_base::openmode direction = std::ios_base::in) 
         {
             if ( direction == std::ios_base::out ) return;
-
-            m_info->m_buffer_size = size;
 
             m_info->m_memory_buffer.length_set(size);
         }
@@ -308,7 +298,7 @@ namespace uvxx { namespace fs {
         {
             size_t user_bytes = count * sizeof(_CharType);
 
-            size_t bytes_to_write = std::min(static_cast<size_t>(m_info->m_buffer_size - m_info->m_wrpos), user_bytes);
+            size_t bytes_to_write = std::min(static_cast<size_t>(m_info->m_memory_buffer.length_get() - m_info->m_wrpos), user_bytes);
 
             if (user_bytes == 0)
             {
@@ -368,13 +358,13 @@ namespace uvxx { namespace fs {
 
             total_user_bytes = m_info->m_wrpos + user_bytes;
 
-            use_buffer = (total_user_bytes + user_bytes < (size_t)(m_info->m_buffer_size + m_info->m_buffer_size));
+            use_buffer = (total_user_bytes + user_bytes < (size_t)(m_info->m_memory_buffer.length_get() * 2));
 
             if (use_buffer)
             {
                 write_to_buffer(ptr, user_bytes);
 
-                if (m_info->m_wrpos < m_info->m_buffer_size)
+                if (m_info->m_wrpos < m_info->m_memory_buffer.length_get())
                 {
                     return uvxx::pplx::task_from_result(user_bytes);
                 }
@@ -407,7 +397,7 @@ namespace uvxx { namespace fs {
 
                 return t.then([=](size_t bytes) mutable
                 {
-                     return m_file.write_async(reinterpret_cast<const uint8_t*>(const_cast<_CharType*>(ptr)), m_info->m_buffer_size, 0, user_bytes);
+                     return m_file.write_async(reinterpret_cast<const uint8_t*>(const_cast<_CharType*>(ptr)), m_info->m_memory_buffer.length_get(), 0, user_bytes);
                 });
             }
 
@@ -638,7 +628,7 @@ namespace uvxx { namespace fs {
                 task_chain = flush_write();
             }
 
-            if (user_byte_count >= m_info->m_buffer_size)
+            if (user_byte_count >= m_info->m_memory_buffer.length_get())
             {
                 task_chain.then([=](size_t bytes)
                 {
@@ -656,7 +646,7 @@ namespace uvxx { namespace fs {
 
             return task_chain.then([=](size_t bytes)
             {
-                return m_file.read_async(m_info->m_memory_buffer, 0, m_info->m_buffer_size);
+                return m_file.read_async(m_info->m_memory_buffer, 0, m_info->m_memory_buffer.length_get());
             }).
             then([=](uvxx::pplx::task<size_t> t) mutable
             {

@@ -99,17 +99,12 @@ namespace uvxx { namespace details
             throw uvxx_exception("buffer cannot be null");
         }
 
-        if (start_pos < 0)
-        {
-            throw uvxx_exception("position cannot be less than or equal to 0");
-        }
-
-        if (count < 0 || !count)
+        if (!count)
         {
             throw uvxx_exception("count cannot be less than or equal to 0");
         }
 
-        if (count + start_pos > static_cast<int>(buffer_size))
+        if (count + start_pos > buffer_size)
         {
             throw uvxx_exception("count and position cannot be greater than the buffer size");
         }
@@ -158,17 +153,12 @@ namespace uvxx { namespace details
             throw uvxx_exception("buffer cannot be null");
         }
 
-        if (start_pos < 0)
-        {
-            throw uvxx_exception("position cannot be less than or equal to 0");
-        }
-
-        if (count < 0 || !count)
+        if (!count)
         {
             throw uvxx_exception("count cannot be less than or equal to 0");
         }
 
-        if (count + start_pos > static_cast<int>(buffer_size))
+        if (count + start_pos > buffer_size)
         {
             throw uvxx_exception("count and position cannot be greater than the buffer size");
         }

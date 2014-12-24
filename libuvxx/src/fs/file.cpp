@@ -55,7 +55,7 @@ namespace uvxx { namespace fs
         return __file_impl->file_position_get();
     }
 
-    void file::file_position_set(size_t position) const
+    void file::file_position_set(int64_t position) const
     {
         __file_impl->file_position_set(position);
     }

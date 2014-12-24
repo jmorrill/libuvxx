@@ -66,10 +66,10 @@ namespace uvxx { namespace fs
 
     class file_info : fs_info
     {
-        std::size_t _length;
+        int64_t _length;
 
     public:
-        file_info(std::size_t length, 
+        file_info(int64_t     length, 
                   std::time_t creation_time, 
                   std::time_t last_access_time,
                   std::time_t last_write_time, 

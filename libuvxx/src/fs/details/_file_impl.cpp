@@ -183,7 +183,7 @@ namespace uvxx { namespace fs { namespace details
         return _file_position;
     }
 
-    void _file_impl::file_position_set(size_t position)
+    void _file_impl::file_position_set(int64_t position)
     {
         verify_access();
         _file_position = position;
