@@ -16,9 +16,9 @@ namespace uvxx { namespace fs {
     struct _file_info
     {
         _ASYNCRTIMP _file_info(std::ios_base::openmode mode, size_t buffer_size) : 
-            m_rdpos(0), 
-            m_wrpos(0), 
-            m_atend(false), 
+            m_read_pos(0), 
+            m_write_pos(0), 
+            m_at_end(false), 
             m_bufoff(0), 
             m_buffill(0),
             m_mode(mode),
@@ -28,9 +28,9 @@ namespace uvxx { namespace fs {
             
         // Positional data
         size_t m_read_length = 0;
-        size_t m_rdpos;
-        size_t m_wrpos;
-        bool   m_atend;
+        size_t m_read_pos;
+        size_t m_write_pos;
+        bool   m_at_end;
 
         // Input buffer
         uvxx::io::memory_buffer m_memory_buffer;
@@ -40,8 +40,6 @@ namespace uvxx { namespace fs {
 
         uint64_t m_file_size = 0;
         std::ios_base::openmode m_mode;
-
-        pplx::extensibility::recursive_lock_t m_lock;
     };
 
     /// <summary>
@@ -125,7 +123,6 @@ namespace uvxx { namespace fs {
         /// </summary>
         virtual size_t in_avail() const
         {
-            pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
 
             return _in_avail_unprot();
         }
@@ -135,9 +132,9 @@ namespace uvxx { namespace fs {
             if ( !this->is_open() ) return 0;
 
             if ( !m_info->m_memory_buffer.length_get() || m_info->m_buffill == 0 ) return 0;
-            if ( m_info->m_bufoff > m_info->m_rdpos || (m_info->m_bufoff+m_info->m_buffill) < m_info->m_rdpos ) return 0;
+            if ( m_info->m_bufoff > m_info->m_read_pos || (m_info->m_bufoff+m_info->m_buffill) < m_info->m_read_pos ) return 0;
 
-            SafeInt<size_t> rdpos(m_info->m_rdpos);
+            SafeInt<size_t> rdpos(m_info->m_read_pos);
             SafeInt<size_t> buffill(m_info->m_buffill);
             SafeInt<size_t> bufpos = rdpos - m_info->m_bufoff;
 
@@ -237,14 +234,14 @@ namespace uvxx { namespace fs {
                 throw uvxx_exception("stream is closed");
             }
 
-            if (m_info->m_wrpos == 0)
+            if (m_info->m_write_pos == 0)
             {
                 clear_read_buffer_before_write();
             }
 
             auto task_chain = pplx::task_from_result(static_cast<size_t>(0));
 
-            if (m_info->m_wrpos >= m_info->m_memory_buffer.length_get() - 1)
+            if (m_info->m_write_pos >= m_info->m_memory_buffer.length_get() - 1)
             {
                 task_chain = flush_write();
             }
@@ -255,7 +252,7 @@ namespace uvxx { namespace fs {
                 {
                     auto value = t.get();
 
-                    m_info->m_memory_buffer.operator uint8_t*()[m_info->m_wrpos++] = ch;
+                    m_info->m_memory_buffer.operator uint8_t*()[m_info->m_write_pos++] = ch;
 
                     return static_cast<int_type>(ch);
                 }
@@ -319,35 +316,35 @@ namespace uvxx { namespace fs {
         {
             size_t user_bytes = count * sizeof(_CharType);
 
-            size_t bytes_to_write = std::min(static_cast<size_t>(m_info->m_memory_buffer.length_get() - m_info->m_wrpos), user_bytes);
+            size_t bytes_to_write = std::min(static_cast<size_t>(m_info->m_memory_buffer.length_get() - m_info->m_write_pos), user_bytes);
 
             if (user_bytes == 0)
             {
                 return;
             }
 
-            memcpy(m_info->m_memory_buffer.operator char *() + m_info->m_wrpos, ptr, user_bytes);
+            memcpy(m_info->m_memory_buffer.operator char *() + m_info->m_write_pos, ptr, user_bytes);
 
-            m_info->m_wrpos += bytes_to_write;
+            m_info->m_write_pos += bytes_to_write;
             count -= bytes_to_write;
         }
 
         void flush_read()
         {
-            if (m_info->m_rdpos - m_info->m_read_length)
+            if (m_info->m_read_pos - m_info->m_read_length)
             {
                 auto current_pos = m_file.file_position_get();
-                m_file.file_position_set(static_cast<size_t>(current_pos) + (m_info->m_rdpos - m_info->m_read_length));
+                m_file.file_position_set(static_cast<int64_t>(current_pos) + (m_info->m_read_pos - m_info->m_read_length));
             }
 
-            m_info->m_rdpos = m_info->m_read_length = 0;
+            m_info->m_read_pos = m_info->m_read_length = 0;
         }
 
         void clear_read_buffer_before_write()
         {
-            if (m_info->m_rdpos == m_info->m_read_length)
+            if (m_info->m_read_pos == m_info->m_read_length)
             {
-                m_info->m_rdpos = m_info->m_read_length = 0;
+                m_info->m_read_pos = m_info->m_read_length = 0;
             }
 
             if (!this->can_seek())
@@ -366,7 +363,7 @@ namespace uvxx { namespace fs {
         /// <returns>A <c>task</c> that holds the number of characters actually written, either 'count' or 0.</returns>
         virtual pplx::task<size_t> _putn(const _CharType *ptr, size_t count)
         {
-            if (m_info->m_wrpos == 0)
+            if (m_info->m_write_pos == 0)
             {
                 clear_read_buffer_before_write();
             }
@@ -377,7 +374,7 @@ namespace uvxx { namespace fs {
 
             bool use_buffer = false;
 
-            total_user_bytes = m_info->m_wrpos + user_bytes;
+            total_user_bytes = m_info->m_write_pos + user_bytes;
 
             use_buffer = (total_user_bytes + user_bytes < (size_t)(m_info->m_memory_buffer.length_get() * 2));
 
@@ -385,15 +382,15 @@ namespace uvxx { namespace fs {
             {
                 write_to_buffer(ptr, user_bytes);
 
-                if (m_info->m_wrpos < m_info->m_memory_buffer.length_get())
+                if (m_info->m_write_pos < m_info->m_memory_buffer.length_get())
                 {
                     return uvxx::pplx::task_from_result(user_bytes);
                 }
 
-                return m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
+                return m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_write_pos).
                 then([=](size_t bytes_wrote) mutable
                 {
-                    m_info->m_wrpos = 0;
+                    m_info->m_write_pos = 0;
                     write_to_buffer(ptr, user_bytes);
 
                     return bytes_wrote;
@@ -403,14 +400,14 @@ namespace uvxx { namespace fs {
             {
                 uvxx::pplx::task<size_t> t = uvxx::pplx::task_from_result(static_cast<size_t>(0));
 
-                if (m_info->m_wrpos > 0)
+                if (m_info->m_write_pos > 0)
                 {
-                    t = m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
+                    t = m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_write_pos).
                     then([=](uvxx::pplx::task<size_t> t)
                     {
                         auto bytes = t.get();
 
-                        m_info->m_wrpos = 0;
+                        m_info->m_write_pos = 0;
 
                         return bytes;
                     });
@@ -435,9 +432,9 @@ namespace uvxx { namespace fs {
         {
             auto task_chain = pplx::task_from_result(static_cast<size_t>(0));
 
-            if (m_info->m_rdpos == m_info->m_read_length)
+            if (m_info->m_read_pos == m_info->m_read_length)
             {
-                if (m_info->m_wrpos > 0)
+                if (m_info->m_write_pos > 0)
                 {
                     task_chain = flush_write();
                 }
@@ -453,7 +450,7 @@ namespace uvxx { namespace fs {
                 {
                     m_info->m_read_length = t.get();
 
-                    m_info->m_rdpos = 0;
+                    m_info->m_read_pos = 0;
                 });
             }
 
@@ -468,12 +465,12 @@ namespace uvxx { namespace fs {
                     return static_cast<int_type>(traits::eof());
                 }
 
-                if (m_info->m_rdpos == m_info->m_read_length)
+                if (m_info->m_read_pos == m_info->m_read_length)
                 {
                     static_cast<int_type>(traits::eof());
                 }
 
-                int_type ret_val = m_info->m_memory_buffer.operator uint8_t *()[m_info->m_rdpos++];
+                int_type ret_val = m_info->m_memory_buffer.operator uint8_t *()[m_info->m_read_pos++];
 
                 return static_cast<int_type>(ret_val);
             });
@@ -487,13 +484,10 @@ namespace uvxx { namespace fs {
         virtual int_type _sbumpc() 
         {
             
-            if ( m_info->m_atend ) return traits::eof();
+            if ( m_info->m_at_end ) return traits::eof();
 
             if ( _in_avail_unprot() == 0 ) return traits::requires_async();
 
-            pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
-
-            if ( _in_avail_unprot() == 0 ) return traits::requires_async();
 
             /*auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
             _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];
@@ -507,7 +501,6 @@ namespace uvxx { namespace fs {
         {
             if ( _in_avail_unprot() > 0 )
             {
-                pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
 
                 // Check again once the lock is held.
 
@@ -556,13 +549,10 @@ namespace uvxx { namespace fs {
         {
             
             /*m_readOps.wait();*/
-            if ( m_info->m_atend ) return traits::eof();
+            if ( m_info->m_at_end ) return traits::eof();
 
             if ( _in_avail_unprot() == 0 ) return traits::requires_async();
 
-            pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
-
-            if ( _in_avail_unprot() == 0 ) return traits::requires_async();
 
            /* auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
             _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];*/
@@ -601,7 +591,7 @@ namespace uvxx { namespace fs {
 
         size_t read_from_buffer(_CharType *ptr, size_t count)
         {
-            int64_t read_bytes = m_info->m_read_length - m_info->m_rdpos;
+            int64_t read_bytes = m_info->m_read_length - m_info->m_read_pos;
 
             if (read_bytes == 0)
             {
@@ -613,16 +603,16 @@ namespace uvxx { namespace fs {
                 read_bytes = count;
             }
 
-            memcpy(ptr, m_info->m_memory_buffer.operator char *() + m_info->m_rdpos, static_cast<size_t>(read_bytes));
+            memcpy(ptr, m_info->m_memory_buffer.operator char *() + m_info->m_read_pos, static_cast<size_t>(read_bytes));
 
-            m_info->m_rdpos += static_cast<size_t>(read_bytes);
+            m_info->m_read_pos += static_cast<size_t>(read_bytes);
 
             return static_cast<size_t>(read_bytes);
         }
 
         pplx::task<size_t> flush_write()
         {
-            return m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
+            return m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_write_pos).
                 then([](uvxx::pplx::task<size_t> t)
             {
                 auto bytes_wrote = t.get();
@@ -656,11 +646,11 @@ namespace uvxx { namespace fs {
                 user_byte_count -= bytes_from_buffer;
             }
 
-            m_info->m_read_length = m_info->m_rdpos = 0;
+            m_info->m_read_length = m_info->m_read_pos = 0;
 
             auto task_chain = uvxx::pplx::task_from_result(static_cast<size_t>(0));
 
-            if (m_info->m_wrpos > 0)
+            if (m_info->m_write_pos > 0)
             {
                 task_chain = flush_write();
             }
@@ -688,6 +678,7 @@ namespace uvxx { namespace fs {
             then([=](uvxx::pplx::task<size_t> t) mutable
             {
                 size_t bytes_read = t.get();
+
                 m_info->m_read_length = bytes_read;
 
                 bytes_from_buffer = read_from_buffer(ptr, user_byte_count);
@@ -706,20 +697,18 @@ namespace uvxx { namespace fs {
         size_t _sgetn(_Out_writes_ (count) _CharType *ptr, _In_ size_t count)
         {
            /* m_readOps.wait();*/
-            if ( m_info->m_atend ) return 0;
+            if ( m_info->m_at_end ) return 0;
 
             if ( count == 0 || in_avail() == 0 ) return 0;
-
-            pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
 
             size_t available = _in_avail_unprot();
             size_t copy = (count < available) ? count : available;
 
-            auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
+            auto bufoff = m_info->m_read_pos - m_info->m_bufoff;
             std::memcpy((void *)ptr, this->m_info->m_buffer+bufoff*sizeof(_CharType), copy*sizeof(_CharType));
             
-            m_info->m_rdpos += copy;
-            m_info->m_atend = (copy < count);
+            m_info->m_read_pos += copy;
+            m_info->m_at_end = (copy < count);
             return copy;
         }
 
@@ -823,14 +812,14 @@ namespace uvxx { namespace fs {
 
         pplx::task<void> flush_internal()
         {
-            if (m_info->m_wrpos > 0)
+            if (m_info->m_write_pos > 0)
             {
                 return flush_write().then([](size_t){});
             }
 
             uvxx::pplx::task<size_t> task_chain = uvxx::pplx::task_from_result(static_cast<size_t>(0));
 
-            if (m_info->m_rdpos < m_info->m_read_length)
+            if (m_info->m_read_pos < m_info->m_read_length)
             {
                 if (!can_seek())
                 {
@@ -842,7 +831,7 @@ namespace uvxx { namespace fs {
                 return task_chain.then([](size_t){});
             }
 
-            m_info->m_wrpos = m_info->m_rdpos = m_info->m_read_length = 0;
+            m_info->m_write_pos = m_info->m_read_pos = m_info->m_read_length = 0;
 
             return task_chain.then([](size_t){});
         }
@@ -887,8 +876,8 @@ namespace uvxx { namespace fs {
         }
 
         uvxx::fs::file m_file;
+
         std::unique_ptr<_file_info> m_info;
-     
     };
 
 

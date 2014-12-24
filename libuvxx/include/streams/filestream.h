@@ -814,7 +814,7 @@ namespace details {
             virtual void on_completed(size_t result)
             {
                 result = result / sizeof(_CharType);
-                m_info->m_rdpos += result;
+                m_info->m_read_pos += result;
                 m_op.set(result);
                 delete this;
             }
@@ -869,7 +869,7 @@ namespace details {
             {
                 if ( result == sizeof(_CharType) )
                 {
-                    m_info->m_rdpos += 1;
+                    m_info->m_read_pos += 1;
                     m_op.set(m_ch);   
                 }
                 else
