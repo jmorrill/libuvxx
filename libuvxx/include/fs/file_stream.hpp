@@ -157,9 +157,11 @@ namespace uvxx { namespace fs {
         _file_info * _close_stream()
         {
             // indicate that we are no longer open
-            auto fileInfo = m_info;
+            /*auto fileInfo = m_info;
             m_info = nullptr;
-            return fileInfo;
+            return fileInfo;*/
+
+            return m_info.get();
         }
 
         static pplx::task<void> _close_file(_In_ _file_info * fileInfo)
@@ -324,7 +326,7 @@ namespace uvxx { namespace fs {
             if (m_info->m_rdpos - m_info->m_read_length)
             {
                 auto current_pos = m_file.file_position_get();
-                m_file.file_position_set(current_pos + (m_info->m_rdpos - m_info->m_read_length));
+                m_file.file_position_set(static_cast<size_t>(current_pos) + (m_info->m_rdpos - m_info->m_read_length));
             }
 
             m_info->m_rdpos = m_info->m_read_length = 0;
@@ -338,7 +340,9 @@ namespace uvxx { namespace fs {
             }
 
             if (!this->can_seek())
+            {
                 throw uvxx_exception("cannot seek");
+            }
 
             flush_read();
         }
@@ -591,7 +595,7 @@ namespace uvxx { namespace fs {
 
         pplx::task<size_t> flush_write()
         {
-            m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
+            return m_file.write_async(m_info->m_memory_buffer, 0, m_info->m_wrpos).
                 then([](uvxx::pplx::task<size_t> t)
             {
                 auto bytes_wrote = t.get();
@@ -650,7 +654,7 @@ namespace uvxx { namespace fs {
                 });
             }
 
-            task_chain.then([=](size_t bytes)
+            return task_chain.then([=](size_t bytes)
             {
                 return m_file.read_async(m_info->m_memory_buffer, 0, m_info->m_buffer_size);
             }).
@@ -792,29 +796,31 @@ namespace uvxx { namespace fs {
 
         pplx::task<void> flush_internal()
         {
-            uvxx::pplx::task<size_t> task_chain = uvxx::pplx::task_from_result(static_cast<size_t>(0));
-
             if (m_info->m_wrpos > 0)
             {
-                return task_chain = flush_write().then([]{});
+                return flush_write().then([](size_t){});
             }
+
+            uvxx::pplx::task<size_t> task_chain = uvxx::pplx::task_from_result(static_cast<size_t>(0));
 
             if (m_info->m_rdpos < m_info->m_read_length)
             {
                 if (!can_seek())
                 {
-                    return task_chain.then([]{});
+                    return task_chain.then([](size_t){});
                 }
+                
+                flush_read();
 
-                return flush_read();
+                return task_chain.then([](size_t){});
             }
 
             m_info->m_wrpos = m_info->m_rdpos = m_info->m_read_length = 0;
 
-            return task_chain.then([]{});
+            return task_chain.then([](size_t){});
         }
 
-        basic_file_buffer(std::unique_ptr<_file_info> info, file _file) : m_info(info), m_file(_file), uvxx::streams::details::streambuf_state_manager<_CharType>(info->m_mode) { }
+        basic_file_buffer(std::unique_ptr<_file_info> info, file _file) : m_info(std::move(info)), m_file(_file), uvxx::streams::details::streambuf_state_manager<_CharType>(info->m_mode) { }
 
         static pplx::task<std::shared_ptr<uvxx::streams::details::basic_streambuf<_CharType>>> open(
             const utility::string_t &_Filename,
@@ -845,7 +851,8 @@ namespace uvxx { namespace fs {
 
                 info->m_file_size = fileinfo.length_get();
 
-                auto file_buff = std::make_shared<basic_file_buffer<_CharType>>(info, std::move(_file));
+                auto buff = new basic_file_buffer<_CharType>(std::move(info), std::move(_file));
+                auto file_buff = std::shared_ptr<basic_file_buffer<_CharType>>(buff);
 
                 return std::dynamic_pointer_cast<uvxx::streams::details::basic_streambuf<_CharType>>(file_buff);
             });
