@@ -849,24 +849,26 @@ namespace uvxx { namespace streams
 
             std::shared_ptr<_read_helper> _locals = std::make_shared<_read_helper>();
 
-            // We're having to create all these lambdas because VS 2010 has trouble compiling
-            // nested lambdas.
-            auto after_putn = 
-                [=](pplx::task<size_t> wrote) mutable -> bool
-                {
-                    _locals->total += wrote.get();
-                    _locals->write_pos = 0;
-                    target.sync().wait();
-                    return true;
-                };
-
             auto flush = 
                 [=] () mutable -> pplx::task<bool>
                 {
-                    return target.putn(_locals->outbuf, _locals->write_pos).then(after_putn);
+                    return target.putn(_locals->outbuf, _locals->write_pos).
+                           then([=](pplx::task<size_t> wrote) mutable
+                           {
+                               _locals->total += wrote.get();
+                               _locals->write_pos = 0;
+                           }).
+                           then([=]() mutable
+                           {
+                               return target.sync();
+                           }).
+                           then([=]() mutable
+                           {
+                               return true;
+                           });
                 };
 
-            auto update = [=] (typename std::char_traits<CharType>::int_type ch) mutable -> bool 
+            auto update = [=] (typename std::char_traits<CharType>::int_type ch) mutable -> bool
                 { 
                     if ( ch == std::char_traits<CharType>::eof() ) return false;
                     if ( ch == '\n' ) return false;
@@ -877,7 +879,7 @@ namespace uvxx { namespace streams
 
                     if ( _locals->is_full() )
                     {
-                        return flush().get();
+                        return false;
                     }
 
                     return true;
@@ -921,8 +923,14 @@ namespace uvxx { namespace streams
                         if (  ch == req_async )
                             break;
                         
-                        if ( !update(ch) )
-                            return pplx::task_from_result(false);
+                        if (!update(ch))
+                        {
+                            return flush().then([](pplx::task<bool> t)
+                            {
+                                t.get();
+                                return false;
+                            });
+                        }
                     }
 
                     if ( _locals->saw_CR )
@@ -932,10 +940,13 @@ namespace uvxx { namespace streams
                     return buffer.bumpc().then(update);
                 });
 
-            return loop.then([=](bool) mutable -> size_t
+            return loop.then([=](bool) mutable 
                 { 
-                    flush().wait();
-                    return _locals->total; 
+                    return flush();
+                }).
+                then([=](bool) -> size_t
+                {
+                    return _locals->total;
                 });
         }
 

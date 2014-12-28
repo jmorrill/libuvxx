@@ -199,37 +199,64 @@ int main(int argc, _TCHAR* argv[])
     auto dispatcher = event_dispatcher::current_dispatcher();
 
     printf("starting libuvxx\n\n");
-    io::memory_buffer mem_buffer(1024 * 1000);
 
     struct stream_holder
     {
-        uvxx::streams::streambuf<uint8_t> buff;
+        uvxx::streams::container_buffer<std::string> buf;
+        uvxx::streams::basic_istream<uint8_t> input_stream;
     };
 
     auto holder = std::make_shared<stream_holder>();
 
-
-    fs::file_buffer<uint8_t>::open("test1.bin").
-    then([=](task<uvxx::streams::streambuf<uint8_t>> t)
+    cout << "current thread id " << this_thread::get_id() << endl;
+   
+    fs::file_stream<uint8_t>::open_istream("C:\\Users\\Jeremiah\\Desktop\\lines.txt").
+    then([=](task<uvxx::streams::basic_istream<uint8_t>> t)
     {
-        try
-        {
-            auto b = t.get();
-            holder->buff = b;
-            return holder->buff.putn(mem_buffer, mem_buffer.length_get());
-        }
-        catch (std::exception& e)
-        {
-        	cout << e.what() << endl;
-            throw;
-        }
+        cout << "current thread id " << this_thread::get_id() << endl;
+
+        holder->input_stream = t.get();
+
+        return holder->input_stream.read_line(holder->buf);
     }).
     then([=](task<size_t> t)
     {
+        try
+        {
+            auto size = t.get();
+        }
+        catch (std::exception const& e)
+        {
+            cout << e.what() << endl;
+        }
+
+        auto x = holder->buf.collection();
+
+        cout << holder->buf.collection() << endl;
+    });
+
+    /*
+        fs::file_buffer<uint8_t>::open("test1.bin").
+        then([=](task<uvxx::streams::streambuf<uint8_t>> t)
+        {
+        try
+        {
+        auto b = t.get();
+        holder->buff = b;
+        return holder->buff.putn(mem_buffer, mem_buffer.length_get());
+        }
+        catch (std::exception& e)
+        {
+        cout << e.what() << endl;
+        throw;
+        }
+        }).
+        then([=](task<size_t> t)
+        {
         t.get();
 
         return holder->buff.putn(mem_buffer, mem_buffer.length_get());
-    });
+        });*/
    /*uvxx::fs::directory::create_directory_async("c:\\users\\jeremiah\\desktop\\abc\\def\\ghi\\jkl").
     then([](task<void> t)
     {

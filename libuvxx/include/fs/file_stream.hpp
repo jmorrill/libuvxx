@@ -19,8 +19,6 @@ namespace uvxx { namespace fs {
             m_read_pos(0), 
             m_write_pos(0), 
             m_at_end(false), 
-            m_bufoff(0), 
-            m_buffill(0),
             m_mode(mode),
             m_memory_buffer(buffer_size)
         {
@@ -34,10 +32,6 @@ namespace uvxx { namespace fs {
 
         // Input buffer
         uvxx::io::memory_buffer m_memory_buffer;
-
-        size_t m_bufoff;    // File position that the start of the buffer represents.
-        size_t m_buffill;   // Amount of file data actually in the buffer
-
         uint64_t m_file_size = 0;
         std::ios_base::openmode m_mode;
     };
@@ -84,8 +78,8 @@ namespace uvxx { namespace fs {
         {
             if (!this->is_open())
                 return 0;
-            /*return _get_size(m_info, sizeof(_CharType));*/
-            return 0;
+
+            return m_info->m_file_size / sizeof(_CharType);
         }
 
 
@@ -123,7 +117,6 @@ namespace uvxx { namespace fs {
         /// </summary>
         virtual size_t in_avail() const
         {
-
             return _in_avail_unprot();
         }
 
@@ -131,63 +124,36 @@ namespace uvxx { namespace fs {
         {
             if ( !this->is_open() ) return 0;
 
-            if ( !m_info->m_memory_buffer.length_get() || m_info->m_buffill == 0 ) return 0;
-            if ( m_info->m_bufoff > m_info->m_read_pos || (m_info->m_bufoff+m_info->m_buffill) < m_info->m_read_pos ) return 0;
+            if ( !m_info->m_memory_buffer.length_get()) return 0;
 
-            SafeInt<size_t> rdpos(m_info->m_read_pos);
-            SafeInt<size_t> buffill(m_info->m_buffill);
-            SafeInt<size_t> bufpos = rdpos - m_info->m_bufoff;
-
-            return buffill - bufpos;
-        }
-
-        _file_info * _close_stream()
-        {
-            // indicate that we are no longer open
-            /*auto fileInfo = m_info;
-            m_info = nullptr;
-            return fileInfo;*/
-
-            return m_info.get();
-        }
-
-        static pplx::task<void> _close_file(_In_ _file_info * fileInfo)
-        {
-
-            
-            pplx::task_completion_event<void> result_tce;
-           /* auto callback = new _filestream_callback_close(result_tce);
-
-            if ( !_close_fsb_nolock(&fileInfo, callback) )
+            if (m_info->m_read_pos > m_info->m_read_length)
             {
-                delete callback;
-                return pplx::task_from_result();
-            }*/
-            return pplx::create_task(result_tce);
+                return 0; 
+            }
+            else
+            {
+                return (m_info->m_read_length - m_info->m_read_pos) / sizeof(_CharType);
+            }
         }
-
-            // Use a separated function for working around Dev10's ICE
+        
+        // Use a separated function for working around Dev10's ICE
         pplx::task<void> _close_read_impl()
         {
-                uvxx::streams::details::streambuf_state_manager<_CharType>::_close_read();
+            uvxx::streams::details::streambuf_state_manager<_CharType>::_close_read();
 
-                if (this->can_write()) 
-                {
-                    return pplx::task_from_result();
-                }
-                else
-                {
-                    // Neither heads are open. Close the underlying device
-                    // to indicate that we are no longer open
-                    auto fileInfo = _close_stream();
-
-                    return _close_file(fileInfo);
-                }
+            if (this->can_write()) 
+            {
+                return pplx::task_from_result();
+            }
+            else
+            {
+                return m_file.close_async();
+            }
         }
 
         pplx::task<void> _close_read()
         {
-            return create_task([this] { return _close_read_impl(); });
+            return _close_read_impl();
         }
 
         pplx::task<void> _close_write()
@@ -208,16 +174,13 @@ namespace uvxx { namespace fs {
                     // swallow exception from flush
                     try
                     {
-                        flushTask.wait();
+                        flushTask.get();
                     }
                     catch(...)
                     {
                     }
 
-                    // indicate that we are no longer open
-                    auto fileInfo = this->_close_stream();
-
-                    return this->_close_file(fileInfo);
+                    return m_file.close_async();
                 });
             }
         }
@@ -439,18 +402,14 @@ namespace uvxx { namespace fs {
                     task_chain = flush_write();
                 }
 
-                task_chain.
-                then([=](uvxx::pplx::task<size_t> t)
-                {
-                    t.get();
-
-                    return m_file.read_async(m_info->m_memory_buffer, 0, m_info->m_memory_buffer.length_get());
-                }).
+                task_chain =  m_file.read_async(m_info->m_memory_buffer, 0, m_info->m_memory_buffer.length_get()).
                 then([=](uvxx::pplx::task<size_t> t)
                 {
                     m_info->m_read_length = t.get();
 
                     m_info->m_read_pos = 0;
+
+                    return m_info->m_read_length;
                 });
             }
 
@@ -483,51 +442,17 @@ namespace uvxx { namespace fs {
         /// <remarks>This is a synchronous operation, but is guaranteed to never block.</remarks>
         virtual int_type _sbumpc() 
         {
-            
             if ( m_info->m_at_end ) return traits::eof();
 
             if ( _in_avail_unprot() == 0 ) return traits::requires_async();
 
+            _CharType ch = m_info->m_memory_buffer.operator uint8_t *()[m_info->m_read_pos * sizeof(_CharType)];
 
-            /*auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
-            _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];
-            m_info->m_rdpos += 1;
-            return (int_type)ch;*/
+            m_info->m_read_pos += 1;
 
-            return 0;
+            return ch;
         }
 
-        pplx::task<int_type> _getcImpl()
-        {
-            if ( _in_avail_unprot() > 0 )
-            {
-
-                // Check again once the lock is held.
-
-                if ( _in_avail_unprot() > 0 )
-                {
-                    /*auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
-                    _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];
-                    return pplx::task_from_result<int_type>(ch);*/
-                    return pplx::task_from_result<int_type>(0);
-                }
-            }
-
-            auto result_tce = pplx::task_completion_event<int_type>();
-           /* auto callback = new _filestream_callback_getc(m_info, result_tce);
-
-            size_t ch = _getn_fsb(m_info, callback, &callback->m_ch, 1, sizeof(_CharType));
-
-            if ( ch == sizeof(_CharType) )
-            {
-                pplx::extensibility::scoped_recursive_lock_t lck(m_info->m_lock);
-                _CharType ch1 = (_CharType)callback->m_ch;
-                delete callback;
-                return pplx::task_from_result<int_type>(ch1);
-            }*/
-            return pplx::create_task(result_tce);
-
-        }
 
         /// <summary>
         /// Reads a single byte from the stream without advancing the read position.
@@ -535,8 +460,27 @@ namespace uvxx { namespace fs {
         /// <returns>The value of the byte. EOF if the read fails.</returns>
         pplx::task<int_type> _getc()
         {
-            return create_task([this]()-> pplx::task<int_type> {
-                return _getcImpl();
+            /* maybe reuse this buffer? */
+            auto buff = new _CharType;
+
+            return _getn(buff, 1).then([=](pplx::task<size_t> t)
+            {
+                _CharType result = *buff;
+
+                delete buff;
+
+                try
+                {
+                    auto result = t.get();
+
+                    m_info->m_read_pos -= sizeof(_CharType);
+
+                    return static_cast<int_type>(result);
+                }
+                catch (...)
+                {
+                    return static_cast<int_type>(traits::eof());
+                }
             });
         }
 
@@ -547,17 +491,13 @@ namespace uvxx { namespace fs {
         /// <remarks>This is a synchronous operation, but is guaranteed to never block.</remarks>
         int_type _sgetc()
         {
-            
-            /*m_readOps.wait();*/
-            if ( m_info->m_at_end ) return traits::eof();
+            if (m_info->m_at_end) return traits::eof();
 
-            if ( _in_avail_unprot() == 0 ) return traits::requires_async();
+            if (_in_avail_unprot() == 0) return traits::requires_async();
 
+            _CharType ch = m_info->m_memory_buffer.operator uint8_t *()[m_info->m_read_pos * sizeof(_CharType)];
 
-           /* auto bufoff = m_info->m_rdpos - m_info->m_bufoff;
-            _CharType ch = m_info->m_buffer[bufoff*sizeof(_CharType)];*/
-            /*return (int_type)ch;*/
-            return (int_type)0;
+            return ch;
         }
 
         /// <summary>
@@ -566,11 +506,12 @@ namespace uvxx { namespace fs {
             /// <returns>A <c>task</c> that holds the value of the byte, which is EOF if the read fails.</returns>
         virtual pplx::task<int_type> _nextc()
         {
-            return create_task([this]()-> pplx::task<int_type> {
+            return create_task([this]()
+            {
                 //_seekrdpos_fsb(m_info, m_info->m_rdpos+1, sizeof(_CharType));
                 //if ( m_info->m_atend )
                 //    return pplx::task_from_result(basic_file_buffer<_CharType>::traits::eof());
-                return this->_getcImpl();
+                return static_cast<int_type>(0);//this->_getcImpl();
             });
         }
 
@@ -580,12 +521,13 @@ namespace uvxx { namespace fs {
             /// <returns>A <c>task</c> that holds the value of the byte. The value is EOF if the read fails, <c>requires_async</c> if an asynchronous read is required</returns>
         virtual pplx::task<int_type> _ungetc() 
         {
-            return create_task([this]()-> pplx::task<int_type> {
+            return create_task([this]() 
+            {
                /* if ( m_info->m_rdpos == 0 ) 
                     return pplx::task_from_result<int_type>(basic_file_buffer<_CharType>::traits::eof());
                 _seekrdpos_fsb(m_info, m_info->m_rdpos-1, sizeof(_CharType));
                 */
-                return this->_getcImpl();
+                return static_cast<int_type>(0);//this->_getcImpl();
             });
         }
 
@@ -697,7 +639,7 @@ namespace uvxx { namespace fs {
         size_t _sgetn(_Out_writes_ (count) _CharType *ptr, _In_ size_t count)
         {
            /* m_readOps.wait();*/
-            if ( m_info->m_at_end ) return 0;
+            /*if ( m_info->m_at_end ) return 0;
 
             if ( count == 0 || in_avail() == 0 ) return 0;
 
@@ -709,7 +651,8 @@ namespace uvxx { namespace fs {
             
             m_info->m_read_pos += copy;
             m_info->m_at_end = (copy < count);
-            return copy;
+            return copy;*/
+            return 0;
         }
 
         /// <summary>
@@ -836,7 +779,10 @@ namespace uvxx { namespace fs {
             return task_chain.then([](size_t){});
         }
 
-        basic_file_buffer(std::unique_ptr<_file_info> info, file _file) : m_info(std::move(info)), m_file(_file), uvxx::streams::details::streambuf_state_manager<_CharType>(info->m_mode) { }
+        basic_file_buffer(std::unique_ptr<_file_info> info, file _file) : m_info(std::move(info)), m_file(_file), uvxx::streams::details::streambuf_state_manager<_CharType>(info->m_mode)
+        { 
+
+        }
 
         static pplx::task<std::shared_ptr<uvxx::streams::details::basic_streambuf<_CharType>>> open(
             const utility::string_t &_Filename,
@@ -867,7 +813,7 @@ namespace uvxx { namespace fs {
 
                 info->m_file_size = fileinfo.length_get();
 
-                auto buff = new basic_file_buffer<_CharType>(std::move(info), std::move(_file));
+                auto buff = new basic_file_buffer<_CharType>(std::move(info), _file);
                 auto file_buff = std::shared_ptr<basic_file_buffer<_CharType>>(buff);
 
                 return std::dynamic_pointer_cast<uvxx::streams::details::basic_streambuf<_CharType>>(file_buff);
@@ -912,8 +858,63 @@ namespace uvxx { namespace fs {
         }
     };
 
+
+    /// <summary>
+    /// File stream class containing factory functions for file streams.
+    /// </summary>
+    /// <typeparam name="_CharType">
+    /// The data type of the basic element of the <c>file_stream</c>.
+    /// </typeparam>
+    template<typename _CharType>
     class file_stream
     {
+    public:
 
+        /// <summary>
+        /// Open a new input stream representing the given file.
+        /// The file should already exist on disk, or an exception will be thrown.
+        /// </summary>
+        /// <param name="file_name">The name of the file</param>
+        /// <param name="mode">The opening mode of the file</param>
+        /// <param name="prot">The file protection mode</param>
+        /// <returns>A <c>task</c> that returns an opened input stream on completion.</returns>
+        static pplx::task<streams::basic_istream<_CharType>> open_istream(
+            const utility::string_t &file_name,
+            std::ios_base::openmode mode = std::ios_base::in,
+            int prot = 0
+            )
+        {
+            mode |= std::ios_base::in;
+            return file_buffer<_CharType>::open(file_name, mode, prot)
+                .then([](streams::streambuf<_CharType> buf) -> uvxx::streams::basic_istream < _CharType >
+            {
+                return uvxx::streams::basic_istream<_CharType>(buf);
+            });
+        }
+
+        /// <summary>
+        /// Open a new ouput stream representing the given file.
+        /// If the file does not exist, it will be create unless the folder or directory
+        /// where it is to be found also does not exist.
+        /// </summary>
+        /// <param name="file_name">The name of the file</param>
+        /// <param name="mode">The opening mode of the file</param>
+        /// <param name="prot">The file protection mode</param>
+        /// <returns>A <c>task</c> that returns an opened output stream on completion.</returns>
+        static pplx::task<streams::basic_ostream<_CharType>> open_ostream(
+            const utility::string_t &file_name,
+            std::ios_base::openmode mode = std::ios_base::out,
+            int prot = 0
+            )
+        {
+            mode |= std::ios_base::out;
+            return file_buffer<_CharType>::open(file_name, mode, prot)
+                .then([](streams::streambuf<_CharType> buf) -> uvxx::streams::basic_ostream < _CharType >
+            {
+                return uvxx::streams::basic_ostream<_CharType>(buf);
+            });
+        }
+
+        typedef file_stream<uint8_t> fstream;
     };
 }}

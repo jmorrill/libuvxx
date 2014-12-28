@@ -19,6 +19,7 @@
 #include "fs/path.hpp"
 #include "fs/file.hpp"
 #include "fs/directory.hpp"
+#include "streams/container_stream.h"
 #include "fs/file_stream.hpp"
 #include "fs/fs_info.hpp"
 
