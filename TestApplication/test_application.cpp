@@ -199,25 +199,26 @@ int main(int argc, _TCHAR* argv[])
     auto dispatcher = event_dispatcher::current_dispatcher();
 
     printf("starting libuvxx\n\n");
+    cout << "current thread id " << this_thread::get_id() << endl;
 
     struct stream_holder
     {
-        uvxx::streams::container_buffer<std::string> buf;
+        uvxx::streams::container_buffer<std::string> buffer;
         uvxx::streams::basic_istream<uint8_t> input_stream;
     };
 
     auto holder = std::make_shared<stream_holder>();
-
-    cout << "current thread id " << this_thread::get_id() << endl;
    
     fs::file_stream<uint8_t>::open_istream("C:\\Users\\Jeremiah\\Desktop\\lines.txt").
-    then([=](task<uvxx::streams::basic_istream<uint8_t>> t)
+    then([=](task<streams::basic_istream<uint8_t>> t)
     {
         cout << "current thread id " << this_thread::get_id() << endl;
 
         holder->input_stream = t.get();
 
-        return holder->input_stream.read_line(holder->buf);
+        holder->input_stream.seek(3);
+
+        return holder->input_stream.read_line(holder->buffer);
     }).
     then([=](task<size_t> t)
     {
@@ -230,10 +231,26 @@ int main(int argc, _TCHAR* argv[])
             cout << e.what() << endl;
         }
 
-        auto x = holder->buf.collection();
+        cout << holder->buffer.collection() << endl;
 
-        cout << holder->buf.collection() << endl;
+        holder->buffer = uvxx::streams::container_buffer<std::string>();
+     holder->input_stream.seek(40);
+        return holder->input_stream.read_line(holder->buffer);
+    }).
+    then([=](task<size_t> t)
+    {
+        try
+        {
+            auto size = t.get();
+        }
+        catch (std::exception const& e)
+        {
+            cout << e.what() << endl;
+        }
+
+        cout << holder->buffer.collection() << endl;
     });
+
 
     /*
         fs::file_buffer<uint8_t>::open("test1.bin").
