@@ -228,7 +228,7 @@ int main(int argc, _TCHAR* argv[])
         {
         	cout << e.what() << endl;
         }
-       
+        oholder->output_stream.seek(10);
         return oholder->output_stream.print_line("wow");
     }).then([=](task<size_t> t)
     {

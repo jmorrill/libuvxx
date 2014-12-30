@@ -853,7 +853,7 @@ namespace uvxx { namespace fs {
                     m_info->m_file_flush_pos = m_info->m_file_write_pos;
                 }
 
-                return m_info->m_file_read_pos = pos;
+                return m_info->m_file_write_pos = pos;
             }
 
             return (pos_type)std::char_traits<_CharType>::eof(); 
