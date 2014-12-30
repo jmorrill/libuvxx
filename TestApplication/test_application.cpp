@@ -207,92 +207,98 @@ int main(int argc, _TCHAR* argv[])
         uvxx::streams::basic_istream<uint8_t> input_stream;
     };
 
+    struct ostream_holder
+    {
+        uvxx::streams::container_buffer<std::string> buffer;
+        uvxx::streams::basic_ostream<uint8_t> output_stream;
+    };
+
     auto holder = std::make_shared<stream_holder>();
    
-    fs::file_stream<uint8_t>::open_istream("C:\\Users\\Jeremiah\\Desktop\\1984.txt").
-    then([=](task<streams::basic_istream<uint8_t>> t)
-    {
-        cout << "current thread id " << this_thread::get_id() << endl;
+    auto oholder = std::make_shared<ostream_holder>();
 
-        holder->input_stream = t.get();
-
-        return holder->input_stream.read_line(holder->buffer);
-    }).
-    then([=](task<size_t> t)
+    fs::file_stream<uint8_t>::open_ostream("c:\\users\\jeremiah\\desktop\\output.txt").
+    then([=](task<streams::basic_ostream<uint8_t>> t)
     {
         try
         {
-            auto size = t.get();
+            oholder->output_stream = t.get();
         }
-        catch (std::exception const& e)
+        catch (exception const& e)
         {
-            cout << e.what() << endl;
+        	cout << e.what() << endl;
         }
-
-        cout << holder->buffer.collection() << endl;
-
-      //  holder->buffer = uvxx::streams::container_buffer<std::string>();//.seekpos(0, std::ios_base::in | std::ios_base::out);
-     //   holder->buffer.seekpos(1, std::ios_base::out);
-        holder->buffer.collection()[0] = '\0';
-        return holder->input_stream.read_line(holder->buffer);
-    }).
-    then([=](task<size_t> t)
+       
+        return oholder->output_stream.print_line("wow");
+    }).then([=](task<size_t> t)
     {
-        size_t size;
-        try
-        {
-            size = t.get();
-        }
-        catch (std::exception const& e)
-        {
-            cout << e.what() << endl;
-        }
-          if (size)
-        cout << holder->buffer.collection() << endl;
+        auto size = t.get();
 
-      
-        holder->buffer.seekpos(0, std::ios_base::in | std::ios_base::out);
-
-
-        return holder->input_stream.read_line(holder->buffer);
-    }).
-    then([=](task<size_t> t)
-    {
-        try
-        {
-            auto size = t.get();
-        }
-        catch (std::exception const& e)
-        {
-            cout << e.what() << endl;
-        }
-
-        cout << holder->buffer.collection() << endl;
+        return oholder->output_stream.flush();
     });
 
+    //fs::file_stream<uint8_t>::open_istream("C:\\Users\\Jeremiah\\Desktop\\1984.txt").
+    //then([=](task<streams::basic_istream<uint8_t>> t)
+    //{
+    //    cout << "current thread id " << this_thread::get_id() << endl;
 
-    /*
-        fs::file_buffer<uint8_t>::open("test1.bin").
-        then([=](task<uvxx::streams::streambuf<uint8_t>> t)
-        {
-        try
-        {
-        auto b = t.get();
-        holder->buff = b;
-        return holder->buff.putn(mem_buffer, mem_buffer.length_get());
-        }
-        catch (std::exception& e)
-        {
-        cout << e.what() << endl;
-        throw;
-        }
-        }).
-        then([=](task<size_t> t)
-        {
-        t.get();
+    //    holder->input_stream = t.get();
 
-        return holder->buff.putn(mem_buffer, mem_buffer.length_get());
-        });*/
+    //    return holder->input_stream.read_line(holder->buffer);
+    //}).
+    //then([=](task<size_t> t)
+    //{
+    //    try
+    //    {
+    //        auto size = t.get();
+    //    }
+    //    catch (std::exception const& e)
+    //    {
+    //        cout << e.what() << endl;
+    //    }
+
+    //    cout << holder->buffer.collection() << endl;
+
+    //  //  holder->buffer = uvxx::streams::container_buffer<std::string>();//.seekpos(0, std::ios_base::in | std::ios_base::out);
+    // //   holder->buffer.seekpos(1, std::ios_base::out);
+    //    holder->buffer.collection()[0] = '\0';
+    //    return holder->input_stream.read_line(holder->buffer);
+    //}).
+    //then([=](task<size_t> t)
+    //{
+    //    size_t size;
+    //    try
+    //    {
+    //        size = t.get();
+    //    }
+    //    catch (std::exception const& e)
+    //    {
+    //        cout << e.what() << endl;
+    //    }
+    //      if (size)
+    //    cout << holder->buffer.collection() << endl;
+
+    //  
+    //    holder->buffer.seekpos(0, std::ios_base::in | std::ios_base::out);
+
+
+    //    return holder->input_stream.read_line(holder->buffer);
+    //}).
+    //then([=](task<size_t> t)
+    //{
+    //    try
+    //    {
+    //        auto size = t.get();
+    //    }
+    //    catch (std::exception const& e)
+    //    {
+    //        cout << e.what() << endl;
+    //    }
+
+    //    cout << holder->buffer.collection() << endl;
+    //});
+
+
    /*uvxx::fs::directory::create_directory_async("c:\\users\\jeremiah\\desktop\\abc\\def\\ghi\\jkl").
     then([](task<void> t)
     {

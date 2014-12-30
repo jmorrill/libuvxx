@@ -954,7 +954,7 @@ namespace uvxx { namespace fs {
             const utility::string_t &_Filename,
             std::ios_base::openmode _Mode = std::ios_base::out)
         {
-             uvxx::fs::file _file;
+            uvxx::fs::file _file;
 
             return _file.open_async(_Filename, _Mode).
             then([=](uvxx::pplx::task<void> t)
@@ -965,6 +965,7 @@ namespace uvxx { namespace fs {
             }).
             then([=](uvxx::pplx::task<file_info> t) mutable -> std::shared_ptr<uvxx::streams::details::basic_streambuf<_CharType>>
             {
+
                 file_info fileinfo;
                 try
                 {
@@ -972,7 +973,10 @@ namespace uvxx { namespace fs {
                 }
                 catch (uv_exception_with_code const&)
                 {
-                	throw;
+                    if (_Mode & std::ios_base::in)
+                    {
+                        throw;
+                    }
                 }
 
                 auto info = std::unique_ptr<_file_info>(new _file_info(_Mode, 1024 * 1024));
@@ -1072,13 +1076,12 @@ namespace uvxx { namespace fs {
         /// <returns>A <c>task</c> that returns an opened output stream on completion.</returns>
         static pplx::task<streams::basic_ostream<_CharType>> open_ostream(
             const utility::string_t &file_name,
-            std::ios_base::openmode mode = std::ios_base::out,
-            int prot = 0
-            )
+            std::ios_base::openmode mode = std::ios_base::out)
         {
             mode |= std::ios_base::out;
-            return file_buffer<_CharType>::open(file_name, mode, prot)
-                .then([](streams::streambuf<_CharType> buf) -> uvxx::streams::basic_ostream<_CharType>
+
+            return file_buffer<_CharType>::open(file_name, mode)
+            .then([](streams::streambuf<_CharType> buf) -> uvxx::streams::basic_ostream<_CharType>
             {
                 return uvxx::streams::basic_ostream<_CharType>(buf);
             });
