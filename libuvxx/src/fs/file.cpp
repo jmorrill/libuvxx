@@ -9,7 +9,7 @@ using namespace uvxx::pplx;
 
 namespace uvxx { namespace fs
 {
-    file::file() : __file_impl(std::make_shared<details::_file_impl>())
+    file::file() : __file_impl(std::make_shared<uvxx::fs::details::_file_impl>())
     {
 
     }
@@ -62,7 +62,7 @@ namespace uvxx { namespace fs
 
     uvxx::pplx::task<void> file::delete_async(std::string const& file_name)
     {
-        auto file_delete = std::make_shared<details::_file_delete_async>();
+        auto file_delete = std::make_shared<uvxx::fs::details::_file_delete_async>();
 
         return file_delete->delete_async(file_name).then([file_delete](task<void> t)
         {
@@ -72,7 +72,7 @@ namespace uvxx { namespace fs
 
     uvxx::pplx::task<void> file::move_async(std::string const& source_file, std::string const& destination_file)
     {
-        auto file_delete = std::make_shared<details::_file_move_async>();
+        auto file_delete = std::make_shared<uvxx::fs::details::_file_move_async>();
 
         return file_delete->move_async(source_file, destination_file).then([file_delete](task<void> t)
         {
@@ -82,9 +82,10 @@ namespace uvxx { namespace fs
 
     uvxx::pplx::task<uvxx::fs::file_info> file::get_file_info_async(std::string const& filename)
     {
-        auto file_stat = std::make_shared<details::_uv_file_stat>();
+        auto file_stat = std::make_shared<uvxx::fs::details::_uv_file_stat>();
 
-        return file_stat->get_file_info_async(filename).then([file_stat](task<uvxx::fs::file_info> t)
+        return file_stat->get_file_info_async(filename).
+        then([file_stat](task<uvxx::fs::file_info> t)
         {
             return t.get();
         });

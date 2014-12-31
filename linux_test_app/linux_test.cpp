@@ -138,7 +138,35 @@ int main(int argc, char** argv)
         cout << "thread id 3 - " << this_thread::get_id() << endl;
     }, task_continuation_context::use_current());
    
-    test_method();
+    //test_method();
+
+    struct ostream_holder
+    {
+        uvxx::streams::container_buffer<std::string> buffer;
+        uvxx::streams::basic_ostream<uint8_t> output_stream;
+    };
+
+    auto oholder = std::make_shared<ostream_holder>();
+
+   /* fs::file_stream<uint8_t>::open_ostream("output.txt").
+    then([=](task<streams::basic_ostream<uint8_t>> t)
+    {
+        try
+        {
+            oholder->output_stream = t.get();
+        }
+        catch (exception const& e)
+        {
+        	cout << e.what() << endl;
+        }
+        oholder->output_stream.seek(10);
+        return oholder->output_stream.print_line("wow");
+    }).then([=](task<size_t> t)
+    {
+        auto size = t.get();
+
+        return oholder->output_stream.flush();
+    });*/
 
     event_dispatcher::run();
 

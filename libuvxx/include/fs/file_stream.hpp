@@ -43,7 +43,7 @@ namespace uvxx { namespace fs {
     /// The class itself should not be used in application code, it is used by the stream definitions farther down in the header file.
     /// </summary>
     template<typename _CharType>
-    class basic_file_buffer : public uvxx::streams::details::streambuf_state_manager<_CharType>
+    class basic_file_buffer : public uvxx::streams::details::streambuf_state_manager<_CharType>, public uvxx::event_dispatcher_object
     {
     public:
         typedef typename uvxx::streams::details::basic_streambuf<_CharType>::traits traits;
@@ -79,7 +79,9 @@ namespace uvxx { namespace fs {
         virtual utility::size64_t size() const
         {
             if (!this->is_open())
+            {
                 return 0;
+            }
 
             return m_info->m_file_size / sizeof(_CharType);
         }
@@ -92,10 +94,14 @@ namespace uvxx { namespace fs {
         /// <remarks>An implementation that does not support buffering will always return '0'.</remarks>
         virtual size_t buffer_size(std::ios_base::openmode direction = std::ios_base::in) const
         {
-            if ( direction == std::ios_base::in )
+            if (direction == std::ios_base::in)
+            {
                 return m_info->m_memory_buffer.length_get();
+            }
             else
+            {
                 return 0;
+            }
         }
 
         /// <summary>
@@ -107,8 +113,6 @@ namespace uvxx { namespace fs {
         ///          any effect on what is returned by subsequent calls to buffer_size().</remarks>
         virtual void set_buffer_size(size_t size, std::ios_base::openmode direction = std::ios_base::in) 
         {
-            if ( direction == std::ios_base::out ) return;
-
             m_info->m_memory_buffer.length_set(size);
         }
 
@@ -119,14 +123,20 @@ namespace uvxx { namespace fs {
         /// </summary>
         virtual size_t in_avail() const
         {
-            return _in_avail_unprot();
+            return _in_avail();
         }
 
-        size_t _in_avail_unprot() const
+        size_t _in_avail() const
         {
-            if ( !this->is_open() ) return 0;
+            if (!this->is_open())
+            {
+                return 0;
+            }
 
-            if ( !m_info->m_memory_buffer.length_get()) return 0;
+            if (!m_info->m_memory_buffer.length_get())
+            {
+                return 0;
+            }
 
             if (m_info->m_buffer_read_pos > m_info->m_buffer_read_length)
             {
@@ -216,7 +226,9 @@ namespace uvxx { namespace fs {
                 {
                     auto value = t.get();
 
-                    m_info->m_memory_buffer.operator uint8_t*()[m_info->m_buffer_write_pos++] = ch;
+                    m_info->m_buffer_write_pos += sizeof(_CharType);
+
+                    *static_cast<_CharType*>(m_info->m_memory_buffer[size_t(m_info->m_buffer_write_pos)]) = ch;
 
                     return static_cast<int_type>(ch);
                 }
@@ -280,16 +292,20 @@ namespace uvxx { namespace fs {
         {
             size_t user_bytes = count * sizeof(_CharType);
 
-            size_t bytes_to_write = std::min(static_cast<size_t>(m_info->m_memory_buffer.length_get() - m_info->m_buffer_write_pos), user_bytes);
+            size_t bytes_to_write = std::min(static_cast<size_t>(m_info->m_memory_buffer.length_get() - m_info->m_buffer_write_pos), 
+                                             user_bytes);
 
             if (user_bytes == 0)
             {
                 return;
             }
 
-            memcpy(m_info->m_memory_buffer.operator char *() + m_info->m_buffer_write_pos, ptr, user_bytes);
+            memcpy(m_info->m_memory_buffer[size_t(m_info->m_buffer_write_pos)], 
+                   ptr, 
+                   user_bytes);
 
             m_info->m_buffer_write_pos += bytes_to_write;
+
             count -= bytes_to_write;
         }
 
@@ -298,6 +314,7 @@ namespace uvxx { namespace fs {
             if (m_info->m_buffer_read_pos - m_info->m_buffer_read_length)
             {
                 auto current_pos = m_file.file_position_get();
+
                 m_file.file_position_set(static_cast<int64_t>(current_pos) + (m_info->m_buffer_read_pos - m_info->m_buffer_read_length));
             }
 
@@ -369,9 +386,9 @@ namespace uvxx { namespace fs {
                     auto write_position = m_info->m_file_write_pos == -1 ? -1 : m_info->m_file_write_pos * sizeof(_CharType);
 
                     return m_file.write_async(m_info->m_memory_buffer,
-                                       static_cast<size_t>(0),
-                                       static_cast<size_t>(m_info->m_buffer_write_pos),
-                                       write_position);
+                                              static_cast<size_t>(0),
+                                              static_cast<size_t>(m_info->m_buffer_write_pos),
+                                              write_position);
                 }).
                 then([=](size_t bytes_wrote) mutable
                 {
@@ -414,7 +431,7 @@ namespace uvxx { namespace fs {
                      auto write_position = m_info->m_file_write_pos == -1 ? -1 : m_info->m_file_write_pos * sizeof(_CharType);
 
                      return m_file.write_async(reinterpret_cast<const uint8_t*>(const_cast<_CharType*>(ptr)), 
-                                               m_info->m_memory_buffer.length_get(),
+                                               user_bytes,
                                                static_cast<size_t>(0), 
                                                user_bytes, 
                                                write_position);
@@ -429,9 +446,9 @@ namespace uvxx { namespace fs {
 
                         return bytes_wrote;
                     }
-                    catch (uvxx_exception const&)
+                    catch (uvxx_exception const& e)
                     {
-                    	return static_cast<size_t>(0);
+                    	return size_t(0);
                     }
                     catch (...)
                     {
@@ -491,7 +508,9 @@ namespace uvxx { namespace fs {
                     return static_cast<int_type>(traits::eof());
                 }
 
-                int_type ret_val = m_info->m_memory_buffer.operator uint8_t *()[m_info->m_buffer_read_pos++];
+                m_info->m_buffer_read_pos += sizeof(_CharType);
+
+                int_type ret_val = *static_cast<int_type*>(m_info->m_memory_buffer[size_t(m_info->m_buffer_read_pos)]);
 
                 return static_cast<int_type>(ret_val);
             });
@@ -506,9 +525,9 @@ namespace uvxx { namespace fs {
         {
             if ( m_info->m_at_end ) return traits::eof();
 
-            if ( _in_avail_unprot() == 0 ) return traits::requires_async();
+            if ( _in_avail() == 0 ) return traits::requires_async();
 
-            _CharType ch = m_info->m_memory_buffer.operator uint8_t *()[m_info->m_buffer_read_pos * sizeof(_CharType)];
+            _CharType ch = *static_cast<_CharType*>( m_info->m_memory_buffer[size_t(m_info->m_buffer_read_pos * sizeof(_CharType))] );
 
             m_info->m_buffer_read_pos += sizeof(_CharType);
 
@@ -552,11 +571,17 @@ namespace uvxx { namespace fs {
         /// <remarks>This is a synchronous operation, but is guaranteed to never block.</remarks>
         int_type _sgetc()
         {
-            if (m_info->m_at_end) return traits::eof();
+            if (m_info->m_at_end)
+            {
+                return traits::eof();
+            }
 
-            if (_in_avail_unprot() == 0) return traits::requires_async();
+            if (_in_avail() == 0) 
+            {
+                return traits::requires_async();
+            }
 
-            _CharType ch = m_info->m_memory_buffer.operator uint8_t *()[m_info->m_buffer_read_pos * sizeof(_CharType)];
+            _CharType ch = *static_cast<_CharType*>(m_info->m_memory_buffer[size_t(m_info->m_buffer_read_pos * sizeof(_CharType))]);
 
             return ch;
         }
@@ -655,7 +680,9 @@ namespace uvxx { namespace fs {
                 read_bytes = count;
             }
 
-            memcpy(ptr, m_info->m_memory_buffer.operator char *() + m_info->m_buffer_read_pos, static_cast<size_t>(read_bytes));
+            memcpy(ptr, 
+                   m_info->m_memory_buffer[size_t(m_info->m_buffer_read_pos)], 
+                   static_cast<size_t>(read_bytes));
 
             m_info->m_buffer_read_pos += static_cast<size_t>(read_bytes);
 
@@ -737,7 +764,7 @@ namespace uvxx { namespace fs {
 
                     m_info->m_file_read_pos += (bytes_read / sizeof(_CharType));
 
-                    memcpy(ptr + user_byte_count, m_info->m_memory_buffer.operator char *(), bytes_read);
+                    memcpy(ptr + user_byte_count, m_info->m_memory_buffer[size_t(0)], bytes_read);
 
                     return static_cast<size_t>(bytes_read + already_satisfied);
                 });
@@ -830,17 +857,20 @@ namespace uvxx { namespace fs {
             if ( mode == std::ios_base::in ) 
             {
                 int64_t old_position = m_info->m_file_read_pos - (m_info->m_buffer_read_length - m_info->m_buffer_read_pos);
+
                 int64_t new_position = old_position + (pos - old_position);
 
                 m_info->m_buffer_read_pos = (new_position - (old_position - m_info->m_buffer_read_pos));
 
-                if (0 <= m_info->m_buffer_read_pos && m_info->m_buffer_read_pos < m_info->m_buffer_read_length)
+                if (0 <= m_info->m_buffer_read_pos && 
+                    m_info->m_buffer_read_pos < m_info->m_buffer_read_length)
                 {
                     m_info->m_file_read_pos = (new_position + (m_info->m_buffer_read_length - m_info->m_buffer_read_pos));
                 }
                 else 
                 {  
                     m_info->m_buffer_read_pos = m_info->m_buffer_read_length = 0;
+
                     m_info->m_file_read_pos = pos;
                 }
 

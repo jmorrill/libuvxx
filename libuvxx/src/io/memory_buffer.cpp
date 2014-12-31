@@ -150,6 +150,11 @@ namespace uvxx { namespace io
         return __memory_buffer_impl->data();
     }
 
+    void* memory_buffer::operator[](size_t index) const
+    {
+        return __memory_buffer_impl->data() + index;
+    }
+
     memory_buffer::operator char*() const
     {
         return reinterpret_cast<char*>(__memory_buffer_impl->data());

@@ -28,6 +28,8 @@ namespace uvxx { namespace io
 
         operator char*() const;
 
+        void* operator[](size_t index) const;
+
         operator bool() const;
 
         void length_set(size_t size);

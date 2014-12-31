@@ -229,7 +229,8 @@ int main(int argc, _TCHAR* argv[])
         	cout << e.what() << endl;
         }
         oholder->output_stream.seek(10);
-        return oholder->output_stream.print_line("wow");
+        std::string s = std::string(1024* 2048, 'x');
+        return oholder->output_stream.print_line(s);
     }).then([=](task<size_t> t)
     {
         auto size = t.get();

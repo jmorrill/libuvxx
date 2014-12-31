@@ -92,7 +92,9 @@
     <ClInclude Include="include\event_dispatcher_frame.hpp" />
     <ClInclude Include="include\event_dispatcher_object.hpp" />
     <ClInclude Include="include\event_dispatcher_timer.hpp" />
+    <ClInclude Include="include\fs\details\_directory_impl.hpp" />
     <ClInclude Include="include\fs\details\_file_impl.hpp" />
+    <ClInclude Include="include\fs\details\_static_file_impl.hpp" />
     <ClInclude Include="include\fs\directory.hpp" />
     <ClInclude Include="include\fs\file.hpp" />
     <ClInclude Include="include\fs\file_stream.hpp" />
@@ -114,6 +116,7 @@
     <ClInclude Include="include\streams\astreambuf.h" />
     <ClInclude Include="include\streams\asyncrt_utils.h" />
     <ClInclude Include="include\streams\basic_types.h" />
+    <ClInclude Include="include\streams\container_stream.h" />
     <ClInclude Include="include\streams\fileio.h" />
     <ClInclude Include="include\streams\filestream.h" />
     <ClInclude Include="include\streams\streams.h" />
