@@ -1,6 +1,7 @@
 #pragma once
 
 #define LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE
+#include "global_misc.hpp"
 
 #include "uvxx_exception.hpp"
 #include "pplx/pplxtasks.h"
@@ -12,6 +13,7 @@
 #include "event_dispatcher_timer.hpp"
 
 #include "net/dns.hpp"
+#include "net/socket_poll.hpp"
 #include "net/stream_socket.hpp"
 
 #include "io/memory_buffer.hpp"

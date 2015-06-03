@@ -3,6 +3,7 @@
 #include "details/_event_dispatcher_timer_impl.hpp"
 #include "details/_event_dispatcher_object_impl.hpp"
 #include "details/_uv_poll.hpp"
+#include "net/socket_poll.hpp"
 
 namespace uvxx { namespace details
 { 
@@ -16,7 +17,7 @@ namespace uvxx { namespace net { namespace details
     public:
         _socket_poll_impl(int socket);
 
-        void set_callback(std::function<void(int status, int events)> callback);
+        void set_callback(std::function<void(int status, uvxx::net::socket_poll_event events)> callback);
 
         void start(int events);
 
@@ -26,7 +27,7 @@ namespace uvxx { namespace net { namespace details
         void poll_callback(int status, int events);
 
     private:
-        std::function<void(int status, int events)> _callback;
+        std::function<void(int status, uvxx::net::socket_poll_event events)> _callback;
 
         uvxx::details::_uv_poll _poll;
     };

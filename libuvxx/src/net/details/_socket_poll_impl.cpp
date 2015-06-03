@@ -23,11 +23,11 @@ void uvxx::net::details::_socket_poll_impl::poll_callback(int status, int events
 {
     if (_callback)
     {
-        _callback(status, events);
+        _callback(status, static_cast<uvxx::net::socket_poll_event>(events));
     }
 }
 
-void uvxx::net::details::_socket_poll_impl::set_callback(std::function<void(int status, int events)> callback)
+void uvxx::net::details::_socket_poll_impl::set_callback(std::function<void(int status, uvxx::net::socket_poll_event events)> callback)
 {
     _callback = callback;
 }

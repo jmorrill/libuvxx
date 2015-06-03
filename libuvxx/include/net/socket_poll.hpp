@@ -1,4 +1,5 @@
 #pragma once
+#include "global_misc.hpp"
 #include <string>
 #include "event_dispatcher_object.hpp"
 #include "pplx/pplxtasks.h"
@@ -11,13 +12,13 @@ namespace uvxx { namespace net { namespace details
 
 namespace uvxx { namespace net
 {
-    enum class socket_poll_event
+    enum class socket_poll_event : int
     {
         Readable = 1,
         Writeable = 2
     };
 
-    DEFINE_ENUM_FLAG_OPERATORS(socket_poll_event)
+    DEFINE_ENUM_FLAG(socket_poll_event)
 
     class socket_poll : public event_dispatcher_object
     {
@@ -32,15 +33,15 @@ namespace uvxx { namespace net
 
         socket_poll& operator=(socket_poll&& rhs);
 
-        void set_callback(std::function<void(int status, int events)> callback);
+        void set_callback(std::function<void(int status, uvxx::net::socket_poll_event events)> callback);
 
         void start(socket_poll_event events);
 
         void stop();
 
     private:
-       std::function<void(int status, int events)> _callback;
+       std::function<void(int status, uvxx::net::socket_poll_event events)> _callback;
+
        std::shared_ptr<details::_socket_poll_impl> __socket_poll;
     };
-
 }}

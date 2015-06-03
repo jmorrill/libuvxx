@@ -35,7 +35,7 @@ namespace uvxx { namespace net
         __socket_poll->stop();
     }
 
-    void socket_poll::set_callback(std::function<void(int status, int events)> callback)
+    void socket_poll::set_callback(std::function<void(int status, uvxx::net::socket_poll_event events)> callback)
     {
         __socket_poll->set_callback(callback);
     }
