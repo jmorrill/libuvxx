@@ -170,6 +170,7 @@
     <ClInclude Include="include\details\_event_dispatcher_object_impl.hpp" />
     <ClInclude Include="include\details\_event_dispatcher_timer_impl.hpp" />
     <ClInclude Include="include\details\_uv_file.hpp" />
+    <ClInclude Include="include\details\_uv_poll.hpp" />
     <ClInclude Include="include\fs\details\_directory_impl.hpp" />
     <ClInclude Include="include\fs\details\_file_impl.hpp" />
     <ClInclude Include="include\fs\details\_static_file_impl.hpp" />
@@ -180,11 +181,13 @@
     <ClInclude Include="include\fs\path.hpp" />
     <ClInclude Include="include\io\memory_buffer.hpp" />
     <ClInclude Include="include\net\details\_dns_impl.hpp" />
+    <ClInclude Include="include\net\details\_socket_poll_impl.hpp" />
     <ClInclude Include="include\net\details\_stream_socket_impl.hpp" />
     <ClInclude Include="include\event_dispatcher.hpp" />
     <ClInclude Include="include\event_dispatcher_frame.hpp" />
     <ClInclude Include="include\event_dispatcher_object.hpp" />
     <ClInclude Include="include\event_dispatcher_timer.hpp" />
+    <ClInclude Include="include\net\socket_poll.hpp" />
     <ClInclude Include="include\streams\astreambuf.h" />
     <ClInclude Include="include\streams\asyncrt_utils.h" />
     <ClInclude Include="include\streams\basic_types.h" />
@@ -263,6 +266,7 @@
     <ClCompile Include="src\details\_uv_file.cpp" />
     <ClCompile Include="src\details\_uv_loop.cpp" />
     <ClCompile Include="src\details\_uv_net_functions.cpp" />
+    <ClCompile Include="src\details\_uv_poll.cpp" />
     <ClCompile Include="src\details\_uv_tcp.cpp" />
     <ClCompile Include="src\details\_uv_timer.cpp" />
     <ClCompile Include="src\details\_uv_work.cpp" />
@@ -279,12 +283,14 @@
     <ClCompile Include="src\fs\file.cpp" />
     <ClCompile Include="src\io\memory_buffer.cpp" />
     <ClCompile Include="src\net\details\_dns_impl.cpp" />
+    <ClCompile Include="src\net\details\_socket_poll_impl.cpp" />
     <ClCompile Include="src\net\details\_stream_socket_impl.cpp" />
     <ClCompile Include="src\event_dispatcher.cpp" />
     <ClCompile Include="src\event_dispatcher_frame.cpp" />
     <ClCompile Include="src\event_dispatcher_object.cpp" />
     <ClCompile Include="src\event_dispatcher_timer.cpp" />
     <ClCompile Include="src\net\dns.cpp" />
+    <ClCompile Include="src\net\socket_poll.cpp" />
     <ClCompile Include="src\net\stream_socket.cpp" />
     <ClCompile Include="src\pplx\pplx.cpp">
       <Filter>Source files</Filter>
