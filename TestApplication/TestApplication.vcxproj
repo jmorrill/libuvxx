@@ -185,7 +185,6 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="uvxx_task_scheduler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -195,7 +194,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Galileo_Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="test_application.cpp" />
-    <ClCompile Include="uvxx_task_scheduler.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
