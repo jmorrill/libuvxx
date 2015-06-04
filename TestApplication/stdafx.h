@@ -8,5 +8,4 @@
 #include <memory>
 #include <functional>
 #include <vector>
-
 #include "uvxx.hpp"
