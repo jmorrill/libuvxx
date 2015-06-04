@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "liveMedia.hh"
 #include "BasicUsageEnvironment.hh"
-#include "uvxx_task_scheduler.h"
 #include "details/_rtsp_client_impl.hpp"
 using namespace std;
 using namespace uvxx;
