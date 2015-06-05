@@ -44,7 +44,7 @@ int main(int argc, _TCHAR* argv[])
         client.open("rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live")
         .then([=]()
         {
-            auto session = client.get_media_session();
+            auto session = client.media_session_get();
 
             for (size_t i = 0; i < session.subsession_count(); i++)
             {
