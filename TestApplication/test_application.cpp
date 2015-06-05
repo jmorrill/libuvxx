@@ -38,9 +38,13 @@ int main(int argc, _TCHAR* argv[])
 
     openURL(*env, "testProg", "rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live");*/
    
-    uvxx::uvxx_rtsp::details::_rtsp_client_impl client;
+    {
+        uvxx::uvxx_rtsp::details::_rtsp_client_impl client;
 
-    event_dispatcher::run();
+        client.open("rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live");
+        event_dispatcher::run();
+    }
+   
 
     return 0;
 }

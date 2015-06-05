@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dummy.h" />
+    <ClInclude Include="include\details\_media_session.hpp" />
     <ClInclude Include="include\details\_uvxx_task_scheduler.h" />
     <ClInclude Include="include\details\_live_rtsp_client.hpp" />
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />

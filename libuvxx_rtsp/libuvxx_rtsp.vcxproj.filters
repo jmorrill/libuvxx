@@ -30,6 +30,9 @@
     <ClInclude Include="include\details\_uvxx_task_scheduler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\_media_session.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dummy.cpp">
