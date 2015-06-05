@@ -19,8 +19,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
+    <ClCompile Include="src\details\_media_session.cpp" />
     <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp" />
+    <ClCompile Include="src\rtsp_client.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A75D232B-1970-4910-AED3-D0BF54232C62}</ProjectGuid>

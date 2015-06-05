@@ -21,15 +21,9 @@ namespace uvxx
     public:
         ~event_dispatcher();
 
-        event_dispatcher(const event_dispatcher& rhs) :  __event_dispatcher_impl(rhs.__event_dispatcher_impl)
-        {
-        }
+        event_dispatcher(const event_dispatcher& rhs);
 
-        event_dispatcher& operator=(const event_dispatcher& rhs)
-        {
-            __event_dispatcher_impl = rhs.__event_dispatcher_impl;
-            return *this;
-        }
+        event_dispatcher& operator=(const event_dispatcher& rhs);
 
         event_dispatcher(event_dispatcher&& dispatcher);
 

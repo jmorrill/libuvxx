@@ -2,30 +2,6 @@
 
 using namespace uvxx::uvxx_rtsp::details;
 
-enum class _rtsp_handler_type
-{
-    Describe = 1,
-    Options,
-    Setup,
-    Play,
-    Pause
-};
-
-class _rtsp_response_handler
-{
-
-public:
-    _rtsp_response_handler()
-    {
-
-    }
-private:
-    static void response_handler(RTSPClient* rtsp_client, int result_code, char* result_string)
-    {
-        
-    }
-};
-
 void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
 {
     auto client = static_cast<_rtsp_client_impl*>(static_cast<_live_rtsp_client*>(live_rtsp_client)->get_context());
@@ -72,6 +48,11 @@ _rtsp_client_impl::_rtsp_client_impl()
         });
 }
 
+uvxx::uvxx_rtsp::details::_rtsp_client_impl::~_rtsp_client_impl()
+{
+
+}
+
 uvxx::pplx::task<void> uvxx::uvxx_rtsp::details::_rtsp_client_impl::open(const std::string& url)
 {
     _live_client = std::shared_ptr<_live_rtsp_client>(new _live_rtsp_client(*_usage_environment, url.c_str(), this, 0),
@@ -82,12 +63,11 @@ uvxx::pplx::task<void> uvxx::uvxx_rtsp::details::_rtsp_client_impl::open(const s
 
     _describe_event = uvxx::pplx::task_completion_event<int>();
     
-    auto seq = _live_client->sendDescribeCommand(describe_callback);
+    _live_client->sendDescribeCommand(describe_callback);
 
     return uvxx::pplx::create_task(_describe_event).then([this](int result_code)
     {
-        printf("result code");
-        this->dispatcher().exit_all_frames();
+        printf("result code %d\n", result_code);
     });
 }
 

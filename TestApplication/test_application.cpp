@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "liveMedia.hh"
 #include "BasicUsageEnvironment.hh"
-#include "details/_rtsp_client_impl.hpp"
+#include "rtsp_client.hpp"
 using namespace std;
 using namespace uvxx;
 using namespace uvxx::pplx;
@@ -39,9 +39,13 @@ int main(int argc, _TCHAR* argv[])
     openURL(*env, "testProg", "rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live");*/
    
     {
-        uvxx::uvxx_rtsp::details::_rtsp_client_impl client;
+        uvxx::uvxx_rtsp::rtsp_client client;
 
-        client.open("rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live");
+        client.open("rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live").
+            then([]()
+        {
+            event_dispatcher::exit_all_frames();
+        });
         event_dispatcher::run();
     }
    
