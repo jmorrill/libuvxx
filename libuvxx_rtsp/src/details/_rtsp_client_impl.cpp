@@ -57,20 +57,30 @@ void _rtsp_client_impl::continueAfterDESCRIBE(RTSPClient* live_rtsp_client, int 
     }
 
     {
-        client->_session.set_media_session(session);
+        client->_session.set_media_session(client->_usage_environment, session);
     }
 }
 
 _rtsp_client_impl::_rtsp_client_impl()
 {
-    _task_scheduler = std::unique_ptr<_uvxx_task_scheduler>(_uvxx_task_scheduler::createNew());
+    _task_scheduler = _uvxx_task_scheduler::createNew();
 
-    _usage_environment = BasicUsageEnvironment::createNew(*(_task_scheduler.get()));
+    _usage_environment = std::shared_ptr<UsageEnvironment>(BasicUsageEnvironment::createNew(*(_task_scheduler)),
+    [](UsageEnvironment* environment)
+    {
+        auto& task_scheduler = environment->taskScheduler();
+        delete &task_scheduler;
+        bool success = environment->reclaim();
+    });
 }
 
 uvxx::pplx::task<void> uvxx::uvxx_rtsp::details::_rtsp_client_impl::open(const std::string& url)
 {
-    _live_client = std::make_unique<_live_rtsp_client>(*_usage_environment, url.c_str(), this, 0);
+    _live_client = std::shared_ptr<_live_rtsp_client>(new _live_rtsp_client(*_usage_environment, url.c_str(), this, 0),
+        [](_live_rtsp_client* client)
+        {
+            Medium::close(client);
+        });
 
     _describe_event = uvxx::pplx::task_completion_event<int>();
     

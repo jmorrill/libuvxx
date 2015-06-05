@@ -10,7 +10,7 @@ namespace uvxx { namespace details
 
 namespace uvxx { namespace details
 {
-    class _uv_poll : public _uv_handle <uv_poll_t>
+    class _uv_poll : public _uv_handle<uv_poll_t>
     {
     public:
         _uv_poll(_uv_loop* uv_loop, int fd, std::function<void(int status, int events)> callback);

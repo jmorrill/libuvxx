@@ -77,9 +77,10 @@ namespace uvxx { namespace uvxx_rtsp { namespace details
             return std::move(rhs);
         }
 
-        void set_media_session(MediaSession* live_session)
+        void set_media_session(std::shared_ptr<UsageEnvironment> usage_environment, MediaSession* live_session)
         {
             _live_session = live_session;
+            _usage_environment = usage_environment;
 
             auto iter = std::make_unique<MediaSubsessionIterator>(*_live_session);
     
@@ -103,6 +104,7 @@ namespace uvxx { namespace uvxx_rtsp { namespace details
         }
     private:
         std::vector<_media_subsession> _subsessions;
+        std::shared_ptr<UsageEnvironment> _usage_environment;
         MediaSession* _live_session;
     };
 }}}

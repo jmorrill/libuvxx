@@ -22,7 +22,7 @@ namespace uvxx { namespace uvxx_rtsp { namespace details
 
         ~_rtsp_client_impl()
         {
-            bool success = _usage_environment->reclaim();
+            
         }
     private:
         static void continueAfterDESCRIBE(RTSPClient* rtspClient, int resultCode, char* resultString);
@@ -30,8 +30,8 @@ namespace uvxx { namespace uvxx_rtsp { namespace details
     private:
         uvxx::pplx::task_completion_event<int> _describe_event;
         _media_session _session;
-        std::unique_ptr<_live_rtsp_client> _live_client;
-        UsageEnvironment* _usage_environment;
-        std::unique_ptr<_uvxx_task_scheduler> _task_scheduler;
+        std::shared_ptr<_live_rtsp_client> _live_client;
+        std::shared_ptr<UsageEnvironment> _usage_environment;
+        _uvxx_task_scheduler* _task_scheduler;
     };
 }}}

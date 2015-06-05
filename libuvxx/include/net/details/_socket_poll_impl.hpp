@@ -17,6 +17,11 @@ namespace uvxx { namespace net { namespace details
     public:
         _socket_poll_impl(int socket);
 
+        virtual ~_socket_poll_impl()
+        {
+            _poll.close();
+        }
+
         void set_callback(std::function<void(int status, uvxx::net::socket_poll_event events)> callback);
 
         void start(int events);

@@ -5,7 +5,7 @@
 
 namespace uvxx { namespace uvxx_rtsp { namespace details 
 {
-    class _uvxx_task_scheduler : public BasicTaskScheduler0 
+    class _uvxx_task_scheduler : public BasicTaskScheduler0
     {
     public:
         static _uvxx_task_scheduler* createNew(unsigned maxSchedulerGranularity = 1000000 /*microseconds*/ );
