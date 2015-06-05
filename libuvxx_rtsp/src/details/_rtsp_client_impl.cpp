@@ -26,7 +26,7 @@ private:
     }
 };
 
-void _rtsp_client_impl::continueAfterDESCRIBE(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
+void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
 {
     auto client = static_cast<_rtsp_client_impl*>(static_cast<_live_rtsp_client*>(live_rtsp_client)->get_context());
 
@@ -43,7 +43,7 @@ void _rtsp_client_impl::continueAfterDESCRIBE(RTSPClient* live_rtsp_client, int 
     
     // Create a media session object from this SDP description:
     auto session = MediaSession::createNew(*client->_usage_environment, result_string);
-    delete[] result_string; // because we don't need it anymore
+    delete[] result_string;
 
     if (session == nullptr)
     {
@@ -56,9 +56,7 @@ void _rtsp_client_impl::continueAfterDESCRIBE(RTSPClient* live_rtsp_client, int 
         return;
     }
 
-    {
-        client->_session.set_media_session(client->_usage_environment, session);
-    }
+    client->_session.set_media_session(client->_usage_environment, session);
 }
 
 _rtsp_client_impl::_rtsp_client_impl()
@@ -66,12 +64,12 @@ _rtsp_client_impl::_rtsp_client_impl()
     _task_scheduler = _uvxx_task_scheduler::createNew();
 
     _usage_environment = std::shared_ptr<UsageEnvironment>(BasicUsageEnvironment::createNew(*(_task_scheduler)),
-    [](UsageEnvironment* environment)
-    {
-        auto& task_scheduler = environment->taskScheduler();
-        delete &task_scheduler;
-        bool success = environment->reclaim();
-    });
+        [](UsageEnvironment* environment)
+        {
+            auto& task_scheduler = environment->taskScheduler();
+            delete &task_scheduler;
+            bool success = environment->reclaim();
+        });
 }
 
 uvxx::pplx::task<void> uvxx::uvxx_rtsp::details::_rtsp_client_impl::open(const std::string& url)
@@ -84,7 +82,7 @@ uvxx::pplx::task<void> uvxx::uvxx_rtsp::details::_rtsp_client_impl::open(const s
 
     _describe_event = uvxx::pplx::task_completion_event<int>();
     
-    auto seq = _live_client->sendDescribeCommand(continueAfterDESCRIBE);
+    auto seq = _live_client->sendDescribeCommand(describe_callback);
 
     return uvxx::pplx::create_task(_describe_event).then([this](int result_code)
     {

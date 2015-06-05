@@ -25,7 +25,7 @@ namespace uvxx { namespace uvxx_rtsp { namespace details
             
         }
     private:
-        static void continueAfterDESCRIBE(RTSPClient* rtspClient, int resultCode, char* resultString);
+        static void describe_callback(RTSPClient* rtspClient, int resultCode, char* resultString);
 
     private:
         uvxx::pplx::task_completion_event<int> _describe_event;

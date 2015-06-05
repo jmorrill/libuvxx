@@ -79,6 +79,8 @@ namespace uvxx { namespace uvxx_rtsp { namespace details
 
         void set_media_session(std::shared_ptr<UsageEnvironment> usage_environment, MediaSession* live_session)
         {
+            _subsessions.clear();
+
             _live_session = live_session;
             _usage_environment = usage_environment;
 
@@ -86,7 +88,7 @@ namespace uvxx { namespace uvxx_rtsp { namespace details
     
             while (auto live_subsession = iter->next())
             {
-                if (live_subsession == nullptr)
+                if (!live_subsession)
                 {
                     break;
                 }
