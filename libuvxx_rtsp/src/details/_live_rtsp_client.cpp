@@ -19,7 +19,7 @@ uvxx::rtsp::details::_live_rtsp_client::~_live_rtsp_client(void)
     printf("_live_rtsp_client deleted\n");
 }
 
-void* uvxx::rtsp::details::_live_rtsp_client::get_context()
+void* uvxx::rtsp::details::_live_rtsp_client::context_get()
 {
     return _context;
 }

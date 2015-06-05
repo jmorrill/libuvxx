@@ -41,8 +41,8 @@ int main(int argc, _TCHAR* argv[])
     {
         uvxx::rtsp::rtsp_client client;
 
-        client.open("rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live").
-        then([=]()
+        client.open("rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live")
+        .then([=]()
         {
             auto session = client.get_media_session();
 
@@ -51,7 +51,7 @@ int main(int argc, _TCHAR* argv[])
                 auto& subsession = session.subsession_get(i);
                 auto codec_name = subsession.codec_name_get();
             }
-            event_dispatcher::exit_all_frames();
+            return client.play();
         });
 
         event_dispatcher::run();
@@ -221,16 +221,23 @@ void setupNextSubsession(RTSPClient* rtspClient) {
   StreamClientState& scs = ((ourRTSPClient*)rtspClient)->scs; // alias
   
   scs.subsession = scs.iter->next();
-  if (scs.subsession != NULL) {
-    if (!scs.subsession->initiate()) {
+  if (scs.subsession != NULL) 
+  {
+    if (!scs.subsession->initiate()) 
+    {
       env << *rtspClient << "Failed to initiate the \"" << *scs.subsession << "\" subsession: " << env.getResultMsg() << "\n";
       setupNextSubsession(rtspClient); // give up on this subsession; go to the next one
-    } else {
+    } 
+    else
+    {
       env << *rtspClient << "Initiated the \"" << *scs.subsession << "\" subsession (";
-      if (scs.subsession->rtcpIsMuxed()) {
-	env << "client port " << scs.subsession->clientPortNum();
-      } else {
-	env << "client ports " << scs.subsession->clientPortNum() << "-" << scs.subsession->clientPortNum()+1;
+      if (scs.subsession->rtcpIsMuxed())
+      {
+	        env << "client port " << scs.subsession->clientPortNum();
+      } 
+      else 
+      {
+	        env << "client ports " << scs.subsession->clientPortNum() << "-" << scs.subsession->clientPortNum()+1;
       }
       env << ")\n";
 
@@ -241,10 +248,13 @@ void setupNextSubsession(RTSPClient* rtspClient) {
   }
 
   // We've finished setting up all of the subsessions.  Now, send a RTSP "PLAY" command to start the streaming:
-  if (scs.session->absStartTime() != NULL) {
+  if (scs.session->absStartTime() != NULL) 
+  {
     // Special case: The stream is indexed by 'absolute' time, so send an appropriate "PLAY" command:
     rtspClient->sendPlayCommand(*scs.session, continueAfterPLAY, scs.session->absStartTime(), scs.session->absEndTime());
-  } else {
+  } 
+  else 
+  {
     scs.duration = scs.session->playEndTime() - scs.session->playStartTime();
     rtspClient->sendPlayCommand(*scs.session, continueAfterPLAY);
   }

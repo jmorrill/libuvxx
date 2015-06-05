@@ -4,7 +4,7 @@
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
-uvxx::rtsp::rtsp_client::rtsp_client()
+rtsp_client::rtsp_client()
 {
     __rtsp_client_imp = std::shared_ptr<_rtsp_client_impl>(new _rtsp_client_impl);
 }
@@ -15,18 +15,23 @@ rtsp_client& uvxx::rtsp::rtsp_client::operator=(rtsp_client&& rhs)
     return *this;
 }
 
-uvxx::rtsp::rtsp_client::rtsp_client(rtsp_client&& rhs)
+rtsp_client::rtsp_client(rtsp_client&& rhs)
 {
      *this = std::move(rhs);
 }
 
-uvxx::pplx::task<void> uvxx::rtsp::rtsp_client::open(const std::string& url) const
+uvxx::pplx::task<void> rtsp_client::open(const std::string& url) const
 {
     return __rtsp_client_imp->open(url);
 }
 
-uvxx::rtsp::media_session uvxx::rtsp::rtsp_client::get_media_session() const
+media_session rtsp_client::media_session_get() const
 {
-    return media_session(__rtsp_client_imp->get_media_session());
+    return media_session(__rtsp_client_imp->media_session_get());
+}
+
+uvxx::pplx::task<void> rtsp_client::play() const
+{
+    return __rtsp_client_imp->play();
 }
 

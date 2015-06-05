@@ -39,6 +39,11 @@ std::string uvxx::rtsp::details::_media_subsession::codec_name_get()
     return _live_subsession->codecName();
 }
 
+MediaSubsession* uvxx::rtsp::details::_media_subsession::live_media_subsession_get() const
+{
+    return _live_subsession;
+}
+
 _media_session::~_media_session()
 {
     if (_live_session)
@@ -89,4 +94,14 @@ _media_session::_media_session(_media_session&& rhs)
 _media_session::_media_session() : _live_session(nullptr)
 {
 
+}
+
+MediaSession* uvxx::rtsp::details::_media_session::live_media_session_get() const
+{
+    return _live_session;
+}
+
+std::vector<std::shared_ptr<_media_subsession>>& uvxx::rtsp::details::_media_session::subsessions()
+{
+    return _subsessions;
 }

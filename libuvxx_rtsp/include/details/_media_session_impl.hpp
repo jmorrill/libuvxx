@@ -30,9 +30,12 @@ namespace uvxx { namespace rtsp { namespace details
         virtual ~_media_subsession();
 
     public:
+        MediaSubsession* live_media_subsession_get() const;
+
         bool initiate(int use_special_rtp_offset = -1);
 
         std::string codec_name_get();
+
     private:
         MediaSubsession* _live_subsession;
     };
@@ -50,14 +53,18 @@ namespace uvxx { namespace rtsp { namespace details
 
         _media_session& operator=(_media_session&& rhs);
 
+    public:
         void set_media_session(const std::shared_ptr<UsageEnvironment>& usage_environment, MediaSession* live_session);
 
         virtual ~_media_session();
 
-        const std::vector<std::shared_ptr<_media_subsession>>& subsessions() const { return _subsessions; }   
+        std::vector<std::shared_ptr<_media_subsession>>& subsessions();   
+
+        MediaSession* live_media_session_get() const;
 
     private:
         void reset();
+
     private:
         std::vector<std::shared_ptr<_media_subsession>> _subsessions;
         std::shared_ptr<UsageEnvironment> _usage_environment;

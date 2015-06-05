@@ -10,6 +10,7 @@
 #include <memory>
 #include <map>
 #include <string>
+
 namespace uvxx { namespace rtsp { namespace details 
 {
 
@@ -18,16 +19,28 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         _rtsp_client_impl();
 
+        ~_rtsp_client_impl();
+
+    public:
         uvxx::pplx::task<void> open(const std::string& url);
 
-        ~_rtsp_client_impl();
-    public:
-        std::shared_ptr<_media_session> get_media_session();
+        uvxx::pplx::task<void> play();
+
+        std::shared_ptr<_media_session> media_session_get();
+
     private:
-        static void describe_callback(RTSPClient* rtspClient, int resultCode, char* resultString);
+        static void describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
+
+        static void setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
+
+        static void play_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
 
     private:
         uvxx::pplx::task_completion_event<int> _describe_event;
+
+        uvxx::pplx::task_completion_event<int> _setup_event;
+
+        uvxx::pplx::task_completion_event<int> _play_event;
 
         std::shared_ptr<_media_session> _session;
 

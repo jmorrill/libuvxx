@@ -12,6 +12,7 @@
 
 namespace uvxx { namespace pplx { namespace details
 {
+    
     /* Optimized interative_task_impl (http://pplpp.codeplex.com/SourceControl/latest#include/impl/pplppimplshare.h).  
        This version uses move semantics and std::bind to avoid copies and ref counting of captured objects.  A cleaner
        version can probably be made using generalized lambda capture, but many compilers don't support yet.
@@ -148,4 +149,13 @@ namespace uvxx { namespace pplx { namespace details
        
         return timer.delay(timeout);
     }
+
+    class iterative_task_complete_exception : std::exception
+    {
+    public:
+        iterative_task_complete_exception() : std::exception("iterative task complete")
+        {
+
+        }
+    };
 }}

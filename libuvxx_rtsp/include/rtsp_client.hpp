@@ -26,7 +26,9 @@ namespace uvxx { namespace rtsp
     public:
         uvxx::pplx::task<void> open(const std::string& url) const;
 
-        media_session get_media_session() const;
+        uvxx::pplx::task<void> play() const;
+
+        media_session media_session_get() const;
 
     private:
         std::shared_ptr<details::_rtsp_client_impl> __rtsp_client_imp;
