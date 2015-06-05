@@ -27,7 +27,10 @@
     <ClInclude Include="include\details\_uvxx_task_scheduler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\details\_media_session.hpp">
+    <ClInclude Include="include\media_session.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_media_session_impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,10 +44,13 @@
     <ClCompile Include="src\details\_live_rtsp_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\details\_media_session.cpp">
+    <ClCompile Include="src\rtsp_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rtsp_client.cpp">
+    <ClCompile Include="src\media_session.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_media_session_impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

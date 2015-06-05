@@ -1,5 +1,5 @@
 #pragma once
-#include "details/_media_session.hpp"
+#include "details/_media_session_impl.hpp"
 
 using namespace uvxx::rtsp::details;
 
@@ -34,6 +34,11 @@ _media_subsession::~_media_subsession()
 
 }
 
+std::string uvxx::rtsp::details::_media_subsession::codec_name_get()
+{
+    return _live_subsession->codecName();
+}
+
 _media_session::~_media_session()
 {
     if (_live_session)
@@ -58,7 +63,7 @@ void _media_session::set_media_session(const std::shared_ptr<UsageEnvironment>& 
             break;
         }
 
-        _subsessions.emplace_back(_media_subsession(live_subsession));
+        _subsessions.emplace_back(std::make_shared<_media_subsession>(live_subsession));
     }
 }
 

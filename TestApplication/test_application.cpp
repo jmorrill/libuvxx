@@ -42,10 +42,18 @@ int main(int argc, _TCHAR* argv[])
         uvxx::rtsp::rtsp_client client;
 
         client.open("rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live").
-            then([]()
+        then([=]()
         {
+            auto session = client.get_media_session();
+
+            for (size_t i = 0; i < session.subsession_count(); i++)
+            {
+                auto& subsession = session.subsession_get(i);
+                auto codec_name = subsession.codec_name_get();
+            }
             event_dispatcher::exit_all_frames();
         });
+
         event_dispatcher::run();
     }
    

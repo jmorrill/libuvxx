@@ -11,17 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\details\_media_session.hpp" />
+    <ClInclude Include="include\details\_media_session_impl.hpp" />
     <ClInclude Include="include\details\_uvxx_task_scheduler.h" />
     <ClInclude Include="include\details\_live_rtsp_client.hpp" />
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />
+    <ClInclude Include="include\media_session.hpp" />
     <ClInclude Include="include\rtsp_client.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
-    <ClCompile Include="src\details\_media_session.cpp" />
+    <ClCompile Include="src\details\_media_session_impl.cpp" />
     <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp" />
+    <ClCompile Include="src\media_session.cpp" />
     <ClCompile Include="src\rtsp_client.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -32,7 +32,8 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
         return;
     }
 
-    client->_session.set_media_session(client->_usage_environment, session);
+    client->_session = std::make_shared<_media_session>();
+    client->_session->set_media_session(client->_usage_environment, session);
 }
 
 _rtsp_client_impl::_rtsp_client_impl()
@@ -45,6 +46,8 @@ _rtsp_client_impl::_rtsp_client_impl()
             auto& task_scheduler = environment->taskScheduler();
             delete &task_scheduler;
             bool success = environment->reclaim();
+
+            assert(success);
         });
 }
 
@@ -69,5 +72,10 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::open(const std::s
     {
         printf("result code %d\n", result_code);
     });
+}
+
+std::shared_ptr<_media_session> uvxx::rtsp::details::_rtsp_client_impl::get_media_session()
+{
+    return _session;
 }
 

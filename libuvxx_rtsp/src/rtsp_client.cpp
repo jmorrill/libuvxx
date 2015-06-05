@@ -20,8 +20,13 @@ uvxx::rtsp::rtsp_client::rtsp_client(rtsp_client&& rhs)
      *this = std::move(rhs);
 }
 
-uvxx::pplx::task<void> uvxx::rtsp::rtsp_client::open(const std::string& url)
+uvxx::pplx::task<void> uvxx::rtsp::rtsp_client::open(const std::string& url) const
 {
     return __rtsp_client_imp->open(url);
+}
+
+uvxx::rtsp::media_session uvxx::rtsp::rtsp_client::get_media_session() const
+{
+    return media_session(__rtsp_client_imp->get_media_session());
 }
 

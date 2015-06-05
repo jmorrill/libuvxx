@@ -19,18 +19,20 @@ namespace uvxx { namespace rtsp { namespace details
 
         _media_subsession();
 
-        _media_subsession(const _media_subsession&) = delete;
+        _media_subsession(const _media_subsession&) = default;
 
-        _media_subsession& operator=(const _media_subsession&) = delete;
+        _media_subsession& operator=(const _media_subsession&) = default;
 
         _media_subsession(_media_subsession&& rhs);
 
         _media_subsession& operator=(_media_subsession&& rhs);
 
-        bool initiate(int use_special_rtp_offset = -1);
-
         virtual ~_media_subsession();
 
+    public:
+        bool initiate(int use_special_rtp_offset = -1);
+
+        std::string codec_name_get();
     private:
         MediaSubsession* _live_subsession;
     };
@@ -40,22 +42,24 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         _media_session();
 
-        _media_session(const _media_session&) = delete;
+        _media_session(const _media_session&) = default;
 
-        _media_session& operator=(const _media_session&) = delete;
+        _media_session& operator=(const _media_session&) = default;
 
         _media_session(_media_session&& rhs);
 
         _media_session& operator=(_media_session&& rhs);
 
-        void reset();
-
         void set_media_session(const std::shared_ptr<UsageEnvironment>& usage_environment, MediaSession* live_session);
 
         virtual ~_media_session();
 
+        const std::vector<std::shared_ptr<_media_subsession>>& subsessions() const { return _subsessions; }   
+
     private:
-        std::vector<_media_subsession> _subsessions;
+        void reset();
+    private:
+        std::vector<std::shared_ptr<_media_subsession>> _subsessions;
         std::shared_ptr<UsageEnvironment> _usage_environment;
         MediaSession* _live_session;
     };

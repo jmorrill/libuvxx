@@ -1,4 +1,6 @@
+#pragma once
 #include "event_dispatcher_object.hpp"
+#include "media_session.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -22,7 +24,9 @@ namespace uvxx { namespace rtsp
         rtsp_client& operator=(rtsp_client&& rhs);
 
     public:
-        uvxx::pplx::task<void> open(const std::string& url);
+        uvxx::pplx::task<void> open(const std::string& url) const;
+
+        media_session get_media_session() const;
 
     private:
         std::shared_ptr<details::_rtsp_client_impl> __rtsp_client_imp;
