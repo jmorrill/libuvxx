@@ -7,7 +7,7 @@
 #ifndef MILLION
 #define MILLION 1000000
 #endif
-using namespace uvxx::uvxx_rtsp::details;
+using namespace uvxx::rtsp::details;
 
 _uvxx_task_scheduler* _uvxx_task_scheduler::createNew(unsigned maxSchedulerGranularity)
 {

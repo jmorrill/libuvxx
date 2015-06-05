@@ -1,7 +1,7 @@
 #pragma once
 #include "RTSPClient.hh"
 
-namespace uvxx { namespace uvxx_rtsp { namespace details 
+namespace uvxx { namespace rtsp { namespace details 
 {
     class _live_rtsp_client : public RTSPClient
     {

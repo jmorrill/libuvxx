@@ -1,7 +1,7 @@
 #pragma once
 #include "details/_media_session.hpp"
 
-using namespace uvxx::uvxx_rtsp::details;
+using namespace uvxx::rtsp::details;
 
 _media_subsession::_media_subsession(MediaSubsession* live_subsession)
 {

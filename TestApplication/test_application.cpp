@@ -39,7 +39,7 @@ int main(int argc, _TCHAR* argv[])
     openURL(*env, "testProg", "rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live");*/
    
     {
-        uvxx::uvxx_rtsp::rtsp_client client;
+        uvxx::rtsp::rtsp_client client;
 
         client.open("rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live").
             then([]()

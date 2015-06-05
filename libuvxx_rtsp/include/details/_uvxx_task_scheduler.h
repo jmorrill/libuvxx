@@ -3,7 +3,7 @@
 #include "BasicUsageEnvironment0.hh"
 #include <map>
 
-namespace uvxx { namespace uvxx_rtsp { namespace details 
+namespace uvxx { namespace rtsp { namespace details 
 {
     class _uvxx_task_scheduler : public BasicTaskScheduler0
     {

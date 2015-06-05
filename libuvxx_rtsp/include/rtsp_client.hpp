@@ -1,12 +1,12 @@
 #include "event_dispatcher_object.hpp"
 
-namespace uvxx { namespace uvxx_rtsp { namespace details
+namespace uvxx { namespace rtsp { namespace details
 {
     /* implementation forward */
     class _rtsp_client_impl;
 }}}
 
-namespace uvxx { namespace uvxx_rtsp 
+namespace uvxx { namespace rtsp 
 {
     class rtsp_client : public uvxx::event_dispatcher_object
     {

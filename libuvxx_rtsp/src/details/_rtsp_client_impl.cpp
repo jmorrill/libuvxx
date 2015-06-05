@@ -1,6 +1,6 @@
 #include "details/_rtsp_client_impl.hpp"
 
-using namespace uvxx::uvxx_rtsp::details;
+using namespace uvxx::rtsp::details;
 
 void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
 {
@@ -48,12 +48,12 @@ _rtsp_client_impl::_rtsp_client_impl()
         });
 }
 
-uvxx::uvxx_rtsp::details::_rtsp_client_impl::~_rtsp_client_impl()
+uvxx::rtsp::details::_rtsp_client_impl::~_rtsp_client_impl()
 {
 
 }
 
-uvxx::pplx::task<void> uvxx::uvxx_rtsp::details::_rtsp_client_impl::open(const std::string& url)
+uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::open(const std::string& url)
 {
     _live_client = std::shared_ptr<_live_rtsp_client>(new _live_rtsp_client(*_usage_environment, url.c_str(), this, 0),
         [](_live_rtsp_client* client)

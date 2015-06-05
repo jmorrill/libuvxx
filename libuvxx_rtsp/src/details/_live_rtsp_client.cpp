@@ -1,8 +1,8 @@
 #include "details/_live_rtsp_client.hpp"
 
-using namespace uvxx::uvxx_rtsp::details;
+using namespace uvxx::rtsp::details;
 
-uvxx::uvxx_rtsp::details::_live_rtsp_client::_live_rtsp_client(UsageEnvironment& env, 
+uvxx::rtsp::details::_live_rtsp_client::_live_rtsp_client(UsageEnvironment& env, 
                                      char const* rtspURL,
                                      void* context,
 			                         int verbosityLevel,
@@ -14,12 +14,12 @@ uvxx::uvxx_rtsp::details::_live_rtsp_client::_live_rtsp_client(UsageEnvironment&
 }
 
 
-uvxx::uvxx_rtsp::details::_live_rtsp_client::~_live_rtsp_client(void)
+uvxx::rtsp::details::_live_rtsp_client::~_live_rtsp_client(void)
 {
     printf("_live_rtsp_client deleted\n");
 }
 
-void* uvxx::uvxx_rtsp::details::_live_rtsp_client::get_context()
+void* uvxx::rtsp::details::_live_rtsp_client::get_context()
 {
     return _context;
 }

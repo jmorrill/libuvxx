@@ -10,7 +10,7 @@
 #include <memory>
 #include <string>
 
-namespace uvxx { namespace uvxx_rtsp { namespace details 
+namespace uvxx { namespace rtsp { namespace details 
 {
     class _media_subsession : public uvxx::event_dispatcher_object
     {
