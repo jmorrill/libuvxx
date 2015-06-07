@@ -34,7 +34,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         virtual void unscheduleDelayedTask(TaskToken& prevTask);
 
-        virtual void triggerEvent(EventTriggerId eventTriggerId, void* clientData = NULL);
+        virtual void triggerEvent(EventTriggerId eventTriggerId, void* clientData = nullptr);
 
         class socket_handler_descriptor
         {
@@ -66,9 +66,9 @@ namespace uvxx { namespace rtsp { namespace details
         private:
             int _socket;
             int _condition_set;
-            BackgroundHandlerProc* _handler_proc;
             void* _client_data;
             uvxx::net::socket_poll _poller;
+            BackgroundHandlerProc* _handler_proc;
         };
 
       private:

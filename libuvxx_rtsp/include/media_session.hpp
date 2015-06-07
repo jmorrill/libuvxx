@@ -22,6 +22,7 @@ namespace uvxx { namespace rtsp
         media_subsession(media_subsession&& rhs);
 
         media_subsession& operator=(media_subsession&& rhs);
+
     public:
         const std::string codec_name_get() const;
 
@@ -48,7 +49,6 @@ namespace uvxx { namespace rtsp
         const size_t subsession_count() const;
         
         const media_subsession subsession_get(size_t index) const;
-
 
     private:
         std::shared_ptr<details::_media_session> __media_session;

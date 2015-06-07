@@ -13,7 +13,6 @@
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-
     class _rtsp_client_impl : public uvxx::event_dispatcher_object
     {
     public:

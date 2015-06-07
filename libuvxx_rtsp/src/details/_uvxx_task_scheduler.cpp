@@ -7,6 +7,8 @@
 #ifndef MILLION
 #define MILLION 1000000
 #endif
+
+using namespace uvxx::net;
 using namespace uvxx::rtsp::details;
 
 _uvxx_task_scheduler* _uvxx_task_scheduler::createNew(unsigned maxSchedulerGranularity)
@@ -260,7 +262,7 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_condition_set(int cond
 void _uvxx_task_scheduler::socket_handler_descriptor::set_socket(int socket)
 {
     _socket = socket;
-    _poller = uvxx::net::socket_poll(_socket);
+    _poller = socket_poll(_socket);
     start_poll();
 }
 
@@ -271,16 +273,16 @@ _uvxx_task_scheduler::socket_handler_descriptor& _uvxx_task_scheduler::socket_ha
 
 void _uvxx_task_scheduler::socket_handler_descriptor::start_poll()
 {
-    uvxx::net::socket_poll_event events = static_cast<uvxx::net::socket_poll_event>(0);
+    socket_poll_event events = static_cast<socket_poll_event>(0);
 
     if (_condition_set & SOCKET_READABLE)
     {
-        events |= uvxx::net::socket_poll_event::Readable;
+        events |= socket_poll_event::Readable;
     }
 
     if (_condition_set & SOCKET_WRITABLE)
     {
-        events |= uvxx::net::socket_poll_event::Writeable;
+        events |= socket_poll_event::Writeable;
     }
 
     _poller.set_callback(std::bind(&socket_handler_descriptor::poll_callback, this, std::placeholders::_1, std::placeholders::_2));
@@ -288,16 +290,16 @@ void _uvxx_task_scheduler::socket_handler_descriptor::start_poll()
     _poller.start(events);
 }
 
-void _uvxx_task_scheduler::socket_handler_descriptor::poll_callback(int status, uvxx::net::socket_poll_event events)
+void _uvxx_task_scheduler::socket_handler_descriptor::poll_callback(int status, socket_poll_event events)
 {
     int mask = 0;
 
-    if ((events & uvxx::net::socket_poll_event::Readable) == uvxx::net::socket_poll_event::Readable)
+    if ((events & socket_poll_event::Readable) == socket_poll_event::Readable)
     {
         mask |= SOCKET_READABLE;
     }
 
-    if ((events & uvxx::net::socket_poll_event::Writeable) == uvxx::net::socket_poll_event::Writeable)
+    if ((events & socket_poll_event::Writeable) == socket_poll_event::Writeable)
     {
         mask |= SOCKET_WRITABLE;
     }

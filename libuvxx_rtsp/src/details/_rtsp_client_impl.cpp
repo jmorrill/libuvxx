@@ -21,7 +21,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
     // Create a media session object from this SDP description:
     auto session = MediaSession::createNew(*client->_usage_environment, resultstring.get());
 
-    if (session == nullptr)
+    if (!session)
     {
         client->_describe_event.set_exception(std::exception("failed to create a MediaSession object from the SDP description"));
         return;

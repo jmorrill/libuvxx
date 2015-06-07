@@ -58,7 +58,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         virtual ~_media_session();
 
-        std::vector<std::shared_ptr<_media_subsession>>& subsessions();   
+        const std::vector<std::shared_ptr<_media_subsession>>& subsessions() const;   
 
         MediaSession* live_media_session_get() const;
 

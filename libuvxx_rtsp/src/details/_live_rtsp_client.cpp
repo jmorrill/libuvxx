@@ -2,24 +2,24 @@
 
 using namespace uvxx::rtsp::details;
 
-uvxx::rtsp::details::_live_rtsp_client::_live_rtsp_client(UsageEnvironment& env, 
-                                     char const* rtspURL,
+_live_rtsp_client::_live_rtsp_client(UsageEnvironment& environment, 
+                                     char const* rtsp_url,
                                      void* context,
-			                         int verbosityLevel,
-			                         char const* applicationName,
-			                         portNumBits tunnelOverHTTPPortNum) :
-    RTSPClient(env, rtspURL, verbosityLevel, applicationName, tunnelOverHTTPPortNum, -1), _context(context)
+			                         int verbosity_level,
+			                         char const* application_name,
+			                         portNumBits tunnel_over_http_port_number) :
+    RTSPClient(environment, rtsp_url, verbosity_level, application_name, tunnel_over_http_port_number, -1), _context(context)
 {
     
 }
 
 
-uvxx::rtsp::details::_live_rtsp_client::~_live_rtsp_client(void)
+_live_rtsp_client::~_live_rtsp_client(void)
 {
     printf("_live_rtsp_client deleted\n");
 }
 
-void* uvxx::rtsp::details::_live_rtsp_client::context_get()
+void* _live_rtsp_client::context_get()
 {
     return _context;
 }

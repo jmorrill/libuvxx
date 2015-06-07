@@ -96,12 +96,12 @@ _media_session::_media_session() : _live_session(nullptr)
 
 }
 
-MediaSession* uvxx::rtsp::details::_media_session::live_media_session_get() const
+MediaSession* _media_session::live_media_session_get() const
 {
     return _live_session;
 }
 
-std::vector<std::shared_ptr<_media_subsession>>& uvxx::rtsp::details::_media_session::subsessions()
+const std::vector<std::shared_ptr<_media_subsession>>& _media_session::subsessions() const
 {
     return _subsessions;
 }
