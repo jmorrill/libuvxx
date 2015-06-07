@@ -1,23 +1,25 @@
 #include "details/_rtsp_client_impl.hpp"
 
+using namespace uvxx::pplx;
 using namespace uvxx::rtsp::details;
+
+#define GET_RTSP_CLIENT(live_rtsp_client)static_cast<uvxx::rtsp::details::_rtsp_client_impl*>(static_cast<uvxx::rtsp::details::_live_rtsp_client*>(live_rtsp_client)->context_get());
 
 void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
 {
-    auto client = static_cast<_rtsp_client_impl*>(static_cast<_live_rtsp_client*>(live_rtsp_client)->context_get());
+    auto client = GET_RTSP_CLIENT(live_rtsp_client);
+
+    auto resultstring = std::unique_ptr<char[]>(result_string);
         
     if (result_code != 0)
     {
-        delete[] result_string;
-
         client->_describe_event.set_exception(std::exception("failed to get a SDP description"));
 
         return;
     }
     
     // Create a media session object from this SDP description:
-    auto session = MediaSession::createNew(*client->_usage_environment, result_string);
-    delete[] result_string;
+    auto session = MediaSession::createNew(*client->_usage_environment, resultstring.get());
 
     if (session == nullptr)
     {
@@ -37,14 +39,14 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
     client->_session->set_media_session(client->_usage_environment, session);
 }
 
-
-void uvxx::rtsp::details::_rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
+void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
 {
-    auto client = static_cast<_rtsp_client_impl*>(static_cast<_live_rtsp_client*>(live_rtsp_client)->context_get());
+    auto client = GET_RTSP_CLIENT(live_rtsp_client);
+
+    auto resultstring = std::unique_ptr<char[]>(result_string);
 
     client->_setup_event.set(result_code);
 }
-
 
 _rtsp_client_impl::_rtsp_client_impl()
 {
@@ -60,75 +62,75 @@ _rtsp_client_impl::_rtsp_client_impl()
         });
 }
 
-uvxx::rtsp::details::_rtsp_client_impl::~_rtsp_client_impl()
+_rtsp_client_impl::~_rtsp_client_impl()
 {
 
 }
 
-uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::open(const std::string& url)
+task<void> _rtsp_client_impl::open(const std::string& url)
 {
-    _live_client = std::shared_ptr<_live_rtsp_client>(new _live_rtsp_client(*_usage_environment, url.c_str(), this, 0),
+    _live_client = std::shared_ptr<_live_rtsp_client>(new _live_rtsp_client(*_usage_environment, url.c_str(), this, 2),
         [](_live_rtsp_client* client)
         {
             Medium::close(client);
         });
 
-    _describe_event = uvxx::pplx::task_completion_event<int>();
+    _describe_event = task_completion_event<int>();
     
     _live_client->sendDescribeCommand(describe_callback);
 
-    return uvxx::pplx::create_task(_describe_event).then([this](int result_code)
+    return create_task(_describe_event).then([this](int result_code)
     {
         printf("result code %d\n", result_code);
     });
 }
 
-std::shared_ptr<_media_session> uvxx::rtsp::details::_rtsp_client_impl::media_session_get()
+std::shared_ptr<_media_session> _rtsp_client_impl::media_session_get()
 {
     return _session;
 }
 
-uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play()
+task<void> _rtsp_client_impl::play()
 {
-    auto index = std::make_shared<size_t>(0);
+    auto current_index = std::make_shared<size_t>(0);
 
-    return uvxx::pplx::create_iterative_task([=]() 
+    return create_iterative_task([=]() 
     {
-        return uvxx::pplx::create_task([=]{}).
+        return create_task([=]{}).
         then([=]
         {
-            auto sub_index = *index;
+            auto subsession_index = *current_index;
 
-            if (sub_index >= _session->subsessions().size())
+            if (subsession_index >= _session->subsessions().size())
             {
-                throw std::exception("done iterating");
+                throw iterative_task_complete_exception();
             }
 
-            auto& sub = _session->subsessions().at(sub_index);
+            auto& subsession = _session->subsessions().at(subsession_index);
 
-            sub->initiate();
+            subsession->initiate();
 
-            (*index)++;
+            (*current_index)++;
 
-            _setup_event = uvxx::pplx::task_completion_event<int>();
+            _setup_event = task_completion_event<int>();
 
-            _live_client->sendSetupCommand(*(sub)->live_media_subsession_get(), setup_callback);
+            _live_client->sendSetupCommand(*(subsession)->live_media_subsession_get(), setup_callback);
         
         }).then([=]
         {
-            return uvxx::pplx::create_task(_setup_event);
-        }).then([=](int x)
+            return create_task(_setup_event);
+        }).then([=](int result_code)
         {
             printf("finished");
         });
-    },uvxx::pplx::task_continuation_context::use_current())
-    .then([](uvxx::pplx::task<void> iterativeTask)
+    }, task_continuation_context::use_current())
+    .then([](task<void> iterativeTask)
     {
         try
         {
             iterativeTask.get();
         }
-        catch (const uvxx::pplx::iterative_task_complete_exception&)
+        catch (const iterative_task_complete_exception&)
         {
         }
     });
