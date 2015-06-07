@@ -30,18 +30,16 @@ void setupNextSubsession(RTSPClient* rtspClient);
 // Used to shut down and close a stream (including its "RTSPClient" object):
 void shutdownStream(RTSPClient* rtspClient, int exitCode = 1);
 
-int main(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 
  /*   TaskScheduler* scheduler = uvxx_task_scheduler::createNew();
-    UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
-
-    openURL(*env, "testProg", "rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live");*/
-   
+      UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
+*/
     {
         uvxx::rtsp::rtsp_client client;
 
-        client.open("rtsp://mediaserver01.office.econnect.tv:8554/media?dev=3860d885-161a-4bf9-900d-12be5d4c4360&source=live")
+        client.open(argv[1])
         .then([=]()
         {
             auto session = client.media_session_get();
