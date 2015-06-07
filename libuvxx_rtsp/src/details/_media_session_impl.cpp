@@ -34,12 +34,12 @@ _media_subsession::~_media_subsession()
 
 }
 
-std::string uvxx::rtsp::details::_media_subsession::codec_name_get()
+std::string _media_subsession::codec_name_get()
 {
     return _live_subsession->codecName();
 }
 
-MediaSubsession* uvxx::rtsp::details::_media_subsession::live_media_subsession_get() const
+MediaSubsession* _media_subsession::live_media_subsession_get() const
 {
     return _live_subsession;
 }
@@ -52,11 +52,12 @@ _media_session::~_media_session()
     }
 }
 
-void _media_session::set_media_session(const std::shared_ptr<UsageEnvironment>& usage_environment, MediaSession* live_session)
+void _media_session::set_media_session(const _usage_environment_ptr& usage_environment, MediaSession* live_session)
 {
     reset();
 
     _live_session = live_session;
+
     _usage_environment = usage_environment;
 
     auto iter = std::make_unique<MediaSubsessionIterator>(*_live_session);
@@ -101,7 +102,7 @@ MediaSession* _media_session::live_media_session_get() const
     return _live_session;
 }
 
-const std::vector<std::shared_ptr<_media_subsession>>& _media_session::subsessions() const
+const std::vector<_media_subsession_ptr>& _media_session::subsessions() const
 {
     return _subsessions;
 }

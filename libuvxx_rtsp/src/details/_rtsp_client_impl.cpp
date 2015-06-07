@@ -11,7 +11,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
         
-    if (result_code != 0)
+    if (!result_code)
     {
         client->_describe_event.set_exception(std::exception("failed to get a SDP description"));
 
@@ -52,11 +52,12 @@ _rtsp_client_impl::_rtsp_client_impl()
 {
     _task_scheduler = _uvxx_task_scheduler::createNew();
 
-    _usage_environment = std::shared_ptr<UsageEnvironment>(BasicUsageEnvironment::createNew(*(_task_scheduler)),
+    _usage_environment = _usage_environment_ptr(BasicUsageEnvironment::createNew(*(_task_scheduler)),
         [](UsageEnvironment* environment)
         {
             auto& task_scheduler = environment->taskScheduler();
             delete &task_scheduler;
+
             bool success = environment->reclaim();
             assert(success);
         });
@@ -69,7 +70,7 @@ _rtsp_client_impl::~_rtsp_client_impl()
 
 task<void> _rtsp_client_impl::open(const std::string& url)
 {
-    _live_client = std::shared_ptr<_live_rtsp_client>(new _live_rtsp_client(*_usage_environment, url.c_str(), this, 2),
+    _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(*_usage_environment, url.c_str(), this, 2),
         [](_live_rtsp_client* client)
         {
             Medium::close(client);
@@ -85,7 +86,7 @@ task<void> _rtsp_client_impl::open(const std::string& url)
     });
 }
 
-std::shared_ptr<_media_session> _rtsp_client_impl::media_session_get()
+_media_session_ptr _rtsp_client_impl::media_session_get()
 {
     return _session;
 }

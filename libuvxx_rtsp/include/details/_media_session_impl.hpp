@@ -12,6 +12,8 @@
 
 namespace uvxx { namespace rtsp { namespace details 
 {
+    using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
+
     class _media_subsession : public uvxx::event_dispatcher_object
     {
     public:
@@ -40,6 +42,8 @@ namespace uvxx { namespace rtsp { namespace details
         MediaSubsession* _live_subsession;
     };
 
+    using _media_subsession_ptr = std::shared_ptr<_media_subsession>;
+
     class _media_session : public uvxx::event_dispatcher_object
     {
     public:
@@ -54,11 +58,11 @@ namespace uvxx { namespace rtsp { namespace details
         _media_session& operator=(_media_session&& rhs);
 
     public:
-        void set_media_session(const std::shared_ptr<UsageEnvironment>& usage_environment, MediaSession* live_session);
+        void set_media_session(const _usage_environment_ptr& usage_environment, MediaSession* live_session);
 
         virtual ~_media_session();
 
-        const std::vector<std::shared_ptr<_media_subsession>>& subsessions() const;   
+        const std::vector<_media_subsession_ptr>& subsessions() const;   
 
         MediaSession* live_media_session_get() const;
 
@@ -66,8 +70,12 @@ namespace uvxx { namespace rtsp { namespace details
         void reset();
 
     private:
-        std::vector<std::shared_ptr<_media_subsession>> _subsessions;
-        std::shared_ptr<UsageEnvironment> _usage_environment;
+        std::vector<_media_subsession_ptr> _subsessions;
+
+        _usage_environment_ptr _usage_environment;
+
         MediaSession* _live_session;
     };
+
+    using _media_session_ptr = std::shared_ptr<_media_session>;
 }}}

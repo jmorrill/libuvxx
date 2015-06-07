@@ -6,6 +6,8 @@ namespace uvxx { namespace rtsp { namespace details
 {
     /* implementation forward */
     class _rtsp_client_impl;
+
+    using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;
 }}}
 
 namespace uvxx { namespace rtsp 
@@ -31,6 +33,7 @@ namespace uvxx { namespace rtsp
         media_session media_session_get() const;
 
     private:
-        std::shared_ptr<details::_rtsp_client_impl> __rtsp_client_imp;
+        details::_rtsp_client_impl_ptr __rtsp_client_imp;
+
     };
 }}

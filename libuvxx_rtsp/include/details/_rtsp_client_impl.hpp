@@ -13,6 +13,8 @@
 
 namespace uvxx { namespace rtsp { namespace details 
 {
+    using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
+
     class _rtsp_client_impl : public uvxx::event_dispatcher_object
     {
     public:
@@ -25,7 +27,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         uvxx::pplx::task<void> play();
 
-        std::shared_ptr<_media_session> media_session_get();
+        _media_session_ptr media_session_get();
 
     private:
         static void describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
@@ -41,12 +43,14 @@ namespace uvxx { namespace rtsp { namespace details
 
         uvxx::pplx::task_completion_event<int> _play_event;
 
-        std::shared_ptr<_media_session> _session;
+        _media_session_ptr _session;
 
-        std::shared_ptr<_live_rtsp_client> _live_client;
+        _live_rtsp_client_ptr _live_client;
 
-        std::shared_ptr<UsageEnvironment> _usage_environment;
+        _usage_environment_ptr _usage_environment;
 
         _uvxx_task_scheduler* _task_scheduler;
     };
+
+    using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;
 }}}

@@ -2,10 +2,16 @@
 
 namespace uvxx { namespace rtsp { namespace details
 {
-    /* implementation forward */
+    /* implementation forwards */
+
     class _media_subsession;
 
     class _media_session;
+
+    using _media_subsession_ptr = std::shared_ptr<_media_subsession>;
+
+    using _media_session_ptr = std::shared_ptr<_media_session>;
+
 }}}
 
 namespace uvxx { namespace rtsp 
@@ -13,7 +19,7 @@ namespace uvxx { namespace rtsp
     class media_subsession : public uvxx::event_dispatcher_object
     {
     public:
-        media_subsession(const std::shared_ptr<details::_media_subsession>& _media_subsession);
+        media_subsession(const details::_media_subsession_ptr& _media_subsession);
 
         media_subsession(const media_subsession&) = default;
 
@@ -35,7 +41,7 @@ namespace uvxx { namespace rtsp
     public:
         media_session();
 
-        media_session(const std::shared_ptr<details::_media_session>& _media_session);
+        media_session(const details::_media_session_ptr& _media_session);
 
         media_session(const media_session&) = default;
 
@@ -51,6 +57,7 @@ namespace uvxx { namespace rtsp
         const media_subsession subsession_get(size_t index) const;
 
     private:
-        std::shared_ptr<details::_media_session> __media_session;
+        details::_media_session_ptr __media_session;
+
     };
 }}

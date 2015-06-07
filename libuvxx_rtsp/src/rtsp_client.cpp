@@ -7,7 +7,7 @@ using namespace uvxx::rtsp::details;
 
 rtsp_client::rtsp_client()
 {
-    __rtsp_client_imp = std::shared_ptr<_rtsp_client_impl>(new _rtsp_client_impl);
+    __rtsp_client_imp = _rtsp_client_impl_ptr(new _rtsp_client_impl);
 }
 
 rtsp_client& rtsp_client::operator=(rtsp_client&& rhs)

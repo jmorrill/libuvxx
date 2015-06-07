@@ -1,5 +1,6 @@
 #pragma once
 #include "RTSPClient.hh"
+#include <memory>
 
 namespace uvxx { namespace rtsp { namespace details 
 {
@@ -20,4 +21,7 @@ namespace uvxx { namespace rtsp { namespace details
     private:
         void* _context;
     };
+
+    using _live_rtsp_client_ptr = std::shared_ptr<_live_rtsp_client>;
+
 }}}
