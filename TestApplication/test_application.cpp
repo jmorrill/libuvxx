@@ -32,7 +32,7 @@ void shutdownStream(RTSPClient* rtspClient, int exitCode = 1);
 
 int main(int argc, char* argv[])
 {
-
+    auto x = argv[1];
  /*   TaskScheduler* scheduler = uvxx_task_scheduler::createNew();
       UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
 */
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
                 auto& subsession = session.subsession_get(i);
                 auto codec_name = subsession.codec_name_get();
             }
-            return client.play();
+            return client.play(); 
         });
 
         event_dispatcher::run();

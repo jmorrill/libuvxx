@@ -1,4 +1,5 @@
 #include "details/_rtsp_client_impl.hpp"
+#include "media_session.hpp"
 
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp::details;
@@ -11,7 +12,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
         
-    if (!result_code)
+    if (result_code)
     {
         client->_describe_event.set_exception(std::exception("failed to get a SDP description"));
 
@@ -91,7 +92,7 @@ _media_session_ptr _rtsp_client_impl::media_session_get()
     return _session;
 }
 
-task<void> _rtsp_client_impl::play()
+uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play(const std::vector<media_subsession>& subsessions)
 {
     auto current_index = std::make_shared<size_t>(0);
 
@@ -102,20 +103,20 @@ task<void> _rtsp_client_impl::play()
         {
             auto subsession_index = *current_index;
 
-            if (subsession_index >= _session->subsessions().size())
+            if (subsession_index >= subsessions.size())
             {
                 throw iterative_task_complete_exception();
             }
 
-            auto& subsession = _session->subsessions().at(subsession_index);
-
-            subsession->initiate();
+            auto& subsession = subsessions.at(subsession_index);
+            
+            subsession.__media_subsession->initiate();
 
             (*current_index)++;
 
-            _setup_event = task_completion_event<int>();
+             _setup_event = task_completion_event<int>();
 
-            _live_client->sendSetupCommand(*(subsession)->live_media_subsession_get(), setup_callback);
+            _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession_get(), setup_callback);
         
         }).then([=]
         {
@@ -136,4 +137,5 @@ task<void> _rtsp_client_impl::play()
         }
     });
 }
+
 

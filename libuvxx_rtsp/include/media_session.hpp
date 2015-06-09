@@ -8,6 +8,8 @@ namespace uvxx { namespace rtsp { namespace details
 
     class _media_session;
 
+    class _rtsp_client_impl;
+
     using _media_subsession_ptr = std::shared_ptr<_media_subsession>;
 
     using _media_session_ptr = std::shared_ptr<_media_session>;
@@ -34,6 +36,7 @@ namespace uvxx { namespace rtsp
 
     private:
         std::shared_ptr<details::_media_subsession> __media_subsession;
+        friend uvxx::rtsp::details::_rtsp_client_impl;
     };
 
     class media_session : public uvxx::event_dispatcher_object
@@ -52,6 +55,9 @@ namespace uvxx { namespace rtsp
         media_session& operator=(media_session&& rhs);
 
     public:
+
+        const std::vector<media_subsession> subsessions_get() const;
+
         const size_t subsession_count() const;
         
         const media_subsession subsession_get(size_t index) const;

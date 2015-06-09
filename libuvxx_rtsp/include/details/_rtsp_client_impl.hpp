@@ -4,12 +4,16 @@
 #include "_live_rtsp_client.hpp"
 #include "_uvxx_task_scheduler.h"
 #include "_media_session_impl.hpp"
-
 #include "BasicUsageEnvironment.hh"
 
 #include <memory>
 #include <map>
 #include <string>
+
+namespace uvxx { namespace rtsp
+{
+    class media_subsession;
+}}
 
 namespace uvxx { namespace rtsp { namespace details 
 {
@@ -25,7 +29,7 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         uvxx::pplx::task<void> open(const std::string& url);
 
-        uvxx::pplx::task<void> play();
+        uvxx::pplx::task<void> play(const std::vector<media_subsession>& subsessions);
 
         _media_session_ptr media_session_get();
 

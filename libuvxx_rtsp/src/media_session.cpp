@@ -55,3 +55,17 @@ const media_subsession media_session::subsession_get(size_t index) const
 {
     return media_subsession(__media_session->subsessions().at(index));
 }
+
+const std::vector<media_subsession> media_session::subsessions_get() const
+{
+    auto subsessioncount = subsession_count();
+
+    std::vector<media_subsession> subsessions;
+
+    for (size_t i = 0; i < subsessioncount; i++)
+    {
+        subsessions.emplace_back(subsession_get(i));
+    }
+
+    return subsessions;
+}

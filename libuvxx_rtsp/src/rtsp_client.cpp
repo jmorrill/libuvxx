@@ -33,6 +33,6 @@ media_session rtsp_client::media_session_get() const
 
 task<void> rtsp_client::play() const
 {
-    return __rtsp_client_imp->play();
+    return __rtsp_client_imp->play(media_session_get().subsessions_get());
 }
 
