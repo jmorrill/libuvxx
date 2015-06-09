@@ -52,7 +52,7 @@ _media_session_impl::~_media_session_impl()
     }
 }
 
-void _media_session_impl::set_media_session(const _usage_environment_ptr& usage_environment, MediaSession* live_session)
+void _media_session_impl::live_media_session_set(const _usage_environment_ptr& usage_environment, MediaSession* live_session)
 {
     reset();
 
@@ -102,7 +102,7 @@ MediaSession* _media_session_impl::live_media_session_get() const
     return _live_session;
 }
 
-const std::vector<_media_subsession_impl_ptr>& _media_session_impl::subsessions() const
+const std::vector<_media_subsession_impl_ptr>& _media_session_impl::subsessions_get() const
 {
     return _subsessions;
 }

@@ -48,12 +48,12 @@ media_session& media_session::operator=(media_session&& rhs)
 
 const size_t media_session::subsession_count() const
 {
-    return __media_session->subsessions().size();
+    return __media_session->subsessions_get().size();
 }
 
 const media_subsession media_session::subsession_get(size_t index) const
 {
-    return media_subsession(__media_session->subsessions().at(index));
+    return media_subsession(__media_session->subsessions_get().at(index));
 }
 
 const std::vector<media_subsession> media_session::subsessions_get() const

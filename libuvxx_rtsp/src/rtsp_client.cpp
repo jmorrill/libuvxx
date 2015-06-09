@@ -13,6 +13,7 @@ rtsp_client::rtsp_client()
 rtsp_client& rtsp_client::operator=(rtsp_client&& rhs)
 {
     __rtsp_client_imp = std::move(rhs.__rtsp_client_imp);
+
     return *this;
 }
 
@@ -24,6 +25,7 @@ rtsp_client::rtsp_client(rtsp_client&& rhs)
 task<void> rtsp_client::open(const std::string& url) const
 {
     auto this_ptr = *this;
+
     return __rtsp_client_imp->open(url).then([this_ptr]{});;
 }
 
@@ -35,6 +37,14 @@ media_session rtsp_client::media_session_get() const
 task<void> rtsp_client::play() const
 {
     auto this_ptr = *this;
+
     return __rtsp_client_imp->play(media_session_get().subsessions_get()).then([this_ptr]{});
+}
+
+uvxx::pplx::task<void> uvxx::rtsp::rtsp_client::play(const std::vector<media_subsession> & media_sessions) const
+{
+    auto this_ptr = *this;
+
+    return __rtsp_client_imp->play(media_sessions).then([this_ptr]{});
 }
 

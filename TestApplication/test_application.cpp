@@ -2,6 +2,7 @@
 #include "liveMedia.hh"
 #include "BasicUsageEnvironment.hh"
 #include "rtsp_client.hpp"
+#include <algorithm>
 using namespace std;
 using namespace uvxx;
 using namespace uvxx::pplx;
@@ -32,27 +33,28 @@ void shutdownStream(RTSPClient* rtspClient, int exitCode = 1);
 
 int main(int argc, char* argv[])
 {
-    auto x = argv[1];
- /*   TaskScheduler* scheduler = uvxx_task_scheduler::createNew();
-      UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
-*/
     {
         uvxx::rtsp::rtsp_client client;
 
         client.open(argv[1])
         .then([=]()
         {
-            auto session = client.media_session_get();
+            auto sessions = client.media_session_get().subsessions_get();
 
-            for (size_t i = 0; i < session.subsession_count(); i++)
+            auto it = std::remove_if(std::begin(sessions), std::end(sessions), [](uvxx::rtsp::media_subsession const& session)
             {
-                auto& subsession = session.subsession_get(i);
-                auto codec_name = subsession.codec_name_get();
-            }
-            return client.play(); 
-        });
+                if (session.codec_name_get() == "H264")
+                {
+                    return false;
+                }
 
-       
+                return true;
+            });
+
+            sessions.resize(std::distance(std::begin(sessions), it));
+
+            return client.play(sessions); 
+        });
     }
 
     event_dispatcher::run();
