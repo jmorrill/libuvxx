@@ -36,19 +36,13 @@ int main(int argc, char* argv[])
     {
         uvxx::rtsp::rtsp_client client;
 
-        client.open(argv[1])
-        .then([=]()
+        client.open(argv[1]).then([=]
         {
             auto sessions = client.media_session_get().subsessions_get();
 
             auto it = std::remove_if(std::begin(sessions), std::end(sessions), [](uvxx::rtsp::media_subsession const& session)
             {
-                if (session.codec_name_get() == "H264")
-                {
-                    return false;
-                }
-
-                return true;
+                return session.codec_name_get() == "H264" ? false : true;
             });
 
             sessions.resize(std::distance(std::begin(sessions), it));

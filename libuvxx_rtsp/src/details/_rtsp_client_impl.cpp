@@ -102,8 +102,7 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play(const std::v
     
     return create_iterative_task([=]() 
     {
-        return create_task([=]{}).
-            then([=]()
+        return create_task([=]{}).then([=]()
         {
             auto subsession_index = *current_index;
 
@@ -134,11 +133,13 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play(const std::v
                 std::string exception_message = "rtsp error " + result_code;
                 throw std::exception(exception_message.c_str());
             }
-            printf("finished");
+            printf("finished play\n");
         });
     }, task_continuation_context::use_current())
-    .then([](task<void> iterativeTask)
+    .then([=](task<void> iterativeTask)
     {
+        _current_media_subsession_setup = nullptr;
+
         try
         {
             iterativeTask.get();
@@ -146,6 +147,10 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play(const std::v
         catch (const iterative_task_complete_exception&)
         {
         }
+
+
+    }).then([=]
+    {
     });
 }
 

@@ -14,6 +14,23 @@ media_subsession::media_subsession(media_subsession&& rhs)
     *this = std::move(rhs);
 }
 
+media_subsession::media_subsession()
+{
+
+}
+
+bool media_subsession::operator=(std::nullptr_t rhs)
+{
+    __media_subsession.reset();
+    return true;
+}
+
+bool media_subsession::operator==(std::nullptr_t rhs)
+{
+    return __media_subsession.get() != nullptr;
+}
+
+
 media_subsession& media_subsession::operator=(media_subsession&& rhs)
 {
     __media_subsession = std::move(rhs.__media_subsession);

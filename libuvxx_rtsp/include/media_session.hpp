@@ -32,11 +32,15 @@ namespace uvxx { namespace rtsp
 
         media_subsession& operator=(media_subsession&& rhs);
 
+        bool operator=(std::nullptr_t rhs);
+
+        bool operator==(std::nullptr_t rhs);
+
     public:
         const std::string codec_name_get() const;
 
     private:
-        media_subsession(){}
+        media_subsession();
 
         std::shared_ptr<details::_media_subsession_impl> __media_subsession;
 
