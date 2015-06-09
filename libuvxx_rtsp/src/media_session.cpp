@@ -4,7 +4,7 @@
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
-media_subsession::media_subsession(const _media_subsession_ptr& _media_subsession)
+media_subsession::media_subsession(const _media_subsession_impl_ptr& _media_subsession)
 {
     __media_subsession = _media_subsession;
 }
@@ -35,7 +35,7 @@ media_session::media_session()
 
 }
 
-media_session::media_session(const _media_session_ptr& _media_session) : __media_session(_media_session)
+media_session::media_session(const _media_session_impl_ptr& _media_session) : __media_session(_media_session)
 {
 
 }

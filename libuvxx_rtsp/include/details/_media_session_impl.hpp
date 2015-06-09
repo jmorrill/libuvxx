@@ -14,22 +14,22 @@ namespace uvxx { namespace rtsp { namespace details
 {
     using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
 
-    class _media_subsession : public uvxx::event_dispatcher_object
+    class _media_subsession_impl : public uvxx::event_dispatcher_object
     {
     public:
-        _media_subsession(MediaSubsession* live_subsession);
+        _media_subsession_impl(MediaSubsession* live_subsession);
 
-        _media_subsession();
+        _media_subsession_impl();
 
-        _media_subsession(const _media_subsession&) = default;
+        _media_subsession_impl(const _media_subsession_impl&) = default;
 
-        _media_subsession& operator=(const _media_subsession&) = default;
+        _media_subsession_impl& operator=(const _media_subsession_impl&) = default;
 
-        _media_subsession(_media_subsession&& rhs);
+        _media_subsession_impl(_media_subsession_impl&& rhs);
 
-        _media_subsession& operator=(_media_subsession&& rhs);
+        _media_subsession_impl& operator=(_media_subsession_impl&& rhs);
 
-        virtual ~_media_subsession();
+        virtual ~_media_subsession_impl();
 
     public:
         MediaSubsession* live_media_subsession_get() const;
@@ -42,27 +42,27 @@ namespace uvxx { namespace rtsp { namespace details
         MediaSubsession* _live_subsession;
     };
 
-    using _media_subsession_ptr = std::shared_ptr<_media_subsession>;
+    using _media_subsession_impl_ptr = std::shared_ptr<_media_subsession_impl>;
 
-    class _media_session : public uvxx::event_dispatcher_object
+    class _media_session_impl : public uvxx::event_dispatcher_object
     {
     public:
-        _media_session();
+        _media_session_impl();
 
-        _media_session(const _media_session&) = default;
+        _media_session_impl(const _media_session_impl&) = default;
 
-        _media_session& operator=(const _media_session&) = default;
+        _media_session_impl& operator=(const _media_session_impl&) = default;
 
-        _media_session(_media_session&& rhs);
+        _media_session_impl(_media_session_impl&& rhs);
 
-        _media_session& operator=(_media_session&& rhs);
+        _media_session_impl& operator=(_media_session_impl&& rhs);
 
     public:
         void set_media_session(const _usage_environment_ptr& usage_environment, MediaSession* live_session);
 
-        virtual ~_media_session();
+        virtual ~_media_session_impl();
 
-        const std::vector<_media_subsession_ptr>& subsessions() const;   
+        const std::vector<_media_subsession_impl_ptr>& subsessions() const;   
 
         MediaSession* live_media_session_get() const;
 
@@ -70,12 +70,12 @@ namespace uvxx { namespace rtsp { namespace details
         void reset();
 
     private:
-        std::vector<_media_subsession_ptr> _subsessions;
+        std::vector<_media_subsession_impl_ptr> _subsessions;
 
         _usage_environment_ptr _usage_environment;
 
         MediaSession* _live_session;
     };
 
-    using _media_session_ptr = std::shared_ptr<_media_session>;
+    using _media_session_impl_ptr = std::shared_ptr<_media_session_impl>;
 }}}

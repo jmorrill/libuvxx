@@ -52,9 +52,10 @@ int main(int argc, char* argv[])
             return client.play(); 
         });
 
-        event_dispatcher::run();
+       
     }
-   
+
+    event_dispatcher::run();
 
     return 0;
 }

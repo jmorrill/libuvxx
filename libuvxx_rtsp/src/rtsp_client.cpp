@@ -23,7 +23,8 @@ rtsp_client::rtsp_client(rtsp_client&& rhs)
 
 task<void> rtsp_client::open(const std::string& url) const
 {
-    return __rtsp_client_imp->open(url);
+    auto this_ptr = *this;
+    return __rtsp_client_imp->open(url).then([this_ptr]{});;
 }
 
 media_session rtsp_client::media_session_get() const
@@ -33,6 +34,7 @@ media_session rtsp_client::media_session_get() const
 
 task<void> rtsp_client::play() const
 {
-    return __rtsp_client_imp->play(media_session_get().subsessions_get());
+    auto this_ptr = *this;
+    return __rtsp_client_imp->play(media_session_get().subsessions_get()).then([this_ptr]{});
 }
 

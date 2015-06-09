@@ -35,7 +35,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     client->_describe_event.set(result_code);
 
-    client->_session = std::make_shared<_media_session>();
+    client->_session = std::make_shared<_media_session_impl>();
 
     client->_session->set_media_session(client->_usage_environment, session);
 }
@@ -87,7 +87,7 @@ task<void> _rtsp_client_impl::open(const std::string& url)
     });
 }
 
-_media_session_ptr _rtsp_client_impl::media_session_get()
+_media_session_impl_ptr _rtsp_client_impl::media_session_get()
 {
     return _session;
 }
@@ -95,7 +95,7 @@ _media_session_ptr _rtsp_client_impl::media_session_get()
 uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play(const std::vector<media_subsession>& subsessions)
 {
     auto current_index = std::make_shared<size_t>(0);
-
+    
     return create_iterative_task([=]() 
     {
         return create_task([=]{}).

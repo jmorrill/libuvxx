@@ -31,7 +31,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         uvxx::pplx::task<void> play(const std::vector<media_subsession>& subsessions);
 
-        _media_session_ptr media_session_get();
+        _media_session_impl_ptr media_session_get();
 
     private:
         static void describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
@@ -47,7 +47,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         uvxx::pplx::task_completion_event<int> _play_event;
 
-        _media_session_ptr _session;
+        _media_session_impl_ptr _session;
 
         _live_rtsp_client_ptr _live_client;
 
