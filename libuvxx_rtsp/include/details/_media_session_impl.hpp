@@ -58,11 +58,12 @@ namespace uvxx { namespace rtsp { namespace details
         _media_session_impl& operator=(_media_session_impl&& rhs);
 
     public:
-        void set_media_session(const _usage_environment_ptr& usage_environment, MediaSession* live_session);
+        void live_media_session_set(const _usage_environment_ptr& usage_environment, MediaSession* live_session);
 
         virtual ~_media_session_impl();
 
-        const std::vector<_media_subsession_impl_ptr>& subsessions() const;   
+    public:
+        const std::vector<_media_subsession_impl_ptr>& subsessions_get() const;   
 
         MediaSession* live_media_session_get() const;
 

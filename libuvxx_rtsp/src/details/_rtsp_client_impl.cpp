@@ -37,7 +37,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     client->_session = std::make_shared<_media_session_impl>();
 
-    client->_session->set_media_session(client->_usage_environment, session);
+    client->_session->live_media_session_set(client->_usage_environment, session);
 }
 
 void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
