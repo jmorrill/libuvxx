@@ -5,6 +5,7 @@
 #include "_uvxx_task_scheduler.h"
 #include "_media_session_impl.hpp"
 #include "BasicUsageEnvironment.hh"
+#include "media_session.hpp"
 
 #include <memory>
 #include <map>
@@ -54,6 +55,8 @@ namespace uvxx { namespace rtsp { namespace details
         _usage_environment_ptr _usage_environment;
 
         _uvxx_task_scheduler* _task_scheduler;
+
+        media_subsession _current_media_subsession_setup;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;

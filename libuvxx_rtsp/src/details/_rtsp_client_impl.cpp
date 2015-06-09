@@ -19,7 +19,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
         return;
     }
     
-    // Create a media session object from this SDP description:
+    /* create a media session object from this SDP description */
     auto session = MediaSession::createNew(*client->_usage_environment, resultstring.get());
 
     if (!session)
@@ -45,6 +45,10 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
     auto client = GET_RTSP_CLIENT(live_rtsp_client);
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
+
+    auto& subsession = client->_current_media_subsession_setup;
+
+    auto live_subsession = subsession.__media_subsession->live_media_subsession_get();
 
     client->_setup_event.set(result_code);
 }
@@ -99,7 +103,7 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play(const std::v
     return create_iterative_task([=]() 
     {
         return create_task([=]{}).
-        then([=]
+            then([=]()
         {
             auto subsession_index = *current_index;
 
@@ -117,12 +121,19 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play(const std::v
              _setup_event = task_completion_event<int>();
 
             _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession_get(), setup_callback);
-        
+
+            _current_media_subsession_setup = std::move(subsession);
+
         }).then([=]
         {
             return create_task(_setup_event);
         }).then([=](int result_code)
         {
+            if (result_code)
+            {
+                std::string exception_message = "rtsp error " + result_code;
+                throw std::exception(exception_message.c_str());
+            }
             printf("finished");
         });
     }, task_continuation_context::use_current())

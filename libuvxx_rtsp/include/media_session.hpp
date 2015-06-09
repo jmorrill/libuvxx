@@ -1,3 +1,4 @@
+#pragma once
 #include "event_dispatcher_object.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
@@ -35,7 +36,11 @@ namespace uvxx { namespace rtsp
         const std::string codec_name_get() const;
 
     private:
+        media_subsession(){}
+
         std::shared_ptr<details::_media_subsession_impl> __media_subsession;
+
+        friend std::allocator<media_subsession>;
 
         friend uvxx::rtsp::details::_rtsp_client_impl;
     };
