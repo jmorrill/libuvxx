@@ -55,6 +55,17 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
     client_impl->_setup_event.set(result_code);
 }
 
+
+void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
+{
+    auto client_impl = GET_RTSP_CLIENT(live_rtsp_client);
+
+    auto resultstring = std::unique_ptr<char[]>(result_string);
+
+    client_impl->_setup_event.set(result_code);
+}
+
+
 _rtsp_client_impl::_rtsp_client_impl()
 {
     _task_scheduler = _uvxx_task_scheduler::createNew();
@@ -102,7 +113,7 @@ _media_session_impl_ptr _rtsp_client_impl::media_session_get()
     return _session;
 }
 
-uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play(const std::vector<media_subsession>& subsessions)
+uvxx::pplx::task<_streaming_media_session_impl> uvxx::rtsp::details::_rtsp_client_impl::play(const std::vector<media_subsession>& subsessions)
 {
     auto current_index = std::make_shared<size_t>(0);
     
@@ -157,8 +168,41 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::play(const std::v
         catch (const iterative_task_complete_exception&)
         {
         }
-    }).then([=]
+
+        (*current_index) = 0;
+
+        return create_iterative_task([=]
+        {
+            return create_task([=]{}).then([=]
+            {
+                auto subsession_index = *current_index;
+
+                if (subsession_index >= subsessions.size())
+                {
+                    throw iterative_task_complete_exception();
+                }
+
+                auto& subsession = subsessions.at(subsession_index);
+
+                 (*current_index)++;
+
+                _play_event = task_completion_event<int>();
+
+                _live_client->sendPlayCommand(*(subsession.__media_subsession)->live_media_subsession_get(), 
+                                               play_callback);
+            });
+        }, task_continuation_context::use_current());
+    }).then([=](task<void> iterativeTask)
     {
+        try
+        {
+            iterativeTask.get();
+        }
+        catch (const iterative_task_complete_exception&)
+        {
+        }
+
+        return _streaming_media_session_impl(subsessions);
     });
 }
 

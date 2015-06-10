@@ -11,6 +11,8 @@ namespace uvxx { namespace rtsp { namespace details
 
     class _rtsp_client_impl;
 
+    class _streaming_media_session_impl;
+
     using _media_subsession_impl_ptr = std::shared_ptr<_media_subsession_impl>;
 
     using _media_session_impl_ptr = std::shared_ptr<_media_session_impl>;
@@ -47,6 +49,8 @@ namespace uvxx { namespace rtsp
         friend std::allocator<media_subsession>;
 
         friend uvxx::rtsp::details::_rtsp_client_impl;
+
+        friend uvxx::rtsp::details::_streaming_media_session_impl;
     };
 
     class media_session : public uvxx::event_dispatcher_object

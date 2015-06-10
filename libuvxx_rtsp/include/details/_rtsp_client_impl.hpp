@@ -1,9 +1,9 @@
 #pragma once
 #include "uvxx.hpp"
-#include "event_dispatcher_object.hpp"
 #include "_live_rtsp_client.hpp"
 #include "_uvxx_task_scheduler.h"
 #include "_media_session_impl.hpp"
+#include "_streaming_media_session_impl.hpp"
 #include "BasicUsageEnvironment.hh"
 #include "media_session.hpp"
 
@@ -30,7 +30,7 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         uvxx::pplx::task<void> open(const std::string& url);
 
-        uvxx::pplx::task<void> play(const std::vector<media_subsession>& subsessions);
+        uvxx::pplx::task<_streaming_media_session_impl> play(const std::vector<media_subsession>& subsessions);
 
         _media_session_impl_ptr media_session_get();
 

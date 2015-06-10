@@ -38,13 +38,13 @@ task<void> rtsp_client::play() const
 {
     auto this_ptr = *this;
 
-    return __rtsp_client_imp->play(media_session_get().subsessions_get()).then([this_ptr]{});
+    return __rtsp_client_imp->play(media_session_get().subsessions_get()).then([this_ptr](_streaming_media_session_impl streaming_media_session){});
 }
 
 uvxx::pplx::task<void> uvxx::rtsp::rtsp_client::play(const std::vector<media_subsession> & media_sessions) const
 {
     auto this_ptr = *this;
 
-    return __rtsp_client_imp->play(media_sessions).then([this_ptr]{});
+    return __rtsp_client_imp->play(media_sessions).then([this_ptr](_streaming_media_session_impl streaming_media_session){});
 }
 
