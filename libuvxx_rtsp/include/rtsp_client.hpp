@@ -30,7 +30,7 @@ namespace uvxx { namespace rtsp
 
         uvxx::pplx::task<void> play() const;
 
-        uvxx::pplx::task<void> play(const std::vector<media_subsession> & media_subsessions) const;
+        uvxx::pplx::task<void> play(const std::vector<media_subsession>& media_subsessions) const;
 
         media_session media_session_get() const;
 

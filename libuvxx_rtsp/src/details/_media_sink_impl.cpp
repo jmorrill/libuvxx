@@ -8,7 +8,8 @@ _media_sink_impl::_media_sink_impl(const _media_subsession_impl& media_subsessio
     _media_subsession(media_subsession)
 {
     __live_media_sink = std::shared_ptr<_live_media_sink>(new _live_media_sink(*(live_usage_environment.get())),
-        [](MediaSink* media_sink)
+    /* deleter */
+    [](MediaSink* media_sink)
     {
         Medium::close(media_sink);
     });
