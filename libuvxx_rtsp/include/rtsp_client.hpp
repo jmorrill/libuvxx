@@ -1,6 +1,7 @@
 #pragma once
 #include "event_dispatcher_object.hpp"
 #include "media_session.hpp"
+#include "streaming_media_session.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -21,16 +22,16 @@ namespace uvxx { namespace rtsp
 
         rtsp_client& operator=(const rtsp_client&) = default;
 
-        rtsp_client(rtsp_client&& dispatcher);
+        rtsp_client(rtsp_client&& rhs);
 
         rtsp_client& operator=(rtsp_client&& rhs);
 
     public:
         uvxx::pplx::task<void> open(const std::string& url) const;
 
-        uvxx::pplx::task<void> play() const;
+        uvxx::pplx::task<streaming_media_session> play() const;
 
-        uvxx::pplx::task<void> play(const std::vector<media_subsession>& media_subsessions) const;
+        uvxx::pplx::task<streaming_media_session> play(const std::vector<media_subsession>& media_subsessions) const;
 
         media_session media_session_get() const;
 

@@ -20,6 +20,8 @@ namespace uvxx { namespace rtsp { namespace details
 {
     using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
 
+    using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;
+
     class _rtsp_client_impl : public uvxx::event_dispatcher_object
     {
     public:
@@ -30,7 +32,7 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         uvxx::pplx::task<void> open(const std::string& url);
 
-        uvxx::pplx::task<_streaming_media_session_impl> play(const std::vector<media_subsession>& subsessions);
+        uvxx::pplx::task<_streaming_media_session_impl_ptr> play(const std::vector<media_subsession>& subsessions);
 
         _media_session_impl_ptr media_session_get();
 

@@ -14,13 +14,11 @@ namespace uvxx { namespace rtsp
 namespace uvxx { namespace rtsp { namespace details 
 {
     class _live_media_session_sink;
-    
+
     class _streaming_media_session_impl : uvxx::event_dispatcher_object
     {
     public:
         _streaming_media_session_impl(const std::vector<media_subsession>& subsessions);
-
-        _streaming_media_session_impl(){}
 
         virtual ~_streaming_media_session_impl();
 
@@ -31,4 +29,7 @@ namespace uvxx { namespace rtsp { namespace details
         std::vector<media_subsession> _subsessions;
 
     };
+
+    using _streaming_media_session_impl_ptr = std::shared_ptr<_streaming_media_session_impl>;
+
 }}}

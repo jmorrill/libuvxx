@@ -113,7 +113,7 @@ _media_session_impl_ptr _rtsp_client_impl::media_session_get()
     return _session;
 }
 
-uvxx::pplx::task<_streaming_media_session_impl> uvxx::rtsp::details::_rtsp_client_impl::play(const std::vector<media_subsession>& subsessions)
+uvxx::pplx::task<_streaming_media_session_impl_ptr> uvxx::rtsp::details::_rtsp_client_impl::play(const std::vector<media_subsession>& subsessions)
 {
     auto current_index = std::make_shared<size_t>(0);
     
@@ -202,7 +202,7 @@ uvxx::pplx::task<_streaming_media_session_impl> uvxx::rtsp::details::_rtsp_clien
         {
         }
 
-        return _streaming_media_session_impl(subsessions);
+        return std::make_shared<_streaming_media_session_impl>(subsessions);
     });
 }
 
