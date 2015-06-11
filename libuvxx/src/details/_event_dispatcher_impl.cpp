@@ -230,6 +230,7 @@ namespace uvxx { namespace details
             {
                 _has_initialized_thread_cache = false;
                 _thread_cache.Initialize();
+                _thread_cache.has_dispatcher_set(true);
                 continue;
             }
 
@@ -246,6 +247,7 @@ namespace uvxx { namespace details
 
     thread::id const & _event_dispatcher_impl::thread_id() const
     {
+        assert(_threadId != std::thread::id());
         return _threadId;
     }
 
@@ -311,6 +313,10 @@ namespace uvxx { namespace details
 
     std::thread::id const _event_dispatcher_impl::this_thread_id()
     {
+        std::thread::id id = _thread_cache.this_thread_id();
+
+        assert(id != std::thread::id());
+
         return _thread_cache.this_thread_id();
     }
 

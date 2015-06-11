@@ -501,6 +501,7 @@ namespace details
             _Src._M_context._M_pContextCallback = std::thread::id();
             
             _M_context._M_captureMethod = _Src._M_context._M_captureMethod;
+         
         }
 
         _ContextCallback& operator=(const _ContextCallback& _Src)
