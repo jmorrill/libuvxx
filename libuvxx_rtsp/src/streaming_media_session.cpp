@@ -31,3 +31,8 @@ void streaming_media_session::on_frame_callback_set(std::function<bool()> callba
 {
     __streaming_media_session->on_frame_callback_set(callback);
 }
+
+uvxx::rtsp::streaming_media_session::~streaming_media_session()
+{
+
+}

@@ -18,6 +18,8 @@ namespace uvxx { namespace rtsp
     public:
         streaming_media_session();
 
+        virtual ~streaming_media_session();
+
         streaming_media_session(const details::_streaming_media_session_impl_ptr& streaming_media_session_impl);
 
         streaming_media_session(const streaming_media_session&) = default;

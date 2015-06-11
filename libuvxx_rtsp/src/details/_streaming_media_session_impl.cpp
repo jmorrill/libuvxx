@@ -46,7 +46,7 @@ void _streaming_media_session_impl::on_rtcp_bye(void* client_data)
 
 }
 
-uvxx::rtsp::details::_streaming_media_session_impl::~_streaming_media_session_impl()
+_streaming_media_session_impl::~_streaming_media_session_impl()
 {
     for (auto& subsession : _subsessions)
     {
@@ -61,6 +61,13 @@ uvxx::rtsp::details::_streaming_media_session_impl::~_streaming_media_session_im
                 delete state;
 
                 live_subsession->miscPtr = nullptr;
+            }
+
+            FramedSource* subsessionSource = live_subsession->readSource();
+
+            if (subsessionSource)
+            {
+                subsessionSource->stopGettingFrames();
             }
 
             live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, nullptr);
@@ -102,7 +109,7 @@ void _streaming_media_session_impl::on_after_getting_frame(void* client_data, un
     auto io_state = static_cast<_streaming_media_io_state*>(client_data);
 
     bool continue_reading = io_state->_streaming_media_session->_on_frame_callback();
-
+    printf("pack_size: %d\ttruncated: %d\tduration:%d\n", packet_data_size, truncated_bytes, duration_in_microseconds);
     if (continue_reading)
     {
         io_state->_streaming_media_session->continue_reading();
