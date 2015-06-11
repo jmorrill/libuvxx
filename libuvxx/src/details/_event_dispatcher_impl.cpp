@@ -14,8 +14,6 @@ using namespace uvxx::details;
 
 namespace uvxx { namespace details
 {
-    std::mutex _event_dispatcher_impl::_global_lock;
-    vector<_event_dispatcher_impl_weak_ptr> _event_dispatcher_impl::_dispatchers;
     _event_dispatcher_impl_weak_ptr _last_dispatcher;
 
     __thread_local bool _has_initialized_thread_cache = false;
@@ -154,9 +152,9 @@ namespace uvxx { namespace details
 
             eventdispatcher = make_shared<event_dispatcher_make_shared_enabler>();
 
-            std::lock_guard<std::mutex> lock(_global_lock);
+            std::lock_guard<std::mutex> lock(_global_lock());
 
-            _dispatchers.push_back(eventdispatcher);
+            _dispatchers().push_back(eventdispatcher);
         }
 
         return eventdispatcher;
@@ -164,7 +162,7 @@ namespace uvxx { namespace details
 
     uvxx::details::_event_dispatcher_impl_ptr _event_dispatcher_impl::from_thread(thread::id const & thread_id)
     {
-        if (_dispatchers.empty())
+        if (_dispatchers().empty())
         {
             return nullptr;
         }
@@ -188,19 +186,19 @@ namespace uvxx { namespace details
        
         returned_dispatcher = nullptr;
         
-        std::lock_guard<std::mutex> lock(_global_lock);
+        std::lock_guard<std::mutex> lock(_global_lock());
 
-        for (size_t i = 0; i < _dispatchers.size(); i++)
+        for (size_t i = 0; i < _dispatchers().size(); i++)
         {
             _event_dispatcher_impl_ptr dispatcher;
 
             try
             {
-                dispatcher = _dispatchers[i].lock();
+                dispatcher = _dispatchers()[i].lock();
             }
             catch (std::bad_weak_ptr&)
             {
-                _dispatchers.erase(begin(_dispatchers) + i);
+                _dispatchers().erase(begin(_dispatchers()) + i);
                 i--;
                 continue;	
             }
@@ -221,8 +219,22 @@ namespace uvxx { namespace details
 
     bool _event_dispatcher_impl::check_access() const
     {
-        thread::id this_id = _thread_cache.this_thread_id();
+        thread::id this_id;
 
+        while (true)
+        {
+            this_id = _thread_cache.this_thread_id();
+
+            if (this_id == std::thread::id())
+            {
+                _has_initialized_thread_cache = false;
+                _thread_cache.Initialize();
+                continue;
+            }
+
+            break;
+        }
+        
         if (this_id == _threadId)
         {
             return true;
@@ -299,6 +311,20 @@ namespace uvxx { namespace details
     std::thread::id const _event_dispatcher_impl::this_thread_id()
     {
         return _thread_cache.this_thread_id();
+    }
+
+    std::vector<_event_dispatcher_impl_weak_ptr>& _event_dispatcher_impl::_dispatchers()
+    {
+        static std::vector<_event_dispatcher_impl_weak_ptr>* dispatchers = new std::vector<_event_dispatcher_impl_weak_ptr>();
+
+        return *dispatchers;
+    }
+
+    std::mutex& _event_dispatcher_impl::_global_lock()
+    {
+        static std::mutex* global_lock = new std::mutex();
+
+        return *global_lock;
     }
 
 }}

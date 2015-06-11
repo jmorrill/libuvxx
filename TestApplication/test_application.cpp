@@ -8,6 +8,7 @@ using namespace uvxx::rtsp;
 using namespace uvxx::pplx;
 
 
+streaming_media_session stream;
 
 bool on_frame_callback()
 {
@@ -21,16 +22,13 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-
-    streaming_media_session stream;
-
     {
         uvxx::rtsp::rtsp_client client;
 
         client.open(argv[1]).then([=]
         {
             return client.play(); 
-        }).then([&stream](task<uvxx::rtsp::streaming_media_session> t) mutable
+        }).then([](task<uvxx::rtsp::streaming_media_session> t) mutable
         {
             stream = t.get();
             

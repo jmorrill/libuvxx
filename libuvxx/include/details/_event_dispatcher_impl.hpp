@@ -57,7 +57,6 @@ namespace uvxx { namespace details
 
     class _event_dispatcher_impl
     {
-        static std::mutex _global_lock;
     protected:
         ~_event_dispatcher_impl();
     public:
@@ -152,9 +151,12 @@ namespace uvxx { namespace details
         void shutdown_impl();
 
     private:
-        static std::vector<_event_dispatcher_impl_weak_ptr> _dispatchers;
+
+        static std::vector<_event_dispatcher_impl_weak_ptr>& _dispatchers();
+
+        static std::mutex& _global_lock();
+
         std::thread::id _threadId;
-       
 
         bool _exitAllFrames;
         bool _hasShutdownStarted;
