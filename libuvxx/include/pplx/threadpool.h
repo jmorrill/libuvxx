@@ -31,7 +31,7 @@ namespace crossplat
 
         static threadpool& shared_instance()
         {
-            return s_shared;
+            return s_shared();
         }
 
         ~threadpool()
@@ -48,7 +48,12 @@ namespace crossplat
     private:
         uvxx::details::_uv_loop _loop;
 
-        static threadpool s_shared;
+        static threadpool& s_shared()
+        {
+            static threadpool* pool = new threadpool(4);
+
+            return *pool;
+        }
 
         static void start_thread(threadpool* thread_pool)
         {
