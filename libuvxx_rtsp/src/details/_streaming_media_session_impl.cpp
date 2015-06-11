@@ -13,14 +13,19 @@ struct _streaming_media_io_state
     _streaming_media_session_impl* _streaming_media_session;
 };
 
-_streaming_media_session_impl::_streaming_media_session_impl(const std::vector<media_subsession>& subsessions)
+_streaming_media_session_impl::_streaming_media_session_impl(const _usage_environment_ptr& usage_environment, const _media_session_impl_ptr& session, const std::vector<media_subsession>& subsessions) :
+    _usage_environment(usage_environment),
+    _session(session)
 {
     _subsessions = subsessions;
-    _buffer.resize(100000);
+
+    _buffer.resize(50000);
 
     for (auto& subsession : _subsessions)
     {
         auto live_subsession = subsession.__media_subsession->live_media_subsession_get();
+
+        live_subsession->miscPtr = nullptr;
 
         FramedSource* subsessionSource = live_subsession->readSource();
 

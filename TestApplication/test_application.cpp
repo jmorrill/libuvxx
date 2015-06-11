@@ -35,6 +35,14 @@ int main(int argc, char* argv[])
             stream = std::move(t.get());
             
             stream.on_frame_callback_set(on_frame_callback);
+
+        }).then([]()
+        {
+            return create_timer_task(std::chrono::milliseconds(2000));
+        })
+        .then([]()
+        {
+            event_dispatcher::current_dispatcher().begin_shutdown();
         });
 
         event_dispatcher::run();

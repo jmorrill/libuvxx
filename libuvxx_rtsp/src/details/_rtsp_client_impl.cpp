@@ -202,7 +202,7 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> uvxx::rtsp::details::_rtsp_c
         {
         }
 
-        return std::make_shared<_streaming_media_session_impl>(subsessions);
+        return std::make_shared<_streaming_media_session_impl>(_usage_environment, _session, subsessions);
     });
 }
 
