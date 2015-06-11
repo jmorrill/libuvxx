@@ -221,6 +221,7 @@ namespace uvxx { namespace details
     {
         thread::id this_id;
 
+        /* static initialization issue with thread local cache hack */
         while (true)
         {
             this_id = _thread_cache.this_thread_id();
