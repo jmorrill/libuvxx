@@ -1,11 +1,14 @@
 #include "details/_rtsp_client_impl.hpp"
 #include "media_session.hpp"
+#include "rtsp_exceptions.hpp"
 
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
 #define GET_RTSP_CLIENT(live_rtsp_client)static_cast<uvxx::rtsp::details::_rtsp_client_impl*>(static_cast<uvxx::rtsp::details::_live_rtsp_client*>(live_rtsp_client)->context_get());
+
+#define RTSP_EXCEPTION(code, message)((code > 0) ? rtsp_transport_exception(code, message) : rtsp_network_exception(code, message))
 
 void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
 {
@@ -19,7 +22,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
     {
         std::string exception_message = "failed to get a SDP description error: " + result_code;
 
-        client_impl->_describe_event.set_exception(std::exception(exception_message.c_str()));
+        describe_event.set_exception(rtsp_transport_exception(result_code, exception_message));
 
         return;
     }
@@ -55,7 +58,9 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
 
     auto live_subsession = subsession.__media_subsession->live_media_subsession_get();
 
-    client_impl->_setup_event.set(result_code);
+    auto& setup_event = client_impl->_setup_event;
+
+    setup_event.set(result_code);
 }
 
 
@@ -103,7 +108,9 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
     _describe_event = task_completion_event<int>();
     
-    _live_client->sendDescribeCommand(describe_callback);
+    _authenticator.setUsernameAndPassword("admin","12345");
+
+    _live_client->sendDescribeCommand(describe_callback, &_authenticator);
 
     return create_task(_describe_event).then([this](int result_code)
     {
@@ -116,19 +123,26 @@ _media_session_impl_ptr _rtsp_client_impl::media_session_get()
     return _session;
 }
 
-uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(const std::vector<uvxx::rtsp::media_subsession>& subsessions)
+
+uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions_)
 {
     auto current_index = std::make_shared<size_t>(0);
 
     return create_iterative_task([=]
     {
+        verify_access();
+
         return create_task([=]
         {
+            verify_access();
+
+            auto& subsessions = *subsessions_.get();
+
             auto subsession_index = *current_index;
 
             if (subsession_index >= subsessions.size())
             {
-                throw iterative_task_complete_exception();
+                return task_from_exception<int>(iterative_task_complete_exception());
             }
 
             auto& subsession = subsessions.at(subsession_index);
@@ -142,7 +156,7 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(cons
             _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession_get(), 
                                            setup_callback);
 
-            _current_media_subsession_setup = std::move(subsession);
+            _current_media_subsession_setup = subsession;
 
              return create_task(_setup_event);
 
@@ -157,8 +171,18 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(cons
 
             printf("finished play\n");
         });
-    })
-    .then([=](task<void> iterativeTask)
+    });
+}
+
+uvxx::pplx::task<streaming_media_session> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
+{
+    auto current_index = std::make_shared<size_t>(0);
+
+    auto subsession_ptr = std::shared_ptr<std::vector<media_subsession>>(new std::vector<media_subsession>);
+
+    *(subsession_ptr.get()) = std::move(subsessions_);
+
+    return setup(subsession_ptr).then([=](task<void> iterativeTask)
     {
         _current_media_subsession_setup = nullptr;
 
@@ -178,14 +202,16 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(cons
             {
                 auto subsession_index = *current_index;
 
+                auto& subsessions = *subsession_ptr.get();
+
                 if (subsession_index >= subsessions.size())
                 {
-                    throw iterative_task_complete_exception();
+                    return task_from_exception<int>(iterative_task_complete_exception());
                 }
 
                 auto& subsession = subsessions.at(subsession_index);
 
-                 (*current_index)++;
+                (*current_index)++;
 
                 _play_event = task_completion_event<int>();
 
@@ -199,10 +225,12 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(cons
                 {
                     std::string exception_message = "rtsp error " + result_code;
 
-                    throw std::exception(exception_message.c_str());
+                    return task_from_exception<void>(std::exception(exception_message.c_str()));
                 }
 
                 printf("finished play\n");
+
+                return task_from_result();
             });
         });
     }).then([=](task<void> iterativeTask)
@@ -215,7 +243,9 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(cons
         {
         }
 
-        return std::make_shared<_streaming_media_session_impl>(_session, subsessions);
+        _streaming_session = streaming_media_session(std::make_shared<_streaming_media_session_impl>(_session, std::move(*subsession_ptr.get())));
+
+        return _streaming_session;
     });
 }
 

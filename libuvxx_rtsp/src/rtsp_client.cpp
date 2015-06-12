@@ -42,14 +42,20 @@ task<streaming_media_session> rtsp_client::play() const
     auto this_ptr = *this;
 
     return __rtsp_client_imp->play(media_session_get().subsessions_get())
-        .then([this_ptr](_streaming_media_session_impl_ptr streaming_session){ return streaming_media_session(streaming_session);}, task_continuation_context::use_current());
+    .then([this_ptr](streaming_media_session streaming_session)
+    {
+        return streaming_session;
+    });
 }
 
-uvxx::pplx::task<streaming_media_session> uvxx::rtsp::rtsp_client::play(const std::vector<media_subsession> & media_sessions) const
+uvxx::pplx::task<streaming_media_session> uvxx::rtsp::rtsp_client::play(std::vector<media_subsession> media_sessions) const
 {
     auto this_ptr = *this;
 
-    return __rtsp_client_imp->play(media_sessions)
-       .then([this_ptr](_streaming_media_session_impl_ptr streaming_session){ return streaming_media_session(streaming_session);}, task_continuation_context::use_current());
+    return __rtsp_client_imp->play(std::move(media_sessions))
+    .then([this_ptr](streaming_media_session streaming_session)
+    {
+        return streaming_session;
+    });
 }
 

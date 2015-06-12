@@ -13,11 +13,10 @@ struct _streaming_media_io_state
     _streaming_media_session_impl* _streaming_media_session;
 };
 
-_streaming_media_session_impl::_streaming_media_session_impl(const _media_session_impl_ptr& session, const std::vector<media_subsession>& subsessions) :
-    _session(session)
+_streaming_media_session_impl::_streaming_media_session_impl(const _media_session_impl_ptr& session, std::vector<media_subsession> subsessions) :
+    _session(session),
+    _subsessions(std::move(subsessions))
 {
-    _subsessions = subsessions;
-
     _buffer.resize(50000);
 
     for (auto& subsession : _subsessions)

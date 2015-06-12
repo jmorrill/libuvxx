@@ -20,7 +20,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _streaming_media_session_impl
     {
     public:
-        _streaming_media_session_impl(const _media_session_impl_ptr& session, const std::vector<media_subsession>& subsessions);
+        _streaming_media_session_impl(const _media_session_impl_ptr& session, std::vector<media_subsession> subsessions);
 
         _streaming_media_session_impl(const _streaming_media_session_impl& rhs) = delete;
 

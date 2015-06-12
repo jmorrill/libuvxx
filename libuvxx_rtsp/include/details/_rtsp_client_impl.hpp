@@ -4,6 +4,8 @@
 #include "_uvxx_task_scheduler.h"
 #include "_media_session_impl.hpp"
 #include "_streaming_media_session_impl.hpp"
+#include "streaming_media_session.hpp"
+#include "_live_authenticator.hpp"
 #include "BasicUsageEnvironment.hh"
 #include "media_session.hpp"
 
@@ -32,9 +34,12 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         uvxx::pplx::task<void> open(const std::string& url);
 
-        uvxx::pplx::task<_streaming_media_session_impl_ptr> play(const std::vector<media_subsession>& subsessions);
+        uvxx::pplx::task<streaming_media_session> play(std::vector<media_subsession> subsessions);
 
         _media_session_impl_ptr media_session_get();
+
+    private:
+        uvxx::pplx::task<void> setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions);
 
     private:
         static void describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
@@ -59,6 +64,10 @@ namespace uvxx { namespace rtsp { namespace details
         _uvxx_task_scheduler* _task_scheduler;
 
         media_subsession _current_media_subsession_setup;
+
+        streaming_media_session _streaming_session;
+
+        _live_authenticator _authenticator;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;
