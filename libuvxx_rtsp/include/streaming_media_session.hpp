@@ -13,7 +13,7 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp 
 {
-    class streaming_media_session : uvxx::event_dispatcher_object
+    class streaming_media_session : public uvxx::event_dispatcher_object
     {
     public:
         streaming_media_session();

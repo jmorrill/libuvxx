@@ -13,8 +13,7 @@ struct _streaming_media_io_state
     _streaming_media_session_impl* _streaming_media_session;
 };
 
-_streaming_media_session_impl::_streaming_media_session_impl(const _usage_environment_ptr& usage_environment, const _media_session_impl_ptr& session, const std::vector<media_subsession>& subsessions) :
-    _usage_environment(usage_environment),
+_streaming_media_session_impl::_streaming_media_session_impl(const _media_session_impl_ptr& session, const std::vector<media_subsession>& subsessions) :
     _session(session)
 {
     _subsessions = subsessions;

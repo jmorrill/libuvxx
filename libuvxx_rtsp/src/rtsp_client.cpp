@@ -26,7 +26,10 @@ task<void> rtsp_client::open(const std::string& url) const
 {
     auto this_ptr = *this;
 
-    return __rtsp_client_imp->open(url).then([this_ptr]{});;
+    return __rtsp_client_imp->open(url).then([this_ptr]
+    {
+         auto tid = std::this_thread::get_id();
+    });;
 }
 
 media_session rtsp_client::media_session_get() const
@@ -39,7 +42,7 @@ task<streaming_media_session> rtsp_client::play() const
     auto this_ptr = *this;
 
     return __rtsp_client_imp->play(media_session_get().subsessions_get())
-        .then([this_ptr](_streaming_media_session_impl_ptr streaming_session){ return streaming_media_session(streaming_session);});
+        .then([this_ptr](_streaming_media_session_impl_ptr streaming_session){ return streaming_media_session(streaming_session);}, task_continuation_context::use_current());
 }
 
 uvxx::pplx::task<streaming_media_session> uvxx::rtsp::rtsp_client::play(const std::vector<media_subsession> & media_sessions) const
@@ -47,6 +50,6 @@ uvxx::pplx::task<streaming_media_session> uvxx::rtsp::rtsp_client::play(const st
     auto this_ptr = *this;
 
     return __rtsp_client_imp->play(media_sessions)
-       .then([this_ptr](_streaming_media_session_impl_ptr streaming_session){ return streaming_media_session(streaming_session);});
+       .then([this_ptr](_streaming_media_session_impl_ptr streaming_session){ return streaming_media_session(streaming_session);}, task_continuation_context::use_current());
 }
 

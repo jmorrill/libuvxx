@@ -2,6 +2,7 @@
 #include "media_session.hpp"
 
 using namespace uvxx::pplx;
+using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
 #define GET_RTSP_CLIENT(live_rtsp_client)static_cast<uvxx::rtsp::details::_rtsp_client_impl*>(static_cast<uvxx::rtsp::details::_live_rtsp_client*>(live_rtsp_client)->context_get());
@@ -11,6 +12,8 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
     auto client_impl = GET_RTSP_CLIENT(live_rtsp_client);
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
+
+    auto& describe_event = client_impl->_describe_event;
         
     if (result_code)
     {
@@ -26,16 +29,16 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     if (!session)
     {
-        client_impl->_describe_event.set_exception(std::exception("failed to create a MediaSession object from the SDP description"));
+        describe_event.set_exception(std::exception("failed to create a MediaSession object from the SDP description"));
         return;
     }
     else if (!session->hasSubsessions())
     {
-        client_impl->_describe_event.set_exception(std::exception("This session has no media subsessions"));
+        describe_event.set_exception(std::exception("This session has no media subsessions"));
         return;
     }
 
-    client_impl->_describe_event.set(result_code);
+    describe_event.set(result_code);
 
     client_impl->_session = std::make_shared<_media_session_impl>();
 
@@ -62,7 +65,7 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
 
-    client_impl->_setup_event.set(result_code);
+    client_impl->_play_event.set(result_code);
 }
 
 
@@ -113,13 +116,20 @@ _media_session_impl_ptr _rtsp_client_impl::media_session_get()
     return _session;
 }
 
-uvxx::pplx::task<_streaming_media_session_impl_ptr> uvxx::rtsp::details::_rtsp_client_impl::play(const std::vector<media_subsession>& subsessions)
+uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(const std::vector<uvxx::rtsp::media_subsession>& subsessions)
 {
     auto current_index = std::make_shared<size_t>(0);
     
+    auto tid = std::this_thread::get_id();
+
+    printf("tid 1 %u\n", tid.hash());
+
     return create_iterative_task([=]
     {
-        return create_task([=]{}).then([=]
+        return create_task([=]
+        {
+           
+        }).then([=]
         {
             auto subsession_index = *current_index;
 
@@ -141,9 +151,7 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> uvxx::rtsp::details::_rtsp_c
 
             _current_media_subsession_setup = std::move(subsession);
 
-        }).then([=]
-        {
-            return create_task(_setup_event);
+             return create_task(_setup_event);
 
         }).then([=](int result_code)
         {
@@ -189,7 +197,19 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> uvxx::rtsp::details::_rtsp_c
                 _play_event = task_completion_event<int>();
 
                 _live_client->sendPlayCommand(*(subsession.__media_subsession)->live_media_subsession_get(), 
-                                               play_callback);
+                                              play_callback);
+
+                 return create_task(_play_event);
+            }).then([=](int result_code)
+            {
+                if (result_code)
+                {
+                    std::string exception_message = "rtsp error " + result_code;
+
+                    throw std::exception(exception_message.c_str());
+                }
+
+                printf("finished play\n");
             });
         }, task_continuation_context::use_current());
     }).then([=](task<void> iterativeTask)
@@ -202,7 +222,7 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> uvxx::rtsp::details::_rtsp_c
         {
         }
 
-        return std::make_shared<_streaming_media_session_impl>(_usage_environment, _session, subsessions);
+        return std::make_shared<_streaming_media_session_impl>(_session, subsessions);
     });
 }
 

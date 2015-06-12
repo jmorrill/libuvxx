@@ -11,7 +11,6 @@ namespace uvxx { namespace rtsp
 
     namespace details
     {
-        using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
         using _media_session_impl_ptr = std::shared_ptr<_media_session_impl>;
     }
 }}
@@ -21,7 +20,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _streaming_media_session_impl
     {
     public:
-        _streaming_media_session_impl(const _usage_environment_ptr& _usage_environment, const _media_session_impl_ptr& session, const std::vector<media_subsession>& subsessions);
+        _streaming_media_session_impl(const _media_session_impl_ptr& session, const std::vector<media_subsession>& subsessions);
 
         _streaming_media_session_impl(const _streaming_media_session_impl& rhs) = delete;
 
@@ -45,8 +44,6 @@ namespace uvxx { namespace rtsp { namespace details
         std::function<bool()> _on_frame_callback;
 
         std::vector<uint8_t> _buffer;
-
-        _usage_environment_ptr _usage_environment;
 
         _media_session_impl_ptr _session;
     };

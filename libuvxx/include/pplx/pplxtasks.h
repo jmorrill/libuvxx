@@ -3276,8 +3276,10 @@ private:
         _M_Impl->_M_fFromAsync =  uvxx::pplx::details::_HasDispatcher();
         _M_Impl->_M_fUnwrappedTask = _Async_type_traits::_IsUnwrappedTaskOrAsync;
         _M_Impl->_M_taskEventLogger._LogScheduleTask(false);
-        _M_Impl->_ScheduleTask(new _InitialTaskHandle<_InternalReturnType, _Function, typename _Async_type_traits::_AsyncKind>(_GetImpl(), _Func), details::_NoInline);
+        _M_Impl->_ScheduleTask(new _InitialTaskHandle<_InternalReturnType, _Function, typename _Async_type_traits::_AsyncKind>(_GetImpl(), _Func), _task_inline_hack);
     }
+
+    details::_TaskInliningMode _task_inline_hack;
 
     /// <summary>
     ///     Initializes a task using a task completion event.
@@ -3473,6 +3475,21 @@ public:
         _M_unitTask._CreateImpl(_TaskOptions.get_cancellation_token()._GetImplValue(), _TaskOptions.get_scheduler());
         // Do not move the next line out of this function. It is important that _CAPTURE_CALLSTACK() evaluate to the the call site of the task constructor.
         _M_unitTask._SetTaskCreationCallstack(details::_get_internal_task_options(_TaskOptions)._M_hasPresetCreationCallstack ? std::move(details::_get_internal_task_options(_TaskOptions)._M_presetCreationCallstack) : _CAPTURE_CALLSTACK());
+
+         //auto has_dispatcher = uvxx::pplx::details::_HasDispatcher();
+
+         auto& context = _TaskOptions.get_continuation_context();
+
+         context._Capture();
+
+         if (context._HasCapturedContext())
+         {
+             _M_unitTask._task_inline_hack = details::_ForceInline;
+         }
+         else
+         {
+             _M_unitTask._task_inline_hack = details::_NoInline;
+         }
 
         _TaskInitMaybeFunctor(_Param, details::_IsCallable(_Param,0));
     }
