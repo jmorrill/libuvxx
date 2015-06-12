@@ -2626,6 +2626,19 @@ public:
         // Do not move the next line out of this function. It is important that _CAPTURE_CALLSTACK() evaluate to the the call site of the task constructor.
         _SetTaskCreationCallstack(details::_get_internal_task_options(_TaskOptions)._M_hasPresetCreationCallstack ? std::move(details::_get_internal_task_options(_TaskOptions)._M_presetCreationCallstack) : _CAPTURE_CALLSTACK());
         
+        auto& context = _TaskOptions.get_continuation_context();
+
+         context._Capture();
+
+         if (context._HasCapturedContext())
+         {
+             _task_inline_hack = details::_ForceInline;
+         }
+         else
+         {
+             _task_inline_hack = details::_NoInline;
+         }
+
         _TaskInitMaybeFunctor(_Param, details::_IsCallable(_Param,0));
     }
 

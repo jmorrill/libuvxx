@@ -119,17 +119,10 @@ _media_session_impl_ptr _rtsp_client_impl::media_session_get()
 uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(const std::vector<uvxx::rtsp::media_subsession>& subsessions)
 {
     auto current_index = std::make_shared<size_t>(0);
-    
-    auto tid = std::this_thread::get_id();
-
-    printf("tid 1 %u\n", tid.hash());
 
     return create_iterative_task([=]
     {
         return create_task([=]
-        {
-           
-        }).then([=]
         {
             auto subsession_index = *current_index;
 
@@ -164,7 +157,7 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(cons
 
             printf("finished play\n");
         });
-    }, task_continuation_context::use_current())
+    })
     .then([=](task<void> iterativeTask)
     {
         _current_media_subsession_setup = nullptr;
@@ -181,7 +174,7 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(cons
 
         return create_iterative_task([=]
         {
-            return create_task([=]{}).then([=]
+            return create_task([=]
             {
                 auto subsession_index = *current_index;
 
@@ -211,7 +204,7 @@ uvxx::pplx::task<_streaming_media_session_impl_ptr> _rtsp_client_impl::play(cons
 
                 printf("finished play\n");
             });
-        }, task_continuation_context::use_current());
+        });
     }).then([=](task<void> iterativeTask)
     {
         try
