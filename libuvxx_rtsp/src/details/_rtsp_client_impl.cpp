@@ -11,15 +11,15 @@ using namespace uvxx::rtsp::details;
 #define THROW_RTSP_EXCEPTION(code, message, task_event)\
     if(!code)\
     {\
-        task_event.set_exception(rtsp_exception(message));\
+        task_event.set_exception(rtsp_exception(message ? message : ""));\
     }\
     else if(code < 0)\
     {\
-        task_event.set_exception(rtsp_network_exception(std::abs(code), message));\
+        task_event.set_exception(rtsp_network_exception(std::abs(code), message ? message : ""));\
     }\
     else\
     {\
-        task_event.set_exception(rtsp_transport_exception(code, message));\
+        task_event.set_exception(rtsp_transport_exception(code, message ? message : ""));\
     }\
 
 void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
@@ -65,16 +65,18 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
 
-    auto& subsession = client_impl->_current_media_subsession_setup;
-
-    auto live_subsession = subsession.__media_subsession->live_media_subsession();
-
     auto& setup_event = client_impl->_setup_event;
 
     if (result_code)
     {
         THROW_RTSP_EXCEPTION(result_code, result_string, setup_event);
+
+        return;
     }
+
+    auto& subsession = client_impl->_current_media_subsession_setup;
+
+    auto live_subsession = subsession.__media_subsession->live_media_subsession();
 
     setup_event.set();
 }
@@ -91,6 +93,8 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
     if (result_code)
     {
         THROW_RTSP_EXCEPTION(result_code, result_string, play_event);
+
+        return;
     }
 
     client_impl->_play_event.set();
@@ -145,7 +149,6 @@ media_session _rtsp_client_impl::session()
 {
     return _session;
 }
-
 
 uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions_)
 {
