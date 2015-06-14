@@ -21,7 +21,7 @@ _uvxx_task_scheduler::_uvxx_task_scheduler(unsigned maxSchedulerGranularity)
 {
     if (maxSchedulerGranularity > 0)
     {
-        schedulerTickTask(); // ensures that we handle events frequently
+        //schedulerTickTask(); // ensures that we handle events frequently
     }
 
     _timer.timeout_set(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::microseconds(maxSchedulerGranularity)));
@@ -67,8 +67,6 @@ void _uvxx_task_scheduler::set_next_timeout()
     {
         millis = 0;
     }
-
-    printf("timeout (ms): %d\n", millis);
 
     _timer.timeout_set(std::chrono::milliseconds(millis));
 }
