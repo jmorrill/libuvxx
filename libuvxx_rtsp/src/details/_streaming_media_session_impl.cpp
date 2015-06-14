@@ -13,7 +13,8 @@ struct _streaming_media_io_state
     _streaming_media_session_impl* _streaming_media_session;
 };
 
-_streaming_media_session_impl::_streaming_media_session_impl(const media_session& session, std::vector<media_subsession> subsessions) :
+_streaming_media_session_impl::_streaming_media_session_impl(const media_session& session, 
+                                                             std::vector<media_subsession> subsessions) :
     _session(session),
     _subsessions(std::move(subsessions))
 {
@@ -93,7 +94,7 @@ void uvxx::rtsp::details::_streaming_media_session_impl::continue_reading()
 
         FramedSource* framed_source = live_subsession->readSource();
 
-        if (framed_source == nullptr)
+        if (!framed_source)
         {
             continue;
         }
@@ -108,18 +109,27 @@ void uvxx::rtsp::details::_streaming_media_session_impl::continue_reading()
                                     on_after_getting_frame, 
                                     live_subsession->miscPtr, 
                                     nullptr, 
-                                    live_subsession->miscPtr);
+                                    nullptr);
     }
 }
 
-void _streaming_media_session_impl::on_after_getting_frame(void* client_data, unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds)
+void _streaming_media_session_impl::on_after_getting_frame(void* client_data, 
+                                                           unsigned packet_data_size, 
+                                                           unsigned truncated_bytes, 
+                                                           struct timeval presentation_time, 
+                                                           unsigned duration_in_microseconds)
 {
     auto io_state = static_cast<_streaming_media_io_state*>(client_data);
 
     bool continue_reading = io_state->_streaming_media_session->_on_frame_callback();
 
     io_state->live_subsession->codecName();
-    printf("%s\t size: %d\ttruncated: %d\ttime: %u\n", io_state->live_subsession->codecName(), packet_data_size, truncated_bytes, presentation_time.tv_sec);
+
+    printf("codec: %s\t size: %d\ttruncated: %d\ttime: %u\n", io_state->live_subsession->codecName(), 
+                                                       packet_data_size, 
+                                                       truncated_bytes, 
+                                                       presentation_time.tv_sec);
+    
     if (continue_reading)
     {
         io_state->_streaming_media_session->continue_reading();
