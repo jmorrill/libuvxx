@@ -34,12 +34,12 @@ _media_subsession_impl::~_media_subsession_impl()
 
 }
 
-std::string _media_subsession_impl::codec_name_get()
+std::string _media_subsession_impl::codec_name()
 {
     return _live_subsession->codecName();
 }
 
-MediaSubsession* _media_subsession_impl::live_media_subsession_get() const
+MediaSubsession* _media_subsession_impl::live_media_subsession() const
 {
     return _live_subsession;
 }
@@ -97,12 +97,12 @@ _media_session_impl::_media_session_impl() : _live_session(nullptr)
 
 }
 
-MediaSession* _media_session_impl::live_media_session_get() const
+MediaSession* _media_session_impl::live_media_session() const
 {
     return _live_session;
 }
 
-const std::vector<_media_subsession_impl_ptr>& _media_session_impl::subsessions_get() const
+const std::vector<_media_subsession_impl_ptr>& _media_session_impl::subsessions() const
 {
     return _subsessions;
 }

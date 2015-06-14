@@ -39,7 +39,7 @@ namespace uvxx { namespace rtsp
         bool operator==(std::nullptr_t rhs);
 
     public:
-        const std::string codec_name_get() const;
+        const std::string codec_name() const;
 
     private:
         media_subsession();
@@ -70,11 +70,11 @@ namespace uvxx { namespace rtsp
 
     public:
 
-        const std::vector<media_subsession> subsessions_get() const;
+        const std::vector<media_subsession> subsessions() const;
 
         const size_t subsession_count() const;
         
-        const media_subsession subsession_get(size_t index) const;
+        const media_subsession subsession(size_t index) const;
 
     private:
         details::_media_session_impl_ptr __media_session;

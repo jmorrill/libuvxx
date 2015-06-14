@@ -19,7 +19,7 @@ _live_rtsp_client::~_live_rtsp_client(void)
     printf("_live_rtsp_client deleted\n");
 }
 
-void* _live_rtsp_client::context_get()
+void* _live_rtsp_client::context()
 {
     return _context;
 }

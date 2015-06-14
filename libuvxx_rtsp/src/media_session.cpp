@@ -37,9 +37,9 @@ media_subsession& media_subsession::operator=(media_subsession&& rhs)
     return *this;
 }
 
-const std::string media_subsession::codec_name_get() const
+const std::string media_subsession::codec_name() const
 {
-    return __media_subsession->codec_name_get();
+    return __media_subsession->codec_name();
 }
 
 media_session::media_session(media_session&& rhs)
@@ -65,15 +65,15 @@ media_session& media_session::operator=(media_session&& rhs)
 
 const size_t media_session::subsession_count() const
 {
-    return __media_session->subsessions_get().size();
+    return __media_session->subsessions().size();
 }
 
-const media_subsession media_session::subsession_get(size_t index) const
+const media_subsession media_session::subsession(size_t index) const
 {
-    return media_subsession(__media_session->subsessions_get().at(index));
+    return media_subsession(__media_session->subsessions().at(index));
 }
 
-const std::vector<media_subsession> media_session::subsessions_get() const
+const std::vector<media_subsession> media_session::subsessions() const
 {
     auto subsessioncount = subsession_count();
 
@@ -81,7 +81,7 @@ const std::vector<media_subsession> media_session::subsessions_get() const
 
     for (size_t i = 0; i < subsessioncount; i++)
     {
-        subsessions.emplace_back(subsession_get(i));
+        subsessions.emplace_back(subsession(i));
     }
 
     return subsessions;

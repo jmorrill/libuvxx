@@ -21,7 +21,7 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
 
     for (auto& subsession : _subsessions)
     {
-        auto live_subsession = subsession.__media_subsession->live_media_subsession_get();
+        auto live_subsession = subsession.__media_subsession->live_media_subsession();
 
         live_subsession->miscPtr = nullptr;
 
@@ -53,7 +53,7 @@ _streaming_media_session_impl::~_streaming_media_session_impl()
 {
     for (auto& subsession : _subsessions)
     {
-        auto live_subsession = subsession.__media_subsession->live_media_subsession_get();
+        auto live_subsession = subsession.__media_subsession->live_media_subsession();
 
         if (live_subsession->rtcpInstance() != nullptr) 
         {
@@ -89,7 +89,7 @@ void uvxx::rtsp::details::_streaming_media_session_impl::continue_reading()
 {
     for (auto& subsession : _subsessions)
     {
-         auto live_subsession = subsession.__media_subsession->live_media_subsession_get();
+         auto live_subsession = subsession.__media_subsession->live_media_subsession();
 
         FramedSource* subsessionSource = live_subsession->readSource();
 
@@ -114,7 +114,7 @@ void _streaming_media_session_impl::on_after_getting_frame(void* client_data, un
     bool continue_reading = io_state->_streaming_media_session->_on_frame_callback();
 
     io_state->live_subsession->codecName();
-    printf("%s\t size: %d\ttruncated: %d\tduration:%d\ttime: %u\n", io_state->live_subsession->codecName(), packet_data_size, truncated_bytes, duration_in_microseconds, presentation_time.tv_sec);
+    printf("%s\t size: %d\ttruncated: %d\ttime: %u\n", io_state->live_subsession->codecName(), packet_data_size, truncated_bytes, presentation_time.tv_sec);
     if (continue_reading)
     {
         io_state->_streaming_media_session->continue_reading();

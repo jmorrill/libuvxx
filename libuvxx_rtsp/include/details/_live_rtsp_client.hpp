@@ -14,7 +14,7 @@ namespace uvxx { namespace rtsp { namespace details
                           char const* application_name = nullptr,
                           portNumBits tunnel_over_http_port_number = 0);
 
-        void* context_get();
+        void* context();
 
         virtual ~_live_rtsp_client();
 

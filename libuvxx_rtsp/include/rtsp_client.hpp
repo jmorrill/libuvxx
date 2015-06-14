@@ -33,7 +33,7 @@ namespace uvxx { namespace rtsp
 
         uvxx::pplx::task<streaming_media_session> play(std::vector<media_subsession> media_subsessions) const;
 
-        media_session media_session_get() const;
+        media_session media_session() const;
 
     private:
         details::_rtsp_client_impl_ptr __rtsp_client_imp;

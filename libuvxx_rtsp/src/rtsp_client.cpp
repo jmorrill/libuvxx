@@ -32,16 +32,16 @@ task<void> rtsp_client::open(const std::string& url) const
     });;
 }
 
-media_session rtsp_client::media_session_get() const
+media_session rtsp_client::media_session() const
 {
-    return __rtsp_client_imp->media_session_get();
+    return __rtsp_client_imp->session();
 }
 
 task<streaming_media_session> rtsp_client::play() const
 {
     auto this_ptr = *this;
 
-    return __rtsp_client_imp->play(media_session_get().subsessions_get())
+    return __rtsp_client_imp->play(media_session().subsessions())
     .then([this_ptr](streaming_media_session streaming_session)
     {
         return streaming_session;
