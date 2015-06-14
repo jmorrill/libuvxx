@@ -13,7 +13,7 @@ struct _streaming_media_io_state
     _streaming_media_session_impl* _streaming_media_session;
 };
 
-_streaming_media_session_impl::_streaming_media_session_impl(const _media_session_impl_ptr& session, std::vector<media_subsession> subsessions) :
+_streaming_media_session_impl::_streaming_media_session_impl(const media_session& session, std::vector<media_subsession> subsessions) :
     _session(session),
     _subsessions(std::move(subsessions))
 {
@@ -112,7 +112,9 @@ void _streaming_media_session_impl::on_after_getting_frame(void* client_data, un
     auto io_state = static_cast<_streaming_media_io_state*>(client_data);
 
     bool continue_reading = io_state->_streaming_media_session->_on_frame_callback();
-    printf("pack_size: %d\ttruncated: %d\tduration:%d\n", packet_data_size, truncated_bytes, duration_in_microseconds);
+
+    io_state->live_subsession->codecName();
+    printf("%s\t size: %d\ttruncated: %d\tduration:%d\ttime: %u\n", io_state->live_subsession->codecName(), packet_data_size, truncated_bytes, duration_in_microseconds, presentation_time.tv_sec);
     if (continue_reading)
     {
         io_state->_streaming_media_session->continue_reading();

@@ -34,7 +34,7 @@ task<void> rtsp_client::open(const std::string& url) const
 
 media_session rtsp_client::media_session_get() const
 {
-    return media_session(__rtsp_client_imp->media_session_get());
+    return __rtsp_client_imp->media_session_get();
 }
 
 task<streaming_media_session> rtsp_client::play() const

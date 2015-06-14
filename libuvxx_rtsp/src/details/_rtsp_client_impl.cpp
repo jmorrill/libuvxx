@@ -8,7 +8,19 @@ using namespace uvxx::rtsp::details;
 
 #define GET_RTSP_CLIENT(live_rtsp_client)static_cast<uvxx::rtsp::details::_rtsp_client_impl*>(static_cast<uvxx::rtsp::details::_live_rtsp_client*>(live_rtsp_client)->context_get());
 
-#define RTSP_EXCEPTION(code, message)((code > 0) ? rtsp_transport_exception(code, message) : rtsp_network_exception(code, message))
+#define THROW_RTSP_EXCEPTION(code, message, task_event)\
+    if(!code)\
+    {\
+        task_event.set_exception(rtsp_exception(message));\
+    }\
+    else if(code < 0)\
+    {\
+        task_event.set_exception(rtsp_network_exception(std::abs(code), message));\
+    }\
+    else\
+    {\
+        task_event.set_exception(rtsp_transport_exception(code, message));\
+    }\
 
 void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
 {
@@ -20,10 +32,9 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
         
     if (result_code)
     {
-        std::string exception_message = "failed to get a SDP description error: " + result_code;
+        std::string exception_message = "failed to get a SDP description";
 
-        describe_event.set_exception(rtsp_transport_exception(result_code, exception_message));
-
+        THROW_RTSP_EXCEPTION(result_code, exception_message, describe_event);
         return;
     }
     
@@ -32,20 +43,22 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     if (!session)
     {
-        describe_event.set_exception(std::exception("failed to create a MediaSession object from the SDP description"));
+        THROW_RTSP_EXCEPTION(0, "failed to create a MediaSession from the SDP description", describe_event);
         return;
     }
     else if (!session->hasSubsessions())
     {
-        describe_event.set_exception(std::exception("This session has no media subsessions"));
+        THROW_RTSP_EXCEPTION(0, "failed to create a MediaSession from the SDP description", describe_event);
         return;
     }
 
     describe_event.set(result_code);
 
-    client_impl->_session = std::make_shared<_media_session_impl>();
+    auto session_impl = std::make_shared<_media_session_impl>();
 
-    client_impl->_session->live_media_session_set(client_impl->_usage_environment, session);
+    session_impl->live_media_session_set(client_impl->_usage_environment, session);
+
+    client_impl->_session = media_session(session_impl);
 }
 
 void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
@@ -118,7 +131,7 @@ task<void> _rtsp_client_impl::open(const std::string& url)
     });
 }
 
-_media_session_impl_ptr _rtsp_client_impl::media_session_get()
+media_session _rtsp_client_impl::media_session_get()
 {
     return _session;
 }
