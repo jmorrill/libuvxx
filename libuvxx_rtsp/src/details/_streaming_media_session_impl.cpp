@@ -25,17 +25,17 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
 
         live_subsession->miscPtr = nullptr;
 
-        FramedSource* subsessionSource = live_subsession->readSource();
+        FramedSource* framed_source = live_subsession->readSource();
 
-        if(!subsessionSource)
+        if(!framed_source)
         {
             continue;
         }
 
-        subsessionSource->stopGettingFrames();
+        framed_source->stopGettingFrames();
 
         /* set a 'BYE' handler for this subsession's RTCP instance: */
-        if (live_subsession->rtcpInstance() != nullptr) 
+        if (live_subsession->rtcpInstance()) 
         {
             live_subsession->miscPtr = new _streaming_media_io_state{ live_subsession, this};
 
@@ -55,7 +55,7 @@ _streaming_media_session_impl::~_streaming_media_session_impl()
     {
         auto live_subsession = subsession.__media_subsession->live_media_subsession();
 
-        if (live_subsession->rtcpInstance() != nullptr) 
+        if (live_subsession->rtcpInstance()) 
         {
             if (live_subsession->miscPtr)
             {
@@ -80,7 +80,7 @@ _streaming_media_session_impl::~_streaming_media_session_impl()
 
 void uvxx::rtsp::details::_streaming_media_session_impl::on_frame_callback_set(std::function<bool()> callback)
 {
-    _on_frame_callback = callback;
+    _on_frame_callback = std::move(callback);
 
     continue_reading();
 }
@@ -89,21 +89,26 @@ void uvxx::rtsp::details::_streaming_media_session_impl::continue_reading()
 {
     for (auto& subsession : _subsessions)
     {
-         auto live_subsession = subsession.__media_subsession->live_media_subsession();
+        auto live_subsession = subsession.__media_subsession->live_media_subsession();
 
-        FramedSource* subsessionSource = live_subsession->readSource();
+        FramedSource* framed_source = live_subsession->readSource();
 
-        if (subsessionSource == nullptr)
+        if (framed_source == nullptr)
         {
             continue;
         }
 
-        if (subsessionSource->isCurrentlyAwaitingData())
+        if (framed_source->isCurrentlyAwaitingData())
         {
             continue;
         }
 
-        subsessionSource->getNextFrame(_buffer.data(), _buffer.size(), on_after_getting_frame, live_subsession->miscPtr, nullptr, live_subsession->miscPtr);
+        framed_source->getNextFrame(_buffer.data(), 
+                                    _buffer.size(), 
+                                    on_after_getting_frame, 
+                                    live_subsession->miscPtr, 
+                                    nullptr, 
+                                    live_subsession->miscPtr);
     }
 }
 

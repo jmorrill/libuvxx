@@ -10,7 +10,7 @@ _live_rtsp_client::_live_rtsp_client(UsageEnvironment& environment,
                                      portNumBits tunnel_over_http_port_number) :
     RTSPClient(environment, rtsp_url, verbosity_level, application_name, tunnel_over_http_port_number, -1), _context(context)
 {
-    
+        
 }
 
 
