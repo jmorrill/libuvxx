@@ -49,11 +49,11 @@ namespace uvxx { namespace rtsp { namespace details
         static void play_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
 
     private:
-        uvxx::pplx::task_completion_event<int> _describe_event;
+        uvxx::pplx::task_completion_event<void> _describe_event;
 
-        uvxx::pplx::task_completion_event<int> _setup_event;
+        uvxx::pplx::task_completion_event<void> _setup_event;
 
-        uvxx::pplx::task_completion_event<int> _play_event;
+        uvxx::pplx::task_completion_event<void> _play_event;
 
         media_session _session;
 

@@ -3,7 +3,7 @@
 
 namespace uvxx { namespace rtsp 
 { 
-    class rtsp_exception : uvxx::uvxx_exception
+    class rtsp_exception : public uvxx::uvxx_exception
     {
     public:
         rtsp_exception(const std::string & message) : uvxx::uvxx_exception(message)
@@ -12,7 +12,7 @@ namespace uvxx { namespace rtsp
         }
     };
 
-    class rtsp_transport_exception : rtsp_exception
+    class rtsp_transport_exception : public rtsp_exception
     {
     public:
         rtsp_transport_exception(int code, const std::string & message) : rtsp_exception(message),
@@ -35,7 +35,7 @@ namespace uvxx { namespace rtsp
         int _code;
     };
 
-    class rtsp_network_exception : rtsp_exception
+    class rtsp_network_exception : public rtsp_exception
     {
     public:
         rtsp_network_exception(int code, const std::string & message) : rtsp_exception(message),

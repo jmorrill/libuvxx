@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "rtsp_client.hpp"
 #include "streaming_media_session.hpp"
+#include "rtsp_exceptions.hpp"
 
 using namespace std;
 using namespace uvxx;
@@ -34,12 +35,20 @@ int main(int argc, char* argv[])
             stream = std::move(t.get());
             
             stream.on_frame_callback_set(on_frame_callback);
-        }).then([client]() 
+        }).then([client]
         {
             return create_timer_task(std::chrono::milliseconds(25000));
-        })
-        .then([&](task<void> t)
+        }).then([](task<void> t)
         {
+            try
+            {
+                t.get();
+            }
+            catch (const rtsp_exception& e)
+            {
+                printf(e.what());
+            }
+
             event_dispatcher::current_dispatcher().begin_shutdown();
         });
 

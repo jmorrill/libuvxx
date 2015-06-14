@@ -32,9 +32,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
         
     if (result_code)
     {
-        std::string exception_message = "failed to get a SDP description";
-
-        THROW_RTSP_EXCEPTION(result_code, exception_message, describe_event);
+        THROW_RTSP_EXCEPTION(result_code, result_string, describe_event);
         return;
     }
     
@@ -52,7 +50,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
         return;
     }
 
-    describe_event.set(result_code);
+    describe_event.set();
 
     auto session_impl = std::make_shared<_media_session_impl>();
 
@@ -73,7 +71,12 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
 
     auto& setup_event = client_impl->_setup_event;
 
-    setup_event.set(result_code);
+    if (result_code)
+    {
+        THROW_RTSP_EXCEPTION(result_code, result_string, setup_event);
+    }
+
+    setup_event.set();
 }
 
 
@@ -83,7 +86,14 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
 
-    client_impl->_play_event.set(result_code);
+    auto& play_event = client_impl->_play_event;
+
+    if (result_code)
+    {
+        THROW_RTSP_EXCEPTION(result_code, result_string, play_event);
+    }
+
+    client_impl->_play_event.set();
 }
 
 
@@ -119,15 +129,15 @@ task<void> _rtsp_client_impl::open(const std::string& url)
         Medium::close(client);
     });
 
-    _describe_event = task_completion_event<int>();
+    _describe_event = task_completion_event<void>();
     
     _authenticator.setUsernameAndPassword("admin","12345");
 
     _live_client->sendDescribeCommand(describe_callback, &_authenticator);
 
-    return create_task(_describe_event).then([this](int result_code)
+    return create_task(_describe_event).then([this]
     {
-        printf("result code %d\n", result_code);
+        printf("describe complete\n");
     });
 }
 
@@ -155,7 +165,7 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::
 
             if (subsession_index >= subsessions.size())
             {
-                return task_from_exception<int>(iterative_task_complete_exception());
+                return task_from_exception<void>(iterative_task_complete_exception());
             }
 
             auto& subsession = subsessions.at(subsession_index);
@@ -164,7 +174,7 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::
 
             (*current_index)++;
 
-            _setup_event = task_completion_event<int>();
+            _setup_event = task_completion_event<void>();
 
             _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession_get(), 
                                            setup_callback);
@@ -173,15 +183,8 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::
 
              return create_task(_setup_event);
 
-        }).then([=](int result_code)
+        }).then([=]
         {
-            if (result_code)
-            {
-                std::string exception_message = "rtsp error " + result_code;
-
-                throw std::exception(exception_message.c_str());
-            }
-
             printf("finished play\n");
         });
     });
@@ -219,28 +222,21 @@ uvxx::pplx::task<streaming_media_session> _rtsp_client_impl::play(std::vector<me
 
                 if (subsession_index >= subsessions.size())
                 {
-                    return task_from_exception<int>(iterative_task_complete_exception());
+                    return task_from_exception<void>(iterative_task_complete_exception());
                 }
 
                 auto& subsession = subsessions.at(subsession_index);
 
                 (*current_index)++;
 
-                _play_event = task_completion_event<int>();
+                _play_event = task_completion_event<void>();
 
                 _live_client->sendPlayCommand(*(subsession.__media_subsession)->live_media_subsession_get(), 
                                               play_callback);
 
                  return create_task(_play_event);
-            }).then([=](int result_code)
+            }).then([=]
             {
-                if (result_code)
-                {
-                    std::string exception_message = "rtsp error " + result_code;
-
-                    return task_from_exception<void>(std::exception(exception_message.c_str()));
-                }
-
                 printf("finished play\n");
 
                 return task_from_result();
@@ -256,7 +252,8 @@ uvxx::pplx::task<streaming_media_session> _rtsp_client_impl::play(std::vector<me
         {
         }
 
-        _streaming_session = streaming_media_session(std::make_shared<_streaming_media_session_impl>(_session, std::move(*subsession_ptr.get())));
+        _streaming_session = streaming_media_session(std::make_shared<_streaming_media_session_impl>
+                                                        (_session, std::move(*subsession_ptr.get())));
 
         return _streaming_session;
     });
