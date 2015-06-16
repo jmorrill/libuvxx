@@ -126,7 +126,7 @@ _rtsp_client_impl::~_rtsp_client_impl()
 
 task<void> _rtsp_client_impl::open(const std::string& url)
 {
-    _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(*_usage_environment, url.c_str(), this, 2),
+    _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(_usage_environment, url.c_str(), this, 2),
     /* deleter */
     [](_live_rtsp_client* client)
     {

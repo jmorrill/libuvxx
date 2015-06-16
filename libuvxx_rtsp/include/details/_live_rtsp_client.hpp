@@ -4,10 +4,12 @@
 
 namespace uvxx { namespace rtsp { namespace details 
 {
+    using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
+
     class _live_rtsp_client : public RTSPClient
     {
     public:
-        _live_rtsp_client(UsageEnvironment& environment,
+        _live_rtsp_client(const _usage_environment_ptr& environment,
                           char const* rtsp_url,
                           void* context,
                           int verbosity_level = 0,
@@ -20,6 +22,8 @@ namespace uvxx { namespace rtsp { namespace details
 
     private:
         void* _context;
+
+        _usage_environment_ptr _usage_environment;
     };
 
     using _live_rtsp_client_ptr = std::shared_ptr<_live_rtsp_client>;
