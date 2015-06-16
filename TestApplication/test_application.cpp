@@ -2,14 +2,22 @@
 #include "rtsp_client.hpp"
 #include "streaming_media_session.hpp"
 #include "rtsp_exceptions.hpp"
+#include "media_sample.hpp"
 
 using namespace std;
 using namespace uvxx;
 using namespace uvxx::rtsp;
 using namespace uvxx::pplx;
 
-bool on_frame_callback()
+bool on_frame_callback(const media_sample& sample)
 {
+    printf("c: %s\t size: %d\t truncated: %d\t time: %llu \t m:%u\n",
+        sample.codec_name().c_str(),
+        sample.size(),
+        sample.is_truncated(),
+        sample.presentation_time(),
+        sample.is_complete_sample());
+
     return true;
 }
 
@@ -22,9 +30,17 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+
     {
         uvxx::rtsp::rtsp_client client;
+        std::thread::id tid = std::this_thread::get_id();
 
+        create_task([]
+        {
+            printf("task\n");
+        });
+
+        printf("test\n");
         client.open(argv[1]).then([=]
         {
             auto id = std::this_thread::get_id();

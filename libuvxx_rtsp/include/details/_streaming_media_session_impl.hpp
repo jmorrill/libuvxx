@@ -2,6 +2,9 @@
 #include "uvxx.hpp"
 #include "media_session.hpp"
 #include "MediaSession.hh"
+#include "_media_sample_impl.hpp"
+#include "media_sample.hpp"
+
 #include <memory>
 #include <vector>
 
@@ -29,7 +32,7 @@ namespace uvxx { namespace rtsp { namespace details
         virtual ~_streaming_media_session_impl();
 
     public:
-        void on_frame_callback_set(std::function<bool()> callback);
+        void on_frame_callback_set(std::function<bool(const media_sample&)> callback);
 
     private:
         void continue_reading();
@@ -41,11 +44,13 @@ namespace uvxx { namespace rtsp { namespace details
     private:
         std::vector<media_subsession> _subsessions;
 
-        std::function<bool()> _on_frame_callback;
+        std::function<bool(const media_sample&)> _on_frame_callback;
 
         std::vector<uint8_t> _buffer;
 
         media_session _session;
+
+        media_sample _media_sample;
     };
 
     using _streaming_media_session_impl_ptr = std::shared_ptr<_streaming_media_session_impl>;

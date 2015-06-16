@@ -49,6 +49,8 @@ namespace uvxx { namespace rtsp { namespace details
         static void play_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
 
     private:
+        unsigned _last_rtsp_command_id;
+
         uvxx::pplx::task_completion_event<void> _describe_event;
 
         uvxx::pplx::task_completion_event<void> _setup_event;
@@ -57,9 +59,9 @@ namespace uvxx { namespace rtsp { namespace details
 
         media_session _session;
 
-        _live_rtsp_client_ptr _live_client;
-
         _usage_environment_ptr _usage_environment;
+
+        _live_rtsp_client_ptr _live_client;
 
         _uvxx_task_scheduler* _task_scheduler;
 

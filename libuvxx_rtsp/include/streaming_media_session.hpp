@@ -1,6 +1,6 @@
 #pragma once
 #include "event_dispatcher_object.hpp"
-
+#include "media_sample.hpp"
 namespace uvxx { namespace rtsp { namespace details
 {
     /* implementation forwards */
@@ -31,7 +31,7 @@ namespace uvxx { namespace rtsp
         streaming_media_session& operator=(streaming_media_session&& rhs);
 
     public:
-        void on_frame_callback_set(std::function<bool()> callback);
+        void on_frame_callback_set(std::function<bool(const media_sample&)> callback);
 
     private:
         details::_streaming_media_session_impl_ptr __streaming_media_session;

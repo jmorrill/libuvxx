@@ -101,7 +101,7 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 }
 
 
-_rtsp_client_impl::_rtsp_client_impl()
+_rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0)
 {
     _task_scheduler = _uvxx_task_scheduler::createNew();
 
@@ -121,7 +121,7 @@ _rtsp_client_impl::_rtsp_client_impl()
 
 _rtsp_client_impl::~_rtsp_client_impl()
 {
-
+    auto b = _live_client->changeResponseHandler(_last_rtsp_command_id, nullptr);
 }
 
 task<void> _rtsp_client_impl::open(const std::string& url)
@@ -137,7 +137,7 @@ task<void> _rtsp_client_impl::open(const std::string& url)
     
     _authenticator.setUsernameAndPassword("admin","12345");
 
-    _live_client->sendDescribeCommand(describe_callback, &_authenticator);
+    _last_rtsp_command_id = _live_client->sendDescribeCommand(describe_callback, &_authenticator);
 
     return create_task(_describe_event).then([this]
     {
@@ -179,8 +179,8 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::
 
             _setup_event = task_completion_event<void>();
 
-            _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession(), 
-                                           setup_callback);
+            _last_rtsp_command_id = _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession(), 
+                                                                   setup_callback);
 
             _current_media_subsession_setup = subsession;
 
@@ -234,8 +234,8 @@ uvxx::pplx::task<streaming_media_session> _rtsp_client_impl::play(std::vector<me
 
                 _play_event = task_completion_event<void>();
 
-                _live_client->sendPlayCommand(*(subsession.__media_subsession)->live_media_subsession(), 
-                                              play_callback);
+                _last_rtsp_command_id = _live_client->sendPlayCommand(*(subsession.__media_subsession)->live_media_subsession(), 
+                                                                      play_callback);
 
                  return create_task(_play_event);
             }).then([=]

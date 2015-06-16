@@ -79,7 +79,7 @@ _streaming_media_session_impl::~_streaming_media_session_impl()
     }
 }
 
-void uvxx::rtsp::details::_streaming_media_session_impl::on_frame_callback_set(std::function<bool()> callback)
+void uvxx::rtsp::details::_streaming_media_session_impl::on_frame_callback_set(std::function<bool(const media_sample&)> callback)
 {
     _on_frame_callback = std::move(callback);
 
@@ -121,11 +121,12 @@ void _streaming_media_session_impl::on_after_getting_frame(void* client_data,
 {
     auto io_state = static_cast<_streaming_media_io_state*>(client_data);
 
-    bool continue_reading = io_state->_streaming_media_session->_on_frame_callback();
-
     io_state->live_subsession->codecName();
 
     FramedSource* framed_source = io_state->live_subsession->readSource();
+
+    auto& sample_impl = io_state->_streaming_media_session->_media_sample.__media_sample_impl;
+    auto& sample = io_state->_streaming_media_session->_media_sample;
 
     if (framed_source->isRTPSource())
     {
@@ -139,14 +140,26 @@ void _streaming_media_session_impl::on_after_getting_frame(void* client_data,
 
         std::chrono::microseconds micro_seconds(time_in_micros);
 
-        printf("c: %s\t size: %d\t truncated: %d\t time: %llu \t s:%u m:%u\n", 
+        sample_impl->codec_name_set(io_state->live_subsession->codecName());
+
+        sample_impl->is_complete_sample_set(packet_marker);
+
+        sample_impl->is_truncated_set(truncated_bytes > 0);
+
+        sample_impl->presentation_time_set(micro_seconds);
+
+        sample_impl->size_set(packet_data_size);
+
+        /*printf("c: %s\t size: %d\t truncated: %d\t time: %llu \t s:%u m:%u\n", 
                 io_state->live_subsession->codecName(), 
                 packet_data_size, 
                 truncated_bytes, 
                 time_in_micros, 
                 sync, 
-                packet_marker);
+                packet_marker);*/
     }
+
+    bool continue_reading = io_state->_streaming_media_session->_on_frame_callback(sample);
 
     if (continue_reading)
     {
