@@ -39,3 +39,8 @@ const std::string media_sample::codec_name() const
 {
     return __media_sample_impl->codec_name();
 }
+
+const int uvxx::rtsp::media_sample::stream_number() const
+{
+    return __media_sample_impl->stream_number();
+}

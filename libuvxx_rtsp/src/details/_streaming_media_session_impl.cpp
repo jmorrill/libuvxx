@@ -8,9 +8,19 @@ using namespace uvxx::rtsp::details;
 
 struct _streaming_media_io_state
 {
+    _streaming_media_io_state() = default;
+
+    _streaming_media_io_state(const _streaming_media_io_state&) = delete;
+
+    _streaming_media_io_state& operator=(const _streaming_media_io_state&) = delete;
+   
+    int stream_number;
+
     MediaSubsession* live_subsession;
 
     _streaming_media_session_impl* _streaming_media_session;
+
+    media_sample sample;
 };
 
 _streaming_media_session_impl::_streaming_media_session_impl(const media_session& session, 
@@ -18,7 +28,9 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
     _session(session),
     _subsessions(std::move(subsessions))
 {
-    _buffer.resize(150000);
+    _buffer.resize(1024);
+
+    int stream_number = 0;
 
     for (auto& subsession : _subsessions)
     {
@@ -38,10 +50,18 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
         /* set a 'BYE' handler for this subsession's RTCP instance: */
         if (live_subsession->rtcpInstance()) 
         {
-            live_subsession->miscPtr = new _streaming_media_io_state{ live_subsession, this};
+            media_sample sample;
+
+            sample.__media_sample_impl->stream_number_set(stream_number);
+
+            sample.__media_sample_impl->codec_name_set(live_subsession->codecName());
+
+            live_subsession->miscPtr = new _streaming_media_io_state{stream_number, live_subsession, this, std::move(sample)};
 
             live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, this);
         }
+
+        stream_number++;
     }
 }
 
@@ -113,50 +133,85 @@ void uvxx::rtsp::details::_streaming_media_session_impl::continue_reading()
     }
 }
 
+void _streaming_media_session_impl::adjust_buffer_for_trucated_bytes(unsigned truncated_amount)
+{
+    static const size_t MAX_BUFFER_SIZE = 2 * 1024 * 1024;
+
+    if (truncated_amount == 0)
+    {
+        return;
+    }
+
+    size_t current_size = _buffer.size();
+
+    size_t new_size = current_size + (truncated_amount * 2);
+
+    new_size = max(MAX_BUFFER_SIZE, new_size);
+
+    if (new_size == current_size)
+    {
+        return;
+    }
+
+    printf("resizing buffer to %u\n", new_size);
+
+    _buffer.resize(new_size);
+}
+
 void _streaming_media_session_impl::on_after_getting_frame(void* client_data, 
                                                            unsigned packet_data_size, 
                                                            unsigned truncated_bytes, 
                                                            struct timeval presentation_time, 
                                                            unsigned duration_in_microseconds)
 {
+    static uint64_t ONE_MILLION = 1000000ull;
+
     auto io_state = static_cast<_streaming_media_io_state*>(client_data);
 
-    io_state->live_subsession->codecName();
+    if (truncated_bytes)
+    {
+        io_state->_streaming_media_session->adjust_buffer_for_trucated_bytes(truncated_bytes);
+    }
 
     FramedSource* framed_source = io_state->live_subsession->readSource();
 
-    auto& sample_impl = io_state->_streaming_media_session->_media_sample.__media_sample_impl;
-    auto& sample = io_state->_streaming_media_session->_media_sample;
+    auto& sample = io_state->sample;
+
+    auto& sample_impl = sample.__media_sample_impl;
+
+    std::chrono::microseconds micro_seconds((ONE_MILLION * presentation_time.tv_sec) + 
+                                            presentation_time.tv_usec);
+
+    sample_impl->presentation_time_set(micro_seconds);
+
+    sample_impl->is_truncated_set(truncated_bytes > 0);
+
+    sample_impl->size_set(packet_data_size);
+
+    bool is_complete_sample = true;
+
+    bool is_synced = true;
 
     if (framed_source->isRTPSource())
     {
         auto rtp_source = static_cast<RTPSource*>(framed_source);
 
-        bool sync = rtp_source->hasBeenSynchronizedUsingRTCP();
+        is_synced = rtp_source->hasBeenSynchronizedUsingRTCP();
 
-        bool packet_marker = rtp_source->curPacketMarkerBit();
-        
-        uint64_t time_in_micros = (1000000ull * presentation_time.tv_sec) + presentation_time.tv_usec;
+        is_complete_sample = rtp_source->curPacketMarkerBit();
 
-        std::chrono::microseconds micro_seconds(time_in_micros);
+        sample_impl->is_complete_sample_set(is_complete_sample);
+    }
+    else
+    {
+        sample_impl->is_complete_sample_set(true);
+    }
 
-        sample_impl->codec_name_set(io_state->live_subsession->codecName());
+    if (!is_synced)
+    {
+        io_state->_streaming_media_session->continue_reading();
 
-        sample_impl->is_complete_sample_set(packet_marker);
-
-        sample_impl->is_truncated_set(truncated_bytes > 0);
-
-        sample_impl->presentation_time_set(micro_seconds);
-
-        sample_impl->size_set(packet_data_size);
-
-        /*printf("c: %s\t size: %d\t truncated: %d\t time: %llu \t s:%u m:%u\n", 
-                io_state->live_subsession->codecName(), 
-                packet_data_size, 
-                truncated_bytes, 
-                time_in_micros, 
-                sync, 
-                packet_marker);*/
+        return;
     }
 
     bool continue_reading = io_state->_streaming_media_session->_on_frame_callback(sample);

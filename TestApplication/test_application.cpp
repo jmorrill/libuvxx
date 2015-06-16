@@ -11,11 +11,12 @@ using namespace uvxx::pplx;
 
 bool on_frame_callback(const media_sample& sample)
 {
-    printf("c: %s\t size: %d\t truncated: %d\t time: %llu \t m:%u\n",
+    printf("c: %s\t size: %d\t truncated: %d\t time: %llu \t s:%u cs:%u\n",
         sample.codec_name().c_str(),
         sample.size(),
         sample.is_truncated(),
         sample.presentation_time(),
+        sample.stream_number(),
         sample.is_complete_sample());
 
     return true;
@@ -45,7 +46,7 @@ int main(int argc, char* argv[])
         {
             auto id = std::this_thread::get_id();
 
-            return client.play(std::vector<media_subsession>{client.media_session().subsession(0)}); 
+            return client.play(); 
         }).then([&](task<streaming_media_session> t)
         {
             stream = std::move(t.get());

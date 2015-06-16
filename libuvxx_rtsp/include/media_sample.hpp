@@ -22,6 +22,8 @@ namespace uvxx { namespace rtsp
         media_sample& operator=(const media_sample&) = default;
 
     public:
+        const int stream_number() const;
+
         const size_t size() const;
 
         const uint8_t* data() const;

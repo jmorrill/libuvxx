@@ -15,6 +15,11 @@ namespace uvxx { namespace rtsp { namespace details
         _media_sample_impl& operator=(const _media_sample_impl&) = delete;
 
     public:
+
+        const int stream_number() const;
+
+        void stream_number_set(int stream_number);
+
         const size_t size() const;
 
         void size_set(size_t size);
@@ -37,6 +42,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         void codec_name_set(const std::string& codec_name);
     private:
+        int _stream_number;
+
         size_t _size;
 
         std::chrono::microseconds _presentation_time;

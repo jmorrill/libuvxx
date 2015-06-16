@@ -37,6 +37,8 @@ namespace uvxx { namespace rtsp { namespace details
     private:
         void continue_reading();
 
+        void adjust_buffer_for_trucated_bytes(unsigned truncated_amount);
+
         static void on_rtcp_bye(void* client_data);
 
         static void on_after_getting_frame(void* client_data, unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds);
@@ -49,8 +51,6 @@ namespace uvxx { namespace rtsp { namespace details
         std::vector<uint8_t> _buffer;
 
         media_session _session;
-
-        media_sample _media_sample;
     };
 
     using _streaming_media_session_impl_ptr = std::shared_ptr<_streaming_media_session_impl>;
