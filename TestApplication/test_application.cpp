@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
         {
             auto id = std::this_thread::get_id();
 
-            return client.play(); 
+            return client.play(std::vector<media_subsession>{client.media_session().subsession(0)}); 
         }).then([&](task<streaming_media_session> t)
         {
             stream = std::move(t.get());

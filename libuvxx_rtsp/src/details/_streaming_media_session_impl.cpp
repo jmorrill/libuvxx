@@ -18,7 +18,7 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
     _session(session),
     _subsessions(std::move(subsessions))
 {
-    _buffer.resize(50000);
+    _buffer.resize(150000);
 
     for (auto& subsession : _subsessions)
     {
@@ -125,11 +125,29 @@ void _streaming_media_session_impl::on_after_getting_frame(void* client_data,
 
     io_state->live_subsession->codecName();
 
-    printf("codec: %s\t size: %d\ttruncated: %d\ttime: %u\n", io_state->live_subsession->codecName(), 
-                                                       packet_data_size, 
-                                                       truncated_bytes, 
-                                                       presentation_time.tv_sec);
-    
+    FramedSource* framed_source = io_state->live_subsession->readSource();
+
+    if (framed_source->isRTPSource())
+    {
+        auto rtp_source = static_cast<RTPSource*>(framed_source);
+
+        bool sync = rtp_source->hasBeenSynchronizedUsingRTCP();
+
+        bool packet_marker = rtp_source->curPacketMarkerBit();
+        
+        uint64_t time_in_micros = (1000000ull * presentation_time.tv_sec) + presentation_time.tv_usec;
+
+        std::chrono::microseconds micro_seconds(time_in_micros);
+
+        printf("c: %s\t size: %d\t truncated: %d\t time: %llu \t s:%u m:%u\n", 
+                io_state->live_subsession->codecName(), 
+                packet_data_size, 
+                truncated_bytes, 
+                time_in_micros, 
+                sync, 
+                packet_marker);
+    }
+
     if (continue_reading)
     {
         io_state->_streaming_media_session->continue_reading();

@@ -12,11 +12,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\details\_live_authenticator.hpp" />
+    <ClInclude Include="include\details\_media_sample_impl.hpp" />
     <ClInclude Include="include\details\_streaming_media_session_impl.hpp" />
     <ClInclude Include="include\details\_media_session_impl.hpp" />
     <ClInclude Include="include\details\_uvxx_task_scheduler.h" />
     <ClInclude Include="include\details\_live_rtsp_client.hpp" />
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />
+    <ClInclude Include="include\media_sample.hpp" />
     <ClInclude Include="include\media_session.hpp" />
     <ClInclude Include="include\rtsp_client.hpp" />
     <ClInclude Include="include\rtsp_exceptions.hpp" />
@@ -24,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
+    <ClCompile Include="src\details\_media_sample_impl.cpp" />
     <ClCompile Include="src\details\_media_session_impl.cpp" />
     <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
     <ClCompile Include="src\details\_streaming_media_session_impl.cpp" />
