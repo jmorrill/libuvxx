@@ -86,3 +86,8 @@ const std::vector<media_subsession> media_session::subsessions() const
 
     return subsessions;
 }
+
+media_session::~media_session()
+{
+
+}

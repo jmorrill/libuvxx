@@ -154,6 +154,8 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::
 {
     auto current_index = std::make_shared<size_t>(0);
 
+    verify_access();
+
     return create_iterative_task([=]
     {
         verify_access();

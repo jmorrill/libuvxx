@@ -76,3 +76,8 @@ const std::string _media_sample_impl::codec_name() const
 {
     return _codec_name;
 }
+
+_media_sample_impl::~_media_sample_impl()
+{
+
+}

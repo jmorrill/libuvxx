@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
             stream.on_frame_callback_set(on_frame_callback);
         }).then([client]
         {
-            return create_timer_task(std::chrono::milliseconds(35000));
+            return create_timer_task(std::chrono::milliseconds(15000));
         }).then([](task<void> t)
         {
             try

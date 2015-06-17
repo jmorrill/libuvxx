@@ -14,6 +14,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         _media_sample_impl& operator=(const _media_sample_impl&) = delete;
 
+        virtual ~_media_sample_impl();
+
     public:
 
         const int stream_number() const;

@@ -28,7 +28,7 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
     _session(session),
     _subsessions(std::move(subsessions))
 {
-    _buffer.resize(1024);
+    _buffer.resize(1024 * 100);
 
     int stream_number = 0;
 
@@ -45,8 +45,6 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
             continue;
         }
 
-        framed_source->stopGettingFrames();
-
         /* set a 'BYE' handler for this subsession's RTCP instance: */
         if (live_subsession->rtcpInstance()) 
         {
@@ -56,7 +54,9 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
 
             sample.__media_sample_impl->codec_name_set(live_subsession->codecName());
 
-            live_subsession->miscPtr = new _streaming_media_io_state{stream_number, live_subsession, this, std::move(sample)};
+            assert(!live_subsession->miscPtr);
+
+            live_subsession->miscPtr = new _streaming_media_io_state{stream_number, live_subsession, this, sample};
 
             live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, this);
         }

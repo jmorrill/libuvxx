@@ -58,6 +58,8 @@ namespace uvxx { namespace rtsp
     public:
         media_session();
 
+        virtual ~media_session();
+
         media_session(const details::_media_session_impl_ptr& _media_session);
 
         media_session(const media_session&) = default;

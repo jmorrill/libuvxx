@@ -15,6 +15,10 @@ namespace uvxx { namespace rtsp { namespace details
     protected:
         _uvxx_task_scheduler(unsigned maxSchedulerGranularity);
 
+        _uvxx_task_scheduler(const _uvxx_task_scheduler&) = delete;
+
+        _uvxx_task_scheduler& operator=(const _uvxx_task_scheduler&) = delete;
+
         static void schedulerTickTask(void* client_data);
 
         void schedulerTickTask();
