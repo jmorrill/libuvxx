@@ -62,6 +62,7 @@
     <ClInclude Include="live_media\liveMedia\include\FramedFileSource.hh" />
     <ClInclude Include="live_media\liveMedia\include\FramedFilter.hh" />
     <ClInclude Include="live_media\liveMedia\include\FramedSource.hh" />
+    <ClInclude Include="live_media\liveMedia\include\GenericMediaServer.hh" />
     <ClInclude Include="live_media\liveMedia\include\GSMAudioRTPSink.hh" />
     <ClInclude Include="live_media\liveMedia\include\H261VideoRTPSource.hh" />
     <ClInclude Include="live_media\liveMedia\include\H263plusVideoFileServerMediaSubsession.hh" />
@@ -248,6 +249,7 @@
     <ClCompile Include="live_media\liveMedia\FramedFileSource.cpp" />
     <ClCompile Include="live_media\liveMedia\FramedFilter.cpp" />
     <ClCompile Include="live_media\liveMedia\FramedSource.cpp" />
+    <ClCompile Include="live_media\liveMedia\GenericMediaServer.cpp" />
     <ClCompile Include="live_media\liveMedia\GSMAudioRTPSink.cpp" />
     <ClCompile Include="live_media\liveMedia\H261VideoRTPSource.cpp" />
     <ClCompile Include="live_media\liveMedia\H263plusVideoFileServerMediaSubsession.cpp" />

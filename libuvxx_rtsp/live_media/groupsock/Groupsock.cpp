@@ -286,7 +286,7 @@ Boolean Groupsock::output(UsageEnvironment& env, u_int8_t ttlToSend,
   if (DebugLevel >= 0) { // this is a fatal error
     UsageEnvironment::MsgString msg = strDup(env.getResultMsg());
     env.setResultMsg("Groupsock write failed: ", msg);
-    delete[] msg;
+    delete[] (char*)msg;
   }
   return False;
 }
@@ -306,7 +306,7 @@ Boolean Groupsock::handleRead(unsigned char* buffer, unsigned bufferMaxSize,
     if (DebugLevel >= 0) { // this is a fatal error
       UsageEnvironment::MsgString msg = strDup(env().getResultMsg());
       env().setResultMsg("Groupsock read failed: ", msg);
-      delete[] msg;
+      delete[] (char*)msg;
     }
     return False;
   }

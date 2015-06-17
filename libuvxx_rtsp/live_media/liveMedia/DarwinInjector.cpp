@@ -58,10 +58,10 @@ Boolean DarwinInjector::lookupByName(UsageEnvironment& env, char const* name,
   Medium* medium;
   if (!Medium::lookupByName(env, name, medium)) return False;
 
-  if (!medium->isDarwinInjector()) {
+  /*if (!medium->isDarwinInjector()) {
     env.setResultMsg(name, " is not a 'Darwin injector'");
     return False;
-  }
+  }*/
 
   result = (DarwinInjector*)medium;
   return True;

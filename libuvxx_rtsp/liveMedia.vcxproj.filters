@@ -579,6 +579,9 @@
     <ClInclude Include="live_media\liveMedia\include\WAVAudioFileSource.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="live_media\liveMedia\include\GenericMediaServer.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="live_media\BasicUsageEnvironment\BasicHashTable.cpp">
@@ -1128,6 +1131,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="live_media\BasicUsageEnvironment\DelayQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="live_media\liveMedia\GenericMediaServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

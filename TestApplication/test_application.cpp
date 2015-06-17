@@ -34,19 +34,10 @@ int main(int argc, char* argv[])
 
     {
         uvxx::rtsp::rtsp_client client;
-        std::thread::id tid = std::this_thread::get_id();
-
-        create_task([]
-        {
-            printf("task\n");
-        });
-
-        printf("test\n");
+ 
         client.open(argv[1]).then([=]
         {
-            auto id = std::this_thread::get_id();
-
-            return client.play(); 
+            return client.play({client.media_session().subsession(0)}); 
         }).then([&](task<streaming_media_session> t)
         {
             stream = std::move(t.get());
@@ -54,7 +45,7 @@ int main(int argc, char* argv[])
             stream.on_frame_callback_set(on_frame_callback);
         }).then([client]
         {
-            return create_timer_task(std::chrono::milliseconds(15000));
+            return create_timer_task(std::chrono::milliseconds(35000));
         }).then([](task<void> t)
         {
             try
