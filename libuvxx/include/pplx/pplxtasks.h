@@ -3289,7 +3289,23 @@ private:
         _M_Impl->_M_fFromAsync =  uvxx::pplx::details::_HasDispatcher();
         _M_Impl->_M_fUnwrappedTask = _Async_type_traits::_IsUnwrappedTaskOrAsync;
         _M_Impl->_M_taskEventLogger._LogScheduleTask(false);
-        _M_Impl->_ScheduleTask(new _InitialTaskHandle<_InternalReturnType, _Function, typename _Async_type_traits::_AsyncKind>(_GetImpl(), _Func), _task_inline_hack);
+
+        if (_task_inline_hack != details::_NoInline && _M_Impl->_M_fFromAsync)
+        {
+            auto impl = _M_Impl;
+            //auto get_impl = _GetImpl();
+            auto inline_mode = _task_inline_hack;
+            auto func = std::move(_Func);
+
+            uvxx::event_dispatcher::current_dispatcher().begin_invoke([=]
+            {
+                impl->_ScheduleTask(new _InitialTaskHandle<_InternalReturnType, _Function, typename _Async_type_traits::_AsyncKind>(impl, func), inline_mode);
+            });
+        }
+        else
+        {
+            _M_Impl->_ScheduleTask(new _InitialTaskHandle<_InternalReturnType, _Function, typename _Async_type_traits::_AsyncKind>(_GetImpl(), _Func), _task_inline_hack);
+        }
     }
 
     details::_TaskInliningMode _task_inline_hack;

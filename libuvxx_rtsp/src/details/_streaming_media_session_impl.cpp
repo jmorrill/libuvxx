@@ -28,7 +28,7 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
     _session(session),
     _subsessions(std::move(subsessions))
 {
-    _buffer.resize(1024 * 100);
+    _buffer.resize(1024 * 200);
 
     int stream_number = 0;
 
