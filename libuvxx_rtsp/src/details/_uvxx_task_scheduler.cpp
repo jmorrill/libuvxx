@@ -186,11 +186,15 @@ void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, 
     if (_handlers.find(socket) == _handlers.end())
     {
         socket_handler_descriptor socket_handler(socket, condition_set, handler_proc, client_data);
+
         _handlers.emplace(socket, std::move(socket_handler));
     }
     else
     {
         auto& handler = _handlers.at(socket);
+
+        handler.set_handler(handler_proc, client_data);
+
         handler.set_condition_set(condition_set);
     }
 }
@@ -214,14 +218,16 @@ void _uvxx_task_scheduler::moveSocketHandling(int old_socket, int new_socket)
     }
 }
 
-_uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(int socket, int condition_set, BackgroundHandlerProc* handler_proc, void* client_data) : 
+_uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(int socket, 
+                                                                           int condition_set, 
+                                                                           BackgroundHandlerProc* handler_proc, 
+                                                                           void* client_data) : 
+    _socket(socket),
+    _condition_set(condition_set),
+    _handler_proc(handler_proc),
+    _client_data(client_data),
     _poller(socket)
 {
-    _socket = socket;
-    _condition_set = condition_set;
-    _handler_proc = handler_proc;
-    _client_data = client_data;
-
     start_poll();
 }
 
@@ -253,9 +259,22 @@ _uvxx_task_scheduler::socket_handler_descriptor::~socket_handler_descriptor()
 
 void _uvxx_task_scheduler::socket_handler_descriptor::set_condition_set(int condition_set)
 {
+    if (condition_set == _condition_set)
+    {
+        return;
+    }
+
     _condition_set = condition_set;
     start_poll();
 }
+
+
+void _uvxx_task_scheduler::socket_handler_descriptor::set_handler(BackgroundHandlerProc* handler_proc, void* client_data)
+{
+    _handler_proc = handler_proc;
+    _client_data = client_data;
+}
+
 
 void _uvxx_task_scheduler::socket_handler_descriptor::set_socket(int socket)
 {
@@ -290,6 +309,11 @@ void _uvxx_task_scheduler::socket_handler_descriptor::start_poll()
 
 void _uvxx_task_scheduler::socket_handler_descriptor::poll_callback(int status, socket_poll_event events)
 {
+    if (!_handler_proc)
+    {
+        return;
+    }
+
     int mask = 0;
 
     if ((events & socket_poll_event::Readable) == socket_poll_event::Readable)
@@ -307,5 +331,8 @@ void _uvxx_task_scheduler::socket_handler_descriptor::poll_callback(int status, 
         mask |= SOCKET_EXCEPTION;
     }
 
-    _handler_proc(_client_data, mask);
+    if (_condition_set & SOCKET_EXCEPTION || _condition_set & SOCKET_WRITABLE || _condition_set & SOCKET_READABLE)
+    {
+        _handler_proc(_client_data, mask);
+    }
 }

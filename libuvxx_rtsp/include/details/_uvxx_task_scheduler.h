@@ -56,11 +56,13 @@ namespace uvxx { namespace rtsp { namespace details
 
             socket_handler_descriptor(socket_handler_descriptor&& rhs);
 
+            socket_handler_descriptor& operator=(socket_handler_descriptor&& rhs);
+
             void set_condition_set(int condition_set);
 
             void set_socket(int socket);
 
-            socket_handler_descriptor& operator=(socket_handler_descriptor&& rhs);
+            void set_handler(BackgroundHandlerProc* handler_proc, void* client_data);
 
         private:
             void start_poll();

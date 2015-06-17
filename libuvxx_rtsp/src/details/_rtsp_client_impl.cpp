@@ -182,7 +182,8 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::
             _setup_event = task_completion_event<void>();
 
             _last_rtsp_command_id = _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession(), 
-                                                                   setup_callback);
+                                                                   setup_callback, 
+                                                                   false, true);
 
             _current_media_subsession_setup = subsession;
 
