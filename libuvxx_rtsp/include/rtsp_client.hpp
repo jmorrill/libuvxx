@@ -2,6 +2,7 @@
 #include "event_dispatcher_object.hpp"
 #include "media_session.hpp"
 #include "streaming_media_session.hpp"
+#include "rtsp_misc.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -13,6 +14,7 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp 
 {
+
     class rtsp_client : public uvxx::event_dispatcher_object
     {
     public:
@@ -34,6 +36,18 @@ namespace uvxx { namespace rtsp
         uvxx::pplx::task<streaming_media_session> play(std::vector<media_subsession> media_subsessions) const;
 
         media_session media_session() const;
+
+        std::string username() const;
+
+        void username_set(const std::string& username);
+
+        std::string password() const;
+
+        void password_set(const std::string& password);
+
+        uvxx::rtsp::transport_protocol protocol() const;
+
+        void protocol_set(uvxx::rtsp::transport_protocol protocol);
 
     private:
         details::_rtsp_client_impl_ptr __rtsp_client_imp;

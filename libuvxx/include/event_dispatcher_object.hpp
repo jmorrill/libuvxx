@@ -35,7 +35,7 @@ namespace uvxx
     protected:
         event_dispatcher_object();
 
-        void verify_access();
+        void verify_access() const;
 
     private:
         uvxx::event_dispatcher _event_dispatcher;

@@ -8,6 +8,7 @@
 #include "_live_authenticator.hpp"
 #include "BasicUsageEnvironment.hh"
 #include "media_session.hpp"
+#include "rtsp_misc.hpp"
 
 #include <memory>
 #include <map>
@@ -37,6 +38,18 @@ namespace uvxx { namespace rtsp { namespace details
         uvxx::pplx::task<streaming_media_session> play(std::vector<media_subsession> subsessions);
 
         media_session session();
+
+        std::string username() const;
+
+        void username_set(const std::string& username);
+
+        std::string password() const;
+
+        void password_set(const std::string& password);
+
+        uvxx::rtsp::transport_protocol protocol() const;
+
+        void protocol_set(uvxx::rtsp::transport_protocol protocol);
 
     private:
         uvxx::pplx::task<void> setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions);
@@ -70,6 +83,12 @@ namespace uvxx { namespace rtsp { namespace details
         streaming_media_session _streaming_session;
 
         _live_authenticator _authenticator;
+
+        uvxx::rtsp::transport_protocol _protocol;
+
+        std::string _username;
+        
+        std::string _password;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;

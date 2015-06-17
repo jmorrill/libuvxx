@@ -13,7 +13,7 @@ namespace uvxx { namespace details
         _eventDispatcher = _event_dispatcher_impl::current_dispatcher();
     }
 
-    bool _event_dispatcher_object_impl::check_access()
+    bool _event_dispatcher_object_impl::check_access() const
     {
         return _eventDispatcher->check_access();
     }
@@ -23,7 +23,7 @@ namespace uvxx { namespace details
         return _eventDispatcher;
     }
 
-    void _event_dispatcher_object_impl::verify_access()
+    void _event_dispatcher_object_impl::verify_access() const
     {
         _eventDispatcher->verify_access();
     }

@@ -40,7 +40,7 @@ namespace uvxx
         return dispatcher;
     }
 
-    void event_dispatcher_object::verify_access()
+    void event_dispatcher_object::verify_access() const
     {
         __event_dispatcher_object_impl->verify_access();
     }

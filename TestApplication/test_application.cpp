@@ -34,10 +34,12 @@ int main(int argc, char* argv[])
 
     {
         uvxx::rtsp::rtsp_client client;
+        client.username_set("admin");
+        client.password_set("12345");
  
         client.open(argv[1]).then([=]
         {
-            return client.play({client.media_session().subsession(0)}); 
+            return client.play(); 
         }).then([&](task<streaming_media_session> t)
         {
             stream = std::move(t.get());

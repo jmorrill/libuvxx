@@ -51,6 +51,9 @@
     <ClInclude Include="include\details\_media_sample_impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\rtsp_misc.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp">

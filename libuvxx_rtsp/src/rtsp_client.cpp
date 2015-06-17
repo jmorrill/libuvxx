@@ -59,3 +59,33 @@ uvxx::pplx::task<streaming_media_session> uvxx::rtsp::rtsp_client::play(std::vec
     });
 }
 
+std::string uvxx::rtsp::rtsp_client::username() const
+{
+    return __rtsp_client_imp->username();
+}
+
+void uvxx::rtsp::rtsp_client::username_set(const std::string& username)
+{
+    __rtsp_client_imp->username_set(username);
+}
+
+std::string uvxx::rtsp::rtsp_client::password() const
+{
+    return __rtsp_client_imp->password();
+}
+
+void uvxx::rtsp::rtsp_client::password_set(const std::string& password)
+{
+    __rtsp_client_imp->password_set(password);
+}
+
+uvxx::rtsp::transport_protocol uvxx::rtsp::rtsp_client::protocol() const
+{
+    return __rtsp_client_imp->protocol();
+}
+
+void uvxx::rtsp::rtsp_client::protocol_set(uvxx::rtsp::transport_protocol protocol)
+{
+    __rtsp_client_imp->protocol_set(protocol);
+}
+

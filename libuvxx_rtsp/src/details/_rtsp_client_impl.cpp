@@ -6,25 +6,25 @@ using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
-#define GET_RTSP_CLIENT(live_rtsp_client)static_cast<uvxx::rtsp::details::_rtsp_client_impl*>(static_cast<uvxx::rtsp::details::_live_rtsp_client*>(live_rtsp_client)->context());
+#define CAST_RTSP_CLIENT(live_rtsp_client)static_cast<uvxx::rtsp::details::_rtsp_client_impl*>(static_cast<uvxx::rtsp::details::_live_rtsp_client*>(live_rtsp_client)->context());
 
-#define THROW_RTSP_EXCEPTION(code, message, task_event)\
-    if(!code)\
-    {\
-        task_event.set_exception(rtsp_exception(message ? message : ""));\
-    }\
-    else if(code < 0)\
-    {\
-        task_event.set_exception(rtsp_network_exception(std::abs(code), message ? message : ""));\
-    }\
-    else\
-    {\
-        task_event.set_exception(rtsp_transport_exception(code, message ? message : ""));\
-    }\
+#define SET_RTSP_EXCEPTION(code, message, task_event)\
+if(!code)\
+{\
+    task_event.set_exception(rtsp_exception(message ? message : ""));\
+}\
+else if(code < 0)\
+{\
+    task_event.set_exception(rtsp_network_exception(std::abs(code), message ? message : ""));\
+}\
+else\
+{\
+    task_event.set_exception(rtsp_transport_exception(code, message ? message : ""));\
+}\
 
 void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
 {
-    auto client_impl = GET_RTSP_CLIENT(live_rtsp_client);
+    auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
 
@@ -32,7 +32,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
         
     if (result_code)
     {
-        THROW_RTSP_EXCEPTION(result_code, result_string, describe_event);
+        SET_RTSP_EXCEPTION(result_code, result_string, describe_event);
         return;
     }
     
@@ -41,12 +41,12 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     if (!session)
     {
-        THROW_RTSP_EXCEPTION(0, "failed to create a MediaSession from the SDP description", describe_event);
+        SET_RTSP_EXCEPTION(0, "failed to create a MediaSession from the SDP description", describe_event);
         return;
     }
     else if (!session->hasSubsessions())
     {
-        THROW_RTSP_EXCEPTION(0, "failed to create a MediaSession from the SDP description", describe_event);
+        SET_RTSP_EXCEPTION(0, "failed to create a MediaSession from the SDP description", describe_event);
         return;
     }
 
@@ -61,7 +61,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
 void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
 {
-    auto client_impl = GET_RTSP_CLIENT(live_rtsp_client);
+    auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
 
@@ -69,7 +69,7 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
 
     if (result_code)
     {
-        THROW_RTSP_EXCEPTION(result_code, result_string, setup_event);
+        SET_RTSP_EXCEPTION(result_code, result_string, setup_event);
 
         return;
     }
@@ -84,7 +84,7 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
 
 void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
 {
-    auto client_impl = GET_RTSP_CLIENT(live_rtsp_client);
+    auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
 
@@ -92,7 +92,7 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 
     if (result_code)
     {
-        THROW_RTSP_EXCEPTION(result_code, result_string, play_event);
+        SET_RTSP_EXCEPTION(result_code, result_string, play_event);
 
         return;
     }
@@ -101,7 +101,8 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 }
 
 
-_rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0)
+_rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
+                                         _protocol(transport_protocol::udp)
 {
     _task_scheduler = _uvxx_task_scheduler::createNew();
 
@@ -126,6 +127,8 @@ _rtsp_client_impl::~_rtsp_client_impl()
 
 task<void> _rtsp_client_impl::open(const std::string& url)
 {
+    verify_access();
+
     _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(_usage_environment, url.c_str(), this, 2),
     /* deleter */
     [](_live_rtsp_client* client)
@@ -135,7 +138,6 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
     _describe_event = task_completion_event<void>();
     
-    _authenticator.setUsernameAndPassword("admin","12345");
 
     _last_rtsp_command_id = _live_client->sendDescribeCommand(describe_callback, &_authenticator);
 
@@ -147,10 +149,12 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
 media_session _rtsp_client_impl::session()
 {
+    verify_access();
+
     return _session;
 }
 
-uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions_)
+uvxx::pplx::task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions_)
 {
     auto current_index = std::make_shared<size_t>(0);
 
@@ -158,12 +162,8 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::
 
     return create_iterative_task([=]
     {
-        verify_access();
-
         return create_task([=]
         {
-            verify_access();
-
             auto& subsessions = *subsessions_.get();
 
             auto subsession_index = *current_index;
@@ -183,7 +183,8 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::
 
             _last_rtsp_command_id = _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession(), 
                                                                    setup_callback, 
-                                                                   false, true);
+                                                                   false, 
+                                                                   _protocol == transport_protocol::tcp ? true : false);
 
             _current_media_subsession_setup = subsession;
 
@@ -194,6 +195,20 @@ uvxx::pplx::task<void> uvxx::rtsp::details::_rtsp_client_impl::setup(const std::
             printf("finished play\n");
         });
     });
+}
+
+void _rtsp_client_impl::protocol_set(uvxx::rtsp::transport_protocol protocol)
+{
+    verify_access();
+
+    _protocol = protocol;
+}
+
+uvxx::rtsp::transport_protocol _rtsp_client_impl::protocol() const
+{
+    verify_access();
+
+    return _protocol;
 }
 
 uvxx::pplx::task<streaming_media_session> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
@@ -263,6 +278,38 @@ uvxx::pplx::task<streaming_media_session> _rtsp_client_impl::play(std::vector<me
 
         return _streaming_session;
     });
+}
+
+std::string _rtsp_client_impl::password() const
+{
+    verify_access();
+
+    return _password;
+}
+
+void _rtsp_client_impl::password_set(const std::string& password)
+{
+    verify_access();
+
+    _password = password;
+
+    _authenticator.setUsernameAndPassword(_username.c_str(), _password.c_str());
+}
+
+std::string _rtsp_client_impl::username() const
+{
+    verify_access();
+
+    return _username;
+}
+
+void _rtsp_client_impl::username_set(const std::string& username)
+{
+    verify_access();
+
+    _username = username;
+
+    _authenticator.setUsernameAndPassword(_username.c_str(), _password.c_str());
 }
 
 

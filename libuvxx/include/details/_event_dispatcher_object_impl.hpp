@@ -23,9 +23,9 @@ namespace uvxx { namespace details
 
         _event_dispatcher_object_impl& operator=(const _event_dispatcher_object_impl&) = delete;
 
-        bool check_access();
+        bool check_access() const;
 
-        void verify_access();
+        void verify_access() const;
 
         event_dispatcher_ptr dispatcher();
 
