@@ -127,7 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_NO_ASYNCRTIMP;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\libuvxx\include;$(ProjectDir)..\libuvxx_rtsp\live_media\liveMedia\include;$(ProjectDir)..\libuvxx_rtsp\live_media\groupsock\include;$(ProjectDir)..\libuvxx_rtsp\live_media\BasicUsageEnvironment\include;$(ProjectDir)..\libuvxx_rtsp\live_media\UsageEnvironment\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\libuvxx\include;$(ProjectDir)..\libuvxx_rtsp\live_media\liveMedia\include;$(ProjectDir)..\libuvxx_rtsp\live_media\groupsock\include;$(ProjectDir)..\libuvxx_rtsp\live_media\BasicUsageEnvironment\include;$(ProjectDir)..\libuvxx_rtsp\live_media\UsageEnvironment\include;$(ProjectDir)..\libuvxx_rtsp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
