@@ -22,7 +22,6 @@ bool on_frame_callback(const media_sample& sample)
     return true;
 }
 
-streaming_media_session stream;
 
 int main(int argc, char* argv[])
 {
@@ -31,11 +30,13 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    streaming_media_session stream;
 
     {
         uvxx::rtsp::rtsp_client client;
         client.username_set("admin");
         client.password_set("12345");
+        client.protocol_set(transport_protocol::tcp);
  
         client.open(argv[1]).then([=]
         {
