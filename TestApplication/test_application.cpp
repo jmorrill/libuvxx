@@ -30,10 +30,9 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    streaming_media_session stream;
-
     {
         uvxx::rtsp::rtsp_client client;
+
         client.username_set("admin");
         client.password_set("12345");
         client.protocol_set(transport_protocol::tcp);
@@ -41,14 +40,12 @@ int main(int argc, char* argv[])
         client.open(argv[1]).then([=]
         {
             return client.play(); 
-        }).then([&](task<streaming_media_session> t)
-        {
-            stream = std::move(t.get());
-            
-            stream.on_frame_callback_set(on_frame_callback);
         }).then([client]
         {
-            return create_timer_task(std::chrono::milliseconds(35000));
+            client.begin_stream_read(on_frame_callback);
+        }).then([client]
+        {
+            return create_timer_task(std::chrono::milliseconds(45000));
         }).then([](task<void> t)
         {
             try
@@ -57,6 +54,7 @@ int main(int argc, char* argv[])
             }
             catch (const rtsp_exception& e)
             {
+                printf("exception: ");
                 printf(e.what());
             }
 

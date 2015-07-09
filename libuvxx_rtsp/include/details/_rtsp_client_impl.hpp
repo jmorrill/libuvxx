@@ -25,6 +25,8 @@ namespace uvxx { namespace rtsp { namespace details
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;
 
+    using _read_stream_delegate = std::function<bool(const media_sample&)>;
+
     class _rtsp_client_impl : public uvxx::event_dispatcher_object
     {
     public:
@@ -35,7 +37,9 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         uvxx::pplx::task<void> open(const std::string& url);
 
-        uvxx::pplx::task<streaming_media_session> play(std::vector<media_subsession> subsessions);
+        uvxx::pplx::task<void> play(std::vector<media_subsession> subsessions);
+
+        void begin_stream_read(_read_stream_delegate call_back);
 
         media_session session();
 

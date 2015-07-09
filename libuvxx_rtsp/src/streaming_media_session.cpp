@@ -27,7 +27,7 @@ streaming_media_session& streaming_media_session::operator=(streaming_media_sess
     return *this;
 }
 
-void streaming_media_session::on_frame_callback_set(std::function<bool(const media_sample&)> callback)
+void streaming_media_session::begin_stream_read(std::function<bool(const media_sample&)> callback)
 {
     __streaming_media_session->on_frame_callback_set(callback);
 }

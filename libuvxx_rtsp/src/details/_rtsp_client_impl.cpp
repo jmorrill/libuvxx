@@ -211,7 +211,7 @@ uvxx::rtsp::transport_protocol _rtsp_client_impl::protocol() const
     return _protocol;
 }
 
-uvxx::pplx::task<streaming_media_session> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
+uvxx::pplx::task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
 {
     auto current_index = std::make_shared<size_t>(0);
 
@@ -275,8 +275,6 @@ uvxx::pplx::task<streaming_media_session> _rtsp_client_impl::play(std::vector<me
 
         _streaming_session = streaming_media_session(std::make_shared<_streaming_media_session_impl>
                                                         (_session, std::move(*subsession_ptr.get())));
-
-        return _streaming_session;
     });
 }
 
@@ -310,6 +308,16 @@ void _rtsp_client_impl::username_set(const std::string& username)
     _username = username;
 
     _authenticator.setUsernameAndPassword(_username.c_str(), _password.c_str());
+}
+
+void _rtsp_client_impl::begin_stream_read(_read_stream_delegate call_back)
+{
+    if (!_streaming_session)
+    {
+        throw std::exception("rtsp client not ready to stream");
+    }
+
+    _streaming_session.begin_stream_read(call_back);
 }
 
 

@@ -37,25 +37,25 @@ media_session rtsp_client::media_session() const
     return __rtsp_client_imp->session();
 }
 
-task<streaming_media_session> rtsp_client::play() const
+task<void> rtsp_client::play() const
 {
     auto this_ptr = *this;
 
     return __rtsp_client_imp->play(media_session().subsessions())
-    .then([this_ptr](streaming_media_session streaming_session)
+    .then([this_ptr]
     {
-        return streaming_session;
+        return;
     });
 }
 
-uvxx::pplx::task<streaming_media_session> uvxx::rtsp::rtsp_client::play(std::vector<media_subsession> media_sessions) const
+task<void> rtsp_client::play(std::vector<media_subsession> media_sessions) const
 {
     auto this_ptr = *this;
 
     return __rtsp_client_imp->play(std::move(media_sessions))
-    .then([this_ptr](streaming_media_session streaming_session)
+    .then([this_ptr]
     {
-        return streaming_session;
+        return;
     });
 }
 
@@ -87,5 +87,10 @@ uvxx::rtsp::transport_protocol uvxx::rtsp::rtsp_client::protocol() const
 void uvxx::rtsp::rtsp_client::protocol_set(uvxx::rtsp::transport_protocol protocol)
 {
     __rtsp_client_imp->protocol_set(protocol);
+}
+
+void rtsp_client::begin_stream_read(read_stream_delegate call_back) const
+{
+    __rtsp_client_imp->begin_stream_read(call_back);
 }
 

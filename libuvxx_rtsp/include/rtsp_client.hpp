@@ -3,6 +3,7 @@
 #include "media_session.hpp"
 #include "streaming_media_session.hpp"
 #include "rtsp_misc.hpp"
+#include <functional>
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -14,6 +15,7 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp 
 {
+    using read_stream_delegate = std::function<bool(const media_sample&)>;
 
     class rtsp_client : public uvxx::event_dispatcher_object
     {
@@ -31,9 +33,11 @@ namespace uvxx { namespace rtsp
     public:
         uvxx::pplx::task<void> open(const std::string& url) const;
 
-        uvxx::pplx::task<streaming_media_session> play() const;
+        uvxx::pplx::task<void> play() const;
 
-        uvxx::pplx::task<streaming_media_session> play(std::vector<media_subsession> media_subsessions) const;
+        uvxx::pplx::task<void> play(std::vector<media_subsession> media_subsessions) const;
+
+        void begin_stream_read(read_stream_delegate call_back) const;
 
         media_session media_session() const;
 
