@@ -19,7 +19,7 @@ const size_t _media_sample_impl::size() const
 
 void _media_sample_impl::size_set(size_t size)
 {
-    _size = size;
+   _size = size;
 }
 
 void _media_sample_impl::presentation_time_set(std::chrono::microseconds presentation_time)
@@ -54,7 +54,7 @@ void _media_sample_impl::stream_number_set(int stream_number)
 
 const uint8_t* _media_sample_impl::data() const
 {
-    throw std::exception();
+    return _buffer.data();
 }
 
 const std::chrono::microseconds _media_sample_impl::presentation_time() const
@@ -80,4 +80,14 @@ const std::string _media_sample_impl::codec_name() const
 _media_sample_impl::~_media_sample_impl()
 {
 
+}
+
+size_t uvxx::rtsp::details::_media_sample_impl::capacity()
+{
+    return _buffer.size();
+}
+
+void uvxx::rtsp::details::_media_sample_impl::capacity_set(size_t capacity)
+{
+    _buffer.resize(capacity);
 }

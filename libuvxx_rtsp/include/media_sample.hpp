@@ -26,6 +26,8 @@ namespace uvxx { namespace rtsp
 
         const size_t size() const;
 
+        void size_set(size_t size) const;
+
         const uint8_t* data() const;
 
         const std::chrono::microseconds presentation_time() const;

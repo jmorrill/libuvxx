@@ -44,3 +44,8 @@ const int uvxx::rtsp::media_sample::stream_number() const
 {
     return __media_sample_impl->stream_number();
 }
+
+void uvxx::rtsp::media_sample::size_set(size_t size) const
+{
+    __media_sample_impl->size_set(size);
+}

@@ -37,7 +37,7 @@ namespace uvxx { namespace rtsp { namespace details
     private:
         void continue_reading();
 
-        void adjust_buffer_for_trucated_bytes(unsigned truncated_amount);
+        static void adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample);
 
         static void on_rtcp_bye(void* client_data);
 
@@ -47,8 +47,6 @@ namespace uvxx { namespace rtsp { namespace details
         std::vector<media_subsession> _subsessions;
 
         std::function<bool(const media_sample&)> _on_frame_callback;
-
-        std::vector<uint8_t> _buffer;
 
         media_session _session;
     };

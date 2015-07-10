@@ -72,7 +72,16 @@ void Parse(const unsigned char * pStart, unsigned short nLen)
     int frame_crop_top_offset = 0;
     int frame_crop_bottom_offset = 0;
 
+    int forbidden = ReadBit();
+    int nal_ref_idc = ReadBits(2);
+    int nal_unit_type = ReadBits(5);
+
     int profile_idc = ReadBits(8);
+
+    if (nal_unit_type != 7)
+    {
+        return;
+    }
     int constraint_set0_flag = ReadBit();
     int constraint_set1_flag = ReadBit();
     int constraint_set2_flag = ReadBit();
@@ -213,8 +222,6 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
     _session(session),
     _subsessions(std::move(subsessions))
 {
-    _buffer.resize(1024 * 200);
-
     int stream_number = 0;
 
     for (auto& subsession : _subsessions)
@@ -230,10 +237,12 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
             continue;
         }
 
-        /* set a 'BYE' handler for this subsession's RTCP instance: */
+       
         if (live_subsession->rtcpInstance()) 
         {
             media_sample sample;
+
+            sample.__media_sample_impl->capacity_set(1024 * 200);
 
             sample.__media_sample_impl->stream_number_set(stream_number);
 
@@ -243,6 +252,7 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
 
             live_subsession->miscPtr = new _streaming_media_io_state{stream_number, live_subsession, this, sample};
 
+            /* set a 'BYE' handler for this subsession's RTCP instance: */
             live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, this);
         }
 
@@ -309,8 +319,10 @@ void uvxx::rtsp::details::_streaming_media_session_impl::continue_reading()
             continue;
         }
 
-        framed_source->getNextFrame(_buffer.data(), 
-                                    _buffer.size(), 
+        auto state = static_cast<_streaming_media_io_state*>(live_subsession->miscPtr);
+
+        framed_source->getNextFrame((unsigned char*)state->sample.__media_sample_impl->data(), 
+                                    state->sample.__media_sample_impl->capacity(), 
                                     on_after_getting_frame, 
                                     live_subsession->miscPtr, 
                                     nullptr, 
@@ -318,7 +330,7 @@ void uvxx::rtsp::details::_streaming_media_session_impl::continue_reading()
     }
 }
 
-void _streaming_media_session_impl::adjust_buffer_for_trucated_bytes(unsigned truncated_amount)
+void _streaming_media_session_impl::adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample)
 {
     static const size_t MAX_BUFFER_SIZE = 2 * 1024 * 1024;
 
@@ -327,7 +339,7 @@ void _streaming_media_session_impl::adjust_buffer_for_trucated_bytes(unsigned tr
         return;
     }
 
-    size_t current_size = _buffer.size();
+    size_t current_size = sample.__media_sample_impl->capacity();
 
     size_t new_size = current_size + (truncated_amount * 2);
 
@@ -340,7 +352,7 @@ void _streaming_media_session_impl::adjust_buffer_for_trucated_bytes(unsigned tr
 
     printf("resizing buffer to %u\n", new_size);
 
-    _buffer.resize(new_size);
+    sample.__media_sample_impl->capacity_set(new_size);
 }
 
 void _streaming_media_session_impl::on_after_getting_frame(void* client_data, 
@@ -353,24 +365,22 @@ void _streaming_media_session_impl::on_after_getting_frame(void* client_data,
 
     auto io_state = static_cast<_streaming_media_io_state*>(client_data);
 
-    auto pts = io_state->live_subsession->getNormalPlayTime(presentation_time);
-
-    if (truncated_bytes)
-    {
-        io_state->_streaming_media_session->adjust_buffer_for_trucated_bytes(truncated_bytes);
-    }
-
     FramedSource* framed_source = io_state->live_subsession->readSource();
 
     auto& sample = io_state->sample;
 
     auto& sample_impl = sample.__media_sample_impl;
 
+    if (truncated_bytes)
+    {
+        io_state->_streaming_media_session->adjust_buffer_for_trucated_bytes(truncated_bytes, sample);
+    }
+
     std::chrono::microseconds micro_seconds((ONE_MILLION * presentation_time.tv_sec) + 
                                             presentation_time.tv_usec);
 
-    auto secs = std::chrono::microseconds((long)(pts * ONE_MILLION));
-    sample_impl->presentation_time_set(secs);
+   
+    sample_impl->presentation_time_set(micro_seconds);
 
     sample_impl->is_truncated_set(truncated_bytes > 0);
 
@@ -395,24 +405,17 @@ void _streaming_media_session_impl::on_after_getting_frame(void* client_data,
         sample_impl->is_complete_sample_set(true);
     }
 
-    if (!is_complete_sample && sample_impl->codec_name() == "H264" && packet_data_size > 4)
+    if (sample_impl->codec_name() == "H264")
     {
-        Parse(io_state->_streaming_media_session->_buffer.data() + 1, packet_data_size);
+        Parse((byte*)sample_impl->data(), packet_data_size);
     }
 
-    bool is_iframe = isH264iFrame(io_state->_streaming_media_session->_buffer.data());
+    bool is_iframe = isH264iFrame((byte*)sample_impl->data());
 
     if (is_iframe)
     {
         printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! iframe\n");
     }
-    /*if (!is_synced)
-    {
-        io_state->_streaming_media_session->continue_reading();
-
-        return;
-    }*/
-
     
     bool continue_reading = io_state->_streaming_media_session->_on_frame_callback(sample);
 

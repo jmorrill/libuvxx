@@ -2,6 +2,7 @@
 #include <memory>
 #include <chrono>
 #include <string>
+#include <vector>
 
 namespace uvxx { namespace rtsp { namespace details 
 {
@@ -26,6 +27,10 @@ namespace uvxx { namespace rtsp { namespace details
 
         void size_set(size_t size);
 
+        size_t capacity();
+
+        void capacity_set(size_t size);
+
         const uint8_t* data() const;
 
         const std::chrono::microseconds presentation_time() const;
@@ -45,6 +50,8 @@ namespace uvxx { namespace rtsp { namespace details
         void codec_name_set(const std::string& codec_name);
     private:
         int _stream_number;
+
+        std::vector<uint8_t> _buffer;
 
         size_t _size;
 
