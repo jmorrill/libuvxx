@@ -95,5 +95,8 @@
     <ClCompile Include="src\details\media_framers\_media_framer_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\details\media_framers\_h264_framer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

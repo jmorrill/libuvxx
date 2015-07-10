@@ -92,6 +92,26 @@ int uvxx::rtsp::details::media_framers::_media_framer_base::stream_number()
     return _stream_number;
 }
 
+uvxx::rtsp::media_sample uvxx::rtsp::details::media_framers::_media_framer_base::sample()
+{
+    return _sample;
+}
+
+void uvxx::rtsp::details::media_framers::_media_framer_base::sample_receieved()
+{
+    do_sample_callback();
+
+    continue_reading();
+}
+
+void uvxx::rtsp::details::media_framers::_media_framer_base::do_sample_callback()
+{
+    if (_sample_callback)
+    {
+        _sample_callback(_sample);
+    }
+}
+
 
 void _media_framer_base::on_after_getting_frame(void* client_data, unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds)
 {
@@ -148,12 +168,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
     _sample.size_set(packet_data_size);
 
-    if (_sample_callback)
-    {
-        _sample_callback(_sample);
-    }
-
-    continue_reading();
+    sample_receieved();
 }
 
 void _media_framer_base::on_rtcp_bye(void* client_data)
