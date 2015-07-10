@@ -13,10 +13,16 @@ namespace uvxx { namespace rtsp { namespace details
 
     class _streaming_media_session_impl;
 
+    
+
     using _media_subsession_impl_ptr = std::shared_ptr<_media_subsession_impl>;
 
     using _media_session_impl_ptr = std::shared_ptr<_media_session_impl>;
 
+    namespace media_framers
+    {
+        class _media_framer_base;
+    }
 }}}
 
 namespace uvxx { namespace rtsp 
@@ -41,6 +47,8 @@ namespace uvxx { namespace rtsp
     public:
         const std::string codec_name() const;
 
+        const std::string get_attribute(const std::string& attribute_name) const;
+
     private:
         media_subsession();
 
@@ -51,6 +59,8 @@ namespace uvxx { namespace rtsp
         friend uvxx::rtsp::details::_rtsp_client_impl;
 
         friend uvxx::rtsp::details::_streaming_media_session_impl;
+
+        friend uvxx::rtsp::details::media_framers::_media_framer_base;
     };
 
     class media_session : public uvxx::event_dispatcher_object

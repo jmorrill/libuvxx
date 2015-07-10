@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\details\media_framers\_h264_framer.hpp" />
     <ClInclude Include="include\details\media_framers\_media_framer_base.h" />
     <ClInclude Include="include\details\_live_authenticator.hpp" />
     <ClInclude Include="include\details\_media_sample_impl.hpp" />
@@ -27,6 +28,7 @@
     <ClInclude Include="include\streaming_media_session.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\details\media_framers\_media_framer_base.cpp" />
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
     <ClCompile Include="src\details\_media_sample_impl.cpp" />
     <ClCompile Include="src\details\_media_session_impl.cpp" />

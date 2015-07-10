@@ -4,7 +4,7 @@
 #include "MediaSession.hh"
 #include "_media_sample_impl.hpp"
 #include "media_sample.hpp"
-
+#include "details/media_framers/_media_framer_base.h"
 #include <memory>
 #include <vector>
 
@@ -35,16 +35,9 @@ namespace uvxx { namespace rtsp { namespace details
         void on_frame_callback_set(std::function<bool(const media_sample&)> callback);
 
     private:
-        void continue_reading();
-
-        static void adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample);
-
-        static void on_rtcp_bye(void* client_data);
-
-        static void on_after_getting_frame(void* client_data, unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds);
-    
-    private:
         std::vector<media_subsession> _subsessions;
+
+        std::vector<std::shared_ptr<media_framers::_media_framer_base>> _media_framers;
 
         std::function<bool(const media_sample&)> _on_frame_callback;
 

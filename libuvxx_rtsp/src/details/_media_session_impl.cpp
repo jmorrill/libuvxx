@@ -44,6 +44,11 @@ MediaSubsession* _media_subsession_impl::live_media_subsession() const
     return _live_subsession;
 }
 
+const std::string uvxx::rtsp::details::_media_subsession_impl::get_attribute(const std::string& attribute_name) const
+{
+    return _live_subsession->attrVal_str(attribute_name.c_str());
+}
+
 _media_session_impl::~_media_session_impl()
 {
     if (_live_session)

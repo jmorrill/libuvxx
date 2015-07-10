@@ -3,6 +3,8 @@
 #include <chrono>
 #include <string>
 #include <vector>
+#include <map>
+#include "io/memory_buffer.hpp"
 
 namespace uvxx { namespace rtsp { namespace details 
 {
@@ -48,6 +50,11 @@ namespace uvxx { namespace rtsp { namespace details
         const std::string codec_name() const;
 
         void codec_name_set(const std::string& codec_name);
+
+        void set_attribute(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer);
+
+        uvxx::io::memory_buffer get_attribute(const std::string& attribute_name);
+
     private:
         int _stream_number;
 
@@ -62,5 +69,7 @@ namespace uvxx { namespace rtsp { namespace details
         bool _is_truncated;
 
         std::string _codec_name;
+
+        std::map<std::string, uvxx::io::memory_buffer> _attribute_map;
     };
 }}}

@@ -1,6 +1,7 @@
 #include "details/_streaming_media_session_impl.hpp"
 #include "details/_media_session_impl.hpp"
 #include "MediaSession.hh"
+#include "details/media_framers/_h264_framer.hpp"
 
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
@@ -198,25 +199,6 @@ static bool isH264iFrame(byte* paket)
     return false;
 }
 
-
-
-struct _streaming_media_io_state
-{
-    _streaming_media_io_state() = default;
-
-    _streaming_media_io_state(const _streaming_media_io_state&) = delete;
-
-    _streaming_media_io_state& operator=(const _streaming_media_io_state&) = delete;
-   
-    int stream_number;
-
-    MediaSubsession* live_subsession;
-
-    _streaming_media_session_impl* _streaming_media_session;
-
-    media_sample sample;
-};
-
 _streaming_media_session_impl::_streaming_media_session_impl(const media_session& session, 
                                                              std::vector<media_subsession> subsessions) :
     _session(session),
@@ -226,201 +208,36 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
 
     for (auto& subsession : _subsessions)
     {
-        auto live_subsession = subsession.__media_subsession->live_media_subsession();
+        std::shared_ptr<media_framers::_media_framer_base> framer;
 
-        live_subsession->miscPtr = nullptr;
+        auto codec_name = subsession.codec_name();
 
-        FramedSource* framed_source = live_subsession->readSource();
-
-        if(!framed_source)
+        if (codec_name == "H264")
         {
-            continue;
+            framer = std::make_shared<media_framers::_h264_framer>(subsession, stream_number);
+        }
+        else
+        {
+            framer = std::make_shared<media_framers::_media_framer_base>(subsession, stream_number);
         }
 
-       
-        if (live_subsession->rtcpInstance()) 
-        {
-            media_sample sample;
-
-            sample.__media_sample_impl->capacity_set(1024 * 200);
-
-            sample.__media_sample_impl->stream_number_set(stream_number);
-
-            sample.__media_sample_impl->codec_name_set(live_subsession->codecName());
-
-            assert(!live_subsession->miscPtr);
-
-            live_subsession->miscPtr = new _streaming_media_io_state{stream_number, live_subsession, this, sample};
-
-            /* set a 'BYE' handler for this subsession's RTCP instance: */
-            live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, this);
-        }
+        _media_framers.push_back(framer);
 
         stream_number++;
     }
 }
 
-void _streaming_media_session_impl::on_rtcp_bye(void* client_data)
-{
-
-}
-
 _streaming_media_session_impl::~_streaming_media_session_impl()
 {
-    for (auto& subsession : _subsessions)
-    {
-        auto live_subsession = subsession.__media_subsession->live_media_subsession();
-
-        if (live_subsession->rtcpInstance()) 
-        {
-            if (live_subsession->miscPtr)
-            {
-                auto state = static_cast<_streaming_media_io_state*>(live_subsession->miscPtr);
-
-                delete state;
-
-                live_subsession->miscPtr = nullptr;
-            }
-
-            FramedSource* subsessionSource = live_subsession->readSource();
-
-            if (subsessionSource)
-            {
-                subsessionSource->stopGettingFrames();
-            }
-
-            live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, nullptr);
-        }
-    }
+    
 }
 
 void uvxx::rtsp::details::_streaming_media_session_impl::on_frame_callback_set(std::function<bool(const media_sample&)> callback)
 {
     _on_frame_callback = std::move(callback);
 
-    continue_reading();
-}
-
-void uvxx::rtsp::details::_streaming_media_session_impl::continue_reading()
-{
-    for (auto& subsession : _subsessions)
+    for (auto& framer : _media_framers)
     {
-        auto live_subsession = subsession.__media_subsession->live_media_subsession();
-
-        FramedSource* framed_source = live_subsession->readSource();
-
-        if (!framed_source)
-        {
-            continue;
-        }
-
-        if (framed_source->isCurrentlyAwaitingData())
-        {
-            continue;
-        }
-
-        auto state = static_cast<_streaming_media_io_state*>(live_subsession->miscPtr);
-
-        framed_source->getNextFrame((unsigned char*)state->sample.__media_sample_impl->data(), 
-                                    state->sample.__media_sample_impl->capacity(), 
-                                    on_after_getting_frame, 
-                                    live_subsession->miscPtr, 
-                                    nullptr, 
-                                    nullptr);
-    }
-}
-
-void _streaming_media_session_impl::adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample)
-{
-    static const size_t MAX_BUFFER_SIZE = 2 * 1024 * 1024;
-
-    if (truncated_amount == 0)
-    {
-        return;
-    }
-
-    size_t current_size = sample.__media_sample_impl->capacity();
-
-    size_t new_size = current_size + (truncated_amount * 2);
-
-    new_size = max(MAX_BUFFER_SIZE, new_size);
-
-    if (new_size == current_size)
-    {
-        return;
-    }
-
-    printf("resizing buffer to %u\n", new_size);
-
-    sample.__media_sample_impl->capacity_set(new_size);
-}
-
-void _streaming_media_session_impl::on_after_getting_frame(void* client_data, 
-                                                           unsigned packet_data_size, 
-                                                           unsigned truncated_bytes, 
-                                                           struct timeval presentation_time, 
-                                                           unsigned duration_in_microseconds)
-{
-    static uint64_t ONE_MILLION = 1000000ull;
-
-    auto io_state = static_cast<_streaming_media_io_state*>(client_data);
-
-    FramedSource* framed_source = io_state->live_subsession->readSource();
-
-    auto& sample = io_state->sample;
-
-    auto& sample_impl = sample.__media_sample_impl;
-
-    if (truncated_bytes)
-    {
-        io_state->_streaming_media_session->adjust_buffer_for_trucated_bytes(truncated_bytes, sample);
-    }
-
-    std::chrono::microseconds micro_seconds((ONE_MILLION * presentation_time.tv_sec) + 
-                                            presentation_time.tv_usec);
-
-   
-    sample_impl->presentation_time_set(micro_seconds);
-
-    sample_impl->is_truncated_set(truncated_bytes > 0);
-
-    sample_impl->size_set(packet_data_size);
-
-    bool is_complete_sample = true;
-
-    bool is_synced = true;
-
-    if (framed_source->isRTPSource())
-    {
-        auto rtp_source = static_cast<RTPSource*>(framed_source);
-
-        is_synced = rtp_source->hasBeenSynchronizedUsingRTCP();
-
-        is_complete_sample = rtp_source->curPacketMarkerBit();
-
-        sample_impl->is_complete_sample_set(is_complete_sample);
-    }
-    else
-    {
-        sample_impl->is_complete_sample_set(true);
-    }
-
-    if (sample_impl->codec_name() == "H264")
-    {
-        Parse((byte*)sample_impl->data(), packet_data_size);
-    }
-
-    bool is_iframe = isH264iFrame((byte*)sample_impl->data());
-
-    if (is_iframe)
-    {
-        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! iframe\n");
-    }
-    
-    bool continue_reading = io_state->_streaming_media_session->_on_frame_callback(sample);
-
-    if (continue_reading)
-    {
-        io_state->_streaming_media_session->continue_reading();
+        framer->begin_reading(_on_frame_callback);
     }
 }

@@ -38,6 +38,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::string codec_name();
 
+        const std::string get_attribute(const std::string& attribute_name) const;
+
     private:
         MediaSubsession* _live_subsession;
     };

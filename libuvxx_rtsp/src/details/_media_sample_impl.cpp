@@ -19,6 +19,10 @@ const size_t _media_sample_impl::size() const
 
 void _media_sample_impl::size_set(size_t size)
 {
+    if (size > _buffer.size())
+    {
+        throw std::exception("size cannot be larger than capacity");
+    }
    _size = size;
 }
 
@@ -90,4 +94,14 @@ size_t uvxx::rtsp::details::_media_sample_impl::capacity()
 void uvxx::rtsp::details::_media_sample_impl::capacity_set(size_t capacity)
 {
     _buffer.resize(capacity);
+}
+
+void uvxx::rtsp::details::_media_sample_impl::set_attribute(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer)
+{
+    _attribute_map[attribute_name] = buffer;
+}
+
+uvxx::io::memory_buffer uvxx::rtsp::details::_media_sample_impl::get_attribute(const std::string& attribute_name)
+{
+    return _attribute_map.at(attribute_name);
 }

@@ -42,6 +42,11 @@ const std::string media_subsession::codec_name() const
     return __media_subsession->codec_name();
 }
 
+const std::string uvxx::rtsp::media_subsession::get_attribute(const std::string& attribute_name) const
+{
+    return __media_subsession->get_attribute(attribute_name);
+}
+
 media_session::media_session(media_session&& rhs)
 {
     *this = std::move(rhs);

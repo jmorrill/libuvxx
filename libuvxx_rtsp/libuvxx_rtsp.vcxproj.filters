@@ -57,6 +57,9 @@
     <ClInclude Include="include\details\media_framers\_media_framer_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\media_framers\_h264_framer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\media_sample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\media_framers\_media_framer_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
