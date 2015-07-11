@@ -32,9 +32,12 @@ uvxx::rtsp::details::media_framers::_h264_framer::_h264_framer(const media_subse
 
                 sps_parser parser(_sequence_parameter_set);
 
-                _video_dimensions.width = parser.video_width();
+                if (parser.video_width() && parser.video_height())
+                {
+                    _video_dimensions.width = parser.video_width();
 
-                _video_dimensions.height = parser.video_height();
+                    _video_dimensions.height = parser.video_height();
+                }
             }
             else if (nal_type == NAL_PICTURE_PARAMETER_SET)
             {
@@ -63,9 +66,12 @@ void uvxx::rtsp::details::media_framers::_h264_framer::sample_receieved()
 
         sps_parser parser(_sequence_parameter_set);
 
-        _video_dimensions.width = parser.video_width();
+        if (parser.video_width() && parser.video_height())
+        {
+            _video_dimensions.width = parser.video_width();
 
-        _video_dimensions.height = parser.video_height();
+            _video_dimensions.height = parser.video_height();
+        }
     }
     else if (nal_type == NAL_PICTURE_PARAMETER_SET)
     {
@@ -91,13 +97,13 @@ void uvxx::rtsp::details::media_framers::_h264_framer::sample_receieved()
     }
     else
     {
-        media_sample.attribute_value_set("media_sample_attributes.video.dimensions", _video_dimensions);
+        media_sample.attribute_value_set("media_sample.video.dimensions", _video_dimensions);
 
-        auto x = media_sample.attribute_value_get<video_dimensions>("media_sample_attributes.video.dimensions");
+        auto x = media_sample.attribute_value_get<video_dimensions>("media_sample.video.dimensions");
 
-        media_sample.attribute_blob_set("media_sample_attributes.h264.sps", _sequence_parameter_set);
+        media_sample.attribute_blob_set("media_sample.h264.sps", _sequence_parameter_set);
 
-        media_sample.attribute_blob_set("media_sample_attributes.h264.pps", _picture_parameter_set);
+        media_sample.attribute_blob_set("media_sample.h264.pps", _picture_parameter_set);
 
         _media_framer_base::sample_receieved();
     }
