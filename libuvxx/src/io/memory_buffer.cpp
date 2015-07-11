@@ -83,9 +83,14 @@ namespace uvxx { namespace io
 
     }
 
-    memory_buffer::memory_buffer(memory_buffer&& dispatcher)
+    memory_buffer::memory_buffer(memory_buffer&& buffer)
     {
-        *this = std::move(dispatcher);
+        *this = std::move(buffer);
+    }
+
+    memory_buffer::memory_buffer(const std::vector<uint8_t>& buffer) : memory_buffer(buffer.size())
+    {
+        memcpy(__memory_buffer_impl->data(), buffer.data(), buffer.size());
     }
 
     memory_buffer& memory_buffer::operator=(memory_buffer&& rhs)

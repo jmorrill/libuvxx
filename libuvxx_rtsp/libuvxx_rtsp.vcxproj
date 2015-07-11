@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\details\media_framers\H26x\sps_parser.hpp" />
     <ClInclude Include="include\details\media_framers\_h264_framer.hpp" />
     <ClInclude Include="include\details\media_framers\_media_framer_base.h" />
     <ClInclude Include="include\details\_live_authenticator.hpp" />

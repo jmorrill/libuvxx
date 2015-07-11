@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-
+#include <vector>
 namespace uvxx { namespace io 
 {
     class _memory_buffer_impl;
@@ -9,6 +9,8 @@ namespace uvxx { namespace io
     {
     public:
         explicit memory_buffer(size_t initial_size = 0);
+
+        memory_buffer(const std::vector<uint8_t>& buffer);
 
         ~memory_buffer();
 

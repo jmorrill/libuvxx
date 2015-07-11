@@ -59,12 +59,12 @@ void uvxx::rtsp::media_sample::capacity_set(size_t size) const
     __media_sample_impl->capacity_set(size);
 }
 
-void uvxx::rtsp::media_sample::set_attribute(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer) const
+void uvxx::rtsp::media_sample::attribute_blob_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer) const
 {
     __media_sample_impl->set_attribute(attribute_name, buffer);
 }
 
-uvxx::io::memory_buffer uvxx::rtsp::media_sample::get_attribute(const std::string& attribute_name) const
+uvxx::io::memory_buffer uvxx::rtsp::media_sample::attribute_blob_get(const std::string& attribute_name) const
 {
     return __media_sample_impl->get_attribute(attribute_name);
 }

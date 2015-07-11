@@ -49,9 +49,29 @@ namespace uvxx { namespace rtsp
 
         const std::string codec_name() const;
 
-        void set_attribute(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer) const;
+        void attribute_blob_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer) const;
 
-        uvxx::io::memory_buffer get_attribute(const std::string& attribute_name) const;
+        uvxx::io::memory_buffer attribute_blob_get(const std::string& attribute_name) const;
+
+        template<typename T>
+        void attribute_value_set(const std::string& attribute_name, T value)
+        {
+            uvxx::io::memory_buffer buffer(sizeof(T));
+
+            memcpy(static_cast<uint8_t*>(buffer), &value, sizeof(T));
+
+            attribute_blob_set(attribute_name, buffer);
+        }
+
+        template<typename T>
+        T attribute_value_get(const std::string& attribute_name)
+        {
+            auto buffer = attribute_blob_get(attribute_name);
+
+            T value = (*reinterpret_cast<T*>(static_cast<uint8_t*>(buffer)));
+
+            return value;
+        }
 
     private:
         std::shared_ptr<details::_media_sample_impl> __media_sample_impl;
