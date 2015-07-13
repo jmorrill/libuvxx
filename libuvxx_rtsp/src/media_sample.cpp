@@ -83,3 +83,8 @@ void uvxx::rtsp::media_sample::is_truncated_set(bool truncated) const
 {
     __media_sample_impl->is_truncated_set(truncated);
 }
+
+void uvxx::rtsp::media_sample::is_complete_sample_set(bool complete) const
+{
+    __media_sample_impl->is_complete_sample_set(complete);
+}

@@ -162,12 +162,15 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
     _lastPresentationTime = reported_micro_seconds;
 
+    _sample.is_complete_sample_set(is_complete_sample);
+
     _sample.presentation_time_set(_currentPresentationTime);
 
     _sample.is_truncated_set(truncated_bytes > 0);
 
     _sample.size_set(packet_data_size);
 
+    
     sample_receieved();
 }
 
@@ -194,7 +197,7 @@ void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amo
 
     size_t new_size = current_size + (truncated_amount * 2);
 
-    new_size = max(MAX_BUFFER_SIZE, new_size);
+    new_size = min(MAX_BUFFER_SIZE, new_size);
 
     if (new_size == current_size)
     {

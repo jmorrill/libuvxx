@@ -21,6 +21,9 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         virtual void sample_receieved();
 
     private:
+        void initialize_sequence_parameter_set();
+
+    private:
         std::vector<uint8_t> _sequence_parameter_set;
 
         std::vector<uint8_t> _picture_parameter_set;

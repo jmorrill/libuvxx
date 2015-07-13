@@ -41,6 +41,8 @@ namespace uvxx { namespace rtsp
 
         bool is_complete_sample() const;
 
+        void is_complete_sample_set(bool complete) const;
+
         bool is_truncated() const;
 
         void is_truncated_set(bool truncated) const;
