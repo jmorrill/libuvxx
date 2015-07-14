@@ -38,7 +38,6 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 
         static void adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const uvxx::rtsp::media_sample& sample);
 
-
     private:
         uvxx::rtsp::media_sample _sample;
 

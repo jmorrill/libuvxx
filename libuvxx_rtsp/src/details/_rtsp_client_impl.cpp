@@ -52,6 +52,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     describe_event.set();
 
+
     auto session_impl = std::make_shared<_media_session_impl>();
 
     session_impl->live_media_session_set(client_impl->_usage_environment, session);
@@ -77,6 +78,10 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
     auto& subsession = client_impl->_current_media_subsession_setup;
 
     auto live_subsession = subsession.__media_subsession->live_media_subsession();
+
+    unsigned const thresh = 1000000; // 1 second
+
+    live_subsession->rtpSource()->setPacketReorderingThresholdTime(thresh);
 
     setup_event.set();
 }

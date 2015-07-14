@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 
         client.username_set("admin");
         client.password_set("12345");
-        client.protocol_set(transport_protocol::tcp);
+        client.protocol_set(transport_protocol::udp);
  
         client.open(argv[1]).then([=]
         {

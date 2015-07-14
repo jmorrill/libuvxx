@@ -115,8 +115,6 @@ void uvxx::rtsp::details::media_framers::_h264_framer::sample_receieved()
 
         media_sample.attribute_blob_set("media_sample.h264.pps", _picture_parameter_set);
 
-        printf("%d complete\n", media_sample.is_complete_sample());
-
         _media_framer_base::sample_receieved();
     }
 }
