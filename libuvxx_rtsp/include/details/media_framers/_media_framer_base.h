@@ -8,7 +8,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     class _media_framer_base
     {
     public:
-        _media_framer_base(const media_subsession& subsession, int stream_number);
+        _media_framer_base(const media_subsession& subsession);
 
         virtual ~_media_framer_base();
 
@@ -18,10 +18,9 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         int stream_number();
 
     protected:
+        virtual void sample_receieved(bool packet_marker_bit);
 
-        virtual void sample_receieved();
-
-        uvxx::rtsp::media_sample sample();
+        uvxx::rtsp::media_sample working_sample();
 
         void do_sample_callback();
 
@@ -32,11 +31,11 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     private:
         static void on_after_getting_frame(void* client_data, unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds);
 
+        static void adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const uvxx::rtsp::media_sample& sample);
+
         static void on_rtcp_bye(void* client_data);
 
         void on_after_getting_frame(unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds);
-
-        static void adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const uvxx::rtsp::media_sample& sample);
 
     private:
         uvxx::rtsp::media_sample _sample;
@@ -46,8 +45,6 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         std::chrono::microseconds _lastPresentationTime;
 
         std::chrono::microseconds _currentPresentationTime;
-
-        int _stream_number;
 
         bool _was_synced;
     };

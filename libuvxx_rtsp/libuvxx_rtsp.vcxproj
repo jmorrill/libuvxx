@@ -22,6 +22,7 @@
     <ClInclude Include="include\details\_live_rtsp_client.hpp" />
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />
     <ClInclude Include="include\media_sample.hpp" />
+    <ClInclude Include="include\media_sample_attributes.hpp" />
     <ClInclude Include="include\media_session.hpp" />
     <ClInclude Include="include\rtsp_client.hpp" />
     <ClInclude Include="include\rtsp_exceptions.hpp" />

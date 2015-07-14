@@ -5,20 +5,15 @@
 
 namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 {
-    struct video_dimensions
-    {
-        int width; int height;
-    };
-
     class _h264_framer : public _media_framer_base
     {
     public:
-        _h264_framer(const media_subsession& subsession, int stream_number);
+        _h264_framer(const media_subsession& subsession);
 
         virtual ~_h264_framer();
     
     protected:
-        virtual void sample_receieved();
+        virtual void sample_receieved(bool packet_marker_bit);
 
     private:
         void initialize_sequence_parameter_set();
@@ -30,6 +25,6 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 
         bool _has_received_key_frame;
 
-        video_dimensions _video_dimensions;
+        media_sample_attributes::video_dimensions _video_dimensions;
     };
 }}}}

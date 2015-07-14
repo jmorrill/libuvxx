@@ -31,16 +31,6 @@ void _media_sample_impl::presentation_time_set(std::chrono::microseconds present
     _presentation_time = presentation_time;
 }
 
-void _media_sample_impl::is_complete_sample_set(bool complete_sample)
-{
-    _is_complete_sample = complete_sample;
-}
-
-void _media_sample_impl::is_truncated_set(bool truncated)
-{
-    _is_truncated = truncated;
-}
-
 void _media_sample_impl::codec_name_set(const std::string& codec_name)
 {
     _codec_name = codec_name;
@@ -64,11 +54,6 @@ const uint8_t* _media_sample_impl::data() const
 const std::chrono::microseconds _media_sample_impl::presentation_time() const
 {
     return _presentation_time;
-}
-
-bool _media_sample_impl::is_complete_sample() const
-{
-    return _is_complete_sample;
 }
 
 bool _media_sample_impl::is_truncated() const
@@ -96,12 +81,22 @@ void uvxx::rtsp::details::_media_sample_impl::capacity_set(size_t capacity)
     _buffer.resize(capacity);
 }
 
-void uvxx::rtsp::details::_media_sample_impl::set_attribute(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer)
+void uvxx::rtsp::details::_media_sample_impl::attribute_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer)
 {
     _attribute_map[attribute_name] = buffer;
 }
 
-uvxx::io::memory_buffer uvxx::rtsp::details::_media_sample_impl::get_attribute(const std::string& attribute_name)
+uvxx::io::memory_buffer uvxx::rtsp::details::_media_sample_impl::attribute_get(const std::string& attribute_name)
 {
     return _attribute_map.at(attribute_name);
+}
+
+void uvxx::rtsp::details::_media_sample_impl::is_truncated_set(bool truncated)
+{
+    _is_truncated = truncated;
+}
+
+void uvxx::rtsp::details::_media_sample_impl::clear_attributes()
+{
+    _attribute_map.clear();
 }

@@ -20,7 +20,6 @@ namespace uvxx { namespace rtsp { namespace details
         virtual ~_media_sample_impl();
 
     public:
-
         const int stream_number() const;
 
         void stream_number_set(int stream_number);
@@ -39,10 +38,6 @@ namespace uvxx { namespace rtsp { namespace details
        
         void presentation_time_set(std::chrono::microseconds presentation_time);
 
-        bool is_complete_sample() const;
-
-        void is_complete_sample_set(bool complete_sample);
-
         bool is_truncated() const;
 
         void is_truncated_set(bool truncated);
@@ -51,9 +46,11 @@ namespace uvxx { namespace rtsp { namespace details
 
         void codec_name_set(const std::string& codec_name);
 
-        void set_attribute(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer);
+        void clear_attributes();
 
-        uvxx::io::memory_buffer get_attribute(const std::string& attribute_name);
+        void attribute_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer);
+
+        uvxx::io::memory_buffer attribute_get(const std::string& attribute_name);
 
     private:
         int _stream_number;
@@ -63,8 +60,6 @@ namespace uvxx { namespace rtsp { namespace details
         size_t _size;
 
         std::chrono::microseconds _presentation_time;
-
-        bool _is_complete_sample;
 
         bool _is_truncated;
 

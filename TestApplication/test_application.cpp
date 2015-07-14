@@ -6,18 +6,33 @@
 
 using namespace std;
 using namespace uvxx;
-using namespace uvxx::rtsp;
 using namespace uvxx::pplx;
+using namespace uvxx::rtsp;
+using namespace uvxx::rtsp::media_sample_attributes;
 
 bool on_frame_callback(const media_sample& sample)
 {
-    printf("c: %s\t size: %d\t truncated: %d\t time: %llu \t s:%u cs:%u\n",
-        sample.codec_name().c_str(),
-        sample.size(),
-        sample.is_truncated(),
-        sample.presentation_time(),
-        sample.stream_number(),
-        sample.is_complete_sample());
+    printf("codec: %s\t size: %d\t pts: %llu \t s:%u",
+           sample.codec_name().c_str(),
+           sample.size(),
+           sample.presentation_time(),
+           sample.stream_number());
+
+    if (sample.codec_name() == "H264")
+    {
+        auto video_size = sample.attribute_get<video_dimensions>(VIDEO_DIMENSIONS);
+
+        bool key_frame = sample.attribute_get<bool>(VIDEO_KEYFRAME);
+
+        printf("\twxh: %dx%d", video_size.width, video_size.height);
+
+        if (key_frame)
+        {
+            printf("\tkey_frame");
+        }
+    }
+
+    printf("\n");
 
     return true;
 }

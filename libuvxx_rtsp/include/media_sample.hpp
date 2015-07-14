@@ -2,6 +2,7 @@
 #include <memory>
 #include <chrono>
 #include <string>
+#include "media_sample_attributes.hpp"
 #include "io/memory_buffer.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
@@ -25,6 +26,8 @@ namespace uvxx { namespace rtsp
     public:
         const int stream_number() const;
 
+        void stream_number_set(int stream_number);
+
         const size_t size() const;
 
         void size_set(size_t size) const;
@@ -38,11 +41,7 @@ namespace uvxx { namespace rtsp
         const std::chrono::microseconds presentation_time() const;
 
         void presentation_time_set(std::chrono::microseconds presentation_time) const;
-
-        bool is_complete_sample() const;
-
-        void is_complete_sample_set(bool complete) const;
-
+       
         bool is_truncated() const;
 
         void is_truncated_set(bool truncated) const;
@@ -51,12 +50,14 @@ namespace uvxx { namespace rtsp
 
         const std::string codec_name() const;
 
+        void clear_attributes();
+
         void attribute_blob_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer) const;
 
         uvxx::io::memory_buffer attribute_blob_get(const std::string& attribute_name) const;
 
         template<typename T>
-        void attribute_value_set(const std::string& attribute_name, T value)
+        void attribute_set(const std::string& attribute_name, T value)
         {
             uvxx::io::memory_buffer buffer(sizeof(T));
 
@@ -66,7 +67,7 @@ namespace uvxx { namespace rtsp
         }
 
         template<typename T>
-        T attribute_value_get(const std::string& attribute_name)
+        T attribute_get(const std::string& attribute_name) const
         {
             auto buffer = attribute_blob_get(attribute_name);
 

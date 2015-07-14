@@ -14,7 +14,6 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
     _session(session),
     _subsessions(std::move(subsessions))
 {
-    int stream_number = 0;
 
     for (auto& subsession : _subsessions)
     {
@@ -24,16 +23,14 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
 
         if (codec_name == "H264")
         {
-            framer = std::make_shared<media_framers::_h264_framer>(subsession, stream_number);
+            framer = std::make_shared<media_framers::_h264_framer>(subsession);
         }
         else
         {
-            framer = std::make_shared<media_framers::_media_framer_base>(subsession, stream_number);
+            framer = std::make_shared<media_framers::_media_framer_base>(subsession);
         }
 
         _media_framers.push_back(framer);
-
-        stream_number++;
     }
 }
 

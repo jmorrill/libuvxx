@@ -24,11 +24,6 @@ const std::chrono::microseconds media_sample::presentation_time() const
     return __media_sample_impl->presentation_time();
 }
 
-bool media_sample::is_complete_sample() const
-{
-    return __media_sample_impl->is_complete_sample();
-}
-
 bool media_sample::is_truncated() const
 {
     return __media_sample_impl->is_truncated();
@@ -61,12 +56,12 @@ void uvxx::rtsp::media_sample::capacity_set(size_t size) const
 
 void uvxx::rtsp::media_sample::attribute_blob_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer) const
 {
-    __media_sample_impl->set_attribute(attribute_name, buffer);
+    __media_sample_impl->attribute_set(attribute_name, buffer);
 }
 
 uvxx::io::memory_buffer uvxx::rtsp::media_sample::attribute_blob_get(const std::string& attribute_name) const
 {
-    return __media_sample_impl->get_attribute(attribute_name);
+    return __media_sample_impl->attribute_get(attribute_name);
 }
 
 void uvxx::rtsp::media_sample::codec_name_set(const std::string& codec_name)
@@ -84,7 +79,12 @@ void uvxx::rtsp::media_sample::is_truncated_set(bool truncated) const
     __media_sample_impl->is_truncated_set(truncated);
 }
 
-void uvxx::rtsp::media_sample::is_complete_sample_set(bool complete) const
+void uvxx::rtsp::media_sample::clear_attributes()
 {
-    __media_sample_impl->is_complete_sample_set(complete);
+    __media_sample_impl->clear_attributes();
+}
+
+void uvxx::rtsp::media_sample::stream_number_set(int stream_number)
+{
+    __media_sample_impl->stream_number_set(stream_number);
 }

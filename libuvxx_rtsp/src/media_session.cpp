@@ -47,6 +47,11 @@ const std::string uvxx::rtsp::media_subsession::get_attribute(const std::string&
     return __media_subsession->get_attribute(attribute_name);
 }
 
+int uvxx::rtsp::media_subsession::stream_number() const
+{
+    return __media_subsession->stream_number();
+}
+
 media_session::media_session(media_session&& rhs)
 {
     *this = std::move(rhs);

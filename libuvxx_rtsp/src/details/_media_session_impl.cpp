@@ -3,7 +3,8 @@
 
 using namespace uvxx::rtsp::details;
 
-_media_subsession_impl::_media_subsession_impl(MediaSubsession* live_subsession)
+_media_subsession_impl::_media_subsession_impl(int stream_number, MediaSubsession* live_subsession) : 
+    _stream_number(stream_number)
 {
     _live_subsession = live_subsession;
 }
@@ -49,6 +50,11 @@ const std::string uvxx::rtsp::details::_media_subsession_impl::get_attribute(con
     return _live_subsession->attrVal_str(attribute_name.c_str());
 }
 
+int uvxx::rtsp::details::_media_subsession_impl::stream_number()
+{
+    return _stream_number;
+}
+
 _media_session_impl::~_media_session_impl()
 {
     if (_live_session)
@@ -67,6 +73,8 @@ void _media_session_impl::live_media_session_set(const _usage_environment_ptr& u
 
     auto iter = std::make_unique<MediaSubsessionIterator>(*_live_session);
 
+    int stream_number = 0;
+
     while (auto live_subsession = iter->next())
     {
         if (!live_subsession)
@@ -74,7 +82,9 @@ void _media_session_impl::live_media_session_set(const _usage_environment_ptr& u
             break;
         }
 
-        _subsessions.emplace_back(std::make_shared<_media_subsession_impl>(live_subsession));
+        _subsessions.emplace_back(std::make_shared<_media_subsession_impl>(stream_number, live_subsession));
+
+        stream_number++;
     }
 }
 

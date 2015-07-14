@@ -17,7 +17,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _media_subsession_impl
     {
     public:
-        _media_subsession_impl(MediaSubsession* live_subsession);
+        _media_subsession_impl(int stream_number, MediaSubsession* live_subsession);
 
         _media_subsession_impl();
 
@@ -38,10 +38,14 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::string codec_name();
 
+        int stream_number();
+
         const std::string get_attribute(const std::string& attribute_name) const;
 
     private:
         MediaSubsession* _live_subsession;
+
+        int _stream_number;
     };
 
     using _media_subsession_impl_ptr = std::shared_ptr<_media_subsession_impl>;

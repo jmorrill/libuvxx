@@ -5,9 +5,8 @@ using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 using namespace uvxx::rtsp::details::media_framers;
 
-_media_framer_base::_media_framer_base(const media_subsession& subsession, int stream_number) :
+_media_framer_base::_media_framer_base(const media_subsession& subsession) :
     _subsession(std::move(subsession)),
-    _stream_number(stream_number),
     _lastPresentationTime(0),
     _currentPresentationTime(0),
     _was_synced(false)
@@ -27,7 +26,7 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession, int s
 
         _sample.capacity_set(1024 * 200);
 
-        //_sample.stream_number_set(stream_number);
+        _sample.stream_number_set(subsession.stream_number());
 
         _sample.codec_name_set(live_subsession->codecName());
 
@@ -62,7 +61,6 @@ void _media_framer_base::begin_reading(std::function<bool(const media_sample&)> 
     continue_reading();
 }
 
-
 void uvxx::rtsp::details::media_framers::_media_framer_base::continue_reading()
 {
     auto live_subsession = _subsession.__media_subsession->live_media_subsession();
@@ -89,15 +87,15 @@ void uvxx::rtsp::details::media_framers::_media_framer_base::continue_reading()
 
 int uvxx::rtsp::details::media_framers::_media_framer_base::stream_number()
 {
-    return _stream_number;
+    return _subsession.stream_number();
 }
 
-uvxx::rtsp::media_sample uvxx::rtsp::details::media_framers::_media_framer_base::sample()
+uvxx::rtsp::media_sample uvxx::rtsp::details::media_framers::_media_framer_base::working_sample()
 {
     return _sample;
 }
 
-void uvxx::rtsp::details::media_framers::_media_framer_base::sample_receieved()
+void uvxx::rtsp::details::media_framers::_media_framer_base::sample_receieved(bool packet_marker_bit)
 {
     do_sample_callback();
 
@@ -111,7 +109,6 @@ void uvxx::rtsp::details::media_framers::_media_framer_base::do_sample_callback(
         _sample_callback(_sample);
     }
 }
-
 
 void _media_framer_base::on_after_getting_frame(void* client_data, unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds)
 {
@@ -133,7 +130,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
         adjust_buffer_for_trucated_bytes(truncated_bytes, _sample);
     }
 
-    bool is_complete_sample = true;
+    bool marker_bit = true;
 
     bool is_synced = true;
 
@@ -143,7 +140,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
         is_synced = rtp_source->hasBeenSynchronizedUsingRTCP();
 
-        is_complete_sample = rtp_source->curPacketMarkerBit();
+        marker_bit = rtp_source->curPacketMarkerBit();
     }
 
     microseconds reported_micro_seconds((ONE_MILLION * presentation_time.tv_sec) + presentation_time.tv_usec);
@@ -162,16 +159,13 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
     _lastPresentationTime = reported_micro_seconds;
 
-    _sample.is_complete_sample_set(is_complete_sample);
-
     _sample.presentation_time_set(_currentPresentationTime);
 
     _sample.is_truncated_set(truncated_bytes > 0);
 
     _sample.size_set(packet_data_size);
-
     
-    sample_receieved();
+    sample_receieved(marker_bit);
 }
 
 void _media_framer_base::on_rtcp_bye(void* client_data)
