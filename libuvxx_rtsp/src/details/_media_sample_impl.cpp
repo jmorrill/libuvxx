@@ -88,6 +88,11 @@ void uvxx::rtsp::details::_media_sample_impl::attribute_set(const std::string& a
 
 uvxx::io::memory_buffer uvxx::rtsp::details::_media_sample_impl::attribute_get(const std::string& attribute_name)
 {
+    if (_attribute_map.find(attribute_name) == _attribute_map.end())
+    {
+        return nullptr;
+    }
+
     return _attribute_map.at(attribute_name);
 }
 

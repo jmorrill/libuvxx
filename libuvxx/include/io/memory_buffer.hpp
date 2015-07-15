@@ -12,6 +12,8 @@ namespace uvxx { namespace io
 
         memory_buffer(const std::vector<uint8_t>& buffer);
 
+        memory_buffer(std::nullptr_t ptr);
+
         ~memory_buffer();
 
         memory_buffer(const memory_buffer&) = default;
@@ -41,6 +43,8 @@ namespace uvxx { namespace io
         void capacity_set(size_t size);
 
         size_t capacity_get() const;
+
+        uint8_t* data() const;
 
         void read(uint8_t* destination, size_t position, size_t size) const;
 

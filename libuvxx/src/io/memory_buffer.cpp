@@ -93,6 +93,11 @@ namespace uvxx { namespace io
         memcpy(__memory_buffer_impl->data(), buffer.data(), buffer.size());
     }
 
+    memory_buffer::memory_buffer(std::nullptr_t ptr)
+    {
+        __memory_buffer_impl = nullptr;
+    }
+
     memory_buffer& memory_buffer::operator=(memory_buffer&& rhs)
     {
         __memory_buffer_impl = std::move(rhs.__memory_buffer_impl);
@@ -164,4 +169,10 @@ namespace uvxx { namespace io
     {
         return reinterpret_cast<char*>(__memory_buffer_impl->data());
     }
+
+    uint8_t* memory_buffer::data() const
+    {
+        return reinterpret_cast<uint8_t*>(__memory_buffer_impl->data());
+    }
+
 }}

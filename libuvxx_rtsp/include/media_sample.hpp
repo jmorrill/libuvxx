@@ -59,9 +59,23 @@ namespace uvxx { namespace rtsp
         template<typename T>
         void attribute_set(const std::string& attribute_name, T value)
         {
-            uvxx::io::memory_buffer buffer(sizeof(T));
+            auto buffer = attribute_blob_get(attribute_name);
 
-            memcpy(static_cast<uint8_t*>(buffer), &value, sizeof(T));
+            if (buffer)
+            {
+                if (buffer.length_get() == sizeof(T) &&
+                    !memcmp(buffer.data(), static_cast<void*>(&value), sizeof(T)))
+                {
+                    return;
+                }
+            }
+
+            if (!buffer || buffer.length_get() != sizeof(T))
+            {
+                buffer = uvxx::io::memory_buffer(sizeof(T));
+            }
+
+            memcpy(buffer.data(), &value, sizeof(T));
 
             attribute_blob_set(attribute_name, buffer);
         }
@@ -70,6 +84,11 @@ namespace uvxx { namespace rtsp
         T attribute_get(const std::string& attribute_name) const
         {
             auto buffer = attribute_blob_get(attribute_name);
+
+            if (!buffer)
+            {
+                return T();
+            }
 
             T value = (*reinterpret_cast<T*>(static_cast<uint8_t*>(buffer)));
 

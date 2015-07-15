@@ -1,6 +1,7 @@
 #include "details/media_framers/_h264_framer.hpp"
 #include "details/media_framers/h26x/sps_parser.hpp"
 
+using namespace uvxx::rtsp::media_sample_attributes;
 using namespace uvxx::rtsp::details::media_framers::h26x;
 
 static const char * RTSP_SPROP_PARAMETER_SET_ATTRIBUTE = "sprop-parameter-sets";
@@ -30,7 +31,7 @@ enum class h26x_nal_type
 };
 
 
-static void set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const uvxx::rtsp::media_sample& sample)
+static bool set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const uvxx::rtsp::media_sample& sample)
 {
     bool are_equal = true;
 
@@ -47,14 +48,9 @@ static void set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const uvxx::r
 
         auto buffer_data = buffer.data();
 
-        for (size_t i = 0; i < sample.size(); i++)
+        if (memcmp(sample_data, buffer_data, sample.size()))
         {
-            if (sample_data[i] != buffer[i])
-            {
-                are_equal = false;
-
-                break;
-            }
+            are_equal = false;
         }
 
         break;
@@ -62,10 +58,12 @@ static void set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const uvxx::r
 
     if (are_equal)
     {
-        return;
+        return false;
     }
 
     buffer = std::vector<uint8_t>(sample.data(), sample.data() + sample.size());
+
+    return true;
 }
 
 uvxx::rtsp::details::media_framers::_h264_framer::_h264_framer(const media_subsession& subsession) :
@@ -103,7 +101,7 @@ uvxx::rtsp::details::media_framers::_h264_framer::_h264_framer(const media_subse
 
     auto& media_sample = working_sample();
 
-    media_sample.attribute_set(media_sample_attributes::SAMPLE_MAJOR_TYPE, media_sample_attributes::media_sample_majortype::video);
+    media_sample.attribute_set(ATTRIBUTE_SAMPLE_MAJOR_TYPE, media_sample_majortype::video);
 }
 
 uvxx::rtsp::details::media_framers::_h264_framer::~_h264_framer()
@@ -123,9 +121,10 @@ void uvxx::rtsp::details::media_framers::_h264_framer::sample_receieved(bool pac
 
     if (nal_type == h26x_nal_type::sequence_parameter_set)
     {
-        set_to_vector_if_unequal(_sequence_parameter_set, media_sample);
-
-        initialize_sequence_parameter_set();
+        if (set_to_vector_if_unequal(_sequence_parameter_set, media_sample))
+        {
+            initialize_sequence_parameter_set();
+        }
     }
     else if (nal_type == h26x_nal_type::picture_parameter_set)
     {
@@ -156,13 +155,13 @@ void uvxx::rtsp::details::media_framers::_h264_framer::sample_receieved(bool pac
     }
     else
     {
-        media_sample.attribute_set(media_sample_attributes::VIDEO_KEYFRAME, key_frame);
+        media_sample.attribute_set(ATTRIBUTE_VIDEO_KEYFRAME, key_frame);
 
-        media_sample.attribute_set(media_sample_attributes::VIDEO_DIMENSIONS, _video_dimensions);
+        media_sample.attribute_set(ATTRIBUTE_VIDEO_DIMENSIONS, _video_dimensions);
 
-        media_sample.attribute_blob_set(media_sample_attributes::H26X_SEQUENCE_PARAMETER_SET, _sequence_parameter_set);
+        media_sample.attribute_blob_set(ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET, _sequence_parameter_set);
 
-        media_sample.attribute_blob_set(media_sample_attributes::H26X_PICTURE_PARAMETER_SET, _picture_parameter_set);
+        media_sample.attribute_blob_set(ATTRIBUTE_H26X_PICTURE_PARAMETER_SET, _picture_parameter_set);
 
         _media_framer_base::sample_receieved(packet_marker_bit);
     }

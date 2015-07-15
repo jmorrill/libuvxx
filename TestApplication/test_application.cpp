@@ -20,9 +20,9 @@ bool on_frame_callback(const media_sample& sample)
 
     if (sample.codec_name() == "H264")
     {
-        auto video_size = sample.attribute_get<video_dimensions>(VIDEO_DIMENSIONS);
+        auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
 
-        bool key_frame = sample.attribute_get<bool>(VIDEO_KEYFRAME);
+        bool key_frame = sample.attribute_get<bool>(ATTRIBUTE_VIDEO_KEYFRAME);
 
         printf("\twxh: %dx%d", video_size.width, video_size.height);
 
