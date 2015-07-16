@@ -18,7 +18,7 @@ bool on_frame_callback(const media_sample& sample)
            sample.presentation_time(),
            sample.stream_number());
 
-    if (sample.codec_name() == "H264")
+    if (sample.attribute_get<media_sample_majortype>(ATTRIBUTE_SAMPLE_MAJOR_TYPE) == media_sample_majortype::video)
     {
         auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
 

@@ -2,6 +2,7 @@
 
 using namespace std::chrono;
 using namespace uvxx::rtsp;
+using namespace uvxx::rtsp::media_sample_attributes;
 using namespace uvxx::rtsp::details;
 using namespace uvxx::rtsp::details::media_framers;
 
@@ -29,6 +30,19 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
         _sample.stream_number_set(subsession.stream_number());
 
         _sample.codec_name_set(live_subsession->codecName());
+
+        media_sample_majortype media_major = media_sample_majortype::unknown;
+
+        if (!strcmp(live_subsession->mediumName(), "video"))
+        {
+            media_major = media_sample_majortype::video;
+        }
+        else if (!strcmp(live_subsession->mediumName(), "audio"))
+        {
+            media_major = media_sample_majortype::audio;
+        }
+
+        _sample.attribute_set(::ATTRIBUTE_SAMPLE_MAJOR_TYPE, media_major);
 
         /* set a 'BYE' handler for this subsession's RTCP instance: */
         live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, this);

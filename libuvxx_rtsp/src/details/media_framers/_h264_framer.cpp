@@ -100,8 +100,6 @@ uvxx::rtsp::details::media_framers::_h264_framer::_h264_framer(const media_subse
     }
 
     auto& media_sample = working_sample();
-
-    media_sample.attribute_set(ATTRIBUTE_SAMPLE_MAJOR_TYPE, media_sample_majortype::video);
 }
 
 uvxx::rtsp::details::media_framers::_h264_framer::~_h264_framer()
