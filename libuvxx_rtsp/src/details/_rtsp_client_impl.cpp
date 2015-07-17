@@ -1,4 +1,5 @@
 #include "BasicUsageEnvironment.hh"
+#include "GroupsockHelper.hh"
 
 #include "uvxx.hpp"
 #include "media_session.hpp"
@@ -87,9 +88,20 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
 
     auto live_subsession = subsession.__media_subsession->live_media_subsession();
 
-    unsigned const thresh = 1000000; // 1 second
+    unsigned const thresh = 1200000; // 1.2 seconds
 
     live_subsession->rtpSource()->setPacketReorderingThresholdTime(thresh);
+
+    /*
+    int socketNum = live_subsession->rtpSource()->RTPgs()->socketNum();
+
+    unsigned curBufferSize = getReceiveBufferSize(live_subsession->rtpSource()->envir(), socketNum);
+	  
+    unsigned newBufferSize = 200 * 1024;
+
+    newBufferSize = setReceiveBufferTo(live_subsession->rtpSource()->envir(), socketNum, newBufferSize);
+    */
+
 
     setup_event.set();
 }

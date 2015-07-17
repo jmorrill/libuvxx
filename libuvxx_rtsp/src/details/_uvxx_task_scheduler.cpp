@@ -97,9 +97,11 @@ void _uvxx_task_scheduler::schedulerTickTask()
 void _uvxx_task_scheduler::SingleStep(unsigned maxDelayTime) 
 {
     DelayInterval const& timeToDelay = fDelayQueue.timeToNextAlarm();
+
     struct timeval tv_timeToDelay;
 
     tv_timeToDelay.tv_sec = timeToDelay.seconds();
+
     tv_timeToDelay.tv_usec = timeToDelay.useconds();
   
     const long MAX_TV_SEC = MILLION;
@@ -116,6 +118,7 @@ void _uvxx_task_scheduler::SingleStep(unsigned maxDelayTime)
          tv_timeToDelay.tv_usec > (long)maxDelayTime % MILLION))) 
     {
         tv_timeToDelay.tv_sec = maxDelayTime / MILLION;
+
         tv_timeToDelay.tv_usec = maxDelayTime % MILLION;
     }
 
@@ -125,6 +128,7 @@ void _uvxx_task_scheduler::SingleStep(unsigned maxDelayTime)
         {
             // Common-case optimization for a single event trigger:
             fTriggersAwaitingHandling &=~ fLastUsedTriggerMask;
+
             if (fTriggeredEventHandlers[fLastUsedTriggerNum] != nullptr) 
             {
                 (*fTriggeredEventHandlers[fLastUsedTriggerNum])(fTriggeredEventClientDatas[fLastUsedTriggerNum]);
@@ -134,6 +138,7 @@ void _uvxx_task_scheduler::SingleStep(unsigned maxDelayTime)
         {
             // Look for an event trigger that needs handling (making sure that we make forward progress through all possible triggers):
             unsigned i = fLastUsedTriggerNum;
+
             EventTriggerId mask = fLastUsedTriggerMask;
 
             do 
@@ -157,10 +162,12 @@ void _uvxx_task_scheduler::SingleStep(unsigned maxDelayTime)
                     }
 
                     fLastUsedTriggerMask = mask;
+
                     fLastUsedTriggerNum = i;
 
                     break;
                 }
+
             } while (i != fLastUsedTriggerNum);
         }
     }
@@ -264,6 +271,7 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_condition_set(int cond
     }
 
     _condition_set = condition_set;
+
     start_poll();
 }
 
@@ -271,6 +279,7 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_condition_set(int cond
 void _uvxx_task_scheduler::socket_handler_descriptor::set_handler(BackgroundHandlerProc* handler_proc, void* client_data)
 {
     _handler_proc = handler_proc;
+
     _client_data = client_data;
 }
 
@@ -278,7 +287,9 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_handler(BackgroundHand
 void _uvxx_task_scheduler::socket_handler_descriptor::set_socket(int socket)
 {
     _socket = socket;
+
     _poller = socket_poll(_socket);
+
     start_poll();
 }
 

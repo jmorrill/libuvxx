@@ -81,7 +81,6 @@ namespace uvxx { namespace rtsp
         media_session& operator=(media_session&& rhs);
 
     public:
-
         const std::vector<media_subsession> subsessions() const;
 
         const size_t subsession_count() const;

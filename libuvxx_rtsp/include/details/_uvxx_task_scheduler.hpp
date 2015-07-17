@@ -74,9 +74,13 @@ namespace uvxx { namespace rtsp { namespace details
 
         private:
             int _socket;
+
             int _condition_set;
+
             void* _client_data;
+
             uvxx::net::socket_poll _poller;
+
             BackgroundHandlerProc* _handler_proc;
         };
 

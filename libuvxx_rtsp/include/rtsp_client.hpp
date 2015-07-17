@@ -46,9 +46,9 @@ namespace uvxx { namespace rtsp
 
         media_session media_session() const;
 
-        std::string username() const;
-
         void credentials_set(const std::string& username, const std::string& pass);
+
+        std::string username() const;
 
         std::string password() const;
 
@@ -58,6 +58,5 @@ namespace uvxx { namespace rtsp
 
     private:
         details::_rtsp_client_impl_ptr __rtsp_client_imp;
-
     };
 }}
