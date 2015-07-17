@@ -3,7 +3,7 @@
 
 using namespace uvxx::rtsp::details::media_framers::h26x;
 
-uvxx::rtsp::details::media_framers::h26x::sps_parser::sps_parser(const std::vector<uint8_t>& sequence_parameter_set) :
+sps_parser::sps_parser(const std::vector<uint8_t>& sequence_parameter_set) :
     _video_width(0),
     _video_height(0)
 {
@@ -23,22 +23,32 @@ uvxx::rtsp::details::media_framers::h26x::sps_parser::sps_parser(const std::vect
 
     _current_bit = 0;
 
-    parse_sps();
+    try
+    {
+        parse_sps();
+    }
+    catch (std::out_of_range&)
+    {
+    	
+    }
 }
 
-int uvxx::rtsp::details::media_framers::h26x::sps_parser::video_width() const
+int sps_parser::video_width() const
 {
     return _video_width;
 }
 
-int uvxx::rtsp::details::media_framers::h26x::sps_parser::video_height() const
+int sps_parser::video_height() const
 {
     return _video_height;
 }
 
-unsigned int uvxx::rtsp::details::media_framers::h26x::sps_parser::read_bit()
+unsigned int sps_parser::read_bit()
 {
-    assert(_current_bit <= _buffer_length * 8);
+    if (!(_current_bit <= _buffer_length * 8))
+    {
+        throw std::out_of_range("sps parser does not have enough bits to parse");
+    }
 
     int index = _current_bit / 8;
 
@@ -49,7 +59,7 @@ unsigned int uvxx::rtsp::details::media_framers::h26x::sps_parser::read_bit()
     return (_buffer[index] >> (8 - offset)) & 0x01;
 }
 
-unsigned int uvxx::rtsp::details::media_framers::h26x::sps_parser::read_bits(int n)
+unsigned int sps_parser::read_bits(int n)
 {
     int r = 0;
 
@@ -63,7 +73,7 @@ unsigned int uvxx::rtsp::details::media_framers::h26x::sps_parser::read_bits(int
     return r;
 }
 
-unsigned int uvxx::rtsp::details::media_framers::h26x::sps_parser::read_exponential_golomb_code()
+unsigned int sps_parser::read_exponential_golomb_code()
 {
     int r = 0;
 
@@ -81,7 +91,7 @@ unsigned int uvxx::rtsp::details::media_framers::h26x::sps_parser::read_exponent
     return r;
 }
 
-unsigned int uvxx::rtsp::details::media_framers::h26x::sps_parser::read_se()
+unsigned int sps_parser::read_se()
 {
     int r = read_exponential_golomb_code();
 
@@ -97,7 +107,7 @@ unsigned int uvxx::rtsp::details::media_framers::h26x::sps_parser::read_se()
     return r;
 }
 
-void uvxx::rtsp::details::media_framers::h26x::sps_parser::parse_sps()
+void sps_parser::parse_sps()
 {
     int frame_crop_left_offset = 0;
 
