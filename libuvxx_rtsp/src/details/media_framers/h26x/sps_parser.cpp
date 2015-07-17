@@ -150,7 +150,7 @@ void sps_parser::parse_sps()
 
     if (profile_idc == 100 || profile_idc == 110 ||
         profile_idc == 122 || profile_idc == 244 ||
-        profile_idc == 44  || profile_idc == 83 ||
+        profile_idc == 44  || profile_idc == 83  ||
         profile_idc == 86  || profile_idc == 118)
     {
         int chroma_format_idc = read_exponential_golomb_code();
@@ -238,7 +238,7 @@ void sps_parser::parse_sps()
 
     if (!frame_mbs_only_flag)
     {
-        /* int mb_adaptive_frame_field_flag = */ read_bit();
+        int mb_adaptive_frame_field_flag =  read_bit();
     }
 
     int direct_8x8_inference_flag = read_bit();
