@@ -22,7 +22,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers { 
 
             unsigned int read_se();
 
-            void parse();
+            void parse_sps();
 
         private:
             const unsigned char * _buffer;

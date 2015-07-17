@@ -8,7 +8,11 @@ uvxx::rtsp::details::media_framers::h26x::sps_parser::sps_parser(const std::vect
     _video_height(0)
 {
 
-    if (!sequence_parameter_set.size())
+    const size_t MIN_SPS_BUFFER_SIZE_IN_BITS = 88 /* min bits required to read metadata */;
+
+    size_t buffer_size = sequence_parameter_set.size() * 8 /* convert to bits */;
+
+    if (!buffer_size || buffer_size < MIN_SPS_BUFFER_SIZE_IN_BITS)
     {
         return;
     }
@@ -19,7 +23,7 @@ uvxx::rtsp::details::media_framers::h26x::sps_parser::sps_parser(const std::vect
 
     _current_bit = 0;
 
-    parse();
+    parse_sps();
 }
 
 int uvxx::rtsp::details::media_framers::h26x::sps_parser::video_width() const
@@ -93,7 +97,7 @@ unsigned int uvxx::rtsp::details::media_framers::h26x::sps_parser::read_se()
     return r;
 }
 
-void uvxx::rtsp::details::media_framers::h26x::sps_parser::parse()
+void uvxx::rtsp::details::media_framers::h26x::sps_parser::parse_sps()
 {
     int frame_crop_left_offset = 0;
 
@@ -115,6 +119,7 @@ void uvxx::rtsp::details::media_framers::h26x::sps_parser::parse()
     {
         return;
     }
+
     int constraint_set0_flag = read_bit();
 
     int constraint_set1_flag = read_bit();
@@ -195,7 +200,6 @@ void uvxx::rtsp::details::media_framers::h26x::sps_parser::parse()
     {
         int log2_max_pic_order_cnt_lsb_minus4 = read_exponential_golomb_code();
     }
-
     else if (pic_order_cnt_type == 1)
     {
         int delta_pic_order_always_zero_flag = read_bit();
@@ -206,9 +210,7 @@ void uvxx::rtsp::details::media_framers::h26x::sps_parser::parse()
 
         int num_ref_frames_in_pic_order_cnt_cycle = read_exponential_golomb_code();
 
-        int i;
-
-        for (i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++)
+        for (int i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++)
         {
             read_se();
         }
@@ -226,7 +228,7 @@ void uvxx::rtsp::details::media_framers::h26x::sps_parser::parse()
 
     if (!frame_mbs_only_flag)
     {
-        int mb_adaptive_frame_field_flag = read_bit();
+        /* int mb_adaptive_frame_field_flag = */ read_bit();
     }
 
     int direct_8x8_inference_flag = read_bit();
