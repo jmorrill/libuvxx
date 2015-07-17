@@ -11,18 +11,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\details\media_framers\H26x\sps_parser.hpp" />
+    <ClInclude Include="include\details\media_framers\h26x\sps_parser.hpp" />
     <ClInclude Include="include\details\media_framers\_h264_framer.hpp" />
-    <ClInclude Include="include\details\media_framers\_media_framer_base.h" />
+    <ClInclude Include="include\details\media_framers\_media_framer_base.hpp" />
     <ClInclude Include="include\details\_live_authenticator.hpp" />
     <ClInclude Include="include\details\_media_sample_impl.hpp" />
     <ClInclude Include="include\details\_streaming_media_session_impl.hpp" />
     <ClInclude Include="include\details\_media_session_impl.hpp" />
-    <ClInclude Include="include\details\_uvxx_task_scheduler.h" />
+    <ClInclude Include="include\details\_uvxx_task_scheduler.hpp" />
     <ClInclude Include="include\details\_live_rtsp_client.hpp" />
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />
     <ClInclude Include="include\media_sample.hpp" />
-    <ClInclude Include="include\media_sample_attributes.hpp" />
+    <ClInclude Include="include\media_attributes.hpp" />
     <ClInclude Include="include\media_session.hpp" />
     <ClInclude Include="include\rtsp_client.hpp" />
     <ClInclude Include="include\rtsp_exceptions.hpp" />
@@ -30,6 +30,7 @@
     <ClInclude Include="include\streaming_media_session.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp" />
     <ClCompile Include="src\details\media_framers\_h264_framer.cpp" />
     <ClCompile Include="src\details\media_framers\_media_framer_base.cpp" />
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
@@ -89,6 +90,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)live_media\liveMedia\include;$(ProjectDir)live_media\groupsock\include;$(ProjectDir)live_media\BasicUsageEnvironment\include;$(ProjectDir)live_media\UsageEnvironment\include;$(ProjectDir)..\libuvxx\include;$(ProjectDir)include</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -106,6 +109,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)live_media\liveMedia\include;$(ProjectDir)live_media\groupsock\include;$(ProjectDir)live_media\BasicUsageEnvironment\include;$(ProjectDir)live_media\UsageEnvironment\include;$(ProjectDir)..\libuvxx\include;$(ProjectDir)include</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

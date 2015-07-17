@@ -1,7 +1,9 @@
 #include "details/media_framers/_h264_framer.hpp"
 #include "details/media_framers/h26x/sps_parser.hpp"
 
-using namespace uvxx::rtsp::media_sample_attributes;
+using namespace uvxx::rtsp;
+using namespace uvxx::rtsp::media_attributes;
+using namespace uvxx::rtsp::details::media_framers;
 using namespace uvxx::rtsp::details::media_framers::h26x;
 
 static const char * RTSP_SPROP_PARAMETER_SET_ATTRIBUTE = "sprop-parameter-sets";
@@ -66,7 +68,7 @@ static bool set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const uvxx::r
     return true;
 }
 
-uvxx::rtsp::details::media_framers::_h264_framer::_h264_framer(const media_subsession& subsession) :
+_h264_framer::_h264_framer(const media_subsession& subsession) :
     _media_framer_base(subsession),
     _has_received_key_frame(false)
 {
@@ -102,12 +104,12 @@ uvxx::rtsp::details::media_framers::_h264_framer::_h264_framer(const media_subse
     auto& media_sample = working_sample();
 }
 
-uvxx::rtsp::details::media_framers::_h264_framer::~_h264_framer()
+_h264_framer::~_h264_framer()
 {
 
 }
 
-void uvxx::rtsp::details::media_framers::_h264_framer::sample_receieved(bool packet_marker_bit)
+void _h264_framer::sample_receieved(bool packet_marker_bit)
 {
     auto& media_sample = working_sample();
 
@@ -165,7 +167,7 @@ void uvxx::rtsp::details::media_framers::_h264_framer::sample_receieved(bool pac
     }
 }
 
-void uvxx::rtsp::details::media_framers::_h264_framer::initialize_sequence_parameter_set()
+void _h264_framer::initialize_sequence_parameter_set()
 {
     sps_parser parser(_sequence_parameter_set);
 

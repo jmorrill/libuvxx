@@ -8,7 +8,7 @@ using namespace std;
 using namespace uvxx;
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
-using namespace uvxx::rtsp::media_sample_attributes;
+using namespace uvxx::rtsp::media_attributes;
 
 bool on_frame_callback(const media_sample& sample)
 {
@@ -18,7 +18,7 @@ bool on_frame_callback(const media_sample& sample)
            sample.presentation_time(),
            sample.stream_number());
 
-    if (sample.attribute_get<media_sample_majortype>(ATTRIBUTE_SAMPLE_MAJOR_TYPE) == media_sample_majortype::video)
+    if (sample.attribute_get<media_sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE) == media_sample_major_type::video)
     {
         auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
 
@@ -48,8 +48,8 @@ int main(int argc, char* argv[])
     {
         uvxx::rtsp::rtsp_client client;
 
-        client.username_set("admin");
-        client.password_set("12345");
+        client.credentials_set("admin", "12345");
+
         client.protocol_set(transport_protocol::udp);
  
         client.open(argv[1]).then([=]

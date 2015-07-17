@@ -1,4 +1,7 @@
 #pragma once
+#include "BasicUsageEnvironment.hh"
+#include "MediaSession.hh"
+
 #include "details/_media_session_impl.hpp"
 
 using namespace uvxx::rtsp::details;

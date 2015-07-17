@@ -1,19 +1,23 @@
 #pragma once
-#include "uvxx.hpp"
-#include "media_session.hpp"
-#include "MediaSession.hh"
-#include "_media_sample_impl.hpp"
-#include "media_sample.hpp"
-#include "details/media_framers/_media_framer_base.h"
 #include <memory>
 #include <vector>
+#include "MediaSession.hh"
+
+#include "media_session.hpp"
 
 namespace uvxx { namespace rtsp
 {
     class media_subsession;
 
+    class media_sample;
+
     namespace details
     {
+        namespace media_framers
+        {
+            class _media_framer_base;
+        }
+
         using _media_session_impl_ptr = std::shared_ptr<_media_session_impl>;
     }
 }}
@@ -29,10 +33,17 @@ namespace uvxx { namespace rtsp { namespace details
 
         _streaming_media_session_impl& operator=(const _streaming_media_session_impl& rhs) = delete;
 
+        bool operator=(std::nullptr_t rhs);
+
+        bool operator==(std::nullptr_t rhs);
+
         virtual ~_streaming_media_session_impl();
 
     public:
         void on_frame_callback_set(std::function<bool(const media_sample&)> callback);
+
+    private:
+        void close();
 
     private:
         std::vector<media_subsession> _subsessions;

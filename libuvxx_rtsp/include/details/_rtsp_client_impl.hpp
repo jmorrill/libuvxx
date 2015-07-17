@@ -1,26 +1,35 @@
 #pragma once
-#include "uvxx.hpp"
-#include "_live_rtsp_client.hpp"
-#include "_uvxx_task_scheduler.h"
-#include "_media_session_impl.hpp"
-#include "_streaming_media_session_impl.hpp"
-#include "streaming_media_session.hpp"
-#include "_live_authenticator.hpp"
-#include "BasicUsageEnvironment.hh"
-#include "media_session.hpp"
-#include "rtsp_misc.hpp"
-
 #include <memory>
 #include <map>
 #include <string>
 
+#include "_media_session_impl.hpp"
+#include "streaming_media_session.hpp"
+#include "_live_authenticator.hpp"
+#include "rtsp_misc.hpp"
+#include "media_session.hpp"
+
+class UsageEnvironment;
+
+class RTSPClient;
+
 namespace uvxx { namespace rtsp
 {
+    class media_session;
+
     class media_subsession;
 }}
 
 namespace uvxx { namespace rtsp { namespace details 
 {
+    class _uvxx_task_scheduler;
+
+    class _rtsp_client_impl;
+
+    class _live_rtsp_client;
+
+    using _live_rtsp_client_ptr = std::shared_ptr<_live_rtsp_client>;
+
     using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;
@@ -45,11 +54,9 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::string username() const;
 
-        void username_set(const std::string& username);
+        void credentials_set(const std::string& username, const std::string& password);
 
         std::string password() const;
-
-        void password_set(const std::string& password);
 
         uvxx::rtsp::transport_protocol protocol() const;
 

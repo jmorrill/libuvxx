@@ -1,14 +1,14 @@
 #pragma once
 
-#include "uvxx.hpp"
-#include "event_dispatcher_object.hpp"
-#include "_live_rtsp_client.hpp"
-#include "_uvxx_task_scheduler.h"
-#include "BasicUsageEnvironment.hh"
-#include "MediaSession.hh"
-
 #include <memory>
 #include <string>
+#include <vector>
+
+class UsageEnvironment;
+
+class MediaSubsession;
+
+class MediaSession;
 
 namespace uvxx { namespace rtsp { namespace details 
 {

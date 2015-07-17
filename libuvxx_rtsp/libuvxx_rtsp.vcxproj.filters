@@ -24,9 +24,6 @@
     <ClInclude Include="include\details\_live_rtsp_client.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\details\_uvxx_task_scheduler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\media_session.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,16 +51,19 @@
     <ClInclude Include="include\rtsp_misc.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\details\media_framers\_media_framer_base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\details\media_framers\H26x\sps_parser.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\details\media_framers\_h264_framer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\media_sample_attributes.hpp">
+    <ClInclude Include="include\media_attributes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_uvxx_task_scheduler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\media_framers\h26x\sps_parser.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\media_framers\_media_framer_base.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -102,6 +102,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\media_framers\_h264_framer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #include "details/_media_sample_impl.hpp"
 
+using namespace uvxx::io;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
@@ -71,22 +72,22 @@ _media_sample_impl::~_media_sample_impl()
 
 }
 
-size_t uvxx::rtsp::details::_media_sample_impl::capacity()
+size_t _media_sample_impl::capacity()
 {
     return _buffer.size();
 }
 
-void uvxx::rtsp::details::_media_sample_impl::capacity_set(size_t capacity)
+void _media_sample_impl::capacity_set(size_t capacity)
 {
     _buffer.resize(capacity);
 }
 
-void uvxx::rtsp::details::_media_sample_impl::attribute_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer)
+void _media_sample_impl::attribute_set(const std::string& attribute_name, const memory_buffer& buffer)
 {
     _attribute_map[attribute_name] = buffer;
 }
 
-uvxx::io::memory_buffer uvxx::rtsp::details::_media_sample_impl::attribute_get(const std::string& attribute_name)
+memory_buffer _media_sample_impl::attribute_get(const std::string& attribute_name)
 {
     if (_attribute_map.find(attribute_name) == _attribute_map.end())
     {
@@ -96,12 +97,12 @@ uvxx::io::memory_buffer uvxx::rtsp::details::_media_sample_impl::attribute_get(c
     return _attribute_map.at(attribute_name);
 }
 
-void uvxx::rtsp::details::_media_sample_impl::is_truncated_set(bool truncated)
+void _media_sample_impl::is_truncated_set(bool truncated)
 {
     _is_truncated = truncated;
 }
 
-void uvxx::rtsp::details::_media_sample_impl::clear_attributes()
+void _media_sample_impl::clear_attributes()
 {
     _attribute_map.clear();
 }

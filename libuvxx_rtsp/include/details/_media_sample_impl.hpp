@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+
 #include "io/memory_buffer.hpp"
 
 namespace uvxx { namespace rtsp { namespace details 
@@ -54,16 +55,16 @@ namespace uvxx { namespace rtsp { namespace details
 
     private:
         int _stream_number;
-
-        std::vector<uint8_t> _buffer;
-
+        
         size_t _size;
-
-        std::chrono::microseconds _presentation_time;
 
         bool _is_truncated;
 
         std::string _codec_name;
+
+        std::vector<uint8_t> _buffer;
+
+        std::chrono::microseconds _presentation_time;
 
         std::map<std::string, uvxx::io::memory_buffer> _attribute_map;
     };

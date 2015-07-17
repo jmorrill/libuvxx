@@ -1,5 +1,6 @@
 #include "streaming_media_session.hpp"
 #include "details/_streaming_media_session_impl.hpp"
+#include "media_sample.hpp"
 
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
@@ -32,7 +33,22 @@ void streaming_media_session::begin_stream_read(std::function<bool(const media_s
     __streaming_media_session->on_frame_callback_set(callback);
 }
 
-uvxx::rtsp::streaming_media_session::~streaming_media_session()
+streaming_media_session::~streaming_media_session()
 {
 
+}
+
+bool streaming_media_session::operator=(std::nullptr_t rhs)
+{
+    if (!__streaming_media_session)
+    {
+        return true;
+    }
+
+    return __streaming_media_session->operator=(rhs);
+}
+
+bool streaming_media_session::operator==(std::nullptr_t rhs)
+{
+    return __streaming_media_session->operator=(rhs);
 }

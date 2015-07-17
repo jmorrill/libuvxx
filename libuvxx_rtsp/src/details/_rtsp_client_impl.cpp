@@ -1,6 +1,14 @@
-#include "details/_rtsp_client_impl.hpp"
+#include "BasicUsageEnvironment.hh"
+
+#include "uvxx.hpp"
 #include "media_session.hpp"
 #include "rtsp_exceptions.hpp"
+#include "media_session.hpp"
+
+#include "details/_uvxx_task_scheduler.hpp"
+#include "details/_rtsp_client_impl.hpp"
+#include "details/_streaming_media_session_impl.hpp"
+#include "details/_live_rtsp_client.hpp"
 
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
@@ -127,13 +135,15 @@ _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
 
 _rtsp_client_impl::~_rtsp_client_impl()
 {
-    auto b = _live_client->changeResponseHandler(_last_rtsp_command_id, nullptr);
+    _live_client->changeResponseHandler(_last_rtsp_command_id, nullptr);
 }
 
 task<void> _rtsp_client_impl::open(const std::string& url)
 {
     verify_access();
 
+    _streaming_session = nullptr;
+    
     _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(_usage_environment, url.c_str(), this, 2),
     /* deleter */
     [](_live_rtsp_client* client)
@@ -143,7 +153,6 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
     _describe_event = task_completion_event<void>();
     
-
     _last_rtsp_command_id = _live_client->sendDescribeCommand(describe_callback, &_authenticator);
 
     return create_task(_describe_event).then([this]
@@ -202,14 +211,14 @@ uvxx::pplx::task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vecto
     });
 }
 
-void _rtsp_client_impl::protocol_set(uvxx::rtsp::transport_protocol protocol)
+void _rtsp_client_impl::protocol_set(transport_protocol protocol)
 {
     verify_access();
 
     _protocol = protocol;
 }
 
-uvxx::rtsp::transport_protocol _rtsp_client_impl::protocol() const
+transport_protocol _rtsp_client_impl::protocol() const
 {
     verify_access();
 
@@ -290,15 +299,6 @@ std::string _rtsp_client_impl::password() const
     return _password;
 }
 
-void _rtsp_client_impl::password_set(const std::string& password)
-{
-    verify_access();
-
-    _password = password;
-
-    _authenticator.setUsernameAndPassword(_username.c_str(), _password.c_str());
-}
-
 std::string _rtsp_client_impl::username() const
 {
     verify_access();
@@ -306,11 +306,13 @@ std::string _rtsp_client_impl::username() const
     return _username;
 }
 
-void _rtsp_client_impl::username_set(const std::string& username)
+void _rtsp_client_impl::credentials_set(const std::string& user_name, const std::string& pass)
 {
     verify_access();
 
-    _username = username;
+    _username = user_name;
+
+    _password = pass;
 
     _authenticator.setUsernameAndPassword(_username.c_str(), _password.c_str());
 }

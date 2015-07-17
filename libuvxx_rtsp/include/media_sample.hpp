@@ -2,14 +2,13 @@
 #include <memory>
 #include <chrono>
 #include <string>
-#include "media_sample_attributes.hpp"
+
 #include "io/memory_buffer.hpp"
+#include "media_attributes.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
     class _media_sample_impl;
-
-    class _streaming_media_session_impl;
 }}}
 
 namespace uvxx { namespace rtsp
@@ -97,8 +96,6 @@ namespace uvxx { namespace rtsp
 
     private:
         std::shared_ptr<details::_media_sample_impl> __media_sample_impl;
-
-        friend details::_streaming_media_session_impl;
     };
 }}
     

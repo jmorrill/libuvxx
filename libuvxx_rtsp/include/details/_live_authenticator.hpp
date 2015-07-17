@@ -1,6 +1,6 @@
 #pragma once
-#include "DigestAuthentication.hh"
 #include <memory>
+#include "DigestAuthentication.hh"
 
 namespace uvxx { namespace rtsp { namespace details 
 {

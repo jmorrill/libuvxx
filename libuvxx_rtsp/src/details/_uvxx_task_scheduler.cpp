@@ -1,8 +1,7 @@
+#include <stdio.h>
 #include "BasicUsageEnvironment.hh"
 #include "HandlerSet.hh"
-#include "details/_uvxx_task_scheduler.h"
-
-#include <stdio.h>
+#include "details/_uvxx_task_scheduler.hpp"
 
 #ifndef MILLION
 #define MILLION 1000000

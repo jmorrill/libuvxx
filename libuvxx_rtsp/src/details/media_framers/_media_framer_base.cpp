@@ -1,8 +1,11 @@
-#include "details/media_framers/_media_framer_base.h"
+#include "MediaSession.hh"
+#include "FramedSource.hh"
+#include "details/_media_session_impl.hpp"
+#include "details/media_framers/_media_framer_base.hpp"
 
 using namespace std::chrono;
 using namespace uvxx::rtsp;
-using namespace uvxx::rtsp::media_sample_attributes;
+using namespace uvxx::rtsp::media_attributes;
 using namespace uvxx::rtsp::details;
 using namespace uvxx::rtsp::details::media_framers;
 
@@ -31,15 +34,15 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
 
         _sample.codec_name_set(live_subsession->codecName());
 
-        media_sample_majortype media_major = media_sample_majortype::unknown;
+        media_sample_major_type media_major = media_sample_major_type::unknown;
 
         if (!strcmp(live_subsession->mediumName(), "video"))
         {
-            media_major = media_sample_majortype::video;
+            media_major = media_sample_major_type::video;
         }
         else if (!strcmp(live_subsession->mediumName(), "audio"))
         {
-            media_major = media_sample_majortype::audio;
+            media_major = media_sample_major_type::audio;
         }
 
         _sample.attribute_set(::ATTRIBUTE_SAMPLE_MAJOR_TYPE, media_major);
@@ -75,7 +78,7 @@ void _media_framer_base::begin_reading(std::function<bool(const media_sample&)> 
     continue_reading();
 }
 
-void uvxx::rtsp::details::media_framers::_media_framer_base::continue_reading()
+void _media_framer_base::continue_reading()
 {
     auto live_subsession = _subsession.__media_subsession->live_media_subsession();
 
@@ -99,24 +102,24 @@ void uvxx::rtsp::details::media_framers::_media_framer_base::continue_reading()
                                 nullptr);
 }
 
-int uvxx::rtsp::details::media_framers::_media_framer_base::stream_number()
+int _media_framer_base::stream_number()
 {
     return _subsession.stream_number();
 }
 
-uvxx::rtsp::media_sample uvxx::rtsp::details::media_framers::_media_framer_base::working_sample()
+uvxx::rtsp::media_sample _media_framer_base::working_sample()
 {
     return _sample;
 }
 
-void uvxx::rtsp::details::media_framers::_media_framer_base::sample_receieved(bool packet_marker_bit)
+void _media_framer_base::sample_receieved(bool packet_marker_bit)
 {
     do_sample_callback();
 
     continue_reading();
 }
 
-void uvxx::rtsp::details::media_framers::_media_framer_base::do_sample_callback()
+void _media_framer_base::do_sample_callback()
 {
     if (_sample_callback)
     {
@@ -187,7 +190,7 @@ void _media_framer_base::on_rtcp_bye(void* client_data)
 
 }
 
-void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const uvxx::rtsp::media_sample& sample)
+void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample)
 {
     static const size_t MAX_BUFFER_SIZE = 2 * 1024 * 1024;
 

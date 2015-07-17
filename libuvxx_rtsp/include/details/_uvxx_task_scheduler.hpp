@@ -1,7 +1,10 @@
 #pragma once
-#include "uvxx.hpp"
-#include "BasicUsageEnvironment0.hh"
 #include <map>
+#include "BasicUsageEnvironment0.hh"
+
+#include "event_dispatcher.hpp"
+#include "event_dispatcher_timer.hpp"
+#include "net/socket_poll.hpp"
 
 namespace uvxx { namespace rtsp { namespace details 
 {

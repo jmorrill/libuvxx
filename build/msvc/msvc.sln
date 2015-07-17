@@ -19,9 +19,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liveMedia", "..\..\libuvxx_rtsp\liveMedia.vcxproj", "{3AFEA5ED-5F85-4FD4-A952-6C2C413134CD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuvxx_rtsp", "..\..\libuvxx_rtsp\libuvxx_rtsp.vcxproj", "{A75D232B-1970-4910-AED3-D0BF54232C62}"
-	ProjectSection(ProjectDependencies) = postProject
-		{3AFEA5ED-5F85-4FD4-A952-6C2C413134CD} = {3AFEA5ED-5F85-4FD4-A952-6C2C413134CD}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

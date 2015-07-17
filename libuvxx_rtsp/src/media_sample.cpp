@@ -1,6 +1,7 @@
 #include "media_sample.hpp"
 #include "details/_media_sample_impl.hpp"
 
+using namespace uvxx::io;
 using namespace uvxx::rtsp;
 using namespace details;
 
@@ -34,57 +35,57 @@ const std::string media_sample::codec_name() const
     return __media_sample_impl->codec_name();
 }
 
-const int uvxx::rtsp::media_sample::stream_number() const
+const int media_sample::stream_number() const
 {
     return __media_sample_impl->stream_number();
 }
 
-void uvxx::rtsp::media_sample::size_set(size_t size) const
+void media_sample::size_set(size_t size) const
 {
     __media_sample_impl->size_set(size);
 }
 
-const size_t uvxx::rtsp::media_sample::capacity() const
+const size_t media_sample::capacity() const
 {
     return __media_sample_impl->capacity();
 }
 
-void uvxx::rtsp::media_sample::capacity_set(size_t size) const
+void media_sample::capacity_set(size_t size) const
 {
     __media_sample_impl->capacity_set(size);
 }
 
-void uvxx::rtsp::media_sample::attribute_blob_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer) const
+void media_sample::attribute_blob_set(const std::string& attribute_name, const memory_buffer& buffer) const
 {
     __media_sample_impl->attribute_set(attribute_name, buffer);
 }
 
-uvxx::io::memory_buffer uvxx::rtsp::media_sample::attribute_blob_get(const std::string& attribute_name) const
+memory_buffer media_sample::attribute_blob_get(const std::string& attribute_name) const
 {
     return __media_sample_impl->attribute_get(attribute_name);
 }
 
-void uvxx::rtsp::media_sample::codec_name_set(const std::string& codec_name)
+void media_sample::codec_name_set(const std::string& codec_name)
 {
     __media_sample_impl->codec_name_set(codec_name);
 }
 
-void uvxx::rtsp::media_sample::presentation_time_set(std::chrono::microseconds presentation_time) const
+void media_sample::presentation_time_set(std::chrono::microseconds presentation_time) const
 {
     __media_sample_impl->presentation_time_set(presentation_time);
 }
 
-void uvxx::rtsp::media_sample::is_truncated_set(bool truncated) const
+void media_sample::is_truncated_set(bool truncated) const
 {
     __media_sample_impl->is_truncated_set(truncated);
 }
 
-void uvxx::rtsp::media_sample::clear_attributes()
+void media_sample::clear_attributes()
 {
     __media_sample_impl->clear_attributes();
 }
 
-void uvxx::rtsp::media_sample::stream_number_set(int stream_number)
+void media_sample::stream_number_set(int stream_number)
 {
     __media_sample_impl->stream_number_set(stream_number);
 }

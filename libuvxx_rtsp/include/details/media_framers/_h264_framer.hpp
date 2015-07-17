@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
-#include "_media_framer_base.h"
 #include "H264VideoRTPSource.hh"
+
+#include "_media_framer_base.hpp"
 
 namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 {
@@ -25,6 +26,6 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 
         bool _has_received_key_frame;
 
-        media_sample_attributes::video_dimensions _video_dimensions;
+        media_attributes::video_dimensions _video_dimensions;
     };
 }}}}

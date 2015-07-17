@@ -1,5 +1,6 @@
-#include "details/_rtsp_client_impl.hpp"
 #include "rtsp_client.hpp"
+#include "media_session.hpp"
+#include "details/_rtsp_client_impl.hpp"
 
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
@@ -59,32 +60,27 @@ task<void> rtsp_client::play(std::vector<media_subsession> media_sessions) const
     });
 }
 
-std::string uvxx::rtsp::rtsp_client::username() const
+std::string rtsp_client::username() const
 {
     return __rtsp_client_imp->username();
 }
 
-void uvxx::rtsp::rtsp_client::username_set(const std::string& username)
+void rtsp_client::credentials_set(const std::string& user_name, const std::string& pass)
 {
-    __rtsp_client_imp->username_set(username);
+    __rtsp_client_imp->credentials_set(user_name, pass);
 }
 
-std::string uvxx::rtsp::rtsp_client::password() const
+std::string rtsp_client::password() const
 {
     return __rtsp_client_imp->password();
 }
 
-void uvxx::rtsp::rtsp_client::password_set(const std::string& password)
-{
-    __rtsp_client_imp->password_set(password);
-}
-
-uvxx::rtsp::transport_protocol uvxx::rtsp::rtsp_client::protocol() const
+uvxx::rtsp::transport_protocol rtsp_client::protocol() const
 {
     return __rtsp_client_imp->protocol();
 }
 
-void uvxx::rtsp::rtsp_client::protocol_set(uvxx::rtsp::transport_protocol protocol)
+void rtsp_client::protocol_set(transport_protocol protocol)
 {
     __rtsp_client_imp->protocol_set(protocol);
 }

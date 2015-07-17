@@ -1,13 +1,12 @@
-#include "details/_streaming_media_session_impl.hpp"
-#include "details/_media_session_impl.hpp"
 #include "MediaSession.hh"
+#include "media_sample.hpp"
+#include "details/_streaming_media_session_impl.hpp"
 #include "details/media_framers/_h264_framer.hpp"
 
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
-
-
+using namespace uvxx::rtsp::details::media_framers;
 
 _streaming_media_session_impl::_streaming_media_session_impl(const media_session& session, 
                                                              std::vector<media_subsession> subsessions) :
@@ -23,11 +22,11 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
 
         if (codec_name == "H264")
         {
-            framer = std::make_shared<media_framers::_h264_framer>(subsession);
+            framer = std::make_shared<_h264_framer>(subsession);
         }
         else
         {
-            framer = std::make_shared<media_framers::_media_framer_base>(subsession);
+            framer = std::make_shared<_media_framer_base>(subsession);
         }
 
         _media_framers.push_back(framer);
@@ -39,7 +38,7 @@ _streaming_media_session_impl::~_streaming_media_session_impl()
     
 }
 
-void uvxx::rtsp::details::_streaming_media_session_impl::on_frame_callback_set(std::function<bool(const media_sample&)> callback)
+void _streaming_media_session_impl::on_frame_callback_set(std::function<bool(const media_sample&)> callback)
 {
     _on_frame_callback = std::move(callback);
 
@@ -47,4 +46,25 @@ void uvxx::rtsp::details::_streaming_media_session_impl::on_frame_callback_set(s
     {
         framer->begin_reading(_on_frame_callback);
     }
+}
+
+bool _streaming_media_session_impl::operator=(std::nullptr_t rhs)
+{
+    close();
+
+    return true;
+}
+
+void _streaming_media_session_impl::close()
+{
+    _on_frame_callback = nullptr;
+
+    _media_framers.clear();
+
+    _subsessions.clear();
+}
+
+bool _streaming_media_session_impl::operator==(std::nullptr_t rhs)
+{
+    return !_session ? true : false;
 }

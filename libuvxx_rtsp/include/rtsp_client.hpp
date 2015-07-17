@@ -1,9 +1,8 @@
 #pragma once
-#include "event_dispatcher_object.hpp"
-#include "media_session.hpp"
-#include "streaming_media_session.hpp"
-#include "rtsp_misc.hpp"
 #include <functional>
+
+#include "event_dispatcher_object.hpp"
+#include "rtsp_misc.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -15,6 +14,12 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp 
 {
+    class media_session;
+
+    class media_subsession;
+
+    class media_sample;
+
     using read_stream_delegate = std::function<bool(const media_sample&)>;
 
     class rtsp_client : public uvxx::event_dispatcher_object
@@ -43,11 +48,9 @@ namespace uvxx { namespace rtsp
 
         std::string username() const;
 
-        void username_set(const std::string& username);
+        void credentials_set(const std::string& username, const std::string& pass);
 
         std::string password() const;
-
-        void password_set(const std::string& password);
 
         uvxx::rtsp::transport_protocol protocol() const;
 

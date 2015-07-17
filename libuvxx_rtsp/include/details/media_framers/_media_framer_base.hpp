@@ -1,6 +1,5 @@
 #pragma once
 #include "media_session.hpp"
-#include "details/_media_session_impl.hpp"
 #include "media_sample.hpp"
 
 namespace uvxx { namespace rtsp { namespace details { namespace media_framers
