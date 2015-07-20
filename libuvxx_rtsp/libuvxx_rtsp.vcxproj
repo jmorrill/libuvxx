@@ -16,6 +16,7 @@
     <ClInclude Include="include\details\media_framers\_media_framer_base.hpp" />
     <ClInclude Include="include\details\_live_authenticator.hpp" />
     <ClInclude Include="include\details\_media_sample_impl.hpp" />
+    <ClInclude Include="include\details\_rtsp_event.hpp" />
     <ClInclude Include="include\details\_streaming_media_session_impl.hpp" />
     <ClInclude Include="include\details\_media_session_impl.hpp" />
     <ClInclude Include="include\details\_uvxx_task_scheduler.hpp" />
