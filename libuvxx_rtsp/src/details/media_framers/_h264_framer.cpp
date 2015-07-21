@@ -92,13 +92,13 @@ _h264_framer::_h264_framer(const media_subsession& subsession) :
 
             if (nal_type == h26x_nal_type::sequence_parameter_set)
             {
-              /*  _sequence_parameter_set = std::vector<uint8_t>(record_bytes, record_bytes + record_len);
+                _sequence_parameter_set = std::vector<uint8_t>(record_bytes, record_bytes + record_len);
 
-                initialize_sequence_parameter_set();*/
+                initialize_sequence_parameter_set();
             }
             else if (nal_type == h26x_nal_type::picture_parameter_set)
             {
-               /* _picture_parameter_set = std::vector<uint8_t>(record_bytes, record_bytes + record_len);*/
+               _picture_parameter_set = std::vector<uint8_t>(record_bytes, record_bytes + record_len);
             }
         }
     }
