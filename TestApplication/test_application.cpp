@@ -8,7 +8,7 @@ using namespace std;
 using namespace uvxx;
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
-using namespace uvxx::rtsp::media_attributes;
+using namespace uvxx::rtsp::sample_attributes;
 
 uvxx::rtsp::rtsp_client client;
 

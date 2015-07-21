@@ -3,7 +3,7 @@
 #include <chrono>
 #include <string>
 
-#include "media_attributes.hpp"
+#include "sample_attributes.hpp"
 #include "io/memory_buffer.hpp"
 
 namespace uvxx { namespace rtsp { namespace details

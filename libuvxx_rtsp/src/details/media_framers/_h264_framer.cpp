@@ -4,7 +4,7 @@
 #include "details/media_framers/h26x/sps_parser.hpp"
 
 using namespace uvxx::rtsp;
-using namespace uvxx::rtsp::media_attributes;
+using namespace uvxx::rtsp::sample_attributes;
 using namespace uvxx::rtsp::details::media_framers;
 using namespace uvxx::rtsp::details::media_framers::h26x;
 

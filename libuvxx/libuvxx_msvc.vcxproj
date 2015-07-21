@@ -171,6 +171,7 @@
     <ClInclude Include="include\details\_event_dispatcher_timer_impl.hpp" />
     <ClInclude Include="include\details\_uv_file.hpp" />
     <ClInclude Include="include\details\_uv_poll.hpp" />
+    <ClInclude Include="include\event_dispatcher_timer.hpp" />
     <ClInclude Include="include\fs\details\_directory_impl.hpp" />
     <ClInclude Include="include\fs\details\_file_impl.hpp" />
     <ClInclude Include="include\fs\details\_static_file_impl.hpp" />

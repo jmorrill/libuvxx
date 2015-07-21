@@ -25,6 +25,6 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 
         bool _has_received_key_frame;
 
-        media_attributes::video_dimensions _video_dimensions;
+        sample_attributes::video_dimensions _video_dimensions;
     };
 }}}}

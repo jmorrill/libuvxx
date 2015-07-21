@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace uvxx { namespace rtsp { namespace media_attributes {
+namespace uvxx { namespace rtsp { namespace sample_attributes {
 
     struct video_dimensions
     {

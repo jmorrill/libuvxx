@@ -5,7 +5,7 @@
 
 using namespace std::chrono;
 using namespace uvxx::rtsp;
-using namespace uvxx::rtsp::media_attributes;
+using namespace uvxx::rtsp::sample_attributes;
 using namespace uvxx::rtsp::details;
 using namespace uvxx::rtsp::details::media_framers;
 
