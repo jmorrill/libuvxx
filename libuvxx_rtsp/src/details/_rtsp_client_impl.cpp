@@ -128,7 +128,7 @@ _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
 {
     _task_scheduler = _uvxx_task_scheduler::createNew();
 
-    _usage_environment = _usage_environment_ptr(BasicUsageEnvironment::createNew(*(_task_scheduler)),
+    _usage_environment = _usage_environment_ptr(BasicUsageEnvironment::createNew(*_task_scheduler),
     /* deleter*/
     [](UsageEnvironment* environment)
     {

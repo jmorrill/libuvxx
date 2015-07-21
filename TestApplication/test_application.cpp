@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     }
 
     {
-        client = rtsp_client();
+        //client = rtsp_client();
 
         client.on_sample_set(on_sample_callback);
 
