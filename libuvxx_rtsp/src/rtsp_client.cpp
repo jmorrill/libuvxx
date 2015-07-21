@@ -13,10 +13,10 @@ rtsp_client::rtsp_client()
 
 rtsp_client& rtsp_client::operator=(rtsp_client&& rhs)
 {
-	if(this != &rhs)
-	{
-		__rtsp_client_imp = std::move(rhs.__rtsp_client_imp);
-	}
+    if(this != &rhs)
+    {
+        __rtsp_client_imp = std::move(rhs.__rtsp_client_imp);
+    }
 
     return *this;
 }
@@ -96,7 +96,7 @@ void rtsp_client::read_stream_sample() const
 
 void rtsp_client::on_sample_set(read_sample_delegate callback) const
 {
-	__rtsp_client_imp->on_sample_callback_set(std::move(callback));
+    __rtsp_client_imp->on_sample_callback_set(std::move(callback));
 }
 
 

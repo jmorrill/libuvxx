@@ -240,31 +240,31 @@ _uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(int s
 
 _uvxx_task_scheduler::socket_handler_descriptor& _uvxx_task_scheduler::socket_handler_descriptor::operator=(socket_handler_descriptor&& rhs)
 {
-	if(this != &rhs)
-	{
-		_client_data = rhs._client_data;
-		rhs._client_data = nullptr;
+    if(this != &rhs)
+    {
+        _client_data = rhs._client_data;
+        rhs._client_data = nullptr;
 
-		_socket = rhs._socket;
-		rhs._socket = 0;
+        _socket = rhs._socket;
+        rhs._socket = 0;
 
-		_condition_set = rhs._condition_set;
-		rhs._condition_set = 0;
+        _condition_set = rhs._condition_set;
+        rhs._condition_set = 0;
 
-		_handler_proc = rhs._handler_proc;
-		rhs._handler_proc = nullptr;
+        _handler_proc = rhs._handler_proc;
+        rhs._handler_proc = nullptr;
 
-		_poller = std::move(rhs._poller);
+        _poller = std::move(rhs._poller);
 
-		start_poll();
-	}
-	return *this;
+        start_poll();
+    }
+    return *this;
 }
 
 
 _uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(socket_handler_descriptor&& rhs)
 {
-	*this = std::move(rhs);
+    *this = std::move(rhs);
 }
 
 _uvxx_task_scheduler::socket_handler_descriptor::~socket_handler_descriptor()

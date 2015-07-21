@@ -7,7 +7,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers { 
     class sps_parser
     {
         public:
-			explicit sps_parser(const std::vector<uint8_t>& sequence_parameter_set);
+            explicit sps_parser(const std::vector<uint8_t>& sequence_parameter_set);
 
             int video_width() const;
 

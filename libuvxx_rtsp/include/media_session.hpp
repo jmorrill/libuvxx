@@ -28,7 +28,7 @@ namespace uvxx { namespace rtsp
     class media_subsession : public event_dispatcher_object
     {
     public:
-	    explicit media_subsession(const details::_media_subsession_impl_ptr& _media_subsession);
+        explicit media_subsession(const details::_media_subsession_impl_ptr& _media_subsession);
 
         media_subsession(const media_subsession&) = default;
 
@@ -70,7 +70,7 @@ namespace uvxx { namespace rtsp
 
         virtual ~media_session();
 
-	    explicit media_session(const details::_media_session_impl_ptr& _media_session);
+        explicit media_session(const details::_media_session_impl_ptr& _media_session);
 
         media_session(const media_session&) = default;
 

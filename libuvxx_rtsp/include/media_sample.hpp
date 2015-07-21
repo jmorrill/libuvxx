@@ -22,9 +22,9 @@ namespace uvxx { namespace rtsp
 
         media_sample& operator=(const media_sample&) = default;
 
-		media_sample(media_sample&& rhs);
+        media_sample(media_sample&& rhs);
 
-		media_sample& operator=(media_sample&& rhs);
+        media_sample& operator=(media_sample&& rhs);
 
     public:
         int stream_number() const;

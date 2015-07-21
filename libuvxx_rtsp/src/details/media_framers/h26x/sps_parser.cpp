@@ -28,7 +28,7 @@ sps_parser::sps_parser(const std::vector<uint8_t>& sequence_parameter_set) :
     }
     catch (std::out_of_range&)
     {
-    	
+        
     }
 }
 

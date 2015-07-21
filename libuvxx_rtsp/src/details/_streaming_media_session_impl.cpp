@@ -40,12 +40,12 @@ _streaming_media_session_impl::~_streaming_media_session_impl()
 
 void _streaming_media_session_impl::on_sample_set(read_sample_delegate callback)
 {
-	_on_sample_callback = std::move(callback);
+    _on_sample_callback = std::move(callback);
 
-	for (auto& framer : _media_framers)
-	{
-		framer->on_sample_set(_on_sample_callback);
-	}
+    for (auto& framer : _media_framers)
+    {
+        framer->on_sample_set(_on_sample_callback);
+    }
 }
 
 

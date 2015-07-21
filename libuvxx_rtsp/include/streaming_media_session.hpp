@@ -35,16 +35,16 @@ namespace uvxx { namespace rtsp
 
         streaming_media_session& operator=(streaming_media_session&& rhs);
 
-	    virtual operator bool() const;
+        virtual operator bool() const;
 
-	    bool operator=(std::nullptr_t rhs);
+        bool operator=(std::nullptr_t rhs);
 
         bool operator==(std::nullptr_t rhs);
 
     public:
         void read_stream_sample();
 
-		void on_sample_callback_set(read_sample_delegate callback);
+        void on_sample_callback_set(read_sample_delegate callback);
 
     private:
         details::_streaming_media_session_impl_ptr __streaming_media_session;

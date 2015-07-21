@@ -44,7 +44,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         pplx::task<void> play(std::vector<media_subsession> subsessions);
 
-		void on_sample_callback_set(read_sample_delegate callback);
+        void on_sample_callback_set(read_sample_delegate callback);
 
         void read_stream_sample();
 
@@ -74,9 +74,9 @@ namespace uvxx { namespace rtsp { namespace details
         unsigned _last_rtsp_command_id;
 
         pplx::task_completion_event<void> _describe_event;
-	    
+        
         pplx::task_completion_event<void> _setup_event;
-	    
+        
         pplx::task_completion_event<void> _play_event;
 
         media_session _session;
@@ -99,7 +99,7 @@ namespace uvxx { namespace rtsp { namespace details
         
         std::string _password;
 
-		read_sample_delegate _read_sample_delegate;
+        read_sample_delegate _read_sample_delegate;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;

@@ -37,17 +37,17 @@ std::string media_sample::codec_name() const
 
 media_sample::media_sample(media_sample&& rhs)
 {
-	*this = std::move(rhs);
+    *this = std::move(rhs);
 }
 
 media_sample& media_sample::operator=(media_sample&& rhs)
 {
-	if (this != &rhs)
-	{
-		__media_sample_impl = std::move(__media_sample_impl);
-	}
+    if (this != &rhs)
+    {
+        __media_sample_impl = std::move(__media_sample_impl);
+    }
 
-	return *this;
+    return *this;
 }
 
 int media_sample::stream_number() const

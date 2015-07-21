@@ -73,7 +73,7 @@ void _media_framer_base::begin_reading()
 
 void _media_framer_base::on_sample_set(read_sample_delegate callback)
 {
-	_sample_callback = std::move(callback);
+    _sample_callback = std::move(callback);
 }
 
 void _media_framer_base::continue_reading()

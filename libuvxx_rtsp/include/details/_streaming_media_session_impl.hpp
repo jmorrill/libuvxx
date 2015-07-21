@@ -43,7 +43,7 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         void read_stream_sample();
 
-		void on_sample_set(read_sample_delegate callback);
+        void on_sample_set(read_sample_delegate callback);
 
     private:
         void close();

@@ -18,16 +18,16 @@ _media_subsession_impl::_media_subsession_impl() : _live_subsession(nullptr)
 
 _media_subsession_impl::_media_subsession_impl(_media_subsession_impl&& rhs)
 {
-	*this = std::move(rhs);
+    *this = std::move(rhs);
 }
 
 _media_subsession_impl& _media_subsession_impl::operator=(_media_subsession_impl&& rhs)
 {
-	if(this != &rhs)
-	{
-		_live_subsession = rhs._live_subsession;
-		_live_subsession = nullptr;
-	}
+    if(this != &rhs)
+    {
+        _live_subsession = rhs._live_subsession;
+        _live_subsession = nullptr;
+    }
 
     return *this;
 }
@@ -103,21 +103,21 @@ void _media_session_impl::reset()
 
 _media_session_impl& _media_session_impl::operator=(_media_session_impl&& rhs)
 {
-	if (this != &rhs)
-	{
-		_live_session = rhs._live_session;
+    if (this != &rhs)
+    {
+        _live_session = rhs._live_session;
 
-		_live_session = nullptr;
+        _live_session = nullptr;
 
-		_subsessions = std::move(_subsessions);
-	}
+        _subsessions = std::move(_subsessions);
+    }
 
-	return *this;
+    return *this;
 }
 
 _media_session_impl::_media_session_impl(_media_session_impl&& rhs)
 {
-	*this = std::move(rhs);
+    *this = std::move(rhs);
 }
 
 _media_session_impl::_media_session_impl() : _live_session(nullptr)

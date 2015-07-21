@@ -15,7 +15,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     public:
         void begin_reading();
     
-		void on_sample_set(read_sample_delegate callback);
+        void on_sample_set(read_sample_delegate callback);
 
         int stream_number();
 
@@ -42,7 +42,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     private:
         media_sample _sample;
 
-		read_sample_delegate _sample_callback;
+        read_sample_delegate _sample_callback;
 
         std::chrono::microseconds _lastPresentationTime;
 

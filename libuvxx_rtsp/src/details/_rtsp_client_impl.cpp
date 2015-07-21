@@ -96,7 +96,7 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
     int socketNum = live_subsession->rtpSource()->RTPgs()->socketNum();
 
     unsigned curBufferSize = getReceiveBufferSize(live_subsession->rtpSource()->envir(), socketNum);
-	  
+      
     unsigned newBufferSize = 200 * 1024;
 
     newBufferSize = setReceiveBufferTo(live_subsession->rtpSource()->envir(), socketNum, newBufferSize);
@@ -147,10 +147,10 @@ _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
 
 _rtsp_client_impl::~_rtsp_client_impl()
 {
-	if(_live_client)
-	{
-		_live_client->changeResponseHandler(_last_rtsp_command_id, nullptr);
-	}
+    if(_live_client)
+    {
+        _live_client->changeResponseHandler(_last_rtsp_command_id, nullptr);
+    }
 }
 
 task<void> _rtsp_client_impl::open(const std::string& url)
@@ -305,7 +305,7 @@ uvxx::pplx::task<void> _rtsp_client_impl::play(std::vector<media_subsession> sub
         _streaming_session = streaming_media_session(std::make_shared<_streaming_media_session_impl>
                                                         (_session, std::move(*subsession_ptr.get())));
 
-		_streaming_session.on_sample_callback_set(_read_sample_delegate);
+        _streaming_session.on_sample_callback_set(_read_sample_delegate);
     });
 }
 
@@ -337,12 +337,12 @@ void _rtsp_client_impl::credentials_set(const std::string& user_name, const std:
 
 void _rtsp_client_impl::on_sample_callback_set(read_sample_delegate callback)
 {
-	_read_sample_delegate = std::move(callback);
+    _read_sample_delegate = std::move(callback);
 
-	if(_streaming_session)
-	{
-		_streaming_session.on_sample_callback_set(_read_sample_delegate);
-	}
+    if(_streaming_session)
+    {
+        _streaming_session.on_sample_callback_set(_read_sample_delegate);
+    }
 }
 
 void _rtsp_client_impl::read_stream_sample()
