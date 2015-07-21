@@ -60,14 +60,17 @@ TaskToken _uvxx_task_scheduler::scheduleDelayedTask(int64_t microseconds, TaskFu
 void _uvxx_task_scheduler::set_next_timeout()
 {
     DelayInterval const& timeToDelay = fDelayQueue.timeToNextAlarm();
-    int64_t millis = (timeToDelay.seconds() * 1000ull) + (timeToDelay.useconds() / 1000);
 
-    if (fTriggersAwaitingHandling != 0)
+    printf("time - %d\n", timeToDelay.useconds());
+   
+    int64_t milliseconds = (timeToDelay.seconds() * 1000ll) + (timeToDelay.useconds() / 1000ll);
+
+    if(milliseconds <= 0)
     {
-        millis = 0;
+        milliseconds = 1;
     }
 
-    _timer.timeout_set(std::chrono::milliseconds(millis));
+    _timer.timeout_set(std::chrono::milliseconds(milliseconds));
 }
 
 void _uvxx_task_scheduler::unscheduleDelayedTask(TaskToken& prevTask)

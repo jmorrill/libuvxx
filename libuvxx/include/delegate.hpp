@@ -34,7 +34,7 @@ namespace uvxx
     public:
         void invoke(T0* sender, TARGS...args )
         {
-            for( auto i = m_handlerMap.begin(); i != m_handlerMap.end(); i++ )
+            for( auto i = m_handlerMap.begin(); i != m_handlerMap.end(); ++i )
             {
                 (*i).second(sender, args...);
             }
@@ -100,7 +100,7 @@ namespace uvxx
             {
                 return;
             }
-            for( auto i = m_handlerMap.begin(); i != m_handlerMap.end(); i++ )
+            for( auto i = m_handlerMap.begin(); i != m_handlerMap.end(); ++i )
             {
                 (*i).second(sender);
             }

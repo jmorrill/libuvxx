@@ -92,7 +92,7 @@ void _media_framer_base::continue_reading()
         return;
     }
 
-    framed_source->getNextFrame((unsigned char*) _sample.data(),
+    framed_source->getNextFrame(const_cast<unsigned char*>(_sample.data()),
                                 _sample.capacity(),
                                 on_after_getting_frame,
                                 this,
@@ -105,7 +105,7 @@ int _media_framer_base::stream_number()
     return _subsession.stream_number();
 }
 
-uvxx::rtsp::media_sample _media_framer_base::working_sample()
+media_sample _media_framer_base::working_sample()
 {
     return _sample;
 }

@@ -10,7 +10,7 @@ using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::sample_attributes;
 
-uvxx::rtsp::rtsp_client client;
+rtsp_client client;
 
 void on_sample_callback(const media_sample& sample)
 {
@@ -48,6 +48,8 @@ int main(int argc, char* argv[])
     }
 
     {
+        client = rtsp_client();
+
         client.on_sample_set(on_sample_callback);
 
         client.credentials_set("admin", "12345");

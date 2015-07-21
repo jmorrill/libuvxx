@@ -32,7 +32,7 @@ task<void> rtsp_client::open(const std::string& url) const
 
     return __rtsp_client_imp->open(url).then([this_ptr]
     {
-         auto tid = std::this_thread::get_id();
+         /*auto tid = std::this_thread::get_id();*/
     });;
 }
 

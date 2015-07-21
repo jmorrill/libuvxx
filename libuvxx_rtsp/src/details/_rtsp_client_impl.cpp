@@ -1,10 +1,8 @@
 #include "BasicUsageEnvironment.hh"
-#include "GroupsockHelper.hh"
 
 #include "uvxx.hpp"
 #include "media_session.hpp"
 #include "rtsp_exceptions.hpp"
-#include "media_session.hpp"
 
 #include "details/_uvxx_task_scheduler.hpp"
 #include "details/_rtsp_client_impl.hpp"
@@ -102,7 +100,6 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
     newBufferSize = setReceiveBufferTo(live_subsession->rtpSource()->envir(), socketNum, newBufferSize);
     */
 
-
     setup_event.set();
 }
 
@@ -139,9 +136,9 @@ _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
 
         delete &task_scheduler;
 
-        bool memory_freed = environment->reclaim();
+        bool memory_released = environment->reclaim();
 
-        assert(memory_freed);
+        assert(memory_released);
     });
 }
 
@@ -183,7 +180,7 @@ media_session _rtsp_client_impl::session()
     return _session;
 }
 
-uvxx::pplx::task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions_)
+task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions_)
 {
     auto current_index = std::make_shared<size_t>(0);
 

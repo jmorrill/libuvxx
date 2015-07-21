@@ -2,7 +2,6 @@
 #include <map>
 #include "BasicUsageEnvironment0.hh"
 
-#include "event_dispatcher.hpp"
 #include "event_dispatcher_timer.hpp"
 #include "net/socket_poll.hpp"
 
@@ -11,16 +10,16 @@ namespace uvxx { namespace rtsp { namespace details
     class _uvxx_task_scheduler : public BasicTaskScheduler0
     {
     public:
-        static _uvxx_task_scheduler* createNew(unsigned maxSchedulerGranularity = 1000000 /*microseconds*/ );
+        static _uvxx_task_scheduler* createNew(unsigned maxSchedulerGranularity = 5000000 /*microseconds*/ );
 
         virtual ~_uvxx_task_scheduler();
-
-    protected:
-        _uvxx_task_scheduler(unsigned maxSchedulerGranularity);
 
         _uvxx_task_scheduler(const _uvxx_task_scheduler&) = delete;
 
         _uvxx_task_scheduler& operator=(const _uvxx_task_scheduler&) = delete;
+
+    protected:
+        explicit _uvxx_task_scheduler(unsigned maxSchedulerGranularity);
 
         static void schedulerTickTask(void* client_data);
 
@@ -70,7 +69,7 @@ namespace uvxx { namespace rtsp { namespace details
         private:
             void start_poll();
 
-            void poll_callback(int status, uvxx::net::socket_poll_event events);
+            void poll_callback(int status, net::socket_poll_event events);
 
         private:
             int _socket;
@@ -79,18 +78,18 @@ namespace uvxx { namespace rtsp { namespace details
 
             void* _client_data;
 
-            uvxx::net::socket_poll _poller;
+            net::socket_poll _poller;
 
             BackgroundHandlerProc* _handler_proc;
         };
 
       private:
-        void on_timer_tick(uvxx::event_dispatcher_timer* sender);
+        void on_timer_tick(event_dispatcher_timer* sender);
 
     protected:
         unsigned fMaxSchedulerGranularity;
 
-        uvxx::event_dispatcher_timer _timer;
+        event_dispatcher_timer _timer;
 
         std::map<int, socket_handler_descriptor> _handlers;
     };
