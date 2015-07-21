@@ -1,8 +1,9 @@
+#include <thread>
+
 #include "uvxx_exception.hpp"
 #include "details/_event_dispatcher_impl.hpp"
 #include "details/_event_dispatcher_frame_impl.hpp"
 
-#include <thread>
 using namespace std;
 using namespace uvxx::details;
 
@@ -63,13 +64,13 @@ namespace uvxx { namespace details
 
     _event_dispatcher_impl::_event_dispatcher_impl() : 
         _loop(false), 
+        _threadId(_thread_cache.this_thread_id()), 
         _exitAllFrames(false), 
-        _frameDepth(0), 
-        _startingShutdown(false), 
         _hasShutdownStarted(false), 
+        _startingShutdown(false), 
         _hasShutdownFinished(false), 
         _hasShutdown(false),
-        _threadId(_thread_cache.this_thread_id())
+        _frameDepth(0)
     {
         _thread_cache.has_dispatcher_set(true);
     }
@@ -140,7 +141,7 @@ namespace uvxx { namespace details
         dispatcher->push_frame_impl(frame);
     }
 
-    uvxx::details::_event_dispatcher_impl_ptr _event_dispatcher_impl::current_dispatcher()
+    _event_dispatcher_impl_ptr _event_dispatcher_impl::current_dispatcher()
     {
         thread::id this_id = this_thread::get_id();
 
@@ -160,7 +161,7 @@ namespace uvxx { namespace details
         return eventdispatcher;
     }
 
-    uvxx::details::_event_dispatcher_impl_ptr _event_dispatcher_impl::from_thread(thread::id const & thread_id)
+    _event_dispatcher_impl_ptr _event_dispatcher_impl::from_thread(thread::id const & thread_id)
     {
         if (_dispatchers().empty())
         {
@@ -311,7 +312,7 @@ namespace uvxx { namespace details
         _loop.begin_invoke_unsafe(std::move(callback));
     }
 
-    std::thread::id const _event_dispatcher_impl::this_thread_id()
+    std::thread::id _event_dispatcher_impl::this_thread_id()
     {
         std::thread::id id = _thread_cache.this_thread_id();
 

@@ -15,7 +15,8 @@ _uvxx_task_scheduler* _uvxx_task_scheduler::createNew(unsigned maxSchedulerGranu
 }
 
 _uvxx_task_scheduler::_uvxx_task_scheduler(unsigned maxSchedulerGranularity)
-  : fMaxSchedulerGranularity(maxSchedulerGranularity)
+  : BasicTaskScheduler0(), 
+    fMaxSchedulerGranularity(maxSchedulerGranularity)
 {
     if (maxSchedulerGranularity > 0)
     {

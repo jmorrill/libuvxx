@@ -6,7 +6,7 @@ namespace uvxx { namespace rtsp
     class rtsp_exception : public uvxx_exception
     {
     public:
-        rtsp_exception(const std::string & message) : uvxx_exception(message)
+        explicit rtsp_exception(const std::string & message) : uvxx_exception(message)
         {
 
         }

@@ -10,7 +10,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _uvxx_task_scheduler : public BasicTaskScheduler0
     {
     public:
-        static _uvxx_task_scheduler* createNew(unsigned maxSchedulerGranularity = 5000000 /*microseconds*/ );
+        static _uvxx_task_scheduler* createNew(unsigned maxSchedulerGranularity = 1000000 /*microseconds*/ );
 
         virtual ~_uvxx_task_scheduler();
 

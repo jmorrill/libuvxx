@@ -140,7 +140,9 @@ void _h264_framer::sample_receieved(bool packet_marker_bit)
             key_frame = true;
         }
 
-        if (packet_marker_bit && _sequence_parameter_set.size() && _picture_parameter_set.size())
+        if (packet_marker_bit && 
+            _sequence_parameter_set.size() && 
+            _picture_parameter_set.size())
         {
             full_sample_ready = true;
         }

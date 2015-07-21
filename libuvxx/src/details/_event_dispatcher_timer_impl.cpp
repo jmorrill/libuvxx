@@ -11,8 +11,8 @@ namespace uvxx { namespace details
 {
     _event_dispatcher_timer_impl::_event_dispatcher_timer_impl()  :
         _timer(&dispatcher()->_loop, bind(&_event_dispatcher_timer_impl::tick_callback, this)),
-        _timer_repeat(0), 
-        _timer_timeout(0),
+        _timer_timeout(0), 
+        _timer_repeat(0),
         _isEnabled(false)
     {
         

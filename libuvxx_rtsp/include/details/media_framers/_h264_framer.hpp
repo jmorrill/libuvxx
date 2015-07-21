@@ -8,7 +8,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     class _h264_framer : public _media_framer_base
     {
     public:
-        _h264_framer(const media_subsession& subsession);
+        explicit _h264_framer(const media_subsession& subsession);
 
         virtual ~_h264_framer();
     

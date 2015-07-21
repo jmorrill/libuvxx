@@ -82,15 +82,15 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
         return;
     }
 
-    auto& subsession = client_impl->_current_media_subsession_setup;
-
-    auto live_subsession = subsession.__media_subsession->live_media_subsession();
-
-    //unsigned const thresh = 1200000; // 1.2 seconds
-
-    //live_subsession->rtpSource()->setPacketReorderingThresholdTime(thresh);
-
     /*
+    auto& subsession = client_impl->_current_media_subsession_setup;
+    
+    auto live_subsession = subsession.__media_subsession->live_media_subsession();
+  
+    unsigned const thresh = 1200000; // 1.2 seconds
+
+    live_subsession->rtpSource()->setPacketReorderingThresholdTime(thresh);
+
     int socketNum = live_subsession->rtpSource()->RTPgs()->socketNum();
 
     unsigned curBufferSize = getReceiveBufferSize(live_subsession->rtpSource()->envir(), socketNum);

@@ -134,7 +134,7 @@ namespace uvxx { namespace details
 
         static bool has_dispatcher();
 
-        static std::thread::id const this_thread_id();
+        static std::thread::id this_thread_id();
 
         uvxx::details::_uv_loop _loop;
 

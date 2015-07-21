@@ -10,8 +10,8 @@ using namespace uvxx::rtsp::details::media_framers;
 
 _streaming_media_session_impl::_streaming_media_session_impl(const media_session& session, 
                                                              std::vector<media_subsession> subsessions) :
-    _session(session),
-    _subsessions(std::move(subsessions))
+    _subsessions(std::move(subsessions)),
+    _session(session)
 {
 
     for (auto& subsession : _subsessions)

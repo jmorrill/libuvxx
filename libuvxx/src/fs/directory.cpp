@@ -63,7 +63,7 @@ namespace uvxx { namespace fs
         auto dir_impl = std::make_shared<details::_directory_impl>();
 
         return dir_impl->exists_async(path).
-        then([dir_impl](uvxx::pplx::task<bool> result_task)
+        then([dir_impl](pplx::task<bool> result_task)
         {
             return result_task.get();
         });
@@ -74,7 +74,7 @@ namespace uvxx { namespace fs
         auto dir_impl = std::make_shared<details::_directory_impl>();
 
         return dir_impl->delete_async(path).
-        then([dir_impl](uvxx::pplx::task<void> result_task)
+        then([dir_impl](pplx::task<void> result_task)
         {
             result_task.get();
         });
@@ -85,7 +85,7 @@ namespace uvxx { namespace fs
         auto dir_impl = std::make_shared<details::_directory_impl>();
 
         return dir_impl->delete_async(path, recursive).
-        then([dir_impl](uvxx::pplx::task<void> result_task)
+        then([dir_impl](pplx::task<void> result_task)
         {
             result_task.get();
         });

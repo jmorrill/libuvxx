@@ -8,7 +8,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     class _media_framer_base
     {
     public:
-        _media_framer_base(const media_subsession& subsession);
+        explicit _media_framer_base(const media_subsession& subsession);
 
         virtual ~_media_framer_base();
 

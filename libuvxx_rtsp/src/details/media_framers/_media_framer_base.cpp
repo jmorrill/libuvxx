@@ -45,7 +45,7 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
             media_major = sample_major_type::audio;
         }
 
-        _sample.attribute_set(::ATTRIBUTE_SAMPLE_MAJOR_TYPE, media_major);
+        _sample.attribute_set(ATTRIBUTE_SAMPLE_MAJOR_TYPE, media_major);
 
         /* set a 'BYE' handler for this subsession's RTCP instance: */
         live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, this);
@@ -166,7 +166,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
     _was_synced = is_synced;
     
-    auto sample_duration = reported_micro_seconds - _lastPresentationTime;
+    auto sample_duration = microseconds(std::abs(reported_micro_seconds.count() - _lastPresentationTime.count()));
    
     _currentPresentationTime += sample_duration;
 
