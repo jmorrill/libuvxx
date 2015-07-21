@@ -34,15 +34,15 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
 
         _sample.codec_name_set(live_subsession->codecName());
 
-        media_sample_major_type media_major = media_sample_major_type::unknown;
+        sample_major_type media_major = sample_major_type::unknown;
 
         if (!strcmp(live_subsession->mediumName(), "video"))
         {
-            media_major = media_sample_major_type::video;
+            media_major = sample_major_type::video;
         }
         else if (!strcmp(live_subsession->mediumName(), "audio"))
         {
-            media_major = media_sample_major_type::audio;
+            media_major = sample_major_type::audio;
         }
 
         _sample.attribute_set(::ATTRIBUTE_SAMPLE_MAJOR_TYPE, media_major);

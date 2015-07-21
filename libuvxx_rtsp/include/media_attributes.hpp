@@ -8,7 +8,7 @@ namespace uvxx { namespace rtsp { namespace media_attributes {
         int width; int height;
     };
 
-    enum class media_sample_major_type
+    enum class sample_major_type
     {
         unknown = 0,
         video = 1,

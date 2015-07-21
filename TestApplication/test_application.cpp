@@ -20,7 +20,7 @@ void on_sample_callback(const media_sample& sample)
            sample.presentation_time().count(),
            sample.stream_number());
 
-    if (sample.attribute_get<media_sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE) == media_sample_major_type::video)
+    if (sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE) == sample_major_type::video)
     {
         auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
 
