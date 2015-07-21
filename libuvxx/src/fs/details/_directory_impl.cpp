@@ -1,5 +1,6 @@
 #include <deque>
 #include <algorithm>
+#include <iterator>
 #include "fs/path.hpp"
 #include "pplx/pplpp.hpp"
 #include "fs/details/_directory_impl.hpp"

@@ -3,10 +3,10 @@
 
 namespace uvxx { namespace rtsp 
 { 
-    class rtsp_exception : public uvxx::uvxx_exception
+    class rtsp_exception : public uvxx_exception
     {
     public:
-        rtsp_exception(const std::string & message) : uvxx::uvxx_exception(message)
+        rtsp_exception(const std::string & message) : uvxx_exception(message)
         {
 
         }

@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 
+#include "rtsp_client.hpp"
 #include "event_dispatcher_object.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
@@ -17,7 +18,7 @@ namespace uvxx { namespace rtsp
 {
     class media_sample;
 
-    class streaming_media_session : public uvxx::event_dispatcher_object
+    class streaming_media_session : public event_dispatcher_object
     {
     public:
         streaming_media_session();
@@ -34,12 +35,16 @@ namespace uvxx { namespace rtsp
 
         streaming_media_session& operator=(streaming_media_session&& rhs);
 
-        bool operator=(std::nullptr_t rhs);
+	    virtual operator bool() const;
+
+	    bool operator=(std::nullptr_t rhs);
 
         bool operator==(std::nullptr_t rhs);
 
     public:
-        void begin_stream_read(std::function<bool(const media_sample&)> callback);
+        void read_stream_sample();
+
+		void on_sample_callback_set(read_sample_delegate callback);
 
     private:
         details::_streaming_media_session_impl_ptr __streaming_media_session;

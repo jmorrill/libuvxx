@@ -66,6 +66,9 @@
     <ClInclude Include="include\details\media_framers\_media_framer_base.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\_rtsp_event.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp">

@@ -3,6 +3,7 @@
 #include <vector>
 #include "MediaSession.hh"
 
+#include "rtsp_client.hpp"
 #include "media_session.hpp"
 
 namespace uvxx { namespace rtsp
@@ -40,7 +41,9 @@ namespace uvxx { namespace rtsp { namespace details
         virtual ~_streaming_media_session_impl();
 
     public:
-        void on_frame_callback_set(std::function<bool(const media_sample&)> callback);
+        void read_stream_sample();
+
+		void on_sample_set(read_sample_delegate callback);
 
     private:
         void close();
@@ -50,7 +53,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::vector<std::shared_ptr<media_framers::_media_framer_base>> _media_framers;
 
-        std::function<bool(const media_sample&)> _on_frame_callback;
+        read_sample_delegate _on_sample_callback;
 
         media_session _session;
     };

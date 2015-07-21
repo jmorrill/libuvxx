@@ -8,12 +8,15 @@ using namespace uvxx::rtsp::details;
 
 rtsp_client::rtsp_client()
 {
-    __rtsp_client_imp = _rtsp_client_impl_ptr(new _rtsp_client_impl);
+    __rtsp_client_imp = std::make_shared<_rtsp_client_impl>();
 }
 
 rtsp_client& rtsp_client::operator=(rtsp_client&& rhs)
 {
-    __rtsp_client_imp = std::move(rhs.__rtsp_client_imp);
+	if(this != &rhs)
+	{
+		__rtsp_client_imp = std::move(rhs.__rtsp_client_imp);
+	}
 
     return *this;
 }
@@ -60,6 +63,7 @@ task<void> rtsp_client::play(std::vector<media_subsession> media_sessions) const
     });
 }
 
+
 std::string rtsp_client::username() const
 {
     return __rtsp_client_imp->username();
@@ -85,8 +89,14 @@ void rtsp_client::protocol_set(transport_protocol protocol)
     __rtsp_client_imp->protocol_set(protocol);
 }
 
-void rtsp_client::begin_stream_read(read_stream_delegate call_back) const
+void rtsp_client::read_stream_sample() const
 {
-    __rtsp_client_imp->begin_stream_read(call_back);
+    __rtsp_client_imp->read_stream_sample();
 }
+
+void rtsp_client::on_sample_set(read_sample_delegate callback) const
+{
+	__rtsp_client_imp->on_sample_callback_set(std::move(callback));
+}
+
 

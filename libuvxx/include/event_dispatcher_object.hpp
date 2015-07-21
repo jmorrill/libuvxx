@@ -24,7 +24,7 @@ namespace uvxx
 
         event_dispatcher_object& operator=(event_dispatcher_object&& rhs);
 
-        operator bool() const;
+        virtual operator bool() const;
 
         bool check_access();
 

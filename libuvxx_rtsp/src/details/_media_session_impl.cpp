@@ -1,5 +1,4 @@
 #pragma once
-#include "BasicUsageEnvironment.hh"
 #include "MediaSession.hh"
 
 #include "details/_media_session_impl.hpp"
@@ -19,13 +18,18 @@ _media_subsession_impl::_media_subsession_impl() : _live_subsession(nullptr)
 
 _media_subsession_impl::_media_subsession_impl(_media_subsession_impl&& rhs)
 {
-    _live_subsession = rhs._live_subsession;
-    _live_subsession = nullptr;
+	*this = std::move(rhs);
 }
 
 _media_subsession_impl& _media_subsession_impl::operator=(_media_subsession_impl&& rhs)
 {
-    return std::move(rhs);
+	if(this != &rhs)
+	{
+		_live_subsession = rhs._live_subsession;
+		_live_subsession = nullptr;
+	}
+
+    return *this;
 }
 
 bool _media_subsession_impl::initiate(int use_special_rtp_offset /*= -1*/)
@@ -48,12 +52,12 @@ MediaSubsession* _media_subsession_impl::live_media_subsession() const
     return _live_subsession;
 }
 
-const std::string uvxx::rtsp::details::_media_subsession_impl::get_attribute(const std::string& attribute_name) const
+std::string _media_subsession_impl::get_attribute(const std::string& attribute_name) const
 {
     return _live_subsession->attrVal_str(attribute_name.c_str());
 }
 
-int uvxx::rtsp::details::_media_subsession_impl::stream_number()
+int _media_subsession_impl::stream_number()
 {
     return _stream_number;
 }
@@ -99,15 +103,21 @@ void _media_session_impl::reset()
 
 _media_session_impl& _media_session_impl::operator=(_media_session_impl&& rhs)
 {
-    return std::move(rhs);
+	if (this != &rhs)
+	{
+		_live_session = rhs._live_session;
+
+		_live_session = nullptr;
+
+		_subsessions = std::move(_subsessions);
+	}
+
+	return *this;
 }
 
 _media_session_impl::_media_session_impl(_media_session_impl&& rhs)
 {
-    _live_session = rhs._live_session;
-    _live_session = nullptr;
-
-    _subsessions = std::move(_subsessions);
+	*this = std::move(rhs);
 }
 
 _media_session_impl::_media_session_impl() : _live_session(nullptr)

@@ -86,7 +86,7 @@ void _uvxx_task_scheduler::triggerEvent(EventTriggerId eventTriggerId, void* cli
 
 void _uvxx_task_scheduler::schedulerTickTask(void* clientData) 
 {
-    ((_uvxx_task_scheduler*)clientData)->schedulerTickTask();
+    static_cast<_uvxx_task_scheduler*>(clientData)->schedulerTickTask();
 }
 
 void _uvxx_task_scheduler::schedulerTickTask() 
@@ -237,22 +237,34 @@ _uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(int s
     start_poll();
 }
 
-_uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(socket_handler_descriptor&& rhs) :
-    _poller(std::move(rhs._poller))
+
+_uvxx_task_scheduler::socket_handler_descriptor& _uvxx_task_scheduler::socket_handler_descriptor::operator=(socket_handler_descriptor&& rhs)
 {
-    _client_data = rhs._client_data;
-    rhs._client_data = nullptr;
+	if(this != &rhs)
+	{
+		_client_data = rhs._client_data;
+		rhs._client_data = nullptr;
 
-    _socket = rhs._socket;
-    rhs._socket = 0;
+		_socket = rhs._socket;
+		rhs._socket = 0;
 
-    _condition_set = rhs._condition_set;
-    rhs._condition_set = 0;
+		_condition_set = rhs._condition_set;
+		rhs._condition_set = 0;
 
-    _handler_proc = rhs._handler_proc;
-    rhs._handler_proc = nullptr;
+		_handler_proc = rhs._handler_proc;
+		rhs._handler_proc = nullptr;
 
-    start_poll();
+		_poller = std::move(rhs._poller);
+
+		start_poll();
+	}
+	return *this;
+}
+
+
+_uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(socket_handler_descriptor&& rhs)
+{
+	*this = std::move(rhs);
 }
 
 _uvxx_task_scheduler::socket_handler_descriptor::~socket_handler_descriptor()
@@ -275,7 +287,6 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_condition_set(int cond
     start_poll();
 }
 
-
 void _uvxx_task_scheduler::socket_handler_descriptor::set_handler(BackgroundHandlerProc* handler_proc, void* client_data)
 {
     _handler_proc = handler_proc;
@@ -291,11 +302,6 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_socket(int socket)
     _poller = socket_poll(_socket);
 
     start_poll();
-}
-
-_uvxx_task_scheduler::socket_handler_descriptor& _uvxx_task_scheduler::socket_handler_descriptor::operator=(socket_handler_descriptor&& rhs)
-{
-    return std::move(rhs);
 }
 
 void _uvxx_task_scheduler::socket_handler_descriptor::start_poll()

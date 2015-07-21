@@ -1,4 +1,5 @@
 #pragma once
+#include "rtsp_client.hpp"
 #include "media_session.hpp"
 #include "media_sample.hpp"
 
@@ -12,14 +13,16 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         virtual ~_media_framer_base();
 
     public:
-        void begin_reading(std::function<bool(const media_sample&)> callback);
+        void begin_reading();
     
+		void on_sample_set(read_sample_delegate callback);
+
         int stream_number();
 
     protected:
         virtual void sample_receieved(bool packet_marker_bit);
 
-        uvxx::rtsp::media_sample working_sample();
+        media_sample working_sample();
 
         void do_sample_callback();
 
@@ -30,16 +33,16 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     private:
         static void on_after_getting_frame(void* client_data, unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds);
 
-        static void adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const uvxx::rtsp::media_sample& sample);
+        static void adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample);
 
         static void on_rtcp_bye(void* client_data);
 
         void on_after_getting_frame(unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds);
 
     private:
-        uvxx::rtsp::media_sample _sample;
+        media_sample _sample;
 
-        std::function<bool(const media_sample&)> _sample_callback;
+		read_sample_delegate _sample_callback;
 
         std::chrono::microseconds _lastPresentationTime;
 

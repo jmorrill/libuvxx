@@ -66,16 +66,14 @@ _media_framer_base::~_media_framer_base()
     live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, nullptr);
 }
 
-void _media_framer_base::begin_reading(std::function<bool(const media_sample&)> callback)
+void _media_framer_base::begin_reading()
 {
-    _sample_callback = std::move(callback);
-
-    if (!_sample_callback)
-    {
-        return;
-    }
-
     continue_reading();
+}
+
+void _media_framer_base::on_sample_set(read_sample_delegate callback)
+{
+	_sample_callback = std::move(callback);
 }
 
 void _media_framer_base::continue_reading()
@@ -115,8 +113,6 @@ uvxx::rtsp::media_sample _media_framer_base::working_sample()
 void _media_framer_base::sample_receieved(bool packet_marker_bit)
 {
     do_sample_callback();
-
-    continue_reading();
 }
 
 void _media_framer_base::do_sample_callback()

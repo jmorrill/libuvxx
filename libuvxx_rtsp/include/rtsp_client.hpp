@@ -20,9 +20,9 @@ namespace uvxx { namespace rtsp
 
     class media_sample;
 
-    using read_stream_delegate = std::function<bool(const media_sample&)>;
+    using read_sample_delegate = std::function<void(const media_sample&)>;
 
-    class rtsp_client : public uvxx::event_dispatcher_object
+    class rtsp_client : public event_dispatcher_object
     {
     public:
         rtsp_client();
@@ -36,13 +36,15 @@ namespace uvxx { namespace rtsp
         rtsp_client& operator=(rtsp_client&& rhs);
 
     public:
-        uvxx::pplx::task<void> open(const std::string& url) const;
+        pplx::task<void> open(const std::string& url) const;
 
-        uvxx::pplx::task<void> play() const;
+        pplx::task<void> play() const;
 
-        uvxx::pplx::task<void> play(std::vector<media_subsession> media_subsessions) const;
+        pplx::task<void> play(std::vector<media_subsession> media_subsessions) const;
 
-        void begin_stream_read(read_stream_delegate call_back) const;
+		void on_sample_set(read_sample_delegate callback) const;
+
+        void read_stream_sample() const;
 
         media_session media_session() const;
 
@@ -52,9 +54,9 @@ namespace uvxx { namespace rtsp
 
         std::string password() const;
 
-        uvxx::rtsp::transport_protocol protocol() const;
+        transport_protocol protocol() const;
 
-        void protocol_set(uvxx::rtsp::transport_protocol protocol);
+        void protocol_set(transport_protocol protocol);
 
     private:
         details::_rtsp_client_impl_ptr __rtsp_client_imp;

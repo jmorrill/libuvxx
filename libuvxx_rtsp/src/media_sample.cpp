@@ -10,7 +10,7 @@ media_sample::media_sample()
     __media_sample_impl = std::make_shared<_media_sample_impl>();
 }
 
-const size_t media_sample::size() const
+size_t media_sample::size() const
 {
     return __media_sample_impl->size();
 }
@@ -20,7 +20,7 @@ const uint8_t* media_sample::data() const
     return __media_sample_impl->data();
 }
 
-const std::chrono::microseconds media_sample::presentation_time() const
+std::chrono::microseconds media_sample::presentation_time() const
 {
     return __media_sample_impl->presentation_time();
 }
@@ -30,12 +30,27 @@ bool media_sample::is_truncated() const
     return __media_sample_impl->is_truncated();
 }
 
-const std::string media_sample::codec_name() const
+std::string media_sample::codec_name() const
 {
     return __media_sample_impl->codec_name();
 }
 
-const int media_sample::stream_number() const
+media_sample::media_sample(media_sample&& rhs)
+{
+	*this = std::move(rhs);
+}
+
+media_sample& media_sample::operator=(media_sample&& rhs)
+{
+	if (this != &rhs)
+	{
+		__media_sample_impl = std::move(__media_sample_impl);
+	}
+
+	return *this;
+}
+
+int media_sample::stream_number() const
 {
     return __media_sample_impl->stream_number();
 }
@@ -45,7 +60,7 @@ void media_sample::size_set(size_t size) const
     __media_sample_impl->size_set(size);
 }
 
-const size_t media_sample::capacity() const
+size_t media_sample::capacity() const
 {
     return __media_sample_impl->capacity();
 }

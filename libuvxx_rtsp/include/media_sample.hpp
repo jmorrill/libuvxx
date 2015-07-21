@@ -3,8 +3,8 @@
 #include <chrono>
 #include <string>
 
-#include "io/memory_buffer.hpp"
 #include "media_attributes.hpp"
+#include "io/memory_buffer.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -22,22 +22,26 @@ namespace uvxx { namespace rtsp
 
         media_sample& operator=(const media_sample&) = default;
 
+		media_sample(media_sample&& rhs);
+
+		media_sample& operator=(media_sample&& rhs);
+
     public:
-        const int stream_number() const;
+        int stream_number() const;
 
         void stream_number_set(int stream_number);
 
-        const size_t size() const;
+        size_t size() const;
 
         void size_set(size_t size) const;
 
-        const size_t capacity() const;
+        size_t capacity() const;
 
         void capacity_set(size_t size) const;
 
         const uint8_t* data() const;
 
-        const std::chrono::microseconds presentation_time() const;
+        std::chrono::microseconds presentation_time() const;
 
         void presentation_time_set(std::chrono::microseconds presentation_time) const;
        
@@ -47,13 +51,13 @@ namespace uvxx { namespace rtsp
 
         void codec_name_set(const std::string& codec_name);
 
-        const std::string codec_name() const;
+        std::string codec_name() const;
 
         void clear_attributes();
 
-        void attribute_blob_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer) const;
+        void attribute_blob_set(const std::string& attribute_name, const io::memory_buffer& buffer) const;
 
-        uvxx::io::memory_buffer attribute_blob_get(const std::string& attribute_name) const;
+        io::memory_buffer attribute_blob_get(const std::string& attribute_name) const;
 
         template<typename T>
         void attribute_set(const std::string& attribute_name, T value)
@@ -71,7 +75,7 @@ namespace uvxx { namespace rtsp
 
             if (!buffer || buffer.length_get() != sizeof(T))
             {
-                buffer = uvxx::io::memory_buffer(sizeof(T));
+                buffer = io::memory_buffer(sizeof(T));
             }
 
             memcpy(buffer.data(), &value, sizeof(T));

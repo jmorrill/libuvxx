@@ -1,8 +1,6 @@
 #pragma once
 #include <memory>
-#include <map>
-#include <string>
-
+#include "rtsp_client.hpp"
 #include "_media_session_impl.hpp"
 #include "streaming_media_session.hpp"
 #include "_live_authenticator.hpp"
@@ -33,10 +31,8 @@ namespace uvxx { namespace rtsp { namespace details
     using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;
-
-    using _read_stream_delegate = std::function<bool(const media_sample&)>;
-
-    class _rtsp_client_impl : public uvxx::event_dispatcher_object
+   
+    class _rtsp_client_impl : public event_dispatcher_object
     {
     public:
         _rtsp_client_impl();
@@ -44,11 +40,13 @@ namespace uvxx { namespace rtsp { namespace details
         ~_rtsp_client_impl();
 
     public:
-        uvxx::pplx::task<void> open(const std::string& url);
+        pplx::task<void> open(const std::string& url);
 
-        uvxx::pplx::task<void> play(std::vector<media_subsession> subsessions);
+        pplx::task<void> play(std::vector<media_subsession> subsessions);
 
-        void begin_stream_read(_read_stream_delegate call_back);
+		void on_sample_callback_set(read_sample_delegate callback);
+
+        void read_stream_sample();
 
         media_session session();
 
@@ -58,12 +56,12 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::string password() const;
 
-        uvxx::rtsp::transport_protocol protocol() const;
+        transport_protocol protocol() const;
 
-        void protocol_set(uvxx::rtsp::transport_protocol protocol);
+        void protocol_set(transport_protocol protocol);
 
     private:
-        uvxx::pplx::task<void> setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions);
+        pplx::task<void> setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions);
 
     private:
         static void describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
@@ -75,11 +73,11 @@ namespace uvxx { namespace rtsp { namespace details
     private:
         unsigned _last_rtsp_command_id;
 
-        uvxx::pplx::task_completion_event<void> _describe_event;
-
-        uvxx::pplx::task_completion_event<void> _setup_event;
-
-        uvxx::pplx::task_completion_event<void> _play_event;
+        pplx::task_completion_event<void> _describe_event;
+	    
+        pplx::task_completion_event<void> _setup_event;
+	    
+        pplx::task_completion_event<void> _play_event;
 
         media_session _session;
 
@@ -95,11 +93,13 @@ namespace uvxx { namespace rtsp { namespace details
 
         _live_authenticator _authenticator;
 
-        uvxx::rtsp::transport_protocol _protocol;
+        transport_protocol _protocol;
 
         std::string _username;
         
         std::string _password;
+
+		read_sample_delegate _read_sample_delegate;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;

@@ -1,3 +1,5 @@
+#include "H264VideoRTPSource.hh"
+
 #include "details/media_framers/_h264_framer.hpp"
 #include "details/media_framers/h26x/sps_parser.hpp"
 
@@ -33,7 +35,7 @@ enum class h26x_nal_type
 };
 
 
-static bool set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const uvxx::rtsp::media_sample& sample)
+static bool set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const media_sample& sample)
 {
     bool are_equal = true;
 
@@ -101,7 +103,6 @@ _h264_framer::_h264_framer(const media_subsession& subsession) :
         }
     }
 
-    auto& media_sample = working_sample();
 }
 
 _h264_framer::~_h264_framer()
@@ -111,7 +112,7 @@ _h264_framer::~_h264_framer()
 
 void _h264_framer::sample_receieved(bool packet_marker_bit)
 {
-    auto& media_sample = working_sample();
+    auto media_sample = working_sample();
 
     h26x_nal_type nal_type = static_cast<h26x_nal_type>(media_sample.data()[0] & NAL_TYPE_BIT_MASK);
 
@@ -151,7 +152,7 @@ void _h264_framer::sample_receieved(bool packet_marker_bit)
 
     if (!full_sample_ready)
     {
-        _media_framer_base::continue_reading();
+        continue_reading();
     }
     else
     {

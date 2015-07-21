@@ -21,11 +21,11 @@ namespace uvxx { namespace rtsp { namespace details
         virtual ~_media_sample_impl();
 
     public:
-        const int stream_number() const;
+        int stream_number() const;
 
         void stream_number_set(int stream_number);
 
-        const size_t size() const;
+        size_t size() const;
 
         void size_set(size_t size);
 
@@ -35,7 +35,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         const uint8_t* data() const;
 
-        const std::chrono::microseconds presentation_time() const;
+        std::chrono::microseconds presentation_time() const;
        
         void presentation_time_set(std::chrono::microseconds presentation_time);
 
@@ -43,15 +43,15 @@ namespace uvxx { namespace rtsp { namespace details
 
         void is_truncated_set(bool truncated);
 
-        const std::string codec_name() const;
+        std::string codec_name() const;
 
         void codec_name_set(const std::string& codec_name);
 
         void clear_attributes();
 
-        void attribute_set(const std::string& attribute_name, const uvxx::io::memory_buffer& buffer);
+        void attribute_set(const std::string& attribute_name, const io::memory_buffer& buffer);
 
-        uvxx::io::memory_buffer attribute_get(const std::string& attribute_name);
+        io::memory_buffer attribute_get(const std::string& attribute_name);
 
     private:
         int _stream_number;
@@ -66,6 +66,6 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::chrono::microseconds _presentation_time;
 
-        std::map<std::string, uvxx::io::memory_buffer> _attribute_map;
+        std::map<std::string, io::memory_buffer> _attribute_map;
     };
 }}}

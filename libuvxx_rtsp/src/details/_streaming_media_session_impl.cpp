@@ -38,13 +38,22 @@ _streaming_media_session_impl::~_streaming_media_session_impl()
     
 }
 
-void _streaming_media_session_impl::on_frame_callback_set(std::function<bool(const media_sample&)> callback)
+void _streaming_media_session_impl::on_sample_set(read_sample_delegate callback)
 {
-    _on_frame_callback = std::move(callback);
+	_on_sample_callback = std::move(callback);
 
+	for (auto& framer : _media_framers)
+	{
+		framer->on_sample_set(_on_sample_callback);
+	}
+}
+
+
+void _streaming_media_session_impl::read_stream_sample()
+{
     for (auto& framer : _media_framers)
     {
-        framer->begin_reading(_on_frame_callback);
+        framer->begin_reading();
     }
 }
 
@@ -57,7 +66,7 @@ bool _streaming_media_session_impl::operator=(std::nullptr_t rhs)
 
 void _streaming_media_session_impl::close()
 {
-    _on_frame_callback = nullptr;
+    _on_sample_callback = nullptr;
 
     _media_framers.clear();
 

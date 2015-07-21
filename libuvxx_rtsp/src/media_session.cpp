@@ -37,12 +37,12 @@ media_subsession& media_subsession::operator=(media_subsession&& rhs)
     return *this;
 }
 
-const std::string media_subsession::codec_name() const
+std::string media_subsession::codec_name() const
 {
     return __media_subsession->codec_name();
 }
 
-const std::string media_subsession::get_attribute(const std::string& attribute_name) const
+std::string media_subsession::get_attribute(const std::string& attribute_name) const
 {
     return __media_subsession->get_attribute(attribute_name);
 }
@@ -73,17 +73,17 @@ media_session& media_session::operator=(media_session&& rhs)
     return *this;
 }
 
-const size_t media_session::subsession_count() const
+size_t media_session::subsession_count() const
 {
     return __media_session->subsessions().size();
 }
 
-const media_subsession media_session::subsession(size_t index) const
+ media_subsession media_session::subsession(size_t index) const
 {
     return media_subsession(__media_session->subsessions().at(index));
 }
 
-const std::vector<media_subsession> media_session::subsessions() const
+std::vector<media_subsession> media_session::subsessions() const
 {
     auto subsessioncount = subsession_count();
 

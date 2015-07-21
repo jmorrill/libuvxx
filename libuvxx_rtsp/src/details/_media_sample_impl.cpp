@@ -5,15 +5,15 @@ using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
 _media_sample_impl::_media_sample_impl() :
-                        _size(0),
                         _stream_number(0),
-                        _presentation_time(0),
-                        _is_truncated(false)
+                        _size(0),
+                        _is_truncated(false),
+                        _presentation_time(0)
 {
     
 }
 
-const size_t _media_sample_impl::size() const
+size_t _media_sample_impl::size() const
 {
     return _size;
 }
@@ -24,6 +24,7 @@ void _media_sample_impl::size_set(size_t size)
     {
         throw std::exception("size cannot be larger than capacity");
     }
+
    _size = size;
 }
 
@@ -37,7 +38,7 @@ void _media_sample_impl::codec_name_set(const std::string& codec_name)
     _codec_name = codec_name;
 }
 
-const int _media_sample_impl::stream_number() const
+int _media_sample_impl::stream_number() const
 {
     return _stream_number;
 }
@@ -52,7 +53,7 @@ const uint8_t* _media_sample_impl::data() const
     return _buffer.data();
 }
 
-const std::chrono::microseconds _media_sample_impl::presentation_time() const
+std::chrono::microseconds _media_sample_impl::presentation_time() const
 {
     return _presentation_time;
 }
@@ -62,7 +63,7 @@ bool _media_sample_impl::is_truncated() const
     return _is_truncated;
 }
 
-const std::string _media_sample_impl::codec_name() const
+std::string _media_sample_impl::codec_name() const
 {
     return _codec_name;
 }

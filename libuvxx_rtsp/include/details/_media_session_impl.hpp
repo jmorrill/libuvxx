@@ -39,7 +39,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         int stream_number();
 
-        const std::string get_attribute(const std::string& attribute_name) const;
+        std::string get_attribute(const std::string& attribute_name) const;
 
     private:
         MediaSubsession* _live_subsession;
