@@ -7,7 +7,7 @@
 #include <functional>
 #include <type_traits>
 #include "pplxtasks.h"
-#include <event_dispatcher_timer.hpp>
+#include "event_dispatcher_timer.hpp"
 #include "details/_utilities.hpp"
 
 namespace uvxx { namespace pplx { namespace details

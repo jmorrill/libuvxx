@@ -187,7 +187,7 @@
     <ClInclude Include="include\event_dispatcher.hpp" />
     <ClInclude Include="include\event_dispatcher_frame.hpp" />
     <ClInclude Include="include\event_dispatcher_object.hpp" />
-    <ClInclude Include="include\event_dispatcher_timer.hpp" />
+    <ClInclude Include="include\streams\event_dispatcher_timer.hpp" />
     <ClInclude Include="include\net\socket_poll.hpp" />
     <ClInclude Include="include\streams\astreambuf.h" />
     <ClInclude Include="include\streams\asyncrt_utils.h" />
