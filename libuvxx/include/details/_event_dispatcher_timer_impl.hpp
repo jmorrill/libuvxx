@@ -2,7 +2,6 @@
 #include <memory>
 #include <chrono>
 #include <vector>
-#include "_event_dispatcher_impl.hpp"
 #include "_event_dispatcher_object_impl.hpp"
 #include "delegate.hpp"
 #include "details/_uv_timer.hpp"

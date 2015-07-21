@@ -1,6 +1,5 @@
 #include "details/_uv_async.hpp"
 #include "details/_uv_loop.hpp"
-#include "details/_utilities.hpp"
 #include "details/_uv_work.hpp"
 #include <iostream>
 

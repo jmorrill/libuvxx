@@ -2,16 +2,17 @@
 #include "details/_event_dispatcher_object_impl.hpp"
 #include "net/details/_stream_socket_impl.hpp"
 #include "io/memory_buffer.hpp"
+#include "net/dns.hpp"
 
 using namespace std;
 using namespace uvxx::pplx;
 
 namespace uvxx { namespace net { namespace details
 {
-    _stream_socket_impl::_stream_socket_impl() : _tcp(&dispatcher()->_loop),
-                                                 _busy_connecting(false),
-                                                 _no_read_delay(false),
-                                                 _task_context(task_continuation_context::use_current())
+    _stream_socket_impl::_stream_socket_impl() : _no_read_delay(false),
+                                                 _tcp(&dispatcher()->_loop),
+                                                 _task_context(task_continuation_context::use_current()),
+                                                 _busy_connecting(false)
     {
         auto read_callback    = std::bind(&_stream_socket_impl::read_callback,
                                           this,

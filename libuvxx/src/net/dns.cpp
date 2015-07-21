@@ -1,7 +1,5 @@
 #include <functional>
-#include "uv.h"
 #include "details/_event_dispatcher_impl.hpp"
-#include "details/_event_dispatcher_object_impl.hpp"
 #include "net/details/_dns_impl.hpp"
 #include "net/dns.hpp"
 
@@ -12,7 +10,11 @@ using namespace uvxx::net::details;
 
 namespace uvxx { namespace net
 {
-    uvxx::pplx::task<std::string> dns::resolve_host_async(std::string const& host_name)
+	dns::~dns()
+	{
+	}
+
+	task<std::string> dns::resolve_host_async(std::string const& host_name)
     {
        auto _dns = std::make_shared<_dns_impl>();
 

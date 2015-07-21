@@ -2,7 +2,6 @@
 #include <memory>
 #include "_event_dispatcher_object_impl.hpp"
 
-
 namespace uvxx { namespace details
 {
     class _event_dispatcher_frame_impl;

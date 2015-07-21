@@ -1,9 +1,6 @@
 #pragma once
 #include "global_misc.hpp"
-#include <string>
 #include "event_dispatcher_object.hpp"
-#include "pplx/pplxtasks.h"
-#include "io/memory_buffer.hpp"
 
 namespace uvxx { namespace net { namespace details
 {

@@ -2,6 +2,7 @@
 #include "details/_event_dispatcher_object_impl.hpp"
 #include "net/details/_dns_impl.hpp"
 #include "details/_utilities.hpp"
+#include "uvxx_exception.hpp"
 
 using namespace uvxx;
 using namespace uvxx::pplx;
@@ -44,7 +45,7 @@ namespace uvxx { namespace net { namespace details
 
         char addr[17] = { '\0' };
 
-        uv_ip4_name((struct sockaddr_in*) res->ai_addr, addr, 16);
+        uv_ip4_name(reinterpret_cast<struct sockaddr_in*>(res->ai_addr), addr, 16);
 
        callback->execute(addr, status);
     }

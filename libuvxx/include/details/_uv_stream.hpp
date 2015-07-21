@@ -1,11 +1,9 @@
 #pragma once
 #include <iostream>
-#include <vector>
 
 #include "_uvxx_internal.hpp"
 #include "_uv_handle.hpp"
 #include "_uvxx_loop_callback.hpp"
-#include "_uvxx_internal.hpp"
 #include "../uvxx_exception.hpp"
 #include "_utilities.hpp"
 #include "_uv_timer.hpp"

@@ -1,5 +1,6 @@
 #include <fcntl.h>
 #include "fs/details/_file_impl.hpp"
+#include "uvxx_exception.hpp"
 
 namespace uvxx { namespace fs { namespace details
 {

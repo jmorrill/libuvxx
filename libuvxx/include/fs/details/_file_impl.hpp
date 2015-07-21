@@ -3,9 +3,7 @@
 #include "details/_event_dispatcher_object_impl.hpp"
 #include "details/_uv_file.hpp"
 #include "pplx/pplxtasks.h"
-#include "uvxx_exception.hpp"
 #include "io/memory_buffer.hpp"
-#include "details/_uvxx_loop_callback.hpp"
 #include "fs/fs_info.hpp"
 
 namespace uvxx { namespace fs { namespace details

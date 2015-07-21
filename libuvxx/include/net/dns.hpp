@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-#include "event_dispatcher_object.hpp"
 #include "pplx/pplxtasks.h"
 
 namespace uvxx { namespace net
@@ -10,14 +8,13 @@ namespace uvxx { namespace net
         dns() = delete;
 
         ~dns();
+
     public:
 
         dns(const dns&) = delete;
 
         dns& operator=(const dns&) = delete;
 
-        static uvxx::pplx::task<std::string> resolve_host_async(std::string const& host_name);
+        static pplx::task<std::string> resolve_host_async(std::string const& host_name);
     };
-
-   
 }}

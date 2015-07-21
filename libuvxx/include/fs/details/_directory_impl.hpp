@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <vector>
 #include <deque>
 #include "details/_event_dispatcher_object_impl.hpp"
@@ -82,13 +81,13 @@ namespace uvxx { namespace fs { namespace details
         using rmdir_callback_delegate_ptr = uvxx::details::callback_unique_ptr<rmdir_callback_delegate_t>;
         rmdir_callback_delegate_ptr _rmdir_callback;
 
-        uvxx::pplx::task_completion_event<scandir_entry_result_ptr> _get_entries_task_completion;
+        pplx::task_completion_event<scandir_entry_result_ptr> _get_entries_task_completion;
 
-        uvxx::pplx::task_completion_event<void> _mkdir_task_completion;
+        pplx::task_completion_event<void> _mkdir_task_completion;
 
-        uvxx::pplx::task_completion_event<void> _stat_task_completion;
+        pplx::task_completion_event<void> _stat_task_completion;
 
-        uvxx::pplx::task_completion_event<void> _rmdir_task_completion;
+        pplx::task_completion_event<void> _rmdir_task_completion;
 
         void on_scandir_callback(scandir_entry_result_ptr& entries, int status);
 
@@ -103,33 +102,33 @@ namespace uvxx { namespace fs { namespace details
 
         virtual ~_directory_impl();
 
-        uvxx::pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path);
-
-        uvxx::pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path, bool recursive);
-
-        uvxx::pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path);
-
-        uvxx::pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path, bool recursive);
-
-        uvxx::pplx::task<void> create_directory_async(std::string const& path);
-
-        uvxx::pplx::task<bool> exists_async(std::string const& path);
-
-        uvxx::pplx::task<void> delete_async(std::string const& path);
-
-        uvxx::pplx::task<void> delete_async(std::string const& path, bool recursive);
+        pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path);
+	    
+        pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path, bool recursive);
+	    
+        pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path);
+	    
+        pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path, bool recursive);
+	    
+        pplx::task<void> create_directory_async(std::string const& path);
+	    
+        pplx::task<bool> exists_async(std::string const& path);
+	    
+        pplx::task<void> delete_async(std::string const& path);
+	    
+        pplx::task<void> delete_async(std::string const& path, bool recursive);
 
     private:
-        uvxx::pplx::task<directory_entry_result_ptr> get_entries_async(std::string const& path, dir_entry_type type, bool recursive);
-
-        uvxx::pplx::task<scandir_entry_result_ptr> get_all_scandir_entries_async(std::string const& path);
-
-        uvxx::pplx::task<scandir_entry_result_ptr> get_entries_async(uv_fs_t* req, std::string const& path);
-
-        uvxx::pplx::task<void> get_stat_async(std::string const& path);
-
-        uvxx::pplx::task<void> create_directory_internal_async(std::string const& path);
-
+        pplx::task<directory_entry_result_ptr> get_entries_async(std::string const& path, dir_entry_type type, bool recursive);
+	    
+        pplx::task<scandir_entry_result_ptr> get_all_scandir_entries_async(std::string const& path);
+	    
+        pplx::task<scandir_entry_result_ptr> get_entries_async(uv_fs_t* req, std::string const& path);
+	    
+        pplx::task<void> get_stat_async(std::string const& path);
+	    
+        pplx::task<void> create_directory_internal_async(std::string const& path);
+	    
         static void on_scandir(uv_fs_t * req);
 
         static void on_mkdir(uv_fs_t * req);

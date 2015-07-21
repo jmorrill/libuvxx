@@ -1,11 +1,7 @@
 #pragma once
-#include <string>
-#include "details/_event_dispatcher_timer_impl.hpp"
 #include "details/_event_dispatcher_object_impl.hpp"
 #include "details/_uv_tcp.hpp"
-#include "../dns.hpp"
 #include "pplx/pplxtasks.h"
-#include "uvxx_exception.hpp"
 #include "io/memory_buffer.hpp"
 
 namespace uvxx { namespace details

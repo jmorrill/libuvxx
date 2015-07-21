@@ -1,8 +1,6 @@
 #pragma once
 #include <functional>
-#include <vector>
 #include <map>
-#include <memory>
 #include <atomic>
 
 namespace uvxx

@@ -1,4 +1,3 @@
-#include <memory>
 #include <sstream>
 #include "uvxx_exception.hpp"
 #include "details/_uv_net_functions.hpp"

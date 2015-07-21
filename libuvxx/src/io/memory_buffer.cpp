@@ -1,7 +1,6 @@
 #include "io/memory_buffer.hpp"
 #include <vector>
-#include <string>
-#include <memory.h>
+
 namespace uvxx { namespace io 
 {
     class _memory_buffer_impl

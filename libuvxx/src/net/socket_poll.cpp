@@ -1,5 +1,4 @@
 #include "details/_event_dispatcher_impl.hpp"
-#include "details/_event_dispatcher_object_impl.hpp"
 #include "net/details/_socket_poll_impl.hpp"
 #include "net/socket_poll.hpp"
 

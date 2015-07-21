@@ -25,21 +25,21 @@ namespace uvxx { namespace details
 
 	    _uv_handle& operator=(const _uv_handle&) = delete;
 
-	    operator uvxx::details::_uv_loop*() 
+	    operator _uv_loop*() 
         {
-            return reinterpret_cast<uvxx::details::_uv_loop*>(this->_handle->loop->data); 
+            return reinterpret_cast<_uv_loop*>(this->_handle->loop->data); 
         }
 
         _uv_loop* loop_get()
         {
-            return reinterpret_cast<uvxx::details::_uv_loop*>(this->_handle->loop->data); 
+            return reinterpret_cast<_uv_loop*>(this->_handle->loop->data); 
         }
 
 	    operator uv_loop_t*() { return this->_handle->loop; }
 
 	    operator uv_handle_t*() { return reinterpret_cast<uv_handle_t*>(this->_handle); }
 
-	    operator const uvxx::details::_uv_loop*() const { return reinterpret_cast<const uvxx::details::_uv_loop*>(this->_handle->loop->data); }
+	    operator const _uv_loop*() const { return reinterpret_cast<const _uv_loop*>(this->_handle->loop->data); }
 
 	    operator const uv_loop_t*() const { return this->_handle->loop; }
 

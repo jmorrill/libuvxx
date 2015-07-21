@@ -16,7 +16,6 @@
 
 #include "details/_uv_loop.hpp"
 #include "pplx/pplxtasks.h"
-#include "details/_utilities.hpp"
 
 namespace uvxx 
 { 

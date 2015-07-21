@@ -1,7 +1,5 @@
 #include "details/_uv_poll.hpp"
 #include "details/_uv_loop.hpp"
-#include "details/_uv_poll.hpp"
-
 
 namespace uvxx { namespace details
 {

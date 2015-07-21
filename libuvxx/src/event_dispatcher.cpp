@@ -1,5 +1,4 @@
 #include "details/_event_dispatcher_impl.hpp"
-#include "details/_event_dispatcher_frame_impl.hpp"
 #include "event_dispatcher.hpp"
 #include "event_dispatcher_frame.hpp"
 

@@ -16,10 +16,10 @@
 * ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 **/
-#include "pplx/threadpool.h"
-
-namespace crossplat
-{
-    // initialize the static shared threadpool 
-    //threadpool threadpool::s_shared(40);
-}
+//#include "pplx/threadpool.h"
+//
+//namespace crossplat
+//{
+//    // initialize the static shared threadpool 
+//    //threadpool threadpool::s_shared(40);
+//}

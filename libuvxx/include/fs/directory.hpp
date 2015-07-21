@@ -16,20 +16,20 @@ namespace uvxx { namespace fs
         ~directory() = delete;
 
     public:
-        static uvxx::pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path);
-
-        static uvxx::pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path, bool recursive);
-
-        static uvxx::pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path);
-
-        static uvxx::pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path, bool recursive);
-
-        static uvxx::pplx::task<void> create_directory_async(std::string const& path);
-
-        static uvxx::pplx::task<bool> exists_async(std::string const& path);
-
-        static uvxx::pplx::task<void> delete_async(std::string const& path);
-
-        static uvxx::pplx::task<void> delete_async(std::string const& path, bool recursive);
+        static pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path);
+			   
+        static pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path, bool recursive);
+			   
+        static pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path);
+			   
+        static pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path, bool recursive);
+			   
+        static pplx::task<void> create_directory_async(std::string const& path);
+			   
+        static pplx::task<bool> exists_async(std::string const& path);
+			   
+        static pplx::task<void> delete_async(std::string const& path);
+			   
+        static pplx::task<void> delete_async(std::string const& path, bool recursive);
     };
 }}
