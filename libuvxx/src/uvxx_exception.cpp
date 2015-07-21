@@ -1,5 +1,5 @@
 #include "uvxx_exception.hpp"
-#include "uv.h"
+#include "details/_uvxx_internal.hpp"
 using namespace uvxx;
 
 uvxx::uv_exception_with_code::uv_exception_with_code(int uv_code) :

@@ -114,7 +114,7 @@ namespace uvxx { namespace details
         bufs[0].base = reinterpret_cast<char*>(buffer + start_pos);
 
         bufs[0].len = count;
-
+       
         int result = uv_fs_read(*_loop, _handle, _file, bufs, 1, file_position,
             [](uv_fs_t* req)
         {
@@ -128,7 +128,7 @@ namespace uvxx { namespace details
             else
             {
                 uv_fs_req_cleanup(req);
-                this_file->_read_callback_delegate->execute(reinterpret_cast<const uint8_t*>(req->bufs[1].base), req->result, 0);
+                this_file->_read_callback_delegate->execute(reinterpret_cast<const uint8_t*>(req->fs.info.bufs[0].base), req->result, 0);
             }
         });
 
@@ -181,7 +181,7 @@ namespace uvxx { namespace details
             else
             {
                 uv_fs_req_cleanup(req);
-                this_file->_write_callback_delegate->execute(reinterpret_cast<const uint8_t*>(req->bufs[1].base), req->result, 0);
+                this_file->_write_callback_delegate->execute(reinterpret_cast<const uint8_t*>(req->fs.info.bufs[0].base), req->result, 0);
             }
         });
 

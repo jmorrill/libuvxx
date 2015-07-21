@@ -68,10 +68,7 @@ public:
   virtual Boolean isRTSPServer() const;
   virtual Boolean isMediaSession() const;
   virtual Boolean isServerMediaSession() const;
-  virtual Boolean isDarwinInjector() const
-  {
-      return False;
-  }
+
 protected:
   friend class MediaLookupTable;
   Medium(UsageEnvironment& env); // abstract base class

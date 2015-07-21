@@ -24,7 +24,7 @@ namespace uvxx { namespace details
         bool _has_dispatcher;
         std::thread::id _this_thread_id;
 
-        void Initialize()
+        void initialize()
         {
             if (_has_initialized_thread_cache)
             {
@@ -40,21 +40,21 @@ namespace uvxx { namespace details
 
         bool has_dispatcher_get()
         {
-            Initialize();
+            initialize();
           
             return _has_dispatcher;
         }
 
         std::thread::id this_thread_id()
         {
-            Initialize();
+            initialize();
 
             return _this_thread_id;
         }
 
         void has_dispatcher_set(bool has_dispatcher)
         {
-            Initialize();
+            initialize();
 
             _has_dispatcher = has_dispatcher;
         }
@@ -230,7 +230,7 @@ namespace uvxx { namespace details
             if (this_id == std::thread::id())
             {
                 _has_initialized_thread_cache = false;
-                _thread_cache.Initialize();
+                _thread_cache.initialize();
                 _thread_cache.has_dispatcher_set(true);
                 continue;
             }

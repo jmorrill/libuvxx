@@ -143,7 +143,7 @@ static int uv__create_stdio_pipe_pair(uv_loop_t* loop,
     goto error;
   }
 
-#if 0
+#ifndef NDEBUG
   /* Validate that the pipe was opened in the right mode. */
   {
     DWORD mode;
@@ -279,7 +279,7 @@ int uv__stdio_create(uv_loop_t* loop,
   }
 
   /* Allocate the child stdio buffer */
-  buffer = (BYTE*) malloc(CHILD_STDIO_SIZE(count));
+  buffer = (BYTE*) uv__malloc(CHILD_STDIO_SIZE(count));
   if (buffer == NULL) {
     return ERROR_OUTOFMEMORY;
   }
@@ -459,7 +459,7 @@ void uv__stdio_destroy(BYTE* buffer) {
     }
   }
 
-  free(buffer);
+  uv__free(buffer);
 }
 
 

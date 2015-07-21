@@ -124,22 +124,10 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 
 
 _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
+                                         _task_scheduler(nullptr),
                                          _protocol(transport_protocol::udp)
 {
-    _task_scheduler = _uvxx_task_scheduler::createNew();
 
-    _usage_environment = _usage_environment_ptr(BasicUsageEnvironment::createNew(*_task_scheduler),
-    /* deleter*/
-    [](UsageEnvironment* environment)
-    {
-        auto& task_scheduler = environment->taskScheduler();
-
-        delete &task_scheduler;
-
-        bool memory_released = environment->reclaim();
-
-        assert(memory_released);
-    });
 }
 
 _rtsp_client_impl::~_rtsp_client_impl()
@@ -153,6 +141,21 @@ _rtsp_client_impl::~_rtsp_client_impl()
 task<void> _rtsp_client_impl::open(const std::string& url)
 {
     verify_access();
+
+    _task_scheduler = _uvxx_task_scheduler::createNew();
+
+    _usage_environment = _usage_environment_ptr(BasicUsageEnvironment::createNew(*_task_scheduler),
+        /* deleter*/
+        [](UsageEnvironment* environment)
+    {
+        auto& task_scheduler = environment->taskScheduler();
+
+        delete &task_scheduler;
+
+        bool memory_released = environment->reclaim();
+
+        assert(memory_released);
+    });
 
     _streaming_session = nullptr;
     

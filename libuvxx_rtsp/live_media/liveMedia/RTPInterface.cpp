@@ -212,7 +212,7 @@ Boolean RTPInterface::sendPacket(unsigned char* packet, unsigned packetSize) {
   Boolean success = True; // we'll return False instead if any of the sends fail
 
   // Normal case: Send as a UDP packet:
-  if (!fGS->output(envir(), fGS->ttl(), packet, packetSize)) success = False;
+  if (!fGS->output(envir(), packet, packetSize)) success = False;
 
   // Also, send over each of our TCP sockets:
   tcpStreamRecord* nextStream;
@@ -376,7 +376,7 @@ Boolean RTPInterface::sendDataOverTCP(int socketNum, u_int8_t const* data, unsig
       makeSocketNonBlocking(socketNum);
 
       return True;
-    } else if (sendResult < 0) {
+    } else if (sendResult < 0 && envir().getErrno() != EAGAIN) {
       // Because the "send()" call failed, assume that the socket is now unusable, so stop
       // using it (for both RTP and RTCP):
       removeStreamSocket(socketNum, 0xFF);
