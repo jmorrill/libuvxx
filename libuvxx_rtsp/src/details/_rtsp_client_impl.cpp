@@ -86,9 +86,9 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
 
     auto live_subsession = subsession.__media_subsession->live_media_subsession();
 
-    unsigned const thresh = 1200000; // 1.2 seconds
+    //unsigned const thresh = 1200000; // 1.2 seconds
 
-    live_subsession->rtpSource()->setPacketReorderingThresholdTime(thresh);
+    //live_subsession->rtpSource()->setPacketReorderingThresholdTime(thresh);
 
     /*
     int socketNum = live_subsession->rtpSource()->RTPgs()->socketNum();

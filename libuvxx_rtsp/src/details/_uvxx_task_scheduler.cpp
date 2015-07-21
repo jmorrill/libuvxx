@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "BasicUsageEnvironment.hh"
-#include "HandlerSet.hh"
 #include "details/_uvxx_task_scheduler.hpp"
 
 #ifndef MILLION
@@ -60,14 +59,12 @@ TaskToken _uvxx_task_scheduler::scheduleDelayedTask(int64_t microseconds, TaskFu
 void _uvxx_task_scheduler::set_next_timeout()
 {
     DelayInterval const& timeToDelay = fDelayQueue.timeToNextAlarm();
-
-    printf("time - %d\n", timeToDelay.useconds());
-   
+  
     int64_t milliseconds = (timeToDelay.seconds() * 1000ll) + (timeToDelay.useconds() / 1000ll);
 
-    if(milliseconds <= 0)
+    if(milliseconds < 0)
     {
-        milliseconds = 1;
+        milliseconds = 0;
     }
 
     _timer.timeout_set(std::chrono::milliseconds(milliseconds));
@@ -99,32 +96,6 @@ void _uvxx_task_scheduler::schedulerTickTask()
 
 void _uvxx_task_scheduler::SingleStep(unsigned maxDelayTime) 
 {
-    DelayInterval const& timeToDelay = fDelayQueue.timeToNextAlarm();
-
-    struct timeval tv_timeToDelay;
-
-    tv_timeToDelay.tv_sec = timeToDelay.seconds();
-
-    tv_timeToDelay.tv_usec = timeToDelay.useconds();
-  
-    const long MAX_TV_SEC = MILLION;
-
-    if (tv_timeToDelay.tv_sec > MAX_TV_SEC) 
-    {
-        tv_timeToDelay.tv_sec = MAX_TV_SEC;
-    }
-
-    // Also check our "maxDelayTime" parameter (if it's > 0):
-    if (maxDelayTime > 0 &&
-        (tv_timeToDelay.tv_sec > (long)maxDelayTime / MILLION ||
-        (tv_timeToDelay.tv_sec == (long)maxDelayTime / MILLION &&
-         tv_timeToDelay.tv_usec > (long)maxDelayTime % MILLION))) 
-    {
-        tv_timeToDelay.tv_sec = maxDelayTime / MILLION;
-
-        tv_timeToDelay.tv_usec = maxDelayTime % MILLION;
-    }
-
     if (fTriggersAwaitingHandling != 0)
     {
         if (fTriggersAwaitingHandling == fLastUsedTriggerMask)
@@ -155,7 +126,7 @@ void _uvxx_task_scheduler::SingleStep(unsigned maxDelayTime)
                     mask = 0x80000000;
                 }
 
-                if ((fTriggersAwaitingHandling&mask) != 0) 
+                if ((fTriggersAwaitingHandling & mask) != 0) 
                 {
                     fTriggersAwaitingHandling &=~ mask;
 
@@ -233,9 +204,9 @@ _uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(int s
                                                                            void* client_data) : 
     _socket(socket),
     _condition_set(condition_set),
-    _handler_proc(handler_proc),
     _client_data(client_data),
-    _poller(socket)
+    _poller(socket),
+    _handler_proc(handler_proc)
 {
     start_poll();
 }
@@ -261,9 +232,9 @@ _uvxx_task_scheduler::socket_handler_descriptor& _uvxx_task_scheduler::socket_ha
 
         start_poll();
     }
+
     return *this;
 }
-
 
 _uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(socket_handler_descriptor&& rhs)
 {
