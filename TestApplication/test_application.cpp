@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     }
 
     {
-		client.on_sample_set(on_sample_callback);
+        client.on_sample_set(on_sample_callback);
 
         client.credentials_set("admin", "12345");
 
