@@ -92,13 +92,13 @@ _h264_framer::_h264_framer(const media_subsession& subsession) :
 
             if (nal_type == h26x_nal_type::sequence_parameter_set)
             {
-                _sequence_parameter_set = std::vector<uint8_t>(record_bytes, record_bytes + record_len);
+              /*  _sequence_parameter_set = std::vector<uint8_t>(record_bytes, record_bytes + record_len);
 
-                initialize_sequence_parameter_set();
+                initialize_sequence_parameter_set();*/
             }
             else if (nal_type == h26x_nal_type::picture_parameter_set)
             {
-                _picture_parameter_set = std::vector<uint8_t>(record_bytes, record_bytes + record_len);
+               /* _picture_parameter_set = std::vector<uint8_t>(record_bytes, record_bytes + record_len);*/
             }
         }
     }
@@ -140,7 +140,7 @@ void _h264_framer::sample_receieved(bool packet_marker_bit)
             key_frame = true;
         }
 
-        if (packet_marker_bit)
+        if (packet_marker_bit && _sequence_parameter_set.size() && _picture_parameter_set.size())
         {
             full_sample_ready = true;
         }

@@ -240,7 +240,7 @@ transport_protocol _rtsp_client_impl::protocol() const
     return _protocol;
 }
 
-uvxx::pplx::task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
+task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
 {
     auto current_index = std::make_shared<size_t>(0);
 

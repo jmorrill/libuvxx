@@ -48,11 +48,13 @@ int main(int argc, char* argv[])
     }
 
     {
+        client = rtsp_client();
+
         client.on_sample_set(on_sample_callback);
 
         client.credentials_set("admin", "12345");
 
-        client.protocol_set(transport_protocol::udp);
+        client.protocol_set(transport_protocol::tcp);
  
         client.open(argv[1]).then([=]
         {
