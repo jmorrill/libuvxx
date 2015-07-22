@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
             {
                 t.get();
             }
-            catch (const rtsp_network_timeout& e)
+            catch (const rtsp_network_timeout& /*e*/)
             {
                 printf("timeout\n");
             }
