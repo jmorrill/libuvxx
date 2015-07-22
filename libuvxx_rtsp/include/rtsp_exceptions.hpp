@@ -35,6 +35,15 @@ namespace uvxx { namespace rtsp
         int _code;
     };
 
+    class rtsp_network_timeout : public rtsp_exception
+    {
+    public:
+        rtsp_network_timeout(const std::string & message) : rtsp_exception(message)
+        {
+            
+        }
+    };
+
     class rtsp_network_exception : public rtsp_exception
     {
     public:

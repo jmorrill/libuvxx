@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "rtsp_client.hpp"
+#include "event_dispatcher_timer.hpp"
 #include "_media_session_impl.hpp"
 #include "streaming_media_session.hpp"
 #include "_live_authenticator.hpp"
@@ -20,6 +21,7 @@ namespace uvxx { namespace rtsp
 
 namespace uvxx { namespace rtsp { namespace details 
 {
+ 
     class _uvxx_task_scheduler;
 
     class _rtsp_client_impl;
@@ -63,6 +65,8 @@ namespace uvxx { namespace rtsp { namespace details
     private:
         pplx::task<void> setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions);
 
+        void on_timeout_timer_tick(uvxx::event_dispatcher_timer* sender);
+
     private:
         static void describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string);
 
@@ -72,6 +76,8 @@ namespace uvxx { namespace rtsp { namespace details
 
     private:
         unsigned _last_rtsp_command_id;
+
+        pplx::task_completion_event<void> _current_event;
 
         pplx::task_completion_event<void> _describe_event;
         
@@ -100,6 +106,8 @@ namespace uvxx { namespace rtsp { namespace details
         std::string _password;
 
         read_sample_delegate _read_sample_delegate;
+
+        event_dispatcher_timer _timeout_timer;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;

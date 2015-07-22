@@ -13,6 +13,7 @@ using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
+
 #define CAST_RTSP_CLIENT(live_rtsp_client)static_cast<uvxx::rtsp::details::_rtsp_client_impl*>(static_cast<uvxx::rtsp::details::_live_rtsp_client*>(live_rtsp_client)->context());
 
 #define SET_RTSP_EXCEPTION(code, message, task_event)\
@@ -32,6 +33,8 @@ else\
 void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
 {
     auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
+
+    client_impl->_timeout_timer.stop();
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
 
@@ -59,7 +62,6 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     describe_event.set();
 
-
     auto session_impl = std::make_shared<_media_session_impl>();
 
     session_impl->live_media_session_set(client_impl->_usage_environment, session);
@@ -70,6 +72,8 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
 {
     auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
+
+    client_impl->_timeout_timer.stop();
 
     auto resultstring = std::unique_ptr<char[]>(result_string);
 
@@ -108,6 +112,8 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 {
     auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
 
+    client_impl->_timeout_timer.stop();
+
     auto resultstring = std::unique_ptr<char[]>(result_string);
 
     auto& play_event = client_impl->_play_event;
@@ -123,18 +129,35 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 }
 
 
+void _rtsp_client_impl::on_timeout_timer_tick(uvxx::event_dispatcher_timer* sender)
+{
+    if (_live_client && _last_rtsp_command_id)
+    {
+        _live_client->changeResponseHandler(_last_rtsp_command_id, nullptr);
+
+        _last_rtsp_command_id = 0;
+    }
+
+    _current_event.set_exception(rtsp_network_timeout("rtsp command timeout"));
+}
+
 _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
                                          _task_scheduler(nullptr),
                                          _protocol(transport_protocol::udp)
 {
+    _timeout_timer.timeout_set(std::chrono::milliseconds(2000));
 
-}
+    /* Hook the tick event */
+    _timeout_timer.tick_event() += std::bind(&_rtsp_client_impl::on_timeout_timer_tick, this, std::placeholders::_1);
+ }
 
 _rtsp_client_impl::~_rtsp_client_impl()
 {
-    if(_live_client)
+    if (_live_client && _last_rtsp_command_id)
     {
         _live_client->changeResponseHandler(_last_rtsp_command_id, nullptr);
+
+        _last_rtsp_command_id = 0;
     }
 }
 
@@ -147,15 +170,15 @@ task<void> _rtsp_client_impl::open(const std::string& url)
     _usage_environment = _usage_environment_ptr(BasicUsageEnvironment::createNew(*_task_scheduler),
         /* deleter*/
         [](UsageEnvironment* environment)
-    {
-        auto& task_scheduler = environment->taskScheduler();
+        {
+            auto& task_scheduler = environment->taskScheduler();
 
-        delete &task_scheduler;
+            delete &task_scheduler;
 
-        bool memory_released = environment->reclaim();
+            bool memory_released = environment->reclaim();
 
-        assert(memory_released);
-    });
+            assert(memory_released);
+        });
 
     _streaming_session = nullptr;
     
@@ -166,9 +189,11 @@ task<void> _rtsp_client_impl::open(const std::string& url)
         Medium::close(client);
     });
 
-    _describe_event = task_completion_event<void>();
+    _describe_event = _current_event = task_completion_event<void>();
     
     _last_rtsp_command_id = _live_client->sendDescribeCommand(describe_callback, &_authenticator);
+
+    _timeout_timer.start();
 
     return create_task(_describe_event).then([this]
     {
@@ -185,9 +210,9 @@ media_session _rtsp_client_impl::session()
 
 task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions_)
 {
-    auto current_index = std::make_shared<size_t>(0);
-
     verify_access();
+
+    auto current_index = std::make_shared<size_t>(0);
 
     return create_iterative_task([=]
     {
@@ -208,7 +233,7 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
 
             (*current_index)++;
 
-            _setup_event = task_completion_event<void>();
+            _setup_event = _current_event = task_completion_event<void>();
 
             _last_rtsp_command_id = _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession(), 
                                                                    setup_callback, 
@@ -217,14 +242,14 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
 
             _current_media_subsession_setup = subsession;
 
-             return create_task(_setup_event);
+            _timeout_timer.start();
 
-        }).then([=]
-        {
-            printf("finished play\n");
+            return create_task(_setup_event);
+
         });
     });
 }
+
 
 void _rtsp_client_impl::protocol_set(transport_protocol protocol)
 {
@@ -242,6 +267,8 @@ transport_protocol _rtsp_client_impl::protocol() const
 
 task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
 {
+    verify_access();
+
     auto current_index = std::make_shared<size_t>(0);
 
     auto subsession_ptr = std::make_shared<std::vector<media_subsession>>();
@@ -279,17 +306,14 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
 
                 (*current_index)++;
 
-                _play_event = task_completion_event<void>();
+                _play_event = _current_event = task_completion_event<void>();
 
                 _last_rtsp_command_id = _live_client->sendPlayCommand(*(subsession.__media_subsession)->live_media_subsession(), 
                                                                       play_callback);
 
-                 return create_task(_play_event);
-            }).then([=]
-            {
-                printf("finished play\n");
+                _timeout_timer.start();
 
-                return task_from_result();
+                return create_task(_play_event);
             });
         });
     }).then([=](task<void> iterativeTask)
@@ -337,6 +361,8 @@ void _rtsp_client_impl::credentials_set(const std::string& user_name, const std:
 
 void _rtsp_client_impl::on_sample_callback_set(read_sample_delegate callback)
 {
+    verify_access();
+ 
     _read_sample_delegate = std::move(callback);
 
     if(_streaming_session)
@@ -347,6 +373,8 @@ void _rtsp_client_impl::on_sample_callback_set(read_sample_delegate callback)
 
 void _rtsp_client_impl::read_stream_sample()
 {
+    verify_access();
+
     if (!_streaming_session)
     {
         throw std::exception("rtsp client not ready to stream");
