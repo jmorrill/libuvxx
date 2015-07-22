@@ -36,7 +36,7 @@ void on_sample_callback(const media_sample& sample)
 
     printf("\n");
 
-	client.read_stream_sample();
+    client.read_stream_sample();
 }
 
 
@@ -48,8 +48,6 @@ int main(int argc, char* argv[])
     }
 
     {
-        //client = rtsp_client();
-
         client.on_sample_set(on_sample_callback);
 
         client.credentials_set("admin", "12345");
