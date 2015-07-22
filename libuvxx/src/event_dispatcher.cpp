@@ -93,6 +93,11 @@ namespace uvxx
         return __event_dispatcher_impl->thread_id();
     }
 
+    bool event_dispatcher::has_dispatcher()
+    {
+	    return _event_dispatcher_impl::has_dispatcher();
+    }
+
     void event_dispatcher::begin_invoke_impl(std::function<void()> callback)
     {
         __event_dispatcher_impl->begin_invoke_impl(std::move(callback));

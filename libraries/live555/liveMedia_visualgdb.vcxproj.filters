@@ -574,9 +574,6 @@
     <None Include="release.mak">
       <Filter>Make files</Filter>
     </None>
-    <None Include="..\live_media\BasicUsageEnvironment\COPYING" />
-    <None Include="..\live_media\BasicUsageEnvironment\Makefile.head" />
-    <None Include="..\live_media\BasicUsageEnvironment\Makefile.tail" />
     <None Include="live_media\liveMedia\COPYING" />
     <None Include="live_media\UsageEnvironment\Makefile.head" />
     <None Include="live_media\UsageEnvironment\Makefile.tail" />

@@ -159,9 +159,9 @@
   </CustomShortcuts>
   <UserDefinedVariables />
   <CodeSense>
-    <Enabled>Unknown</Enabled>
-    <CFLAGS />
-    <CXXFLAGS />
+    <Enabled>True</Enabled>
+    <CFLAGS>-D_WIN32  -U_WIN32</CFLAGS>
+    <CXXFLAGS>-D_WIN32  -U_WIN32</CXXFLAGS>
     <ExternalSourceFileList />
   </CodeSense>
 </VisualGDBProjectSettings2>

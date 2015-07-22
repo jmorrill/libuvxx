@@ -17,6 +17,9 @@
 #ifndef __ARM_SIZEOF_WCHAR_T
 #define __ARM_SIZEOF_WCHAR_T 4
 #endif
+#ifndef SOCKLEN_T
+#define SOCKLEN_T socklen_t
+#endif
 #ifndef __ATOMIC_ACQUIRE
 #define __ATOMIC_ACQUIRE 2
 #endif
@@ -49,6 +52,9 @@
 #endif
 #ifndef __CHAR_BIT__
 #define __CHAR_BIT__ 8
+#endif
+#ifndef NO_SSTREAM
+#define NO_SSTREAM 1
 #endif
 #ifndef __USQ_IBIT__
 #define __USQ_IBIT__ 0
@@ -245,6 +251,9 @@
 #ifndef __SIZEOF_POINTER__
 #define __SIZEOF_POINTER__ 4
 #endif
+#ifndef NDEBUG
+#define NDEBUG 1
+#endif
 #ifndef __GCC_ATOMIC_CHAR16_T_LOCK_FREE
 #define __GCC_ATOMIC_CHAR16_T_LOCK_FREE 2
 #endif
@@ -328,6 +337,12 @@
 #endif
 #ifndef __gnu_linux__
 #define __gnu_linux__ 1
+#endif
+#ifndef _LARGEFILE_SOURCE
+#define _LARGEFILE_SOURCE 1
+#endif
+#ifndef RELEASE
+#define RELEASE 1
 #endif
 #ifndef __ARM_PCS_VFP
 #define __ARM_PCS_VFP 1
@@ -945,6 +960,9 @@
 #ifndef __TA_FBIT__
 #define __TA_FBIT__ 63
 #endif
+#ifndef _FILE_OFFSET_BITS
+#define _FILE_OFFSET_BITS 64
+#endif
 #ifndef __UDQ_IBIT__
 #define __UDQ_IBIT__ 0
 #endif
@@ -1106,12 +1124,6 @@
 #endif
 #ifndef __ATOMIC_RELEASE
 #define __ATOMIC_RELEASE 3
-#endif
-#ifndef NDEBUG
-#define NDEBUG 
-#endif
-#ifndef RELEASE
-#define RELEASE 
 #endif
 #endif
 

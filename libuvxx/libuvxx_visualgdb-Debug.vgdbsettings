@@ -158,7 +158,7 @@
   </CustomShortcuts>
   <UserDefinedVariables />
   <CodeSense>
-    <Enabled>False</Enabled>
+    <Enabled>True</Enabled>
     <CFLAGS />
     <CXXFLAGS />
     <ExternalSourceFileList />
