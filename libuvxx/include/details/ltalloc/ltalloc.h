@@ -24,21 +24,21 @@ public:
 
 
     ltalloc_allocator() throw() {};
-    ltalloc_allocator(const ltalloc_allocator& other) throw() {};
+    ltalloc_allocator(const ltalloc_allocator& /*other*/) throw() {};
 
     template<typename U>
-    ltalloc_allocator(const ltalloc_allocator<U>& other) throw() {};
+    ltalloc_allocator(const ltalloc_allocator<U>& /*other*/) throw() {};
 
     template<typename U>
-    ltalloc_allocator& operator = (const ltalloc_allocator<U>& other) { return *this; }
-    ltalloc_allocator<T>& operator = (const ltalloc_allocator& other) { return *this; }
+    ltalloc_allocator& operator = (const ltalloc_allocator<U>& /*other*/) { return *this; }
+    ltalloc_allocator<T>& operator = (const ltalloc_allocator& /*other*/) { return *this; }
     ~ltalloc_allocator() {}
 
     pointer address(reference value) const { return &value; }
     const_pointer address(const_reference value) const { return &value; }
 
-    pointer allocate(size_type n, const void* hint = 0) { return static_cast<pointer> (ltalloc(n * sizeof(value_type))); }
-    void deallocate(void* ptr, size_type n) { ltfree(static_cast<T*> (ptr)); }
+    pointer allocate(size_type n, const void* /*hint*/ = 0) { return static_cast<pointer> (ltalloc(n * sizeof(value_type))); }
+    void deallocate(void* ptr, size_type /*n*/) { ltfree(static_cast<T*> (ptr)); }
 
     //template<typename U, typename... Args>
     //void construct(U* ptr, Args&&  ... args) { ::new (static_cast<void*> (ptr)) U(std::forward<Args>(args)...); }

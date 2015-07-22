@@ -33,8 +33,6 @@ namespace uvxx { namespace details
         auto req = new uv_connect_t;
 
         req->data = _connect_callback.get();
-       
-        auto tcp_handle = static_cast<uv_tcp_t*>(*this);
 
         auto result = uv_tcp_connect(req, *this, reinterpret_cast<const sockaddr*>(&addr), 
         [](uv_connect_t* req, int status)

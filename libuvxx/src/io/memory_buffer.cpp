@@ -95,7 +95,7 @@ namespace uvxx { namespace io
 
     memory_buffer::memory_buffer(std::nullptr_t ptr)
     {
-        __memory_buffer_impl = nullptr;
+        __memory_buffer_impl = ptr;
     }
 
     memory_buffer& memory_buffer::operator=(memory_buffer&& rhs)
@@ -107,7 +107,7 @@ namespace uvxx { namespace io
 
     bool memory_buffer::operator=(std::nullptr_t rhs)
     {
-        return __memory_buffer_impl == nullptr;
+        return __memory_buffer_impl == rhs;
     }
 
     memory_buffer::~memory_buffer()
@@ -147,7 +147,7 @@ namespace uvxx { namespace io
 
     bool memory_buffer::operator==(std::nullptr_t rhs) const
     {
-        return __memory_buffer_impl.get() != nullptr;
+        return __memory_buffer_impl.get() != rhs;
     }
 
     memory_buffer::operator bool() const

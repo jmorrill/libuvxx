@@ -144,7 +144,7 @@ namespace uvxx { namespace details
             this->_handle->data = _read_callback.get();
 
             auto result = uv_read_start(reinterpret_cast<uv_stream_t*>(this->_handle),
-            [](uv_handle_t* stream_handle, size_t suggested_size, uv_buf_t* buf)
+            [](uv_handle_t* stream_handle, size_t /*suggested_size*/, uv_buf_t* buf)
             {
                 auto callback = reinterpret_cast<read_callback_delegate*>(stream_handle->data);
 
@@ -168,7 +168,7 @@ namespace uvxx { namespace details
 
                 buf->len = read_count - bytes_read;
             },
-            [](uv_stream_t* stream_handle, ssize_t nread, const uv_buf_t* buf) 
+            [](uv_stream_t* stream_handle, ssize_t nread, const uv_buf_t* /*buf*/) 
             {
                 auto callback = reinterpret_cast<read_callback_delegate*>(stream_handle->data);
 
@@ -181,7 +181,7 @@ namespace uvxx { namespace details
                 stream_read_info* read_info = callback->extra_data_get();
 
                 read_info->total_bytes_read += nread;
-                read_info->read_call_count++;
+                ++read_info->read_call_count;
 
                 if (read_info->read_call_count % 20000 == 0)
                 {

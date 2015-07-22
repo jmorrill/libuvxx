@@ -44,7 +44,7 @@ namespace uvxx { namespace net
 		return __socket_poll != nullptr;
 	}
 
-	bool socket_poll::operator==(std::nullptr_t rhs)
+	bool socket_poll::operator==(std::nullptr_t /*rhs*/)
 	{
 		return operator bool();
 	}

@@ -36,12 +36,12 @@ _uvxx_task_scheduler::~_uvxx_task_scheduler()
 
 }
 
-void _uvxx_task_scheduler::doEventLoop(char* watchVariable)
+void _uvxx_task_scheduler::doEventLoop(char* /*watchVariable*/)
 {
     throw std::exception("doEventLoop not supported.  Use uvxx event_dispatcher");
 }
 
-void _uvxx_task_scheduler::on_timer_tick(uvxx::event_dispatcher_timer* sender)
+void _uvxx_task_scheduler::on_timer_tick(uvxx::event_dispatcher_timer* /*sender*/)
 {
     SingleStep(fMaxSchedulerGranularity);
 
@@ -95,7 +95,7 @@ void _uvxx_task_scheduler::schedulerTickTask()
     scheduleDelayedTask(fMaxSchedulerGranularity, schedulerTickTask, this);
 }
 
-void _uvxx_task_scheduler::SingleStep(unsigned maxDelayTime) 
+void _uvxx_task_scheduler::SingleStep(unsigned /*maxDelayTime*/) 
 {
     if (fTriggersAwaitingHandling != 0)
     {

@@ -2,6 +2,8 @@
 
 using namespace uvxx::rtsp::details::media_framers::h26x;
 
+#pragma warning(push, 3)
+
 sps_parser::sps_parser(const std::vector<uint8_t>& sequence_parameter_set) :
     _video_width(0),
     _video_height(0)
@@ -263,3 +265,4 @@ void sps_parser::parse_sps()
     _video_height = ((2 - frame_mbs_only_flag)* (pic_height_in_map_units_minus1 + 1) * 16) -
                     (frame_crop_top_offset * 2) - (frame_crop_bottom_offset * 2);
 }
+#pragma warning(pop)

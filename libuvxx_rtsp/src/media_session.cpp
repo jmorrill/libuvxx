@@ -19,13 +19,13 @@ media_subsession::media_subsession()
 
 }
 
-bool media_subsession::operator=(std::nullptr_t rhs)
+bool media_subsession::operator=(std::nullptr_t /*rhs*/)
 {
     __media_subsession.reset();
     return true;
 }
 
-bool media_subsession::operator==(std::nullptr_t rhs)
+bool media_subsession::operator==(std::nullptr_t /*rhs*/)
 {
     return __media_subsession.get() != nullptr;
 }

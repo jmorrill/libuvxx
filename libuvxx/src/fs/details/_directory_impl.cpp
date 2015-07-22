@@ -50,7 +50,7 @@ namespace uvxx { namespace fs { namespace details
         }
     }
 
-    void _directory_impl::on_mkdir_callback(std::string const& path, int status)
+    void _directory_impl::on_mkdir_callback(std::string const& /*path*/, int status)
     {
         if (status == 0)
         {
@@ -564,7 +564,8 @@ namespace uvxx { namespace fs { namespace details
 
         if (status < 0)
         {
-            callback->execute(scandir_entry_result_ptr(), status);
+            auto empty_result = scandir_entry_result_ptr();
+            callback->execute(empty_result, status);
             return;
         }
 

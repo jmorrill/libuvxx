@@ -81,7 +81,7 @@ namespace uvxx { namespace details
 
             int result = req->result;
 
-            this_file->_close_callback_delegate->execute(0);
+            this_file->_close_callback_delegate->execute(result);
         });
 
         if (result)

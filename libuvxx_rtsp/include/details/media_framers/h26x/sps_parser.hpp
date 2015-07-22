@@ -27,9 +27,9 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers { 
         private:
             const unsigned char * _buffer;
 
-            unsigned short _buffer_length;
+            size_t _buffer_length;
 
-            int _current_bit;
+            unsigned int _current_bit;
 
             int _video_width;
         

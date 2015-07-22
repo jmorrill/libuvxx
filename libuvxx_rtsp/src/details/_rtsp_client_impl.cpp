@@ -13,6 +13,22 @@ using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
+template <int c>
+struct result_code_constant
+{
+    static int value()
+    {
+        return c;
+    }
+};
+template <>
+struct result_code_constant<0>
+{
+    static int value()
+    {
+        return 0;
+    }
+};
 
 #define CAST_RTSP_CLIENT(live_rtsp_client)static_cast<uvxx::rtsp::details::_rtsp_client_impl*>(static_cast<uvxx::rtsp::details::_live_rtsp_client*>(live_rtsp_client)->context());
 
@@ -51,12 +67,12 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     if (!session)
     {
-        SET_RTSP_EXCEPTION(0, "failed to create a MediaSession from the SDP description", describe_event);
+        SET_RTSP_EXCEPTION(result_code_constant<0>::value(), "failed to create a MediaSession from the SDP description", describe_event);
         return;
     }
     else if (!session->hasSubsessions())
     {
-        SET_RTSP_EXCEPTION(0, "failed to create a MediaSession from the SDP description", describe_event);
+        SET_RTSP_EXCEPTION(result_code_constant<0>::value(), "failed to create a MediaSession from the SDP description", describe_event);
         return;
     }
 
@@ -129,7 +145,7 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 }
 
 
-void _rtsp_client_impl::on_timeout_timer_tick(uvxx::event_dispatcher_timer* sender)
+void _rtsp_client_impl::on_timeout_timer_tick(uvxx::event_dispatcher_timer* /*sender*/)
 {
     if (_live_client && _last_rtsp_command_id)
     {
@@ -175,9 +191,10 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
             delete &task_scheduler;
 
-            bool memory_released = environment->reclaim();
-
-            assert(memory_released);
+           if(!environment->reclaim())
+           {
+               assert(false);
+           }
         });
 
     _streaming_session = nullptr;

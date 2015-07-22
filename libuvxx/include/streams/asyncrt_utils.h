@@ -213,7 +213,7 @@ namespace details
     /// <param name="left">First string to compare.</param>
     /// <param name="right">Second strong to compare.</param>
     /// <returns>true if the strings are equivalent, false otherwise</returns>
-    inline bool str_icmp(const utility::string_t &left, const utility::string_t &right)
+    inline bool str_icmp(const utility::string_t &/*left*/, const utility::string_t &/*right*/)
     {
 
         return true;

@@ -110,7 +110,7 @@ media_sample _media_framer_base::working_sample()
     return _sample;
 }
 
-void _media_framer_base::sample_receieved(bool packet_marker_bit)
+void _media_framer_base::sample_receieved(bool /*packet_marker_bit*/)
 {
     do_sample_callback();
 }
@@ -130,7 +130,7 @@ void _media_framer_base::on_after_getting_frame(void* client_data, unsigned pack
     base->on_after_getting_frame(packet_data_size, truncated_bytes, presentation_time, duration_in_microseconds);
 }
 
-void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds)
+void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned /*duration_in_microseconds*/)
 {
     static uint64_t ONE_MILLION = 1000000ull;
 
@@ -181,7 +181,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
     sample_receieved(marker_bit);
 }
 
-void _media_framer_base::on_rtcp_bye(void* client_data)
+void _media_framer_base::on_rtcp_bye(void* /*client_data*/)
 {
 
 }

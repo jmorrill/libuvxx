@@ -48,7 +48,7 @@ namespace uvxx { namespace fs { namespace details
         }
     }
 
-    void _file_impl::read_callback(const uint8_t* buf, size_t len, int exception_code)
+    void _file_impl::read_callback(const uint8_t* /*buf*/, size_t len, int exception_code)
     {
         if (exception_code)
         {
@@ -61,7 +61,7 @@ namespace uvxx { namespace fs { namespace details
         }
     }
 
-    void _file_impl::write_callback(const uint8_t* buf, size_t len, int exception_code)
+    void _file_impl::write_callback(const uint8_t* /*buf*/, size_t len, int exception_code)
     {
         if (exception_code)
         {
@@ -190,4 +190,8 @@ namespace uvxx { namespace fs { namespace details
         _file_position = position;
     }
 
+    uvxx::pplx::task<void> _file_impl::delete_async(std::string const& /*file_name*/)
+    {
+        throw std::exception();
+    }
 }}}

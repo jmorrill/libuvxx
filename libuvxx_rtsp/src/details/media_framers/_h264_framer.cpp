@@ -39,7 +39,7 @@ static bool set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const media_s
 {
     bool are_equal = true;
 
-    while (true)
+    for (; ;)
     {
         if (buffer.size() != sample.size())
         {

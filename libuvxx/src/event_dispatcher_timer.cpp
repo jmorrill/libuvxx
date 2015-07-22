@@ -26,7 +26,7 @@ namespace uvxx
         return *this;
     }
 
-    void event_dispatcher_timer::tick_callback(void * sender)
+    void event_dispatcher_timer::tick_callback(void * /*sender*/)
     {
         this->_tick_event.invoke(this);
     }

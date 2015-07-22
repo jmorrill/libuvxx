@@ -57,7 +57,7 @@ void _streaming_media_session_impl::read_stream_sample()
     }
 }
 
-bool _streaming_media_session_impl::operator=(std::nullptr_t rhs)
+bool _streaming_media_session_impl::operator=(std::nullptr_t /*rhs*/)
 {
     close();
 
@@ -73,7 +73,7 @@ void _streaming_media_session_impl::close()
     _subsessions.clear();
 }
 
-bool _streaming_media_session_impl::operator==(std::nullptr_t rhs)
+bool _streaming_media_session_impl::operator==(std::nullptr_t /*rhs*/)
 {
     return !_session ? true : false;
 }
