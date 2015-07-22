@@ -90,7 +90,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)live_media\liveMedia\include;$(ProjectDir)live_media\groupsock\include;$(ProjectDir)live_media\BasicUsageEnvironment\include;$(ProjectDir)live_media\UsageEnvironment\include;$(ProjectDir)..\libuvxx\include;$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)live_media\liveMedia\include;$(ProjectDir)..\libraries\live555\live_media\groupsock\include;$(ProjectDir)..\libraries\live555\live_media\BasicUsageEnvironment\include;$(ProjectDir)live_media\UsageEnvironment\include;$(ProjectDir)..\libuvxx\include;$(ProjectDir)include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
@@ -109,7 +109,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)live_media\liveMedia\include;$(ProjectDir)live_media\groupsock\include;$(ProjectDir)live_media\BasicUsageEnvironment\include;$(ProjectDir)live_media\UsageEnvironment\include;$(ProjectDir)..\libuvxx\include;$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\libraries\live555\live_media\liveMedia\include;$(ProjectDir)..\libraries\live555\live_media\groupsock\include;$(ProjectDir)..\libraries\live555\live_media\BasicUsageEnvironment\include;$(ProjectDir)..\libraries\live555\live_media\UsageEnvironment\include;$(ProjectDir)..\libuvxx\include;$(ProjectDir)include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>

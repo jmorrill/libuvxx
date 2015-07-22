@@ -35,7 +35,7 @@ error:
 endif
 
 SOURCEFILES := linux_test.cpp
-EXTERNAL_LIBS := ../libuv/$(BINARYDIR)/libuv.a ../libuvxx/$(BINARYDIR)/libuvxx.a
+EXTERNAL_LIBS := ../../../libraries/libuv/$(BINARYDIR)/libuv.a ../../../libuvxx/$(BINARYDIR)/libuvxx.a
 EXTERNAL_LIBS_COPIED := $(foreach lib, $(EXTERNAL_LIBS),$(BINARYDIR)/$(notdir $(lib)))
 
 CFLAGS += $(COMMONFLAGS)
@@ -174,9 +174,9 @@ $(BINARYDIR)/%.o : %.cxx $(all_make_files) |$(BINARYDIR)
 	$(CC) $(CFLAGS) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 #VisualGDB: GeneratedRules				#<--- All lines below are auto-generated
-$(BINARYDIR)/libuv.a : ../libuv/$(BINARYDIR)/libuv.a
-	$(CP) ../libuv/$(BINARYDIR)/libuv.a $(BINARYDIR)/libuv.a
+$(BINARYDIR)/libuv.a : ../../../libraries/libuv/$(BINARYDIR)/libuv.a
+	$(CP) ../../../libraries/libuv/$(BINARYDIR)/libuv.a $(BINARYDIR)/libuv.a
 
-$(BINARYDIR)/libuvxx.a : ../libuvxx/$(BINARYDIR)/libuvxx.a
-	$(CP) ../libuvxx/$(BINARYDIR)/libuvxx.a $(BINARYDIR)/libuvxx.a
+$(BINARYDIR)/libuvxx.a : ../../../libuvxx/$(BINARYDIR)/libuvxx.a
+	$(CP) ../../../libuvxx/$(BINARYDIR)/libuvxx.a $(BINARYDIR)/libuvxx.a
 

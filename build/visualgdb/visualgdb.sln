@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "linux_test_app", "..\..\linux_test_app\linux_test_app.vcxproj", "{C04857A4-9D4D-4EB2-B5BE-1851814F548E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "linux_test_app", "..\..\apps\tests\linux_test_app\linux_test_app.vcxproj", "{C04857A4-9D4D-4EB2-B5BE-1851814F548E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{81DCA34B-C35D-45CA-833A-DBBAE368E05E} = {81DCA34B-C35D-45CA-833A-DBBAE368E05E}
 		{4D0D3F6F-C046-4C23-B9CA-C11B70D1D0D5} = {4D0D3F6F-C046-4C23-B9CA-C11B70D1D0D5}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuv_visualgdb", "..\..\libuv\libuv_visualgdb.vcxproj", "{81DCA34B-C35D-45CA-833A-DBBAE368E05E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuv_visualgdb", "..\..\libraries\libuv\libuv_visualgdb.vcxproj", "{81DCA34B-C35D-45CA-833A-DBBAE368E05E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuvxx_visualgdb", "..\..\libuvxx\libuvxx_visualgdb.vcxproj", "{4D0D3F6F-C046-4C23-B9CA-C11B70D1D0D5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liveMedia_visualgdb", "..\..\libuvxx_rtsp\liveMedia_visualgdb.vcxproj", "{371071D3-4B70-44DF-82CB-193431CBA7BE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liveMedia_visualgdb", "..\..\libraries\live555\liveMedia_visualgdb.vcxproj", "{371071D3-4B70-44DF-82CB-193431CBA7BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -13,7 +13,7 @@ OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
 PREPROCESSOR_MACROS := DEBUG __GXX_EXPERIMENTAL_CXX0X__
-INCLUDE_DIRS := include include/internal ../libuv/include
+INCLUDE_DIRS := include include/internal ../libraries/libuv/include
 LIBRARY_DIRS := 
 LIBRARY_NAMES := pthread
 ADDITIONAL_LINKER_INPUTS := 
