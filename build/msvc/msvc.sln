@@ -10,7 +10,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuvxx_msvc", "..\..\libuv
 		{33066374-88CB-CB8D-15DA-61032886329A} = {33066374-88CB-CB8D-15DA-61032886329A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_application", "..\..\apps\tests\TestApplication.vcxproj", "{25FA5EB3-F335-4F61-8D31-658C8EC08186}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_application", "..\..\apps\tests\win_test_app\win_test_app.vcxproj", "{25FA5EB3-F335-4F61-8D31-658C8EC08186}"
 	ProjectSection(ProjectDependencies) = postProject
 		{79198E06-7990-4ACC-A624-6631E00BCC4F} = {79198E06-7990-4ACC-A624-6631E00BCC4F}
 		{A75D232B-1970-4910-AED3-D0BF54232C62} = {A75D232B-1970-4910-AED3-D0BF54232C62}
