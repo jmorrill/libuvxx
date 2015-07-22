@@ -1,8 +1,6 @@
 #include <iostream>
 #include "uvxx.hpp"
 #include <memory>
-#include <functional>
-#include <vector>
 
 using namespace std;
 using namespace uvxx;

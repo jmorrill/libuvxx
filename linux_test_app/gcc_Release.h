@@ -82,7 +82,7 @@
 #define __LDBL_HAS_DENORM__ 1
 //VS2005-2012 treats all files as C++, while VS2013+ can treat C files correctly.
 #if _MSC_VER < 1800 || defined(__cplusplus)
-#define __cplusplus 199711L
+#define __cplusplus 201103L
 #endif
 #define __DEC128_MAX__ 9.999999999999999999999999999999999E6144DL
 #define __INT_LEAST32_MAX__ 2147483647

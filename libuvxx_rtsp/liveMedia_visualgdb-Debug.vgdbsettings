@@ -160,5 +160,8 @@
   <UserDefinedVariables />
   <CodeSense>
     <Enabled>Unknown</Enabled>
+    <CFLAGS />
+    <CXXFLAGS />
+    <ExternalSourceFileList />
   </CodeSense>
 </VisualGDBProjectSettings2>
