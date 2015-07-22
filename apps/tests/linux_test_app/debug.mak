@@ -13,15 +13,15 @@ OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
 PREPROCESSOR_MACROS := DEBUG
-INCLUDE_DIRS := ../../../libraries/libuv/include ../../../libuvxx/include
-LIBRARY_DIRS := ../../../libraries/libuv/Debug ../../../libuvxx/Debug
-LIBRARY_NAMES := uv uvxx pthread
+INCLUDE_DIRS := ../../../libraries/libuv/include ../../../libuvxx/include ../../../libuvxx_rtsp/include
+LIBRARY_DIRS := ../../../libraries/libuv/Debug ../../../libuvxx/Debug ../../../libuvxx_rtsp/Debug ../../../libraries/live555/Debug
+LIBRARY_NAMES := uv uvxx liveMedia uvxx_rtsp pthread
 ADDITIONAL_LINKER_INPUTS := 
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -ggdb -ffunction-sections -O0  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -fexceptions -fnon-call-exceptions -fno-common
-CXXFLAGS := -ggdb -ffunction-sections -O0  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -fexceptions -fnon-call-exceptions -fno-common
+CFLAGS   := -ggdb -ffunction-sections -O0 -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -fexceptions -fnon-call-exceptions -fno-common
+CXXFLAGS := -ggdb -ffunction-sections -O0 -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -fexceptions -fnon-call-exceptions -fno-common
 ASFLAGS := 
 LDFLAGS := -Wl,-gc-sections -fexceptions
 COMMONFLAGS := 

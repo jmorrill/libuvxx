@@ -5,9 +5,9 @@
 
 #VisualGDB: AutoSourceFiles		#<--- remove this line to disable auto-updating of SOURCEFILES and EXTERNAL_LIBS
 
-TARGETNAME := libuvxx_test_app
+TARGETNAME := libuvxx_rtsp.a
 #TARGETTYPE can be APP, STATIC or SHARED
-TARGETTYPE := APP
+TARGETTYPE := STATIC
 
 to_lowercase = $(subst A,a,$(subst B,b,$(subst C,c,$(subst D,d,$(subst E,e,$(subst F,f,$(subst G,g,$(subst H,h,$(subst I,i,$(subst J,j,$(subst K,k,$(subst L,l,$(subst M,m,$(subst N,n,$(subst O,o,$(subst P,p,$(subst Q,q,$(subst R,r,$(subst S,s,$(subst T,t,$(subst U,u,$(subst V,v,$(subst W,w,$(subst X,x,$(subst Y,y,$(subst Z,z,$1))))))))))))))))))))))))))
 
@@ -16,6 +16,7 @@ CONFIG ?= DEBUG
 CONFIGURATION_FLAGS_FILE := $(call to_lowercase,$(CONFIG)).mak
 
 include $(CONFIGURATION_FLAGS_FILE)
+
 #LINKER_SCRIPT defined inside the configuration file (e.g. debug.mak) should override any linker scripts defined in shared .mak files
 CONFIGURATION_LINKER_SCRIPT := $(LINKER_SCRIPT)
 
@@ -34,8 +35,8 @@ error:
 	$(error Invalid configuration, please check your inputs)
 endif
 
-SOURCEFILES := linux_test.cpp
-EXTERNAL_LIBS := ../../../libuvxx/$(BINARYDIR)/libuvxx.a ../../../libuvxx_rtsp/$(BINARYDIR)/libuvxx_rtsp.a
+SOURCEFILES := src/details/media_framers/h26x/sps_parser.cpp src/details/media_framers/_h264_framer.cpp src/details/media_framers/_media_framer_base.cpp src/details/_live_rtsp_client.cpp src/details/_media_sample_impl.cpp src/details/_media_session_impl.cpp src/details/_rtsp_client_impl.cpp src/details/_streaming_media_session_impl.cpp src/details/_uvxx_task_scheduler.cpp src/media_sample.cpp src/media_session.cpp src/rtsp_client.cpp src/streaming_media_session.cpp
+EXTERNAL_LIBS := ../libuvxx/$(BINARYDIR)/libuvxx.a ../libraries/live555/$(BINARYDIR)/libliveMedia.a
 EXTERNAL_LIBS_COPIED := $(foreach lib, $(EXTERNAL_LIBS),$(BINARYDIR)/$(notdir $(lib)))
 
 CFLAGS += $(COMMONFLAGS)
@@ -146,7 +147,7 @@ endif
 
 clean:
 ifeq ($(USE_DEL_TO_CLEAN),1)
-	del /S /Q $(BINARYDIR)
+	cmd /C del /S /Q $(BINARYDIR)
 else
 	rm -rf $(BINARYDIR)
 endif
@@ -174,9 +175,62 @@ $(BINARYDIR)/%.o : %.cxx $(all_make_files) |$(BINARYDIR)
 	$(CC) $(CFLAGS) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 #VisualGDB: GeneratedRules				#<--- All lines below are auto-generated
-$(BINARYDIR)/libuvxx.a : ../../../libuvxx/$(BINARYDIR)/libuvxx.a
-	$(CP) ../../../libuvxx/$(BINARYDIR)/libuvxx.a $(BINARYDIR)/libuvxx.a
 
-$(BINARYDIR)/libuvxx_rtsp.a : ../../../libuvxx_rtsp/$(BINARYDIR)/libuvxx_rtsp.a
-	$(CP) ../../../libuvxx_rtsp/$(BINARYDIR)/libuvxx_rtsp.a $(BINARYDIR)/libuvxx_rtsp.a
+
+$(BINARYDIR)/sps_parser.o : src/details/media_framers/h26x/sps_parser.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_h264_framer.o : src/details/media_framers/_h264_framer.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_media_framer_base.o : src/details/media_framers/_media_framer_base.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_live_rtsp_client.o : src/details/_live_rtsp_client.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_media_sample_impl.o : src/details/_media_sample_impl.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_media_session_impl.o : src/details/_media_session_impl.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_rtsp_client_impl.o : src/details/_rtsp_client_impl.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_streaming_media_session_impl.o : src/details/_streaming_media_session_impl.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_uvxx_task_scheduler.o : src/details/_uvxx_task_scheduler.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/media_sample.o : src/media_sample.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/media_session.o : src/media_session.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/rtsp_client.o : src/rtsp_client.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/streaming_media_session.o : src/streaming_media_session.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+$(BINARYDIR)/libuvxx.a : ../libuvxx/$(BINARYDIR)/libuvxx.a
+	$(CP) ../libuvxx/$(BINARYDIR)/libuvxx.a $(BINARYDIR)/libuvxx.a
+
+$(BINARYDIR)/libliveMedia.a : ../libraries/live555/$(BINARYDIR)/libliveMedia.a
+	$(CP) ../libraries/live555/$(BINARYDIR)/libliveMedia.a $(BINARYDIR)/libliveMedia.a
 

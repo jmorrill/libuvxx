@@ -22,7 +22,7 @@ void _media_sample_impl::size_set(size_t size)
 {
     if (size > _buffer.size())
     {
-        throw std::exception("size cannot be larger than capacity");
+        throw std::exception();
     }
 
    _size = size;

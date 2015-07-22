@@ -138,6 +138,7 @@
     <ClCompile Include="src\details\_uv_file.cpp" />
     <ClCompile Include="src\details\_uv_loop.cpp" />
     <ClCompile Include="src\details\_uv_net_functions.cpp" />
+    <ClCompile Include="src\details\_uv_poll.cpp" />
     <ClCompile Include="src\details\_uv_tcp.cpp" />
     <ClCompile Include="src\details\_uv_timer.cpp" />
     <ClCompile Include="src\details\_uv_work.cpp" />

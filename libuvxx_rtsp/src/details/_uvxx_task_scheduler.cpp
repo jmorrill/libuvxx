@@ -38,7 +38,7 @@ _uvxx_task_scheduler::~_uvxx_task_scheduler()
 
 void _uvxx_task_scheduler::doEventLoop(char* /*watchVariable*/)
 {
-    throw std::exception("doEventLoop not supported.  Use uvxx event_dispatcher");
+    throw std::exception(/*"doEventLoop not supported.  Use uvxx event_dispatcher"*/);
 }
 
 void _uvxx_task_scheduler::on_timer_tick(uvxx::event_dispatcher_timer* /*sender*/)

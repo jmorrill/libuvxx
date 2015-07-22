@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "details/media_framers/h26x/sps_parser.hpp"
 
 using namespace uvxx::rtsp::details::media_framers::h26x;

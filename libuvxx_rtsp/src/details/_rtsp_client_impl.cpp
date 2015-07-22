@@ -394,7 +394,7 @@ void _rtsp_client_impl::read_stream_sample()
 
     if (!_streaming_session)
     {
-        throw std::exception("rtsp client not ready to stream");
+        throw std::exception();
     }
 
     _streaming_session.read_stream_sample();

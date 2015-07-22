@@ -46,7 +46,7 @@ namespace uvxx { namespace rtsp
 
         void read_stream_sample() const;
 
-        media_session media_session() const;
+        media_session session() const;
 
         void credentials_set(const std::string& username, const std::string& pass);
 

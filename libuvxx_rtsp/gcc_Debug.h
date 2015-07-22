@@ -20,9 +20,6 @@
 #ifndef __ARM_SIZEOF_WCHAR_T
 #define __ARM_SIZEOF_WCHAR_T 4
 #endif
-#ifndef SOCKLEN_T
-#define SOCKLEN_T socklen_t
-#endif
 #ifndef __ATOMIC_ACQUIRE
 #define __ATOMIC_ACQUIRE 2
 #endif
@@ -344,9 +341,6 @@
 #ifndef __gnu_linux__
 #define __gnu_linux__ 1
 #endif
-#ifndef _LARGEFILE_SOURCE
-#define _LARGEFILE_SOURCE 1
-#endif
 #ifndef __ARM_PCS_VFP
 #define __ARM_PCS_VFP 1
 #endif
@@ -560,6 +554,9 @@
 #endif
 #ifndef __ACCUM_MIN__
 #define __ACCUM_MIN__ (-0X1P15K-0X1P15K)
+#endif
+#ifndef _NO_ASYNCRTIMP
+#define _NO_ASYNCRTIMP 1
 #endif
 #ifndef __SQ_IBIT__
 #define __SQ_IBIT__ 0
@@ -981,6 +978,9 @@
 #ifndef __INT_FAST8_TYPE__
 #define __INT_FAST8_TYPE__ signed char
 #endif
+#ifndef _DEBUG
+#define _DEBUG 1
+#endif
 #ifndef __ULLACCUM_EPSILON__
 #define __ULLACCUM_EPSILON__ 0x1P-32ULLK
 #endif
@@ -998,9 +998,6 @@
 #endif
 #ifndef __TA_FBIT__
 #define __TA_FBIT__ 63
-#endif
-#ifndef _FILE_OFFSET_BITS
-#define _FILE_OFFSET_BITS 64
 #endif
 #ifndef __UDQ_IBIT__
 #define __UDQ_IBIT__ 0
@@ -1189,8 +1186,12 @@
 //c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/include-fixed
 //c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include
 //c:\sysgcc\linaro\bin\../arm-linux-gnueabihf/libc/usr/include
-//../../../libraries/libuv/include
-//../../../libuvxx/include
+//include
+//../libraries/live555/live_media/liveMedia/include
+//../libraries/live555/live_media/groupsock/include
+//../libraries/live555/live_media/BasicUsageEnvironment/include
+//../libraries/live555/live_media/UsageEnvironment/include
+//../libuvxx/include
 // --- Include directories end --- //
 
 

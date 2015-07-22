@@ -185,7 +185,9 @@ void _media_framer_base::on_rtcp_bye(void* /*client_data*/)
 {
 
 }
-
+#ifdef min
+#undef min
+#endif
 void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample)
 {
     static const size_t MAX_BUFFER_SIZE = 2 * 1024 * 1024;
@@ -204,7 +206,7 @@ void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amo
 
     size_t new_size = current_size + (truncated_amount * 2);
 
-    new_size = min(MAX_BUFFER_SIZE, new_size);
+    new_size = std::min(MAX_BUFFER_SIZE, new_size);
 
     if (new_size == current_size)
     {

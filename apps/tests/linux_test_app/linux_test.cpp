@@ -1,175 +1,90 @@
 #include <iostream>
 #include "uvxx.hpp"
-#include <memory>
+#include "rtsp_client.hpp"
+
+#include "rtsp_exceptions.hpp"
+#include "media_sample.hpp"
 
 using namespace std;
 using namespace uvxx;
 using namespace uvxx::pplx;
+using namespace uvxx::rtsp;
+using namespace uvxx::rtsp::sample_attributes;
 
-int counter = 0;
-uint64_t total_bytes_read = 0;
+rtsp_client client;
 
-string host_name = "192.168.1.129";
-int host_port = 80;
-
-string http_command = "GET /movie.mp4 HTTP/1.0\r\n\r\n";
-
-void test_method()
+void on_sample_callback(const media_sample& sample)
 {
-    struct socket_file_holder
-    {
-        socket_file_holder() : io_buff(io::memory_buffer(1024 * 1024)){}
-        fs::file file;
-        net::stream_socket socket;
-        io::memory_buffer io_buff;
-    };
+	printf("codec: %s\t size: %d\t pts: %lld \t s:%u",
+		sample.codec_name().c_str(),
+		sample.size(),
+		sample.presentation_time().count(),
+		sample.stream_number());
 
-    fs::file file;
+	if (sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE) == sample_major_type::video)
+	{
+		auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
 
-    /* socket client */
-    net::stream_socket socket;
+		bool key_frame = sample.attribute_get<bool>(ATTRIBUTE_VIDEO_KEYFRAME);
 
+		printf("\twxh: %dx%d", video_size.width, video_size.height);
 
-    auto holder = make_shared<socket_file_holder>();
+		if (key_frame)
+		{
+			printf("\tkey_frame");
+		}
+	}
 
-    holder->file = file;
+	printf("\n");
 
-    holder->socket = socket;
-
-    /* Resolve host */
-    socket.connect_async(host_name, host_port).
-
-    then([socket](task<void> connect_task)
-    {
-        /* could throw, which handler below will catch */
-        connect_task.get();
-
-        cout << "connected !" << endl;
-
-        /* Send http command */
-        return socket.write_async(http_command);
-    }).
-
-    then([file](task<void> socket_write_task)
-    {
-        socket_write_task.get();
-
-        return file.open_async("test.bin", std::ios_base::out);
-    }).
-
-    then([holder](task<void> t)
-    {
-        return create_iterative_task([holder]()
-        {
-            return holder->socket.read_async(holder->io_buff, 0, holder->io_buff.length_get()).
-
-            then([holder](int bytes_read)
-            {
-                counter++;
-
-                if (counter % 3000 == 0)
-                {
-                    printf("bytes read: %llu\n", total_bytes_read);
-                }
-
-                total_bytes_read += bytes_read;
-              
-                return holder->file.write_async(holder->io_buff, 0, bytes_read);
-            });
-
-        }, task_continuation_context::use_current());
-    }).
-
-    then([socket](task<void> iterative_task)
-    {
-        cout << "finished.." << endl;
-
-        try
-        {
-            iterative_task.get();
-        }
-        catch (end_of_file const& ex)
-        {
-            cout << ex.what() << endl;
-        }
-        catch (exception const& ex)
-        {
-            cout << ex.what() << endl;
-            throw;
-        }
-
-        return socket.shutdown_async();
-    }).
-
-    then([socket](task<void> shutdown_task)
-    {
-        printf("done\n");
-
-        try
-        {
-            shutdown_task.get();
-        }
-        catch (exception const& ex)
-        {
-            cout << "general exception : " << ex.what() << endl;
-        }
-
-        event_dispatcher::current_dispatcher().begin_shutdown();
-    });
+	client.read_stream_sample();
 }
 
-int main(int argc, char** argv)
+
+int main(int argc, char* argv [])
 {
-    auto dispatcher = event_dispatcher::current_dispatcher();
-    cout << "thread id - " << this_thread::get_id() << endl;
+	if (argc < 2)
+	{
+		return -1;
+	}
 
-    create_task([]
-    {
-        cout << "thread id 1 - " << this_thread::get_id() << endl;
-    }, task_continuation_context::use_current()).
-    then([]
-    {
-        cout << "thread id 2 - " << this_thread::get_id() << endl;
-    }, task_continuation_context::use_current()).
-    then([]
-    {
-        cout << "thread id 3 - " << this_thread::get_id() << endl;
-    }, task_continuation_context::use_current());
-   
-    //test_method();
+	{
+		client.on_sample_set(on_sample_callback);
 
-    struct ostream_holder
-    {
-        uvxx::streams::container_buffer<std::string> buffer;
-        uvxx::streams::basic_ostream<uint8_t> output_stream;
-    };
+		client.credentials_set("admin", "12345");
 
-    auto oholder = std::make_shared<ostream_holder>();
+		client.protocol_set(transport_protocol::tcp);
+ 
+		client.open(argv[1]).then([=]
+		{
+			return client.play(); 
+		}).then([]
+		{
+			client.read_stream_sample();
+		}).then([]
+		{
+			return create_timer_task(std::chrono::milliseconds(45000));
+		}).then([](task<void> t)
+		{
+			try
+			{
+				t.get();
+			}
+			catch (const rtsp_network_timeout& /*e*/)
+			{
+				printf("timeout\n");
+			}
+			catch (const rtsp_exception& e)
+			{
+				printf("exception: ");
+				printf(e.what());
+			}
 
-   /* fs::file_stream<uint8_t>::open_ostream("output.txt").
-    then([=](task<streams::basic_ostream<uint8_t>> t)
-    {
-        try
-        {
-            oholder->output_stream = t.get();
-        }
-        catch (exception const& e)
-        {
-        	cout << e.what() << endl;
-        }
-        oholder->output_stream.seek(10);
-        return oholder->output_stream.print_line("wow");
-    }).then([=](task<size_t> t)
-    {
-        auto size = t.get();
+			event_dispatcher::current_dispatcher().begin_shutdown();
+		});
 
-        return oholder->output_stream.flush();
-    });*/
+		event_dispatcher::run();
+	}
 
-    event_dispatcher::run();
-
-    cout << "total bytes read " << total_bytes_read << endl;
-    cout << "exiting..." << endl;
-
-    return 0;
+	return 0;
 }

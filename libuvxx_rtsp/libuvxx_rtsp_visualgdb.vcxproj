@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeIncludeSearchPath>c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.3;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.3\arm-linux-gnueabihf;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.3\backward;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.3\include;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.3\include-fixed;c:\sysgcc\linaro\arm-linux-gnueabihf\include;c:\sysgcc\linaro\arm-linux-gnueabihf\libc\usr\include;include;../libraries/live555/live_media/liveMedia/include;../libraries/live555/live_media/groupsock/include;../libraries/live555/live_media/BasicUsageEnvironment/include;../libraries/live555/live_media/UsageEnvironment/include;../libuvxx/include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Debug.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
+    <NMakeOutput>$(ProjectDir)libuvxx_rtsp_visualgdb-Debug.vgdbsettings</NMakeOutput>
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Debug;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NMakeIncludeSearchPath>c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include\c++\4.7.3;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include\c++\4.7.3\arm-angstrom-linux-gnueabi;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include\c++\4.7.3\backward;c:\sysgcc\beaglebone\lib\gcc\arm-angstrom-linux-gnueabi\4.7.3\include;c:\sysgcc\beaglebone\lib\gcc\arm-angstrom-linux-gnueabi\4.7.3\include-fixed;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\sysroot\usr\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Debug.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Debug;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
+    <NMakeOutput>$(ProjectDir)libuvxx_rtsp_visualgdb-Debug.vgdbsettings</NMakeOutput>
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeIncludeSearchPath>c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include\c++\4.7.3;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include\c++\4.7.3\arm-angstrom-linux-gnueabi;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include\c++\4.7.3\backward;c:\sysgcc\beaglebone\lib\gcc\arm-angstrom-linux-gnueabi\4.7.3\include;c:\sysgcc\beaglebone\lib\gcc\arm-angstrom-linux-gnueabi\4.7.3\include-fixed;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\sysroot\usr\include;../libraries/live555/live_media/liveMedia/include;../libraries/live555/live_media/groupsock/include;../libraries/live555/live_media/BasicUsageEnvironment/include;../libraries/live555/live_media/UsageEnvironment/include;../libuvxx/include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Release.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
+    <NMakeOutput>$(ProjectDir)libuvxx_rtsp_visualgdb-Release.vgdbsettings</NMakeOutput>
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Release;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NMakeIncludeSearchPath>c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include\c++\4.7.3;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include\c++\4.7.3\arm-angstrom-linux-gnueabi;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include\c++\4.7.3\backward;c:\sysgcc\beaglebone\lib\gcc\arm-angstrom-linux-gnueabi\4.7.3\include;c:\sysgcc\beaglebone\lib\gcc\arm-angstrom-linux-gnueabi\4.7.3\include-fixed;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\include;c:\sysgcc\beaglebone\arm-angstrom-linux-gnueabi\sysroot\usr\include;../libraries/live555/live_media/liveMedia/include;../libraries/live555/live_media/groupsock/include;../libraries/live555/live_media/BasicUsageEnvironment/include;../libraries/live555/live_media/UsageEnvironment/include;../libuvxx/include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Release.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
+    <NMakeOutput>$(ProjectDir)libuvxx_rtsp_visualgdb-Release.vgdbsettings</NMakeOutput>
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Release;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="debug.mak" />
+    <None Include="Makefile" />
+    <None Include="release.mak" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\media_sample.hpp" />
+    <ClInclude Include="include\media_session.hpp" />
+    <ClInclude Include="include\rtsp_client.hpp" />
+    <ClInclude Include="include\rtsp_exceptions.hpp" />
+    <ClInclude Include="include\rtsp_misc.hpp" />
+    <ClInclude Include="include\sample_attributes.hpp" />
+    <ClInclude Include="include\streaming_media_session.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp" />
+    <ClCompile Include="src\details\media_framers\_h264_framer.cpp" />
+    <ClCompile Include="src\details\media_framers\_media_framer_base.cpp" />
+    <ClCompile Include="src\details\_live_rtsp_client.cpp" />
+    <ClCompile Include="src\details\_media_sample_impl.cpp" />
+    <ClCompile Include="src\details\_media_session_impl.cpp" />
+    <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
+    <ClCompile Include="src\details\_streaming_media_session_impl.cpp" />
+    <ClCompile Include="src\details\_uvxx_task_scheduler.cpp" />
+    <ClCompile Include="src\media_sample.cpp" />
+    <ClCompile Include="src\media_session.cpp" />
+    <ClCompile Include="src\rtsp_client.cpp" />
+    <ClCompile Include="src\streaming_media_session.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

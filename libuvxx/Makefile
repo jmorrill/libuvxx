@@ -23,7 +23,7 @@ error:
 	$(error Invalid configuration, please check your inputs)
 endif
 
-SOURCEFILES := include/details/ltalloc/ltalloc.cc src/details/_event_dispatcher_frame_impl.cpp src/details/_event_dispatcher_impl.cpp src/details/_event_dispatcher_object_impl.cpp src/details/_event_dispatcher_timer_impl.cpp src/details/_uv_async.cpp src/details/_uv_file.cpp src/details/_uv_loop.cpp src/details/_uv_net_functions.cpp src/details/_uv_tcp.cpp src/details/_uv_timer.cpp src/details/_uv_work.cpp src/event_dispatcher.cpp src/event_dispatcher_frame.cpp src/event_dispatcher_object.cpp src/event_dispatcher_timer.cpp src/fs/details/_file_impl.cpp src/fs/file.cpp src/io/memory_buffer.cpp src/net/details/_dns_impl.cpp src/net/details/_stream_socket_impl.cpp src/net/dns.cpp src/net/stream_socket.cpp src/pplx/linux/pplxlinux.cpp src/pplx/pplx.cpp src/pplx/pplxtasks.cpp src/pplx/threadpool.cpp src/streams/fileio.cpp src/uvxx_exception.cpp
+SOURCEFILES := include/details/ltalloc/ltalloc.cc src/details/_event_dispatcher_frame_impl.cpp src/details/_event_dispatcher_impl.cpp src/details/_event_dispatcher_object_impl.cpp src/details/_event_dispatcher_timer_impl.cpp src/details/_uv_async.cpp src/details/_uv_file.cpp src/details/_uv_loop.cpp src/details/_uv_net_functions.cpp src/details/_uv_poll.cpp src/details/_uv_tcp.cpp src/details/_uv_timer.cpp src/details/_uv_work.cpp src/event_dispatcher.cpp src/event_dispatcher_frame.cpp src/event_dispatcher_object.cpp src/event_dispatcher_timer.cpp src/fs/details/_file_impl.cpp src/fs/file.cpp src/io/memory_buffer.cpp src/net/details/_dns_impl.cpp src/net/details/_stream_socket_impl.cpp src/net/details/_socket_poll_impl.cpp src/net/dns.cpp src/net/stream_socket.cpp src/net/socket_poll.cpp src/pplx/linux/pplxlinux.cpp src/pplx/pplx.cpp src/pplx/pplxtasks.cpp src/pplx/threadpool.cpp src/streams/fileio.cpp src/uvxx_exception.cpp
 EXTERNAL_LIBS := 
 EXTERNAL_LIBS_COPIED := $(foreach lib, $(EXTERNAL_LIBS),$(BINARYDIR)/$(notdir $(lib)))
 
@@ -201,6 +201,10 @@ $(BINARYDIR)/_uv_net_functions.o : src/details/_uv_net_functions.cpp $(all_make_
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
+$(BINARYDIR)/_uv_poll.o : src/details/_uv_poll.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
 $(BINARYDIR)/_uv_tcp.o : src/details/_uv_tcp.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
@@ -249,6 +253,9 @@ $(BINARYDIR)/_stream_socket_impl.o : src/net/details/_stream_socket_impl.cpp $(a
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
+$(BINARYDIR)/_socket_poll_impl.o : src/net/details/_socket_poll_impl.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
 $(BINARYDIR)/dns.o : src/net/dns.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
@@ -256,6 +263,8 @@ $(BINARYDIR)/dns.o : src/net/dns.cpp $(all_make_files) |$(BINARYDIR)
 $(BINARYDIR)/stream_socket.o : src/net/stream_socket.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
+$(BINARYDIR)/socket_poll.o : src/net/socket_poll.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 $(BINARYDIR)/pplxlinux.o : src/pplx/linux/pplxlinux.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)

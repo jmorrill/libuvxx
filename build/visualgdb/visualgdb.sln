@@ -5,15 +5,24 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "linux_test_app", "..\..\apps\tests\linux_test_app\linux_test_app.vcxproj", "{C04857A4-9D4D-4EB2-B5BE-1851814F548E}"
 	ProjectSection(ProjectDependencies) = postProject
-		{81DCA34B-C35D-45CA-833A-DBBAE368E05E} = {81DCA34B-C35D-45CA-833A-DBBAE368E05E}
 		{4D0D3F6F-C046-4C23-B9CA-C11B70D1D0D5} = {4D0D3F6F-C046-4C23-B9CA-C11B70D1D0D5}
+		{8A9893B2-58D3-43D1-8F7F-059FD815BA7B} = {8A9893B2-58D3-43D1-8F7F-059FD815BA7B}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuv_visualgdb", "..\..\libraries\libuv\libuv_visualgdb.vcxproj", "{81DCA34B-C35D-45CA-833A-DBBAE368E05E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuvxx_visualgdb", "..\..\libuvxx\libuvxx_visualgdb.vcxproj", "{4D0D3F6F-C046-4C23-B9CA-C11B70D1D0D5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{81DCA34B-C35D-45CA-833A-DBBAE368E05E} = {81DCA34B-C35D-45CA-833A-DBBAE368E05E}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liveMedia_visualgdb", "..\..\libraries\live555\liveMedia_visualgdb.vcxproj", "{371071D3-4B70-44DF-82CB-193431CBA7BE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuvxx_rtsp_visualgdb", "..\..\libuvxx_rtsp\libuvxx_rtsp_visualgdb.vcxproj", "{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4D0D3F6F-C046-4C23-B9CA-C11B70D1D0D5} = {4D0D3F6F-C046-4C23-B9CA-C11B70D1D0D5}
+		{371071D3-4B70-44DF-82CB-193431CBA7BE} = {371071D3-4B70-44DF-82CB-193431CBA7BE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +58,14 @@ Global
 		{371071D3-4B70-44DF-82CB-193431CBA7BE}.Release|Win32.Build.0 = Release|Win32
 		{371071D3-4B70-44DF-82CB-193431CBA7BE}.Release|x64.ActiveCfg = Release|x64
 		{371071D3-4B70-44DF-82CB-193431CBA7BE}.Release|x64.Build.0 = Release|x64
+		{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}.Debug|Win32.Build.0 = Debug|Win32
+		{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}.Debug|x64.ActiveCfg = Debug|x64
+		{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}.Debug|x64.Build.0 = Debug|x64
+		{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}.Release|Win32.ActiveCfg = Release|Win32
+		{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}.Release|Win32.Build.0 = Release|Win32
+		{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}.Release|x64.ActiveCfg = Release|x64
+		{8A9893B2-58D3-43D1-8F7F-059FD815BA7B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

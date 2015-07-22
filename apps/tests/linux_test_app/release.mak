@@ -13,9 +13,9 @@ OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
 PREPROCESSOR_MACROS := NDEBUG RELEASE
-INCLUDE_DIRS := ../../../libraries/libuv/include ../../../libuvxx/include
-LIBRARY_DIRS := ../../../libraries/libuv/Release ../../../libuvxx/Release
-LIBRARY_NAMES := uv uvxx pthread
+INCLUDE_DIRS := ../../../libraries/libuv/include ../../../libuvxx/include ../../../libuvxx_rtsp/include
+LIBRARY_DIRS := ../../../libraries/libuv/Release ../../../libuvxx/Release ../../../libraries/live555/Release
+LIBRARY_NAMES := uv uvxx liveMedia uvxx_rtsp pthread
 ADDITIONAL_LINKER_INPUTS := 
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 

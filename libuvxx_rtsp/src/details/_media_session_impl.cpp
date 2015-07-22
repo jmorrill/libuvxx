@@ -1,4 +1,3 @@
-#pragma once
 #include "MediaSession.hh"
 
 #include "details/_media_session_impl.hpp"
