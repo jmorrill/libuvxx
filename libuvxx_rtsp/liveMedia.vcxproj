@@ -98,6 +98,7 @@
     <ClInclude Include="live_media\liveMedia\include\MediaSession.hh" />
     <ClInclude Include="live_media\liveMedia\include\MediaSink.hh" />
     <ClInclude Include="live_media\liveMedia\include\MediaSource.hh" />
+    <ClInclude Include="live_media\liveMedia\include\MediaTranscodingTable.hh" />
     <ClInclude Include="live_media\liveMedia\include\MP3ADU.hh" />
     <ClInclude Include="live_media\liveMedia\include\MP3ADUinterleaving.hh" />
     <ClInclude Include="live_media\liveMedia\include\MP3ADURTPSink.hh" />
