@@ -181,23 +181,23 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 {
     verify_access();
 
+    _streaming_session = nullptr;
+
     _task_scheduler = _uvxx_task_scheduler::createNew();
 
     _usage_environment = _usage_environment_ptr(BasicUsageEnvironment::createNew(*_task_scheduler),
-        /* deleter*/
-        [](UsageEnvironment* environment)
+    /* deleter*/
+    [](UsageEnvironment* environment)
+    {
+        auto& task_scheduler = environment->taskScheduler();
+
+        delete &task_scheduler;
+
+        if(!environment->reclaim())
         {
-            auto& task_scheduler = environment->taskScheduler();
-
-            delete &task_scheduler;
-
-           if(!environment->reclaim())
-           {
-               assert(false);
-           }
-        });
-
-    _streaming_session = nullptr;
+            assert(false);
+        }
+    });
     
     _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(_usage_environment, url.c_str(), this, 2),
     /* deleter */

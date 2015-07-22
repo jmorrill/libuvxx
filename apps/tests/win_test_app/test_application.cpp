@@ -85,6 +85,5 @@ int main(int argc, char* argv[])
         event_dispatcher::run();
     }
 
-
     return 0;
 }
