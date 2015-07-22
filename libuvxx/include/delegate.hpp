@@ -1,6 +1,6 @@
 #pragma once
 #include <functional>
-#include <map>
+#include <unordered_map>
 #include <atomic>
 
 namespace uvxx
@@ -27,6 +27,7 @@ namespace uvxx
         }
        
         multicast_delegate_args(const multicast_delegate_args&) = default;
+
         multicast_delegate_args& operator=(const multicast_delegate_args&) = default;
 
         typedef std::function<void (T0*, TARGS...args)> callback_function;
@@ -34,9 +35,9 @@ namespace uvxx
     public:
         void invoke(T0* sender, TARGS...args )
         {
-            for( auto i = m_handlerMap.begin(); i != m_handlerMap.end(); ++i )
+            for(auto& i : m_handlerMap)
             {
-                (*i).second(sender, args...);
+                (i).second(sender, args...);
             }
         }
 
@@ -61,7 +62,8 @@ namespace uvxx
 
     private:
         mutable std::atomic_uint_least64_t m_tokenCounter;
-        mutable std::map<event_token, callback_function> m_handlerMap;
+
+        mutable std::unordered_map<event_token, callback_function> m_handlerMap;
     };
 
     template<typename T0>
@@ -82,12 +84,14 @@ namespace uvxx
         multicast_delegate(const multicast_delegate& rhs)
         {
              m_tokenCounter = 0;//rhs.m_tokenCounter;
+
              m_handlerMap = rhs.m_handlerMap;
         }
 
         multicast_delegate& operator=(const multicast_delegate& rhs)
         {
             m_tokenCounter = rhs.m_tokenCounter;
+
             m_handlerMap = rhs.m_handlerMap;
 
             return *this;
@@ -100,9 +104,10 @@ namespace uvxx
             {
                 return;
             }
-            for( auto i = m_handlerMap.begin(); i != m_handlerMap.end(); ++i )
+
+            for(auto& i : m_handlerMap)
             {
-                (*i).second(sender);
+                (i).second(sender);
             }
         }
 
@@ -116,17 +121,20 @@ namespace uvxx
             auto token = m_tokenCounter++;
 
             m_handlerMap[token] = f;
+
             return token;
         }
 
         event_token operator -= ( event_token token ) const
         {
             m_handlerMap.erase(token);
+
             return token;
         }
 
     private:
         mutable std::atomic_uint_least64_t m_tokenCounter;
-        mutable std::map<event_token, callback_function> m_handlerMap;
+
+        mutable std::unordered_map<event_token, callback_function> m_handlerMap;
     };
 }
