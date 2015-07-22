@@ -3,7 +3,7 @@
 #include <chrono>
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #include "io/memory_buffer.hpp"
 
@@ -66,6 +66,6 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::chrono::microseconds _presentation_time;
 
-        std::map<std::string, io::memory_buffer> _attribute_map;
+        std::unordered_map<std::string, io::memory_buffer> _attribute_map;
     };
 }}}

@@ -12,6 +12,11 @@ namespace uvxx { namespace net
     {
     }
 
+    stream_socket::~stream_socket()
+    {
+            
+    }
+
     stream_socket::stream_socket(stream_socket&& rhs) : event_dispatcher_object(std::move(rhs))
     {
 
@@ -21,6 +26,11 @@ namespace uvxx { namespace net
     {
         __stream_socket_impl = std::move(__stream_socket_impl);
         return static_cast<stream_socket&>(event_dispatcher_object::operator=(std::move(rhs))); 
+    }
+
+    stream_socket::operator bool() const
+    {
+        return __stream_socket_impl != nullptr;
     }
 
     task<void> stream_socket::write_async(std::string const& buffer) const

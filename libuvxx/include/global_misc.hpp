@@ -39,8 +39,7 @@ extern "C++" {
     };
 }
 
-#define DEFINE_ENUM_FLAG(ENUMTYPE) \
-extern "C++" { \
+#define DEFINE_ENUM_FLAG(ENUMTYPE) extern "C++" { \
 inline ENUMTYPE operator | (ENUMTYPE a, ENUMTYPE b) { return ENUMTYPE(((__ENUM_FLAG_SIZED_INTEGER<ENUMTYPE>::type)a) | ((__ENUM_FLAG_SIZED_INTEGER<ENUMTYPE>::type)b)); } \
 inline ENUMTYPE &operator |= (ENUMTYPE &a, ENUMTYPE b) { return (ENUMTYPE &)(((__ENUM_FLAG_SIZED_INTEGER<ENUMTYPE>::type &)a) |= ((__ENUM_FLAG_SIZED_INTEGER<ENUMTYPE>::type)b)); } \
 inline ENUMTYPE operator & (ENUMTYPE a, ENUMTYPE b) { return ENUMTYPE(((__ENUM_FLAG_SIZED_INTEGER<ENUMTYPE>::type)a) & ((__ENUM_FLAG_SIZED_INTEGER<ENUMTYPE>::type)b)); } \

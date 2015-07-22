@@ -1,5 +1,6 @@
 #include "io/memory_buffer.hpp"
 #include <vector>
+#include <cstring>
 
 namespace uvxx { namespace io 
 {
@@ -37,7 +38,7 @@ namespace uvxx { namespace io
                 throw std::runtime_error("invalid destination pointer");
             }
 
-            memcpy(destination, _buffer.data() + position, size);
+            std::memcpy(destination, _buffer.data() + position, size);
         }
 
         void write(uint8_t* source, size_t position, size_t size)

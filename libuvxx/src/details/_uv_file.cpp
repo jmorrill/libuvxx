@@ -128,7 +128,8 @@ namespace uvxx { namespace details
             else
             {
                 uv_fs_req_cleanup(req);
-                this_file->_read_callback_delegate->execute(reinterpret_cast<const uint8_t*>(req->fs.info.bufs[0].base), req->result, 0);
+                throw std::exception();
+                //this_file->_read_callback_delegate->execute(reinterpret_cast<const uint8_t*>(req->fs.info.bufs[0].base), req->result, 0);
             }
         });
 
@@ -181,7 +182,8 @@ namespace uvxx { namespace details
             else
             {
                 uv_fs_req_cleanup(req);
-                this_file->_write_callback_delegate->execute(reinterpret_cast<const uint8_t*>(req->fs.info.bufs[0].base), req->result, 0);
+                throw std::exception();
+               // this_file->_write_callback_delegate->execute(reinterpret_cast<const uint8_t*>(req->fs.info.bufs[0].base), req->result, 0);
             }
         });
 

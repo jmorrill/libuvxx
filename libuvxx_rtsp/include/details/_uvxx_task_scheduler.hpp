@@ -1,5 +1,5 @@
 #pragma once
-#include <map>
+#include <unordered_map>
 #include "BasicUsageEnvironment0.hh"
 
 #include "event_dispatcher_timer.hpp"
@@ -91,6 +91,6 @@ namespace uvxx { namespace rtsp { namespace details
 
         event_dispatcher_timer _timer;
 
-        std::map<int, socket_handler_descriptor> _handlers;
+        std::unordered_map<int, socket_handler_descriptor> _handlers;
     };
 }}}

@@ -153,7 +153,7 @@ namespace uvxx { namespace pplx { namespace details
     class iterative_task_complete_exception : std::exception
     {
     public:
-        iterative_task_complete_exception() : std::exception("iterative task complete")
+        iterative_task_complete_exception() : std::exception()
         {
 
         }

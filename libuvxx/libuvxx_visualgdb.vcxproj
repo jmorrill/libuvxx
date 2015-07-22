@@ -35,7 +35,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <NMakeIncludeSearchPath>c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.2;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.2\arm-linux-gnueabihf;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.2\backward;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.2\include;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.2\include-fixed;c:\sysgcc\linaro\arm-linux-gnueabihf\include;c:\sysgcc\linaro\arm-linux-gnueabihf\libc\usr\include;$(ProjectDir)\include;$(ProjectDir)\include/internal;$(ProjectDir)\../libuv/include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.2;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.2\arm-linux-gnueabihf;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.2\backward;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.2\include;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.2\include-fixed;c:\sysgcc\linaro\arm-linux-gnueabihf\include;c:\sysgcc\linaro\arm-linux-gnueabihf\libc\usr\include;include;include/internal;../libuv/include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakeForcedIncludes>$(ProjectDir)\gcc_Debug.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
     <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
@@ -84,6 +84,7 @@
     <ClInclude Include="include\details\_uv_handle.hpp" />
     <ClInclude Include="include\details\_uv_loop.hpp" />
     <ClInclude Include="include\details\_uv_net_functions.hpp" />
+    <ClInclude Include="include\details\_uv_poll.hpp" />
     <ClInclude Include="include\details\_uv_stream.hpp" />
     <ClInclude Include="include\details\_uv_tcp.hpp" />
     <ClInclude Include="include\details\_uv_timer.hpp" />
@@ -100,10 +101,13 @@
     <ClInclude Include="include\fs\file_stream.hpp" />
     <ClInclude Include="include\fs\fs_info.hpp" />
     <ClInclude Include="include\fs\path.hpp" />
+    <ClInclude Include="include\global_misc.hpp" />
     <ClInclude Include="include\io\memory_buffer.hpp" />
     <ClInclude Include="include\net\details\_dns_impl.hpp" />
+    <ClInclude Include="include\net\details\_socket_poll_impl.hpp" />
     <ClInclude Include="include\net\details\_stream_socket_impl.hpp" />
     <ClInclude Include="include\net\dns.hpp" />
+    <ClInclude Include="include\net\socket_poll.hpp" />
     <ClInclude Include="include\net\stream_socket.hpp" />
     <ClInclude Include="include\pplx\pplpp.hpp" />
     <ClInclude Include="include\pplx\pplx.h" />
@@ -150,8 +154,10 @@
     <ClCompile Include="src\fs\path.cpp" />
     <ClCompile Include="src\io\memory_buffer.cpp" />
     <ClCompile Include="src\net\details\_dns_impl.cpp" />
+    <ClCompile Include="src\net\details\_socket_poll_impl.cpp" />
     <ClCompile Include="src\net\details\_stream_socket_impl.cpp" />
     <ClCompile Include="src\net\dns.cpp" />
+    <ClCompile Include="src\net\socket_poll.cpp" />
     <ClCompile Include="src\net\stream_socket.cpp" />
     <ClCompile Include="src\pplx\linux\pplxlinux.cpp" />
     <ClCompile Include="src\pplx\pplx.cpp" />

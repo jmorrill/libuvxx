@@ -33,7 +33,6 @@
 #include "pplx/pplx.h"
 #include "details/_utilities.hpp"
 #include "details/ltalloc/ltalloc.h"
-
 namespace uvxx { namespace details
 {
     class _event_dispatcher_impl;
@@ -165,6 +164,8 @@ inline __declspec(noreturn) void cancel_current_task()
 namespace details
 {
 
+	void begin_invoke_on_current(std::function<void()> method);
+	
     bool _HasDispatcher();
 
     /// <summary>
@@ -2626,7 +2627,7 @@ public:
         // Do not move the next line out of this function. It is important that _CAPTURE_CALLSTACK() evaluate to the the call site of the task constructor.
         _SetTaskCreationCallstack(details::_get_internal_task_options(_TaskOptions)._M_hasPresetCreationCallstack ? std::move(details::_get_internal_task_options(_TaskOptions)._M_presetCreationCallstack) : _CAPTURE_CALLSTACK());
         
-        auto& context = _TaskOptions.get_continuation_context();
+        auto context = _TaskOptions.get_continuation_context();
 
          context._Capture();
 
@@ -3297,10 +3298,13 @@ private:
             auto inline_mode = _task_inline_hack;
             auto func = std::move(_Func);
 
-            uvxx::event_dispatcher::current_dispatcher().begin_invoke([=]
-            {
-                impl->_ScheduleTask(new _InitialTaskHandle<_InternalReturnType, _Function, typename _Async_type_traits::_AsyncKind>(impl, func), inline_mode);
-            });
+	        std::function<void()> method = [=]
+	        {
+		        impl->_ScheduleTask(new _InitialTaskHandle<_InternalReturnType, _Function, typename _Async_type_traits::_AsyncKind>(impl, func), inline_mode);
+	        };
+	        
+	        ::uvxx::pplx::details::begin_invoke_on_current(method);
+	        
         }
         else
         {
@@ -3507,7 +3511,7 @@ public:
 
          //auto has_dispatcher = uvxx::pplx::details::_HasDispatcher();
 
-         auto& context = _TaskOptions.get_continuation_context();
+         auto context = _TaskOptions.get_continuation_context();
 
          context._Capture();
 

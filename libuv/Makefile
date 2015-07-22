@@ -16,7 +16,18 @@ CONFIG ?= DEBUG
 CONFIGURATION_FLAGS_FILE := $(call to_lowercase,$(CONFIG)).mak
 
 include $(CONFIGURATION_FLAGS_FILE)
+#LINKER_SCRIPT defined inside the configuration file (e.g. debug.mak) should override any linker scripts defined in shared .mak files
+CONFIGURATION_LINKER_SCRIPT := $(LINKER_SCRIPT)
+
 include $(ADDITIONAL_MAKE_FILES)
+
+ifneq ($(CONFIGURATION_LINKER_SCRIPT),)
+LINKER_SCRIPT := $(CONFIGURATION_LINKER_SCRIPT)
+endif
+
+ifneq ($(LINKER_SCRIPT),)
+LDFLAGS += -T$(LINKER_SCRIPT)
+endif
 
 ifeq ($(BINARYDIR),)
 error:

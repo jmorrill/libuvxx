@@ -15,6 +15,8 @@ namespace uvxx { namespace net
     public:
         stream_socket();
 
+        virtual ~stream_socket();
+
         stream_socket(const stream_socket&) = default;
 
         stream_socket& operator=(const stream_socket&) = default;
