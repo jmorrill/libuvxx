@@ -3,7 +3,6 @@
 #include "rtsp_client.hpp"
 #include "event_dispatcher_timer.hpp"
 #include "_media_session_impl.hpp"
-#include "streaming_media_session.hpp"
 #include "_live_authenticator.hpp"
 #include "rtsp_misc.hpp"
 #include "media_session.hpp"
@@ -27,6 +26,10 @@ namespace uvxx { namespace rtsp { namespace details
     class _rtsp_client_impl;
 
     class _live_rtsp_client;
+
+    class _streaming_media_session_impl;
+
+    using _streaming_media_session_impl_ptr = std::shared_ptr<_streaming_media_session_impl>;
 
     using _live_rtsp_client_ptr = std::shared_ptr<_live_rtsp_client>;
 
@@ -95,7 +98,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         media_subsession _current_media_subsession_setup;
 
-        streaming_media_session _streaming_session;
+        _streaming_media_session_impl_ptr _streaming_session;
 
         _live_authenticator _authenticator;
 

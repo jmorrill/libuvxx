@@ -122,7 +122,6 @@
     <ClInclude Include="include\rtsp_exceptions.hpp" />
     <ClInclude Include="include\rtsp_misc.hpp" />
     <ClInclude Include="include\sample_attributes.hpp" />
-    <ClInclude Include="include\streaming_media_session.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp" />
@@ -137,7 +136,6 @@
     <ClCompile Include="src\media_sample.cpp" />
     <ClCompile Include="src\media_session.cpp" />
     <ClCompile Include="src\rtsp_client.cpp" />
-    <ClCompile Include="src\streaming_media_session.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

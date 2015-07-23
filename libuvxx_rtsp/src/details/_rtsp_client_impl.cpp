@@ -343,10 +343,9 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
         {
         }
 
-        _streaming_session = streaming_media_session(std::make_shared<_streaming_media_session_impl>
-                                                        (_session, std::move(*subsession_ptr.get())));
+        _streaming_session = std::make_shared<_streaming_media_session_impl>(_session, std::move(*subsession_ptr.get()));
 
-        _streaming_session.on_sample_callback_set(_read_sample_delegate);
+        _streaming_session->on_sample_set(_read_sample_delegate);
     });
 }
 
@@ -384,7 +383,7 @@ void _rtsp_client_impl::on_sample_callback_set(read_sample_delegate callback)
 
     if(_streaming_session)
     {
-        _streaming_session.on_sample_callback_set(_read_sample_delegate);
+        _streaming_session->on_sample_set(_read_sample_delegate);
     }
 }
 
@@ -397,7 +396,7 @@ void _rtsp_client_impl::read_stream_sample()
         throw std::exception();
     }
 
-    _streaming_session.read_stream_sample();
+    _streaming_session->read_stream_sample();
 }
 
 

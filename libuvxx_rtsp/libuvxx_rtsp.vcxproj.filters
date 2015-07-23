@@ -33,9 +33,6 @@
     <ClInclude Include="include\details\_streaming_media_session_impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\streaming_media_session.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\details\_live_authenticator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,9 +87,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\_streaming_media_session_impl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\streaming_media_session.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\_media_sample_impl.cpp">

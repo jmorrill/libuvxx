@@ -3,6 +3,7 @@
 
 #include "rtsp_exceptions.hpp"
 #include "media_sample.hpp"
+#include "sample_attributes.hpp"
 
 using namespace std;
 using namespace uvxx;
@@ -14,7 +15,7 @@ rtsp_client client;
 
 void on_sample_callback(const media_sample& sample)
 {
-    printf("codec: %s\t size: %d\t pts: %lld \t s:%u",
+    printf("codec: %s\t size: %d\t pts: %I64d \t s:%u",
            sample.codec_name().c_str(),
            sample.size(),
            sample.presentation_time().count(),

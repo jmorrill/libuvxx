@@ -2,6 +2,7 @@
 #include "FramedSource.hh"
 #include "details/_media_session_impl.hpp"
 #include "details/media_framers/_media_framer_base.hpp"
+#include "sample_attributes.hpp"
 
 using namespace std::chrono;
 using namespace uvxx::rtsp;

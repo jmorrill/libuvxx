@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "_media_framer_base.hpp"
+#include "sample_attributes.hpp"
 
 namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 {

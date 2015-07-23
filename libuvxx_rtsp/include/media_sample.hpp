@@ -3,7 +3,6 @@
 #include <chrono>
 #include <string>
 #include <cstring>
-#include "sample_attributes.hpp"
 #include "io/memory_buffer.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
