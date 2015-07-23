@@ -9,9 +9,6 @@
     <BuildHost>
       <Transport>None</Transport>
     </BuildHost>
-    <DeploymentHost>
-      <Transport>None</Transport>
-    </DeploymentHost>
     <MainSourceTransferCommand>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
       <RemoteHost>
