@@ -10,33 +10,34 @@ using namespace uvxx;
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::sample_attributes;
+rtsp_client client;
 
 
 void on_sample_callback(const media_sample& sample)
 {
-    printf("codec: %s\t size: %d\t pts: %lld \t s:%u",
-        sample.codec_name().c_str(),
-        sample.size(),
-        sample.presentation_time().count(),
-        sample.stream_number());
+    //printf("codec: %s\t size: %d\t pts: %lld \t s:%u",
+        //sample.codec_name().c_str(),
+        //sample.size(),
+        //sample.presentation_time().count(),
+        //sample.stream_number());
 
     if (sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE) == sample_major_type::video)
     {
         auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
 
         bool key_frame = sample.attribute_get<bool>(ATTRIBUTE_VIDEO_KEYFRAME);
-
-        printf("\twxh: %dx%d", video_size.width, video_size.height);
-
-        if (key_frame)
-        {
-            printf("\tkey_frame");
-        }
+//
+        //printf("\twxh: %dx%d", video_size.width, video_size.height);
+//
+        //if (key_frame)
+        //{
+            //printf("\tkey_frame");
+        //}
     }
 
-    printf("\n");
+    //printf("\n");
 
-    //client.read_stream_sample();
+    client.read_stream_sample();
 }
 
 
@@ -48,7 +49,6 @@ int main(int argc, char* argv [])
     }
 
 
-	rtsp_client client;
 	
 	printf("argv[1] is %s\n", argv[1]);
     {
@@ -63,13 +63,13 @@ int main(int argc, char* argv [])
         {
 	        printf("starting play \n");
             return client.play(); 
-        }).then([=]
+        }).then([]
         {
             client.read_stream_sample();
         }).then([]
         {
             return create_timer_task(std::chrono::milliseconds(45000));
-        }).then([=](task<void> t)
+        }).then([](task<void> t)
         {
             try
             {

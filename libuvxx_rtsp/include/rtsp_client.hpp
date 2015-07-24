@@ -27,11 +27,7 @@ namespace uvxx { namespace rtsp
     public:
         rtsp_client();
 
-        rtsp_client(const rtsp_client& client) : event_dispatcher_object()
-        {
-           // *this = rtsp_client;
-            __rtsp_client_imp = client.__rtsp_client_imp;
-        }
+        rtsp_client(const rtsp_client& client) = default;
 
         virtual rtsp_client& operator=(const rtsp_client&) = default;
 

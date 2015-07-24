@@ -12,7 +12,7 @@ AR := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-ar.exe
 OBJCOPY := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
-PREPROCESSOR_MACROS := 
+PREPROCESSOR_MACROS := __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
 INCLUDE_DIRS := ../../../libraries/libuv/include ../../../libuvxx/include ../../../libuvxx_rtsp/include
 LIBRARY_DIRS := ../../../libraries/libuv/Debug ../../../libuvxx/Debug ../../../libuvxx_rtsp/Debug ../../../libraries/live555/Debug
 LIBRARY_NAMES := uv uvxx liveMedia uvxx_rtsp pthread
