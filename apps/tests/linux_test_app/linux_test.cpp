@@ -35,7 +35,7 @@ void on_sample_callback(const media_sample& sample)
         }
     }
 
-	printf("\n");
+    printf("\n");
 
     client.read_stream_sample();
 }
@@ -47,10 +47,10 @@ int main(int argc, char* argv [])
     {
         return -1;
     }
-	
-	printf("argv[1] is %s\n", argv[1]);
+    
+    printf("argv[1] is %s\n", argv[1]);
     {
-	    
+        
         client.on_sample_set(on_sample_callback);
 
         client.credentials_set("admin", "12345");
@@ -59,7 +59,7 @@ int main(int argc, char* argv [])
  
         client.open(argv[1]).then([=]
         {
-	        printf("starting play \n");
+            printf("starting play \n");
             return client.play(); 
         }).then([]
         {
