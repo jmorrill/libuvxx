@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "MediaSession.hh"
 
 #include "rtsp_client.hpp"
 #include "media_session.hpp"

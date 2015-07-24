@@ -9,6 +9,7 @@
 #include "details/_streaming_media_session_impl.hpp"
 #include "details/_live_rtsp_client.hpp"
 
+using namespace uvxx;
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
@@ -145,7 +146,7 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
 }
 
 
-void _rtsp_client_impl::on_timeout_timer_tick(uvxx::event_dispatcher_timer* /*sender*/)
+void _rtsp_client_impl::on_timeout_timer_tick(event_dispatcher_timer* /*sender*/)
 {
     if (_live_client && _last_rtsp_command_id)
     {
@@ -154,14 +155,15 @@ void _rtsp_client_impl::on_timeout_timer_tick(uvxx::event_dispatcher_timer* /*se
         _last_rtsp_command_id = 0;
     }
 
-  //  _current_event.set_exception(rtsp_network_timeout("rtsp command timeout"));
+    _current_event.set_exception(rtsp_network_timeout("rtsp command timeout"));
 }
 
 _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
                                          _task_scheduler(nullptr),
-                                         _protocol(transport_protocol::udp)
+                                         _protocol(transport_protocol::udp),
+                                         _timeout(10000)
 {
-    _timeout_timer.timeout_set(std::chrono::milliseconds(40000));
+    _timeout_timer.timeout_set(_timeout);
 
     /* Hook the tick event */
     _timeout_timer.tick_event() += std::bind(&_rtsp_client_impl::on_timeout_timer_tick, this, std::placeholders::_1);
@@ -195,7 +197,7 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
         if(!environment->reclaim())
         {
-            assert(false);
+	        assert(false);
         }
     });
     
@@ -273,6 +275,18 @@ void _rtsp_client_impl::protocol_set(transport_protocol protocol)
     verify_access();
 
     _protocol = protocol;
+}
+
+void _rtsp_client_impl::timeout_set(std::chrono::milliseconds timeout)
+{
+    _timeout = timeout;
+
+    _timeout_timer.timeout_set(_timeout);
+}
+
+std::chrono::milliseconds _rtsp_client_impl::timeout()
+{
+    return _timeout;
 }
 
 transport_protocol _rtsp_client_impl::protocol() const

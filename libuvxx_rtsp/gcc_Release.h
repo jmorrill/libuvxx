@@ -11,8 +11,14 @@
 #ifndef __HQ_FBIT__
 #define __HQ_FBIT__ 15
 #endif
+#ifndef __cpp_attributes
+#define __cpp_attributes 200809
+#endif
 #ifndef __UINT_LEAST16_MAX__
 #define __UINT_LEAST16_MAX__ 65535
+#endif
+#ifndef __ARM_SIZEOF_WCHAR_T
+#define __ARM_SIZEOF_WCHAR_T 32
 #endif
 #ifndef __ATOMIC_ACQUIRE
 #define __ATOMIC_ACQUIRE 2
@@ -23,6 +29,9 @@
 #ifndef __FLT_MIN__
 #define __FLT_MIN__ 1.1754943508222875e-38F
 #endif
+#ifndef __GCC_IEC_559_COMPLEX
+#define __GCC_IEC_559_COMPLEX 2
+#endif
 #ifndef __UFRACT_MAX__
 #define __UFRACT_MAX__ 0XFFFFP-16UR
 #endif
@@ -31,6 +40,9 @@
 #endif
 #ifndef __DQ_FBIT__
 #define __DQ_FBIT__ 63
+#endif
+#ifndef __ARM_FEATURE_SAT
+#define __ARM_FEATURE_SAT 1
 #endif
 #ifndef __ULFRACT_FBIT__
 #define __ULFRACT_FBIT__ 32
@@ -53,6 +65,9 @@
 #ifndef __WINT_MAX__
 #define __WINT_MAX__ 4294967295U
 #endif
+#ifndef __cpp_static_assert
+#define __cpp_static_assert 200410
+#endif
 #ifndef __USFRACT_FBIT__
 #define __USFRACT_FBIT__ 8
 #endif
@@ -62,17 +77,35 @@
 #ifndef __SIZE_MAX__
 #define __SIZE_MAX__ 4294967295U
 #endif
+#ifndef __ARM_ARCH_ISA_ARM
+#define __ARM_ARCH_ISA_ARM 1
+#endif
 #ifndef __WCHAR_MAX__
 #define __WCHAR_MAX__ 4294967295U
 #endif
 #ifndef __LACCUM_IBIT__
 #define __LACCUM_IBIT__ 32
 #endif
+#ifndef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 1
+#endif
+#ifndef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 1
+#endif
+#ifndef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 1
+#endif
 #ifndef __DBL_DENORM_MIN__
 #define __DBL_DENORM_MIN__ double(4.9406564584124654e-324L)
 #endif
+#ifndef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 1
+#endif
 #ifndef __GCC_ATOMIC_CHAR_LOCK_FREE
 #define __GCC_ATOMIC_CHAR_LOCK_FREE 1
+#endif
+#ifndef __GCC_IEC_559
+#define __GCC_IEC_559 2
 #endif
 #ifndef __FLT_EVAL_METHOD__
 #define __FLT_EVAL_METHOD__ 0
@@ -80,14 +113,20 @@
 #ifndef __unix__
 #define __unix__ 1
 #endif
+#ifndef __cpp_binary_literals
+#define __cpp_binary_literals 201304
+#endif
 #ifndef __LLACCUM_MAX__
 #define __LLACCUM_MAX__ 0X7FFFFFFFFFFFFFFFP-31LLK
 #endif
 #ifndef __GCC_ATOMIC_CHAR32_T_LOCK_FREE
-#define __GCC_ATOMIC_CHAR32_T_LOCK_FREE 1
+#define __GCC_ATOMIC_CHAR32_T_LOCK_FREE 2
 #endif
 #ifndef __FRACT_FBIT__
 #define __FRACT_FBIT__ 15
+#endif
+#ifndef __cpp_variadic_templates
+#define __cpp_variadic_templates 200704
 #endif
 #ifndef __UINT_FAST64_MAX__
 #define __UINT_FAST64_MAX__ 18446744073709551615ULL
@@ -107,11 +146,14 @@
 #ifndef __ARMEL__
 #define __ARMEL__ 1
 #endif
+#ifndef __ARM_FEATURE_UNALIGNED
+#define __ARM_FEATURE_UNALIGNED 1
+#endif
 #ifndef __LFRACT_IBIT__
 #define __LFRACT_IBIT__ 0
 #endif
 #ifndef __GNUC_PATCHLEVEL__
-#define __GNUC_PATCHLEVEL__ 3
+#define __GNUC_PATCHLEVEL__ 1
 #endif
 #ifndef __LFRACT_MAX__
 #define __LFRACT_MAX__ 0X7FFFFFFFP-31LR
@@ -139,6 +181,9 @@
 #endif
 #ifndef __UFRACT_FBIT__
 #define __UFRACT_FBIT__ 16
+#endif
+#ifndef __ARM_FP
+#define __ARM_FP 12
 #endif
 #ifndef __UFRACT_MIN__
 #define __UFRACT_MIN__ 0.0UR
@@ -170,6 +215,9 @@
 #ifndef __UINT32_MAX__
 #define __UINT32_MAX__ 4294967295U
 #endif
+#if !defined(__GXX_EXPERIMENTAL_CXX0X__) && defined(__SYSPROGS_CODESENSE__)
+#define __GXX_EXPERIMENTAL_CXX0X__ 1
+#endif
 #ifndef __ULFRACT_MAX__
 #define __ULFRACT_MAX__ 0XFFFFFFFFP-32ULR
 #endif
@@ -198,7 +246,7 @@
 #define __DBL_DIG__ 15
 #endif
 #ifndef __GCC_ATOMIC_POINTER_LOCK_FREE
-#define __GCC_ATOMIC_POINTER_LOCK_FREE 1
+#define __GCC_ATOMIC_POINTER_LOCK_FREE 2
 #endif
 #ifndef __LLACCUM_MIN__
 #define __LLACCUM_MIN__ (-0X1P31LLK-0X1P31LLK)
@@ -233,6 +281,9 @@
 #ifndef __HA_IBIT__
 #define __HA_IBIT__ 8
 #endif
+#ifndef __ARM_NEON_FP
+#define __ARM_NEON_FP 4
+#endif
 #ifndef __TQ_IBIT__
 #define __TQ_IBIT__ 0
 #endif
@@ -260,6 +311,9 @@
 #ifndef __DA_IBIT__
 #define __DA_IBIT__ 32
 #endif
+#ifndef __ARM_SIZEOF_MINIMAL_ENUM
+#define __ARM_SIZEOF_MINIMAL_ENUM 4
+#endif
 #ifndef __INT32_MAX__
 #define __INT32_MAX__ 2147483647
 #endif
@@ -271,6 +325,12 @@
 #endif
 #ifndef __UACCUM_MAX__
 #define __UACCUM_MAX__ 0XFFFFFFFFP-16UK
+#endif
+#ifndef __STDC_IEC_559__
+#define __STDC_IEC_559__ 1
+#endif
+#ifndef __STDC_ISO_10646__
+#define __STDC_ISO_10646__ 201103L
 #endif
 #ifndef __DECIMAL_DIG__
 #define __DECIMAL_DIG__ 17
@@ -287,11 +347,17 @@
 #ifndef RELEASE
 #define RELEASE 1
 #endif
+#ifndef __ARM_PCS_VFP
+#define __ARM_PCS_VFP 1
+#endif
 #ifndef __LDBL_HAS_QUIET_NAN__
 #define __LDBL_HAS_QUIET_NAN__ 1
 #endif
 #ifndef __ULACCUM_IBIT__
 #define __ULACCUM_IBIT__ 32
+#endif
+#ifndef _REENTRANT
+#define _REENTRANT 1
 #endif
 #ifndef __UACCUM_EPSILON__
 #define __UACCUM_EPSILON__ 0x1P-16UK
@@ -314,11 +380,11 @@
 #ifndef __SIZEOF_LONG_DOUBLE__
 #define __SIZEOF_LONG_DOUBLE__ 8
 #endif
-#ifndef __ARM_ARCH_5T__
-#define __ARM_ARCH_5T__ 1
-#endif
 #ifndef __BIGGEST_ALIGNMENT__
 #define __BIGGEST_ALIGNMENT__ 8
+#endif
+#ifndef __GNUC_STDC_INLINE__
+#define __GNUC_STDC_INLINE__ 1
 #endif
 #ifndef __DQ_IBIT__
 #define __DQ_IBIT__ 0
@@ -328,6 +394,9 @@
 #endif
 #ifndef __ULFRACT_IBIT__
 #define __ULFRACT_IBIT__ 0
+#endif
+#ifndef __cpp_raw_strings
+#define __cpp_raw_strings 200710
 #endif
 #ifndef __INT_FAST32_MAX__
 #define __INT_FAST32_MAX__ 2147483647
@@ -353,21 +422,24 @@
 #ifndef __INT_FAST16_TYPE__
 #define __INT_FAST16_TYPE__ int
 #endif
+#ifndef __STRICT_ANSI__
+#define __STRICT_ANSI__ 1
+#endif
 #ifndef __LDBL_HAS_DENORM__
 #define __LDBL_HAS_DENORM__ 1
 #endif
+#ifndef __ARM_FEATURE_LDREX
+#define __ARM_FEATURE_LDREX 4
+#endif
 //VS2005-2012 treats all files as C++, while VS2013+ can treat C files correctly.
 #if defined(_MSC_VER) && (_MSC_VER < 1800 || defined(__cplusplus))
-#define __cplusplus 199711L
+#define __cplusplus 201300L
 #endif
 #ifndef __DEC128_MAX__
 #define __DEC128_MAX__ 9.999999999999999999999999999999999E6144DL
 #endif
 #ifndef __INT_LEAST32_MAX__
 #define __INT_LEAST32_MAX__ 2147483647
-#endif
-#ifndef __ARM_PCS
-#define __ARM_PCS 1
 #endif
 #ifndef __DEC32_MIN__
 #define __DEC32_MIN__ 1E-95DF
@@ -399,6 +471,9 @@
 #ifndef __UACCUM_MIN__
 #define __UACCUM_MIN__ 0.0UK
 #endif
+#ifndef __STDC_NO_THREADS__
+#define __STDC_NO_THREADS__ 1
+#endif
 #ifndef __UACCUM_IBIT__
 #define __UACCUM_IBIT__ 16
 #endif
@@ -413,6 +488,9 @@
 #endif
 #ifndef __ULACCUM_MAX__
 #define __ULACCUM_MAX__ 0XFFFFFFFFFFFFFFFFP-32ULK
+#endif
+#ifndef __cpp_rvalue_reference
+#define __cpp_rvalue_reference 200610
 #endif
 #ifndef __SIZEOF_WINT_T__
 #define __SIZEOF_WINT_T__ 4
@@ -432,9 +510,6 @@
 #ifndef __UTA_FBIT__
 #define __UTA_FBIT__ 64
 #endif
-#ifndef __SOFTFP__
-#define __SOFTFP__ 1
-#endif
 #ifndef __FLT_MIN_EXP__
 #define __FLT_MIN_EXP__ (-125)
 #endif
@@ -443,6 +518,12 @@
 #endif
 #ifndef __UFRACT_IBIT__
 #define __UFRACT_IBIT__ 0
+#endif
+#ifndef __cpp_lambdas
+#define __cpp_lambdas 200907
+#endif
+#ifndef __ARM_FEATURE_QBIT
+#define __ARM_FEATURE_QBIT 1
 #endif
 #ifndef __INT_FAST64_TYPE__
 #define __INT_FAST64_TYPE__ long long int
@@ -480,6 +561,9 @@
 #ifndef __ACCUM_MIN__
 #define __ACCUM_MIN__ (-0X1P15K-0X1P15K)
 #endif
+#ifndef _NO_ASYNCRTIMP
+#define _NO_ASYNCRTIMP 1
+#endif
 #ifndef __SQ_IBIT__
 #define __SQ_IBIT__ 0
 #endif
@@ -499,10 +583,13 @@
 #define __FLT_MANT_DIG__ 24
 #endif
 #ifndef __VERSION__
-#define __VERSION__ "4.7.3"
+#define __VERSION__ "4.9.1"
 #endif
 #ifndef __ULLFRACT_FBIT__
 #define __ULLFRACT_FBIT__ 64
+#endif
+#ifndef __cpp_unicode_characters
+#define __cpp_unicode_characters 200704
 #endif
 #ifndef __FRACT_EPSILON__
 #define __FRACT_EPSILON__ 0x1P-15R
@@ -510,14 +597,20 @@
 #ifndef __ULACCUM_MIN__
 #define __ULACCUM_MIN__ 0.0ULK
 #endif
+#ifndef _STDC_PREDEF_H
+#define _STDC_PREDEF_H 1
+#endif
 #ifndef __UDA_FBIT__
 #define __UDA_FBIT__ 32
+#endif
+#ifndef __cpp_decltype_auto
+#define __cpp_decltype_auto 201304
 #endif
 #ifndef __LLACCUM_EPSILON__
 #define __LLACCUM_EPSILON__ 0x1P-31LLK
 #endif
 #ifndef __GCC_ATOMIC_INT_LOCK_FREE
-#define __GCC_ATOMIC_INT_LOCK_FREE 1
+#define __GCC_ATOMIC_INT_LOCK_FREE 2
 #endif
 #ifndef __FLOAT_WORD_ORDER__
 #define __FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__
@@ -530,6 +623,9 @@
 #endif
 #ifndef __UQQ_IBIT__
 #define __UQQ_IBIT__ 0
+#endif
+#ifndef __STDC_IEC_559_COMPLEX__
+#define __STDC_IEC_559_COMPLEX__ 1
 #endif
 #ifndef __DEC64_EPSILON__
 #define __DEC64_EPSILON__ 1E-15DD
@@ -552,9 +648,6 @@
 #ifndef __UINT_LEAST16_TYPE__
 #define __UINT_LEAST16_TYPE__ short unsigned int
 #endif
-#ifndef unix
-#define unix 1
-#endif
 #ifndef __INT16_MAX__
 #define __INT16_MAX__ 32767
 #endif
@@ -567,8 +660,14 @@
 #ifndef __UDQ_FBIT__
 #define __UDQ_FBIT__ 64
 #endif
+#ifndef DEBUG
+#define DEBUG 1
+#endif
 #ifndef __INT8_TYPE__
 #define __INT8_TYPE__ signed char
+#endif
+#ifndef __cpp_digit_separators
+#define __cpp_digit_separators 201309
 #endif
 #ifndef __ELF__
 #define __ELF__ 1
@@ -595,7 +694,7 @@
 #define __SIG_ATOMIC_MAX__ 2147483647
 #endif
 #ifndef __GCC_ATOMIC_WCHAR_T_LOCK_FREE
-#define __GCC_ATOMIC_WCHAR_T_LOCK_FREE 1
+#define __GCC_ATOMIC_WCHAR_T_LOCK_FREE 2
 #endif
 #ifndef __VFP_FP__
 #define __VFP_FP__ 1
@@ -611,6 +710,9 @@
 #endif
 #ifndef __INT_FAST16_MAX__
 #define __INT_FAST16_MAX__ 2147483647
+#endif
+#ifndef __ARM_ARCH_6__
+#define __ARM_ARCH_6__ 1
 #endif
 #ifndef __UINT_FAST32_MAX__
 #define __UINT_FAST32_MAX__ 4294967295U
@@ -642,14 +744,23 @@
 #ifndef __unix
 #define __unix 1
 #endif
+#ifndef __cpp_unicode_literals
+#define __cpp_unicode_literals 200710
+#endif
 #ifndef __USA_FBIT__
 #define __USA_FBIT__ 16
 #endif
 #ifndef __UINT_FAST16_TYPE__
 #define __UINT_FAST16_TYPE__ unsigned int
 #endif
+#ifndef __cpp_attribute_deprecated
+#define __cpp_attribute_deprecated 201309
+#endif
 #ifndef __DEC64_MAX__
 #define __DEC64_MAX__ 9.999999999999999E384DD
+#endif
+#ifndef __ARM_32BIT_STATE
+#define __ARM_32BIT_STATE 1
 #endif
 #ifndef __CHAR16_TYPE__
 #define __CHAR16_TYPE__ short unsigned int
@@ -670,10 +781,13 @@
 #define __SACCUM_FBIT__ 7
 #endif
 #ifndef __GCC_ATOMIC_LONG_LOCK_FREE
-#define __GCC_ATOMIC_LONG_LOCK_FREE 1
+#define __GCC_ATOMIC_LONG_LOCK_FREE 2
 #endif
 #ifndef __INT_LEAST64_TYPE__
 #define __INT_LEAST64_TYPE__ long long int
+#endif
+#ifndef __ARM_FEATURE_CLZ
+#define __ARM_FEATURE_CLZ 1
 #endif
 #ifndef __INT16_TYPE__
 #define __INT16_TYPE__ short int
@@ -687,17 +801,20 @@
 #ifndef __DEC32_MAX_EXP__
 #define __DEC32_MAX_EXP__ 97
 #endif
+#ifndef __ARM_ARCH_ISA_THUMB
+#define __ARM_ARCH_ISA_THUMB 1
+#endif
 #ifndef __INT_FAST8_MAX__
 #define __INT_FAST8_MAX__ 127
+#endif
+#ifndef __ARM_ARCH
+#define __ARM_ARCH 6
 #endif
 #ifndef __INTPTR_MAX__
 #define __INTPTR_MAX__ 2147483647
 #endif
 #ifndef __QQ_FBIT__
 #define __QQ_FBIT__ 7
-#endif
-#ifndef linux
-#define linux 1
 #endif
 #ifndef __UTA_IBIT__
 #define __UTA_IBIT__ 64
@@ -720,6 +837,9 @@
 #ifndef __SIG_ATOMIC_MIN__
 #define __SIG_ATOMIC_MIN__ (-__SIG_ATOMIC_MAX__ - 1)
 #endif
+#ifndef __cpp_return_type_deduction
+#define __cpp_return_type_deduction 201304
+#endif
 #ifndef __INTPTR_TYPE__
 #define __INTPTR_TYPE__ int
 #endif
@@ -740,6 +860,9 @@
 #endif
 #ifndef __DEC64_MIN_EXP__
 #define __DEC64_MIN_EXP__ (-382)
+#endif
+#ifndef __cpp_decltype
+#define __cpp_decltype 200707
 #endif
 #ifndef __INT_FAST64_MAX__
 #define __INT_FAST64_MAX__ 9223372036854775807LL
@@ -822,6 +945,9 @@
 #ifndef __DBL_EPSILON__
 #define __DBL_EPSILON__ double(2.2204460492503131e-16L)
 #endif
+#ifndef __ARM_FEATURE_SIMD32
+#define __ARM_FEATURE_SIMD32 1
+#endif
 #ifndef __INT_LEAST32_TYPE__
 #define __INT_LEAST32_TYPE__ int
 #endif
@@ -839,6 +965,9 @@
 #endif
 #ifndef __INT_FAST8_TYPE__
 #define __INT_FAST8_TYPE__ signed char
+#endif
+#ifndef _DEBUG
+#define _DEBUG 1
 #endif
 #ifndef __ULLACCUM_EPSILON__
 #define __ULLACCUM_EPSILON__ 0x1P-32ULLK
@@ -864,11 +993,17 @@
 #ifndef __ORDER_BIG_ENDIAN__
 #define __ORDER_BIG_ENDIAN__ 4321
 #endif
+#ifndef __cpp_runtime_arrays
+#define __cpp_runtime_arrays 201304
+#endif
 #ifndef __ACCUM_EPSILON__
 #define __ACCUM_EPSILON__ 0x1P-15K
 #endif
 #ifndef __INTMAX_MAX__
 #define __INTMAX_MAX__ 9223372036854775807LL
+#endif
+#ifndef __cpp_alias_templates
+#define __cpp_alias_templates 200704
 #endif
 #ifndef __BYTE_ORDER__
 #define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
@@ -890,6 +1025,9 @@
 #endif
 #ifndef __FLT_MAX__
 #define __FLT_MAX__ 3.4028234663852886e+38F
+#endif
+#ifndef __cpp_constexpr
+#define __cpp_constexpr 200704
 #endif
 #ifndef __USACCUM_FBIT__
 #define __USACCUM_FBIT__ 8
@@ -913,7 +1051,7 @@
 #define __ATOMIC_CONSUME 1
 #endif
 #ifndef __GNUC_MINOR__
-#define __GNUC_MINOR__ 7
+#define __GNUC_MINOR__ 9
 #endif
 #ifndef __UINTMAX_MAX__
 #define __UINTMAX_MAX__ 18446744073709551615ULL
@@ -929,6 +1067,9 @@
 #endif
 #ifndef __LDBL_DENORM_MIN__
 #define __LDBL_DENORM_MIN__ 4.9406564584124654e-324L
+#endif
+#ifndef __cpp_generic_lambdas
+#define __cpp_generic_lambdas 201304
 #endif
 #ifndef __STDC__
 #define __STDC__ 1
@@ -972,6 +1113,9 @@
 #ifndef __ULACCUM_EPSILON__
 #define __ULACCUM_EPSILON__ 0x1P-32ULK
 #endif
+#ifndef __cpp_user_defined_literals
+#define __cpp_user_defined_literals 200809
+#endif
 #ifndef __SACCUM_IBIT__
 #define __SACCUM_IBIT__ 8
 #endif
@@ -986,9 +1130,6 @@
 #endif
 #ifndef __UINT_FAST16_MAX__
 #define __UINT_FAST16_MAX__ 4294967295U
-#endif
-#ifndef __GNUC_GNU_INLINE__
-#define __GNUC_GNU_INLINE__ 1
 #endif
 #ifndef __GCC_ATOMIC_SHORT_LOCK_FREE
 #define __GCC_ATOMIC_SHORT_LOCK_FREE 1
@@ -1008,8 +1149,14 @@
 #ifndef __ULACCUM_FBIT__
 #define __ULACCUM_FBIT__ 32
 #endif
+#ifndef __ARM_FEATURE_DSP
+#define __ARM_FEATURE_DSP 1
+#endif
 #ifndef __QQ_IBIT__
 #define __QQ_IBIT__ 0
+#endif
+#ifndef __cpp_init_captures
+#define __cpp_init_captures 201304
 #endif
 #ifndef __ATOMIC_ACQ_REL
 #define __ATOMIC_ACQ_REL 4
@@ -1020,13 +1167,15 @@
 #endif
 
 // --- Include directories begin --- //
-//c:\sysgcc\beaglebone\bin\../lib/gcc/arm-angstrom-linux-gnueabi/4.7.3/../../../../arm-angstrom-linux-gnueabi/include/c++/4.7.3
-//c:\sysgcc\beaglebone\bin\../lib/gcc/arm-angstrom-linux-gnueabi/4.7.3/../../../../arm-angstrom-linux-gnueabi/include/c++/4.7.3/arm-angstrom-linux-gnueabi
-//c:\sysgcc\beaglebone\bin\../lib/gcc/arm-angstrom-linux-gnueabi/4.7.3/../../../../arm-angstrom-linux-gnueabi/include/c++/4.7.3/backward
-//c:\sysgcc\beaglebone\bin\../lib/gcc/arm-angstrom-linux-gnueabi/4.7.3/include
-//c:\sysgcc\beaglebone\bin\../lib/gcc/arm-angstrom-linux-gnueabi/4.7.3/include-fixed
-//c:\sysgcc\beaglebone\bin\../lib/gcc/arm-angstrom-linux-gnueabi/4.7.3/../../../../arm-angstrom-linux-gnueabi/include
-//c:\sysgcc\beaglebone\bin\../arm-angstrom-linux-gnueabi/sysroot/usr/include
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9/backward
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/include
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/include-fixed
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include
+//c:/sysgcc/raspberry/lib/gcc/../../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/arm-linux-gnueabihf/c++/4.9
+//c:\sysgcc\raspberry\bin\../arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf
+//c:\sysgcc\raspberry\bin\../arm-linux-gnueabihf/sysroot/usr/include
+//include
 //../libraries/live555/live_media/liveMedia/include
 //../libraries/live555/live_media/groupsock/include
 //../libraries/live555/live_media/BasicUsageEnvironment/include
@@ -1036,11 +1185,13 @@
 
 
 // --- Library directories begin --- //
-//c:/sysgcc/beaglebone/bin/../lib/gcc/arm-angstrom-linux-gnueabi/4.7.3/
-//c:/sysgcc/beaglebone/bin/../lib/gcc/
-//c:/sysgcc/beaglebone/bin/../lib/gcc/arm-angstrom-linux-gnueabi/4.7.3/../../../../arm-angstrom-linux-gnueabi/lib/
-//c:/sysgcc/beaglebone/bin/../arm-angstrom-linux-gnueabi/sysroot/lib/
-//c:/sysgcc/beaglebone/bin/../arm-angstrom-linux-gnueabi/sysroot/usr/lib/arm-angstrom-linux-gnueabi/4.7.3/
-//c:/sysgcc/beaglebone/bin/../arm-angstrom-linux-gnueabi/sysroot/usr/lib/
+//c:/sysgcc/raspberry/bin/../lib/gcc/arm-linux-gnueabihf/4.9/
+//c:/sysgcc/raspberry/bin/../lib/gcc/arm-linux-gnueabihf/
+//c:/sysgcc/raspberry/bin/../lib/gcc/
+//c:/sysgcc/raspberry/bin/../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/lib/
+//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/lib/arm-linux-gnueabihf/
+//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/lib/
+//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf/
+//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/usr/lib/
 // --- Library directories begin --- //
 

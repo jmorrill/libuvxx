@@ -9,11 +9,6 @@
     <BuildHost>
       <Transport>None</Transport>
     </BuildHost>
-    <DeploymentHost>
-      <HostName>10.1.125.101</HostName>
-      <Transport>SSH</Transport>
-      <UserName>ubuntu</UserName>
-    </DeploymentHost>
     <MainSourceTransferCommand>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
       <RemoteHost>
@@ -159,8 +154,8 @@
   <UserDefinedVariables />
   <CodeSense>
     <Enabled>True</Enabled>
-    <CFLAGS />
-    <CXXFLAGS />
+    <CFLAGS>-D__cplusplus=201103L</CFLAGS>
+    <CXXFLAGS>-D__cplusplus=201103L</CXXFLAGS>
     <ExternalSourceFileList />
   </CodeSense>
 </VisualGDBProjectSettings2>

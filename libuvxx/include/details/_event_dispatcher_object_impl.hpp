@@ -38,6 +38,7 @@ namespace uvxx { namespace details
         event_dispatcher_ptr _eventDispatcher;
 
         friend _event_dispatcher_frame_impl;
+
         friend event_dispatcher_object;
     };
 }}

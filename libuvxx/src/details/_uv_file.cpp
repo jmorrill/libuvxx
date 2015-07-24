@@ -39,9 +39,6 @@ namespace uvxx { namespace details
 
     void _uv_file::open(std::string const& file_name, int flags, int mode)
     {
-        //int m = 400 | 200;
-        //int f = O_WRONLY | O_CREAT;
-
         int result = uv_fs_open(*_loop, this->_handle, file_name.c_str(), flags, mode,
         [](uv_fs_t * req)
         {

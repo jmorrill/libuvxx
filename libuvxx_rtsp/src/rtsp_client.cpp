@@ -28,12 +28,7 @@ rtsp_client::rtsp_client(rtsp_client&& rhs)
 
 task<void> rtsp_client::open(const std::string& url) const
 {
-    //auto this_ptr = *this;
-
-    return __rtsp_client_imp->open(url).then([this]
-    {
-         auto tid = std::this_thread::get_id();
-    });;
+    return __rtsp_client_imp->open(url);
 }
 
 media_session rtsp_client::session() const
@@ -43,26 +38,13 @@ media_session rtsp_client::session() const
 
 task<void> rtsp_client::play() const
 {
-    auto this_ptr = *this;
-
-    return __rtsp_client_imp->play(session().subsessions())
-    .then([this_ptr]
-    {
-        return;
-    });
+    return __rtsp_client_imp->play(session().subsessions());
 }
 
 task<void> rtsp_client::play(std::vector<media_subsession> media_sessions) const
 {
-    auto this_ptr = *this;
-
-    return __rtsp_client_imp->play(std::move(media_sessions))
-    .then([this_ptr]
-    {
-        return;
-    });
+    return __rtsp_client_imp->play(std::move(media_sessions));
 }
-
 
 std::string rtsp_client::username() const
 {

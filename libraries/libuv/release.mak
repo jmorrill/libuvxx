@@ -5,14 +5,14 @@
 BINARYDIR := Release
 
 #Toolchain
-CC := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-gcc.exe
-CXX := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-g++.exe
+CC := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-gcc.exe
+CXX := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-g++.exe
 LD := $(CXX)
-AR := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-ar.exe
-OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
+AR := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-ar.exe
+OBJCOPY := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
-PREPROCESSOR_MACROS := NDEBUG RELEASE
+PREPROCESSOR_MACROS := NDEBUG RELEASE DEBUG __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
 INCLUDE_DIRS := include src
 LIBRARY_DIRS := 
 LIBRARY_NAMES := 
@@ -20,8 +20,8 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -ggdb -ffunction-sections -O3 -fexceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto-partition=none -finline-limit=900
-CXXFLAGS := -ggdb -ffunction-sections -O3 -fexceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto-partition=none -finline-limit=900
+CFLAGS := -ggdb -ffunction-sections -O3 -fexceptions
+CXXFLAGS := -ggdb -ffunction-sections -O3 -fexceptions
 ASFLAGS := 
 LDFLAGS := -Wl,-gc-sections  -ggdb -ffunction-sections -O3 -fexceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto-partition=none -finline-limit=900
 COMMONFLAGS := 

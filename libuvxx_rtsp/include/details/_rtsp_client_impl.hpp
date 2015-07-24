@@ -44,6 +44,10 @@ namespace uvxx { namespace rtsp { namespace details
 
         ~_rtsp_client_impl();
 
+        _rtsp_client_impl(const _rtsp_client_impl&) = delete;
+
+        _rtsp_client_impl& operator=(const _rtsp_client_impl&) = delete;
+
     public:
         pplx::task<void> open(const std::string& url);
 
@@ -64,6 +68,10 @@ namespace uvxx { namespace rtsp { namespace details
         transport_protocol protocol() const;
 
         void protocol_set(transport_protocol protocol);
+
+        void timeout_set(std::chrono::milliseconds timeout);
+
+        std::chrono::milliseconds timeout();
 
     private:
         pplx::task<void> setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions);
@@ -111,6 +119,8 @@ namespace uvxx { namespace rtsp { namespace details
         read_sample_delegate _read_sample_delegate;
 
         event_dispatcher_timer _timeout_timer;
+	    
+	    std::chrono::milliseconds _timeout;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;

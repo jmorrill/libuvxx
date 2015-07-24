@@ -15,7 +15,7 @@
 #define __UINT_LEAST16_MAX__ 65535
 #endif
 #ifndef __ARM_SIZEOF_WCHAR_T
-#define __ARM_SIZEOF_WCHAR_T 4
+#define __ARM_SIZEOF_WCHAR_T 32
 #endif
 #ifndef SOCKLEN_T
 #define SOCKLEN_T socklen_t
@@ -102,7 +102,7 @@
 #define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 1
 #endif
 #ifndef __GCC_ATOMIC_CHAR_LOCK_FREE
-#define __GCC_ATOMIC_CHAR_LOCK_FREE 2
+#define __GCC_ATOMIC_CHAR_LOCK_FREE 1
 #endif
 #ifndef __GCC_IEC_559
 #define __GCC_IEC_559 2
@@ -150,7 +150,7 @@
 #define __LFRACT_IBIT__ 0
 #endif
 #ifndef __GNUC_PATCHLEVEL__
-#define __GNUC_PATCHLEVEL__ 3
+#define __GNUC_PATCHLEVEL__ 1
 #endif
 #ifndef __LFRACT_MAX__
 #define __LFRACT_MAX__ 0X7FFFFFFFP-31LR
@@ -176,9 +176,6 @@
 #ifndef __FRACT_MAX__
 #define __FRACT_MAX__ 0X7FFFP-15R
 #endif
-#ifndef __thumb2__
-#define __thumb2__ 1
-#endif
 #ifndef __UFRACT_FBIT__
 #define __UFRACT_FBIT__ 16
 #endif
@@ -192,7 +189,7 @@
 #define __UINT_LEAST8_MAX__ 255
 #endif
 #ifndef __GCC_ATOMIC_BOOL_LOCK_FREE
-#define __GCC_ATOMIC_BOOL_LOCK_FREE 2
+#define __GCC_ATOMIC_BOOL_LOCK_FREE 1
 #endif
 #ifndef __UINTMAX_TYPE__
 #define __UINTMAX_TYPE__ long long unsigned int
@@ -255,7 +252,7 @@
 #define NDEBUG 1
 #endif
 #ifndef __GCC_ATOMIC_CHAR16_T_LOCK_FREE
-#define __GCC_ATOMIC_CHAR16_T_LOCK_FREE 2
+#define __GCC_ATOMIC_CHAR16_T_LOCK_FREE 1
 #endif
 #ifndef __USACCUM_IBIT__
 #define __USACCUM_IBIT__ 8
@@ -414,7 +411,7 @@
 #define __LDBL_HAS_DENORM__ 1
 #endif
 #ifndef __ARM_FEATURE_LDREX
-#define __ARM_FEATURE_LDREX 15
+#define __ARM_FEATURE_LDREX 4
 #endif
 //VS2005-2012 treats all files as C++, while VS2013+ can treat C files correctly.
 #if defined(_MSC_VER) && (_MSC_VER < 1800 || defined(__cplusplus))
@@ -562,7 +559,7 @@
 #define __FLT_MANT_DIG__ 24
 #endif
 #ifndef __VERSION__
-#define __VERSION__ "4.9.3 20150113 (prerelease)"
+#define __VERSION__ "4.9.1"
 #endif
 #ifndef __ULLFRACT_FBIT__
 #define __ULLFRACT_FBIT__ 64
@@ -615,9 +612,6 @@
 #ifndef __LLACCUM_FBIT__
 #define __LLACCUM_FBIT__ 31
 #endif
-#ifndef __LINARO_SPIN__
-#define __LINARO_SPIN__ 3
-#endif
 #ifndef __INT_FAST32_TYPE__
 #define __INT_FAST32_TYPE__ int
 #endif
@@ -642,9 +636,6 @@
 #ifndef __INT8_TYPE__
 #define __INT8_TYPE__ signed char
 #endif
-#ifndef __thumb__
-#define __thumb__ 1
-#endif
 #ifndef __ELF__
 #define __ELF__ 1
 #endif
@@ -660,9 +651,6 @@
 #ifndef __INT_LEAST16_TYPE__
 #define __INT_LEAST16_TYPE__ short int
 #endif
-#ifndef __ARM_ARCH_PROFILE
-#define __ARM_ARCH_PROFILE 65
-#endif
 #ifndef __LDBL_EPSILON__
 #define __LDBL_EPSILON__ 2.2204460492503131e-16L
 #endif
@@ -671,9 +659,6 @@
 #endif
 #ifndef __SIG_ATOMIC_MAX__
 #define __SIG_ATOMIC_MAX__ 2147483647
-#endif
-#ifndef __LINARO_RELEASE__
-#define __LINARO_RELEASE__ 201501
 #endif
 #ifndef __GCC_ATOMIC_WCHAR_T_LOCK_FREE
 #define __GCC_ATOMIC_WCHAR_T_LOCK_FREE 2
@@ -692,6 +677,9 @@
 #endif
 #ifndef __INT_FAST16_MAX__
 #define __INT_FAST16_MAX__ 2147483647
+#endif
+#ifndef __ARM_ARCH_6__
+#define __ARM_ARCH_6__ 1
 #endif
 #ifndef __UINT_FAST32_MAX__
 #define __UINT_FAST32_MAX__ 4294967295U
@@ -775,13 +763,13 @@
 #define __DEC32_MAX_EXP__ 97
 #endif
 #ifndef __ARM_ARCH_ISA_THUMB
-#define __ARM_ARCH_ISA_THUMB 2
+#define __ARM_ARCH_ISA_THUMB 1
 #endif
 #ifndef __INT_FAST8_MAX__
 #define __INT_FAST8_MAX__ 127
 #endif
 #ifndef __ARM_ARCH
-#define __ARM_ARCH 7
+#define __ARM_ARCH 6
 #endif
 #ifndef __INTPTR_MAX__
 #define __INTPTR_MAX__ 2147483647
@@ -824,9 +812,6 @@
 #endif
 #ifndef __SIZEOF_FLOAT__
 #define __SIZEOF_FLOAT__ 4
-#endif
-#ifndef __THUMBEL__
-#define __THUMBEL__ 1
 #endif
 #ifndef __USQ_FBIT__
 #define __USQ_FBIT__ 32
@@ -908,9 +893,6 @@
 #endif
 #ifndef __WCHAR_UNSIGNED__
 #define __WCHAR_UNSIGNED__ 1
-#endif
-#ifndef __ARM_ARCH_7A__
-#define __ARM_ARCH_7A__ 1
 #endif
 #ifndef __LDBL_MAX_10_EXP__
 #define __LDBL_MAX_10_EXP__ 308
@@ -1081,7 +1063,7 @@
 #define __SACCUM_IBIT__ 8
 #endif
 #ifndef __GCC_ATOMIC_LLONG_LOCK_FREE
-#define __GCC_ATOMIC_LLONG_LOCK_FREE 2
+#define __GCC_ATOMIC_LLONG_LOCK_FREE 1
 #endif
 #ifndef __LDBL_DIG__
 #define __LDBL_DIG__ 15
@@ -1096,7 +1078,7 @@
 #define __GNUC_GNU_INLINE__ 1
 #endif
 #ifndef __GCC_ATOMIC_SHORT_LOCK_FREE
-#define __GCC_ATOMIC_SHORT_LOCK_FREE 2
+#define __GCC_ATOMIC_SHORT_LOCK_FREE 1
 #endif
 #ifndef __ULLFRACT_MAX__
 #define __ULLFRACT_MAX__ 0XFFFFFFFFFFFFFFFFP-64ULLR
@@ -1128,22 +1110,31 @@
 #endif
 
 // --- Include directories begin --- //
-//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3
-//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3/arm-linux-gnueabihf
-//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3/backward
-//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/include
-//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/include-fixed
-//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include
-//c:\sysgcc\linaro\bin\../arm-linux-gnueabihf/libc/usr/include
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9/backward
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/include
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/include-fixed
+//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include
+//c:/sysgcc/raspberry/lib/gcc/../../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/arm-linux-gnueabihf/c++/4.9
+//c:\sysgcc\raspberry\bin\../arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf
+//c:\sysgcc\raspberry\bin\../arm-linux-gnueabihf/sysroot/usr/include
+//include
+//live_media/include
+//live_media/BasicUsageEnvironment/include
+//live_media/UsageEnvironment/include
+//live_media/liveMedia/include
+//live_media/groupsock/include
 // --- Include directories end --- //
 
 
 // --- Library directories begin --- //
-//c:/sysgcc/linaro/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/
-//c:/sysgcc/linaro/bin/../lib/gcc/arm-linux-gnueabihf/
-//c:/sysgcc/linaro/bin/../lib/gcc/
-//c:/sysgcc/linaro/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/lib/
-//c:/sysgcc/linaro/bin/../arm-linux-gnueabihf/libc/lib/
-//c:/sysgcc/linaro/bin/../arm-linux-gnueabihf/libc/usr/lib/
+//c:/sysgcc/raspberry/bin/../lib/gcc/arm-linux-gnueabihf/4.9/
+//c:/sysgcc/raspberry/bin/../lib/gcc/arm-linux-gnueabihf/
+//c:/sysgcc/raspberry/bin/../lib/gcc/
+//c:/sysgcc/raspberry/bin/../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/lib/
+//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/lib/arm-linux-gnueabihf/
+//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/lib/
+//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf/
+//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/usr/lib/
 // --- Library directories begin --- //
 

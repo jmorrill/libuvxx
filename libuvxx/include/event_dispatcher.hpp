@@ -75,11 +75,7 @@ namespace uvxx
             uvxx::pplx::task_completion_event<void> task_event;
             auto invoke_task = create_task(task_event);
 
-#if defined(_MSC_VER)
-            auto task_capture = [callback, task_event]()
-#else
             auto task_capture = [callback = std::move(callback), task_event = std::move(task_event)]()
-#endif
             {
                 try
                 {

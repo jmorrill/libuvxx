@@ -7,17 +7,11 @@
 using namespace std;
 using namespace uvxx::details;
 
-#if defined(_MSC_VER) 
-#define __thread_local __declspec(thread) 
-#else
-#define __thread_local thread_local
-#endif
-
 namespace uvxx { namespace details
 {
     _event_dispatcher_impl_weak_ptr _last_dispatcher;
 
-    __thread_local bool _has_initialized_thread_cache = false;
+    thread_local bool _has_initialized_thread_cache = false;
 
     struct _thread_info_cache
     {
@@ -60,7 +54,7 @@ namespace uvxx { namespace details
         }
     };
 
-    __thread_local _thread_info_cache _thread_cache;
+    thread_local _thread_info_cache _thread_cache;
 
     _event_dispatcher_impl::_event_dispatcher_impl() : 
         _loop(false), 
@@ -334,5 +328,4 @@ namespace uvxx { namespace details
 
         return *global_lock;
     }
-
 }}

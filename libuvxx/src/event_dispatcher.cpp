@@ -55,7 +55,7 @@ namespace uvxx
         _event_dispatcher_impl::push_frame(frame.__event_dispatcher_frame_impl);
     }
 
-    uvxx::event_dispatcher event_dispatcher::current_dispatcher()
+    event_dispatcher event_dispatcher::current_dispatcher()
     {
         event_dispatcher dispatcher;
 
@@ -64,7 +64,7 @@ namespace uvxx
         return dispatcher;
     }
 
-    uvxx::event_dispatcher event_dispatcher::from_thread(std::thread::id const& thread_id)
+    event_dispatcher event_dispatcher::from_thread(std::thread::id const& thread_id)
     {
         event_dispatcher dispatcher;
 

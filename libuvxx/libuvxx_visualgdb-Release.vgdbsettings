@@ -4,16 +4,11 @@
   <Project xsi:type="com.visualgdb.project.linux">
     <CustomSourceDirectories>
       <Directories />
-      <PathStyle>RemoteUnix</PathStyle>
+      <PathStyle>MinGWUnixSlash</PathStyle>
     </CustomSourceDirectories>
     <BuildHost>
       <Transport>None</Transport>
     </BuildHost>
-    <DeploymentHost>
-      <HostName>192.168.1.108</HostName>
-      <Transport>SSH</Transport>
-      <UserName>odroid</UserName>
-    </DeploymentHost>
     <MainSourceTransferCommand>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
       <RemoteHost>
@@ -38,53 +33,50 @@
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>
     <IgnoreFileTransferErrors>false</IgnoreFileTransferErrors>
     <RemoveRemoteDirectoryOnClean>false</RemoveRemoteDirectoryOnClean>
+    <SkipDeploymentTests>false</SkipDeploymentTests>
+    <MainSourceDirectoryForLocalBuilds>$(ProjectDir)</MainSourceDirectoryForLocalBuilds>
   </Project>
   <Build xsi:type="com.visualgdb.build.make">
     <MakeFilePathRelativeToSourceDir>Makefile</MakeFilePathRelativeToSourceDir>
     <MakeConfigurationName>Release</MakeConfigurationName>
     <AdditionalMakeArguments />
     <Toolchain>
-      <Name>Default GCC toolchain on 10.1.30.254</Name>
-      <UnixSystem>true</UnixSystem>
-      <GCC>gcc</GCC>
-      <GXX>g++</GXX>
-      <GDB>gdb</GDB>
-      <AR>ar</AR>
-      <OBJCOPY>objcopy</OBJCOPY>
-      <Make>$(VISUALGDB_DIR)\make.exe</Make>
-      <RequireCmdExe>false</RequireCmdExe>
+      <Name>Raspberry-Jessie</Name>
+      <Location>C:\SysGCC\raspberry</Location>
+      <UnixSystem>false</UnixSystem>
+      <GCC>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gcc.exe</GCC>
+      <GXX>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-g++.exe</GXX>
+      <GDB>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gdb.exe</GDB>
+      <AR>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-ar.exe</AR>
+      <OBJCOPY>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-objcopy.exe</OBJCOPY>
+      <Make>C:\SysGCC\raspberry\bin\make.exe</Make>
+      <AdditionalPathDirectories>
+        <string>C:\SysGCC\raspberry\bin</string>
+      </AdditionalPathDirectories>
+      <RequireCmdExe>true</RequireCmdExe>
       <RequireCtrlBreak>false</RequireCtrlBreak>
-      <RequiredLinuxPackages>
-        <TestableLinuxPackage>
-          <UserFriendlyName>GCC</UserFriendlyName>
-          <DefaultPackageName>g++</DefaultPackageName>
-          <AlternativeRPMPackageName>gcc-c++</AlternativeRPMPackageName>
-          <BinaryToCheck>g++</BinaryToCheck>
-        </TestableLinuxPackage>
-        <TestableLinuxPackage>
-          <UserFriendlyName>GDB</UserFriendlyName>
-          <DefaultPackageName>gdb</DefaultPackageName>
-          <BinaryToCheck>gdb</BinaryToCheck>
-        </TestableLinuxPackage>
-        <TestableLinuxPackage>
-          <UserFriendlyName>GNU Make</UserFriendlyName>
-          <DefaultPackageName>make</DefaultPackageName>
-          <BinaryToCheck>make</BinaryToCheck>
-        </TestableLinuxPackage>
-      </RequiredLinuxPackages>
+      <SourceDirMapping>
+        <Directories />
+        <PathStyle>MinGWUnixSlash</PathStyle>
+      </SourceDirMapping>
     </Toolchain>
     <MakeCommandTemplate>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
       <RemoteHost>
         <Transport>None</Transport>
       </RemoteHost>
-      <Command>make</Command>
+      <Command>cmd.exe</Command>
+      <Arguments>/c "C:\SysGCC\raspberry\bin\make.exe"</Arguments>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>
       <Environment>
         <Records>
           <Record>
             <VariableName>LANG</VariableName>
             <Value>en_US.UTF-8</Value>
+          </Record>
+          <Record>
+            <VariableName>PATH</VariableName>
+            <Value>%PATH%;C:\SysGCC\raspberry\bin</Value>
           </Record>
         </Records>
       </Environment>
@@ -119,6 +111,8 @@
       <ExamineRegistersInRawFormat>true</ExamineRegistersInRawFormat>
       <EnableSmartStepping>false</EnableSmartStepping>
       <DisableSignals>false</DisableSignals>
+      <EnableAsyncExecutionMode>false</EnableAsyncExecutionMode>
+      <EnableNonStopMode>false</EnableNonStopMode>
     </AdditionalGDBSettings>
     <LaunchGDBSettings xsi:type="GDBLaunchParametersNewInstance">
       <GDBEnvironment>
@@ -149,6 +143,7 @@
   <CustomDebug>
     <PreDebugActions />
     <PostDebugActions />
+    <DebugStopActions />
     <BreakMode>Default</BreakMode>
   </CustomDebug>
   <CustomShortcuts>
@@ -156,4 +151,7 @@
     <ShowMessageAfterExecuting>true</ShowMessageAfterExecuting>
   </CustomShortcuts>
   <UserDefinedVariables />
+  <CodeSense>
+    <Enabled>Unknown</Enabled>
+  </CodeSense>
 </VisualGDBProjectSettings2>

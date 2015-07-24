@@ -5,15 +5,15 @@
 BINARYDIR := Release
 
 #Toolchain
-CC := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-gcc.exe
-CXX := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-g++.exe
+CC := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-gcc.exe
+CXX := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-g++.exe
 LD := $(CXX)
-AR := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-ar.exe
-OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
+AR := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-ar.exe
+OBJCOPY := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
-PREPROCESSOR_MACROS := NDEBUG RELEASE
-INCLUDE_DIRS := 
+PREPROCESSOR_MACROS := NDEBUG RELEASE __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
+INCLUDE_DIRS := include live_media/include live_media/BasicUsageEnvironment/include live_media/UsageEnvironment/include live_media/liveMedia/include live_media/UsageEnvironment/include live_media/groupsock/include
 LIBRARY_DIRS := 
 LIBRARY_NAMES := 
 ADDITIONAL_LINKER_INPUTS := 

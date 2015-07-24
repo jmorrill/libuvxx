@@ -51,6 +51,7 @@ namespace uvxx
         void tick_callback(void * sender);
 
         event_token _impl_token;
+
         std::shared_ptr<uvxx::details::_event_dispatcher_timer_impl> __event_dispatcher_timer_impl;
     };
 }

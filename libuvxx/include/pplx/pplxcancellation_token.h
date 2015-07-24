@@ -258,17 +258,7 @@ namespace details
             _M_function(_Func)
         {
         }
-#if !defined(LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE)
-        void* operator new(size_t size)
-        {
-            return uvxx::details::ltalloc::ltalloc(size);
-        }
 
-        void operator delete(void* p)
-        {
-            uvxx::details::ltalloc::ltfree(p);
-        }
-#endif
     protected:
 
         virtual void _Exec()

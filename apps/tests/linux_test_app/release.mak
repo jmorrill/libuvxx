@@ -5,16 +5,16 @@
 BINARYDIR := Release
 
 #Toolchain
-CC := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-gcc.exe
-CXX := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-g++.exe
+CC := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-gcc.exe
+CXX := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-g++.exe
 LD := $(CXX)
-AR := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-ar.exe
-OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
+AR := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-ar.exe
+OBJCOPY := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
 PREPROCESSOR_MACROS := NDEBUG RELEASE
 INCLUDE_DIRS := ../../../libraries/libuv/include ../../../libuvxx/include ../../../libuvxx_rtsp/include
-LIBRARY_DIRS := ../../../libraries/libuv/Release ../../../libuvxx/Release ../../../libraries/live555/Release
+LIBRARY_DIRS := ../../../libraries/libuv/Release ../../../libuvxx/Release ../../../libuvxx_rtsp/Release ../../../libraries/live555/Release
 LIBRARY_NAMES := uv uvxx liveMedia uvxx_rtsp pthread
 ADDITIONAL_LINKER_INPUTS := 
 MACOS_FRAMEWORKS := 

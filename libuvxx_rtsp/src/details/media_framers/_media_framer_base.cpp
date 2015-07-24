@@ -1,14 +1,22 @@
 #include "MediaSession.hh"
 #include "FramedSource.hh"
+
 #include "details/_media_session_impl.hpp"
 #include "details/media_framers/_media_framer_base.hpp"
 #include "sample_attributes.hpp"
+
+#ifdef min
+#undef min
+#endif
 
 using namespace std::chrono;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::sample_attributes;
 using namespace uvxx::rtsp::details;
 using namespace uvxx::rtsp::details::media_framers;
+
+static const size_t DEFAULT_READ_BUFFER_SIZE = 200 * 1024;
+static const size_t MAX_READ_BUFFER_SIZE     = 2 * 1024 * 1024;
 
 _media_framer_base::_media_framer_base(const media_subsession& subsession) :
     _subsession(std::move(subsession)),
@@ -29,7 +37,7 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
     {
         media_sample sample;
 
-        _sample.capacity_set(1024 * 200);
+        _sample.capacity_set(DEFAULT_READ_BUFFER_SIZE);
 
         _sample.stream_number_set(subsession.stream_number());
 
@@ -186,12 +194,9 @@ void _media_framer_base::on_rtcp_bye(void* /*client_data*/)
 {
 
 }
-#ifdef min
-#undef min
-#endif
+
 void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample)
 {
-    static const size_t MAX_BUFFER_SIZE = 2 * 1024 * 1024;
 
     if (truncated_amount == 0)
     {
@@ -200,14 +205,14 @@ void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amo
 
     size_t current_size = sample.capacity();
 
-    if (current_size == MAX_BUFFER_SIZE)
+    if (current_size == MAX_READ_BUFFER_SIZE)
     {
         return;
     }
 
     size_t new_size = current_size + (truncated_amount * 2);
 
-    new_size = std::min(MAX_BUFFER_SIZE, new_size);
+    new_size = std::min(MAX_READ_BUFFER_SIZE, new_size);
 
     if (new_size == current_size)
     {

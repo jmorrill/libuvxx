@@ -5,22 +5,22 @@
 BINARYDIR := Release
 
 #Toolchain
-CC := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-gcc.exe
-CXX := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-g++.exe
+CC := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-gcc.exe
+CXX := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-g++.exe
 LD := $(CXX)
-AR := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-ar.exe
-OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
+AR := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-ar.exe
+OBJCOPY := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
-PREPROCESSOR_MACROS := NDEBUG RELEASE __GXX_EXPERIMENTAL_CXX0X__
-INCLUDE_DIRS := include include/details ../libuv/include
+PREPROCESSOR_MACROS := NDEBUG RELEASE __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
+INCLUDE_DIRS := include include/internal ../libraries/libuv/include
 LIBRARY_DIRS := 
 LIBRARY_NAMES := pthread
 ADDITIONAL_LINKER_INPUTS := 
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -ggdb -ffunction-sections -O3 -std=c++1y -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto -flto-partition=none -finline-limit=900
+CFLAGS := -ggdb -ffunction-sections -O3 -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto -flto-partition=none -finline-limit=900
 CXXFLAGS := -ggdb -ffunction-sections -O3 -std=c++1y -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -finline-limit=900
 ASFLAGS := 
 LDFLAGS := -Wl,-gc-sections -ggdb -ffunction-sections -O3 -std=c++1y -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto -flto-partition=none -finline-limit=900

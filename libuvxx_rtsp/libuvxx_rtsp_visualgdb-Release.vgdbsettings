@@ -23,17 +23,17 @@
     <MakeConfigurationName>Release</MakeConfigurationName>
     <AdditionalMakeArguments />
     <Toolchain>
-      <Name>Beaglebone</Name>
-      <Location>C:\SysGCC\Beaglebone</Location>
+      <Name>Raspberry-Jessie</Name>
+      <Location>C:\SysGCC\raspberry</Location>
       <UnixSystem>false</UnixSystem>
-      <GCC>C:\SysGCC\Beaglebone\bin\arm-angstrom-linux-gnueabi-gcc.exe</GCC>
-      <GXX>C:\SysGCC\Beaglebone\bin\arm-angstrom-linux-gnueabi-g++.exe</GXX>
-      <GDB>C:\SysGCC\Beaglebone\bin\arm-angstrom-linux-gnueabi-gdb.exe</GDB>
-      <AR>C:\SysGCC\Beaglebone\bin\arm-angstrom-linux-gnueabi-ar.exe</AR>
-      <OBJCOPY>C:\SysGCC\Beaglebone\bin\arm-angstrom-linux-gnueabi-objcopy.exe</OBJCOPY>
-      <Make>C:\SysGCC\Beaglebone\bin\make.exe</Make>
+      <GCC>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gcc.exe</GCC>
+      <GXX>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-g++.exe</GXX>
+      <GDB>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gdb.exe</GDB>
+      <AR>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-ar.exe</AR>
+      <OBJCOPY>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-objcopy.exe</OBJCOPY>
+      <Make>C:\SysGCC\raspberry\bin\make.exe</Make>
       <AdditionalPathDirectories>
-        <string>C:\SysGCC\Beaglebone\bin</string>
+        <string>C:\SysGCC\raspberry\bin</string>
       </AdditionalPathDirectories>
       <RequireCmdExe>true</RequireCmdExe>
       <RequireCtrlBreak>false</RequireCtrlBreak>
@@ -45,7 +45,7 @@
     <MakeCommandTemplate>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
       <Command>cmd.exe</Command>
-      <Arguments>/c "C:\SysGCC\Beaglebone\bin\make.exe"</Arguments>
+      <Arguments>/c "C:\SysGCC\raspberry\bin\make.exe"</Arguments>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>
       <Environment>
         <Records>
@@ -55,7 +55,7 @@
           </Record>
           <Record>
             <VariableName>PATH</VariableName>
-            <Value>%PATH%;C:\SysGCC\Beaglebone\bin</Value>
+            <Value>%PATH%;C:\SysGCC\raspberry\bin</Value>
           </Record>
         </Records>
       </Environment>

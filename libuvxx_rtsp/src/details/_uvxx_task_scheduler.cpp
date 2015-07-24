@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "BasicUsageEnvironment.hh"
 #include "details/_uvxx_task_scheduler.hpp"
 
 #ifndef MILLION
 #define MILLION 1000000
 #endif
 
+using namespace uvxx;
 using namespace uvxx::net;
 using namespace uvxx::rtsp::details;
 
@@ -18,14 +18,8 @@ _uvxx_task_scheduler::_uvxx_task_scheduler(unsigned maxSchedulerGranularity)
   : BasicTaskScheduler0(), 
     fMaxSchedulerGranularity(maxSchedulerGranularity)
 {
-    if (maxSchedulerGranularity > 0)
-    {
-        //schedulerTickTask(); // ensures that we handle events frequently
-    }
-
     _timer.timeout_set(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::microseconds(maxSchedulerGranularity)));
 
-    /* Hook the tick event */
     _timer.tick_event() += std::bind(&_uvxx_task_scheduler::on_timer_tick, this, std::placeholders::_1);
 
     _timer.start();
@@ -41,7 +35,7 @@ void _uvxx_task_scheduler::doEventLoop(char* /*watchVariable*/)
     throw std::exception(/*"doEventLoop not supported.  Use uvxx event_dispatcher"*/);
 }
 
-void _uvxx_task_scheduler::on_timer_tick(uvxx::event_dispatcher_timer* /*sender*/)
+void _uvxx_task_scheduler::on_timer_tick(event_dispatcher_timer* /*sender*/)
 {
     SingleStep(fMaxSchedulerGranularity);
 
@@ -104,14 +98,14 @@ void _uvxx_task_scheduler::SingleStep(unsigned /*maxDelayTime*/)
             // Common-case optimization for a single event trigger:
             fTriggersAwaitingHandling &=~ fLastUsedTriggerMask;
 
-            if (fTriggeredEventHandlers[fLastUsedTriggerNum] != nullptr) 
+            if (fTriggeredEventHandlers[fLastUsedTriggerNum]) 
             {
                 (*fTriggeredEventHandlers[fLastUsedTriggerNum])(fTriggeredEventClientDatas[fLastUsedTriggerNum]);
             }
         } 
         else 
         {
-            // Look for an event trigger that needs handling (making sure that we make forward progress through all possible triggers):
+            /* Look for an event trigger that needs handling (making sure that we make forward progress through all possible triggers): */
             unsigned i = fLastUsedTriggerNum;
 
             EventTriggerId mask = fLastUsedTriggerMask;
@@ -131,7 +125,7 @@ void _uvxx_task_scheduler::SingleStep(unsigned /*maxDelayTime*/)
                 {
                     fTriggersAwaitingHandling &=~ mask;
 
-                    if (fTriggeredEventHandlers[i] != nullptr)
+                    if (fTriggeredEventHandlers[i])
                     {
                         (*fTriggeredEventHandlers[i])(fTriggeredEventClientDatas[i]);
                     }
@@ -147,7 +141,7 @@ void _uvxx_task_scheduler::SingleStep(unsigned /*maxDelayTime*/)
         }
     }
 
-    // Also handle any delayed event that may have come due.
+    /* handle any delayed event that may have come due. */
     fDelayQueue.handleAlarm();
 }
 
@@ -218,15 +212,19 @@ _uvxx_task_scheduler::socket_handler_descriptor& _uvxx_task_scheduler::socket_ha
     if(this != &rhs)
     {
         _client_data = rhs._client_data;
+
         rhs._client_data = nullptr;
 
         _socket = rhs._socket;
+
         rhs._socket = 0;
 
         _condition_set = rhs._condition_set;
+
         rhs._condition_set = 0;
 
         _handler_proc = rhs._handler_proc;
+
         rhs._handler_proc = nullptr;
 
         _poller = std::move(rhs._poller);
@@ -264,11 +262,21 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_condition_set(int cond
 
 void _uvxx_task_scheduler::socket_handler_descriptor::set_handler(BackgroundHandlerProc* handler_proc, void* client_data)
 {
+    bool had_handler = _handler_proc != nullptr;
+
     _handler_proc = handler_proc;
 
     _client_data = client_data;
-}
 
+    if(_handler_proc && !had_handler)
+    {
+        start_poll();
+    }
+    else if(!_handler_proc)
+    {
+        _poller.stop();
+    }
+}
 
 void _uvxx_task_scheduler::socket_handler_descriptor::set_socket(int socket)
 {
