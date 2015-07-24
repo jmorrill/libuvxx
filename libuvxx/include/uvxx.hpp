@@ -1,6 +1,5 @@
 #pragma once
 
-#define LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE
 #include "global_misc.hpp"
 
 #include "uvxx_exception.hpp"

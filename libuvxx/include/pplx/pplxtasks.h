@@ -189,7 +189,7 @@ namespace details
         _TaskCreationCallstack(const _TaskCreationCallstack& rhs) = default;
         _TaskCreationCallstack& operator=(_TaskCreationCallstack& rhs) = default;
 
-        _TaskCreationCallstack(_TaskCreationCallstack&& rhs) :  _M_frames(std::move(rhs._M_frames)),  _M_SingleFrame(rhs._M_SingleFrame)
+        _TaskCreationCallstack(_TaskCreationCallstack&& rhs) :  _M_SingleFrame(rhs._M_SingleFrame),  _M_frames(std::move(rhs._M_frames))
         {
             rhs._M_SingleFrame = nullptr;
         }
@@ -395,16 +395,6 @@ namespace details
             _PThunk->_M_func();
         }
 
-#if !defined(LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE)
-        void* operator new(size_t size)
-        {
-            return uvxx::details::ltalloc::ltalloc(size);
-        }
-        void operator delete(void* p)
-        {
-            uvxx::details::ltalloc::ltfree(p);
-        }
-#endif
     private:
 
         // RAII holder
@@ -945,13 +935,7 @@ namespace details
         typedef std::shared_ptr<_Task_impl<_ReturnType>> _Type;
         static _Type _Make(_CancellationTokenState * _Ct, const scheduler_ptr& _Scheduler_arg) 
         {
-#if !defined(LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE)
-          uvxx::details::ltalloc::ltalloc_allocator<_Task_impl<_ReturnType>> ltalloc_alloc;
-
-          return std::allocate_shared<_Task_impl<_ReturnType>, uvxx::details::ltalloc::ltalloc_allocator<_Task_impl<_ReturnType>>  >(ltalloc_alloc, _Ct, _Scheduler_arg);
-#else
           return std::make_shared<_Task_impl<_ReturnType>>(_Ct, _Scheduler_arg); 
-#endif
         }
     };
 
@@ -1097,7 +1081,7 @@ namespace details
         _Task_impl_base(_CancellationTokenState * _PTokenState, const scheduler_ptr & _Scheduler_arg) 
                           : _M_TaskState(_Created),
                             _M_fFromAsync(false), _M_fUnwrappedTask(false),
-                            _M_pRegistration(nullptr), _M_Continuations(nullptr), _M_TaskCollection(_Scheduler_arg),
+                            _M_Continuations(nullptr), _M_pRegistration(nullptr), _M_TaskCollection(_Scheduler_arg),
                             _M_taskEventLogger(this)                           
         {
             // Set cancelation token
@@ -1971,13 +1955,7 @@ public:
     task_completion_event() 
         //: _M_Impl(std::make_shared<details::_Task_completion_event_impl<_ResultType>>()) 
     {
-#if !defined(LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE)
-        uvxx::details::ltalloc::ltalloc_allocator<details::_Task_completion_event_impl<_ResultType>> ltalloc_alloc;
-
-        _M_Impl = std::allocate_shared<details::_Task_completion_event_impl<_ResultType>, uvxx::details::ltalloc::ltalloc_allocator<details::_Task_completion_event_impl<_ResultType>>  >(ltalloc_alloc);
-#else
         _M_Impl = std::make_shared<details::_Task_completion_event_impl<_ResultType>>();
-#endif
     }
 
     task_completion_event(const task_completion_event& tce) : _M_Impl(tce._M_Impl)
@@ -2157,13 +2135,7 @@ private:
 
     static std::shared_ptr<details::_ExceptionHolder> _ToExceptionHolder(std::exception_ptr _ExceptionPtr, const details::_TaskCreationCallstack &_SetExceptionAddressHint)
     {
-#if !defined(LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE)
-        uvxx::details::ltalloc::ltalloc_allocator<details::_ExceptionHolder> ltalloc_alloc;
-
-        return std::allocate_shared<details::_ExceptionHolder, uvxx::details::ltalloc::ltalloc_allocator<details::_ExceptionHolder>>(ltalloc_alloc, _ExceptionPtr, _SetExceptionAddressHint);
-#else
         return std::make_shared<details::_ExceptionHolder>(_ExceptionPtr, _SetExceptionAddressHint);
-#endif
     }
 
 
@@ -3057,17 +3029,7 @@ private:
             , _M_function(_func)
         {
         }
-#if !defined(LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE)
-        void* operator new(size_t size)
-        {
-            return uvxx::details::ltalloc::ltalloc(size);
-        }
 
-        void operator delete(void* p)
-        {
-            uvxx::details::ltalloc::ltfree(p);
-        }
-#endif
         virtual ~_InitialTaskHandle() {}
 
         template <typename _Func>
@@ -3178,17 +3140,7 @@ private:
         }
 
         virtual ~_ContinuationTaskHandle() {}
-#if !defined(LTALLOC_DISABLE_OPERATOR_NEW_OVERRIDE)
-        void* operator new(size_t size)
-        {
-            return uvxx::details::ltalloc::ltalloc(size);
-        }
 
-        void operator delete(void* p)
-        {
-            uvxx::details::ltalloc::ltfree(p);
-        }
-#endif
         template <typename _Func, typename _Arg>
         auto _LogWorkItemAndInvokeUserLambda(_Func && _func, _Arg && _value) const -> decltype(_func(std::forward<_Arg>(_value)))
         {

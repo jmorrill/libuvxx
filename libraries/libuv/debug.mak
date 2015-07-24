@@ -5,11 +5,11 @@
 BINARYDIR := Debug
 
 #Toolchain
-CC := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-gcc.exe
-CXX := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-g++.exe
+CC := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-gcc.exe
+CXX := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-g++.exe
 LD := $(CXX)
-AR := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-ar.exe
-OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
+AR := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-ar.exe
+OBJCOPY := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
 PREPROCESSOR_MACROS := DEBUG

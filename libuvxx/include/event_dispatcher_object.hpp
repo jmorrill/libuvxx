@@ -18,11 +18,11 @@ namespace uvxx
     public:
         event_dispatcher_object(const event_dispatcher_object&) = default;
 
-        event_dispatcher_object& operator=(const event_dispatcher_object&) = default;
+        virtual event_dispatcher_object& operator=(const event_dispatcher_object&) = default;
 
         event_dispatcher_object(event_dispatcher_object&& dispatcher);
 
-        event_dispatcher_object& operator=(event_dispatcher_object&& rhs);
+        virtual event_dispatcher_object& operator=(event_dispatcher_object&& rhs);
 
         virtual operator bool() const;
 

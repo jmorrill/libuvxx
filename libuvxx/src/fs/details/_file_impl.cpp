@@ -87,8 +87,8 @@ namespace uvxx { namespace fs { namespace details
         }
     }
 
-    _file_impl::_file_impl() : _file(&dispatcher()->_loop), 
-                               _task_context(uvxx::pplx::task_continuation_context::use_current())
+    _file_impl::_file_impl() : _task_context(uvxx::pplx::task_continuation_context::use_current()), 
+                               _file(&dispatcher()->_loop)
     {
         auto read_cb = std::bind(&_file_impl::read_callback,
                                  this,

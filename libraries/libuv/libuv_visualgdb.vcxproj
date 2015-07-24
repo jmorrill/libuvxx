@@ -35,7 +35,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <NMakeIncludeSearchPath>c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.3;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.3\arm-linux-gnueabihf;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.3\backward;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.3\include;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.3\include-fixed;c:\sysgcc\linaro\arm-linux-gnueabihf\include;c:\sysgcc\linaro\arm-linux-gnueabihf\libc\usr\include;$(ProjectDir)\include;$(ProjectDir)\src;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.3;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.3\arm-linux-gnueabihf;c:\sysgcc\linaro\arm-linux-gnueabihf\include\c++\4.9.3\backward;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.3\include;c:\sysgcc\linaro\lib\gcc\arm-linux-gnueabihf\4.9.3\include-fixed;c:\sysgcc\linaro\arm-linux-gnueabihf\include;c:\sysgcc\linaro\arm-linux-gnueabihf\libc\usr\include;include;src;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakeForcedIncludes>$(ProjectDir)\gcc_Debug.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
     <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>

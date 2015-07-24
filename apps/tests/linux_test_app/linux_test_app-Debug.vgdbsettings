@@ -9,6 +9,11 @@
     <BuildHost>
       <Transport>None</Transport>
     </BuildHost>
+    <DeploymentHost>
+      <HostName>10.1.125.101</HostName>
+      <Transport>SSH</Transport>
+      <UserName>ubuntu</UserName>
+    </DeploymentHost>
     <MainSourceTransferCommand>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
       <RemoteHost>
@@ -42,17 +47,17 @@
     <MakeConfigurationName>Debug</MakeConfigurationName>
     <AdditionalMakeArguments />
     <Toolchain>
-      <Name>Linaro</Name>
-      <Location>C:\SysGCC\linaro</Location>
+      <Name>Raspberry-Jessie</Name>
+      <Location>C:\SysGCC\raspberry</Location>
       <UnixSystem>false</UnixSystem>
-      <GCC>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-gcc.exe</GCC>
-      <GXX>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-g++.exe</GXX>
-      <GDB>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-gdb.exe</GDB>
-      <AR>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-ar.exe</AR>
-      <OBJCOPY>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-objcopy.exe</OBJCOPY>
-      <Make>$(VISUALGDB_DIR)\make.exe</Make>
+      <GCC>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gcc.exe</GCC>
+      <GXX>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-g++.exe</GXX>
+      <GDB>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gdb.exe</GDB>
+      <AR>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-ar.exe</AR>
+      <OBJCOPY>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-objcopy.exe</OBJCOPY>
+      <Make>C:\SysGCC\raspberry\bin\make.exe</Make>
       <AdditionalPathDirectories>
-        <string>C:\SysGCC\linaro\bin</string>
+        <string>C:\SysGCC\raspberry\bin</string>
       </AdditionalPathDirectories>
       <RequireCmdExe>true</RequireCmdExe>
       <RequireCtrlBreak>false</RequireCtrlBreak>
@@ -67,7 +72,7 @@
         <Transport>None</Transport>
       </RemoteHost>
       <Command>cmd.exe</Command>
-      <Arguments>/c "$(VISUALGDB_DIR)\make.exe"</Arguments>
+      <Arguments>/c "C:\SysGCC\raspberry\bin\make.exe"</Arguments>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>
       <Environment>
         <Records>
@@ -77,7 +82,7 @@
           </Record>
           <Record>
             <VariableName>PATH</VariableName>
-            <Value>%PATH%;C:\SysGCC\linaro\bin</Value>
+            <Value>%PATH%;C:\SysGCC\raspberry\bin</Value>
           </Record>
         </Records>
       </Environment>
@@ -117,11 +122,11 @@
     </AdditionalGDBSettings>
     <LaunchGDBSettings xsi:type="GDBLaunchParametersNewInstance">
       <DebuggedProgram>$(TargetPath)</DebuggedProgram>
-      <GDBServerPort>2005</GDBServerPort>
-      <ProgramArguments>"rtsp://mediaserver01.office.econnect.tv:8554/media?dev=F3E8E888-7BC6-4EB7-A00E-691F95184636&amp;source=live"</ProgramArguments>
+      <GDBServerPort>2000</GDBServerPort>
+      <ProgramArguments>"rtsp://10.1.30.126:8554"</ProgramArguments>
     </LaunchGDBSettings>
-    <GenerateCtrlBreakInsteadOfCtrlC>true</GenerateCtrlBreakInsteadOfCtrlC>
-    <DeploymentTargetPath />
+    <GenerateCtrlBreakInsteadOfCtrlC>false</GenerateCtrlBreakInsteadOfCtrlC>
+    <DeploymentTargetPath>/tmp/$(TargetFileName)</DeploymentTargetPath>
     <X11WindowMode>Local</X11WindowMode>
     <KeepConsoleAfterExit>false</KeepConsoleAfterExit>
     <RunGDBUnderSudo>false</RunGDBUnderSudo>

@@ -28,11 +28,11 @@ rtsp_client::rtsp_client(rtsp_client&& rhs)
 
 task<void> rtsp_client::open(const std::string& url) const
 {
-    auto this_ptr = *this;
+    //auto this_ptr = *this;
 
-    return __rtsp_client_imp->open(url).then([this_ptr]
+    return __rtsp_client_imp->open(url).then([this]
     {
-         /*auto tid = std::this_thread::get_id();*/
+         auto tid = std::this_thread::get_id();
     });;
 }
 

@@ -71,9 +71,9 @@ namespace uvxx { namespace details
 
     protected:
         _uv_stream(_uv_loop* loop) :
-            _uv_handle<HANDLE_T>(), _write_callback(write_callback_delegate::create()),
+            _uv_handle<HANDLE_T>(), _read_callback(read_callback_delegate::create()),
+                                    _write_callback(write_callback_delegate::create()),
                                     _shutdown_callback(shutdown_callback_delegate::create()),
-                                    _read_callback(read_callback_delegate::create()),
                                     _read_timeout_timer(loop, std::bind(&_uv_stream::read_timeout_timer_callback, this))
         {
            

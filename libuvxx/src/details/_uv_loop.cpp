@@ -66,7 +66,7 @@ namespace uvxx { namespace details
     
     /* processes all work queued for this loop to execute.  this includes
      * queued thread pool operations (aka work) 
-    /* this callback happens off the loop when 
+     * this callback happens off the loop when 
      * _methods_to_invoke_async/_work_methods_to_invoke_async.send() has been flagged */
     void _uv_loop::on_process_invokes()
     {
@@ -120,7 +120,7 @@ namespace uvxx { namespace details
         }
 
         /* uv_async_send + uv_async_t - these libuv methods are thread-safe
-        /* flags loop to look for threadpool invokes on next loop iteration*/
+           flags loop to look for threadpool invokes on next loop iteration */
         _work_methods_to_invoke_async.send();
     }
 

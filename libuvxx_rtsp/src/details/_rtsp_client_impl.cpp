@@ -76,13 +76,13 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
         return;
     }
 
-    describe_event.set();
-
     auto session_impl = std::make_shared<_media_session_impl>();
 
     session_impl->live_media_session_set(client_impl->_usage_environment, session);
 
     client_impl->_session = media_session(session_impl);
+
+    describe_event.set();
 }
 
 void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
@@ -154,14 +154,14 @@ void _rtsp_client_impl::on_timeout_timer_tick(uvxx::event_dispatcher_timer* /*se
         _last_rtsp_command_id = 0;
     }
 
-    _current_event.set_exception(rtsp_network_timeout("rtsp command timeout"));
+  //  _current_event.set_exception(rtsp_network_timeout("rtsp command timeout"));
 }
 
 _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
                                          _task_scheduler(nullptr),
                                          _protocol(transport_protocol::udp)
 {
-    _timeout_timer.timeout_set(std::chrono::milliseconds(2000));
+    _timeout_timer.timeout_set(std::chrono::milliseconds(40000));
 
     /* Hook the tick event */
     _timeout_timer.tick_event() += std::bind(&_rtsp_client_impl::on_timeout_timer_tick, this, std::placeholders::_1);

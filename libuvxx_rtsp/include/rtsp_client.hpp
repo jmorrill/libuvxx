@@ -27,13 +27,17 @@ namespace uvxx { namespace rtsp
     public:
         rtsp_client();
 
-        rtsp_client(const rtsp_client&) = default;
+        rtsp_client(const rtsp_client& client) : event_dispatcher_object()
+        {
+           // *this = rtsp_client;
+            __rtsp_client_imp = client.__rtsp_client_imp;
+        }
 
-        rtsp_client& operator=(const rtsp_client&) = default;
+        virtual rtsp_client& operator=(const rtsp_client&) = default;
 
         rtsp_client(rtsp_client&& rhs);
 
-        rtsp_client& operator=(rtsp_client&& rhs);
+        virtual rtsp_client& operator=(rtsp_client&& rhs);
 
     public:
         pplx::task<void> open(const std::string& url) const;

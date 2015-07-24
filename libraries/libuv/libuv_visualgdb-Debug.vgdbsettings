@@ -27,6 +27,7 @@
       </FileMasks>
       <TransferNewFilesOnly>true</TransferNewFilesOnly>
       <IncludeSubdirectories>true</IncludeSubdirectories>
+      <SelectedDirectories />
     </MainSourceTransferCommand>
     <AllowChangingHostForMainCommands>false</AllowChangingHostForMainCommands>
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>
@@ -40,17 +41,17 @@
     <MakeConfigurationName>Debug</MakeConfigurationName>
     <AdditionalMakeArguments />
     <Toolchain>
-      <Name>Linaro</Name>
-      <Location>C:\SysGCC\linaro</Location>
+      <Name>Raspberry-Jessie</Name>
+      <Location>C:\SysGCC\raspberry</Location>
       <UnixSystem>false</UnixSystem>
-      <GCC>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-gcc.exe</GCC>
-      <GXX>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-g++.exe</GXX>
-      <GDB>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-gdb.exe</GDB>
-      <AR>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-ar.exe</AR>
-      <OBJCOPY>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-objcopy.exe</OBJCOPY>
-      <Make>$(VISUALGDB_DIR)\make.exe</Make>
+      <GCC>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gcc.exe</GCC>
+      <GXX>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-g++.exe</GXX>
+      <GDB>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gdb.exe</GDB>
+      <AR>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-ar.exe</AR>
+      <OBJCOPY>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-objcopy.exe</OBJCOPY>
+      <Make>C:\SysGCC\raspberry\bin\make.exe</Make>
       <AdditionalPathDirectories>
-        <string>C:\SysGCC\linaro\bin</string>
+        <string>C:\SysGCC\raspberry\bin</string>
       </AdditionalPathDirectories>
       <RequireCmdExe>true</RequireCmdExe>
       <RequireCtrlBreak>false</RequireCtrlBreak>
@@ -65,7 +66,7 @@
         <Transport>None</Transport>
       </RemoteHost>
       <Command>cmd.exe</Command>
-      <Arguments>/c "$(VISUALGDB_DIR)\make.exe"</Arguments>
+      <Arguments>/c "C:\SysGCC\raspberry\bin\make.exe"</Arguments>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>
       <Environment>
         <Records>
@@ -75,7 +76,7 @@
           </Record>
           <Record>
             <VariableName>PATH</VariableName>
-            <Value>%PATH%;C:\SysGCC\linaro\bin</Value>
+            <Value>%PATH%;C:\SysGCC\raspberry\bin</Value>
           </Record>
         </Records>
       </Environment>

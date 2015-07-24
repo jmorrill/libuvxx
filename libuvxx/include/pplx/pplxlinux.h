@@ -240,7 +240,7 @@ namespace platform
     public:
 
         recursive_lock_impl()
-            : _M_owner(-1), _M_recursionCount(0)
+            : _M_recursionCount(0), _M_owner(-1)
         {
         }
 

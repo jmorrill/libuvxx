@@ -11,7 +11,6 @@ using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::sample_attributes;
 
-rtsp_client client;
 
 void on_sample_callback(const media_sample& sample)
 {
@@ -37,7 +36,7 @@ void on_sample_callback(const media_sample& sample)
 
     printf("\n");
 
-    client.read_stream_sample();
+    //client.read_stream_sample();
 }
 
 
@@ -48,7 +47,12 @@ int main(int argc, char* argv [])
         return -1;
     }
 
+
+	rtsp_client client;
+	
+	printf("argv[1] is %s\n", argv[1]);
     {
+	    
         client.on_sample_set(on_sample_callback);
 
         client.credentials_set("admin", "12345");
@@ -57,14 +61,15 @@ int main(int argc, char* argv [])
  
         client.open(argv[1]).then([=]
         {
+	        printf("starting play \n");
             return client.play(); 
-        }).then([]
+        }).then([=]
         {
             client.read_stream_sample();
         }).then([]
         {
             return create_timer_task(std::chrono::milliseconds(45000));
-        }).then([](task<void> t)
+        }).then([=](task<void> t)
         {
             try
             {
@@ -74,11 +79,12 @@ int main(int argc, char* argv [])
             {
                 printf("timeout\n");
             }
-            catch (const rtsp_exception& e)
+            catch (const std::exception& e)
             {
                 printf("exception: ");
                 printf(e.what());
             }
+	        
 
             event_dispatcher::current_dispatcher().begin_shutdown();
         });

@@ -16,8 +16,8 @@ namespace uvxx { namespace fs {
     struct _file_info
     {
         _ASYNCRTIMP _file_info(std::ios_base::openmode mode, size_t buffer_size) : 
-            m_mode(mode),
-            m_memory_buffer(buffer_size)
+            m_memory_buffer(buffer_size),
+            m_mode(mode)
         {
         }
 

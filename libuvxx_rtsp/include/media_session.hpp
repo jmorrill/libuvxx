@@ -32,15 +32,15 @@ namespace uvxx { namespace rtsp
 
         media_subsession(const media_subsession&) = default;
 
-        media_subsession& operator=(const media_subsession&) = default;
+        virtual media_subsession& operator=(const media_subsession&) = default;
 
         media_subsession(media_subsession&& rhs);
 
-        media_subsession& operator=(media_subsession&& rhs);
+        virtual media_subsession& operator=(media_subsession&& rhs);
 
-        bool operator=(std::nullptr_t rhs);
+        virtual bool operator=(std::nullptr_t rhs);
 
-        bool operator==(std::nullptr_t rhs);
+        virtual bool operator==(std::nullptr_t rhs);
 
     public:
         std::string codec_name() const;
@@ -74,11 +74,11 @@ namespace uvxx { namespace rtsp
 
         media_session(const media_session&) = default;
 
-        media_session& operator=(const media_session&) = default;
+        virtual media_session& operator=(const media_session&) = default;
 
         media_session(media_session&& dispatcher);
 
-        media_session& operator=(media_session&& rhs);
+        virtual media_session& operator=(media_session&& rhs);
 
     public:
         std::vector<media_subsession> subsessions() const;
