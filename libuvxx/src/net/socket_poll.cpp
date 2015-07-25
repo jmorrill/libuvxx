@@ -7,12 +7,12 @@ using namespace uvxx::pplx;
 
 namespace uvxx { namespace net
 {
-	socket_poll::socket_poll()
-	{
-			
-	}
+    socket_poll::socket_poll()
+    {
+            
+    }
 
-	socket_poll::socket_poll(int socket) : 
+    socket_poll::socket_poll(int socket) : 
         __socket_poll(std::make_shared<details::_socket_poll_impl>(socket))
     {
     }
@@ -39,17 +39,17 @@ namespace uvxx { namespace net
         __socket_poll->stop();
     }
 
-	socket_poll::operator bool()
-	{
-		return __socket_poll != nullptr;
-	}
+    socket_poll::operator bool()
+    {
+        return __socket_poll != nullptr;
+    }
 
-	bool socket_poll::operator==(std::nullptr_t /*rhs*/)
-	{
-		return operator bool();
-	}
+    bool socket_poll::operator==(std::nullptr_t /*rhs*/)
+    {
+        return operator bool();
+    }
 
-	void socket_poll::set_callback(std::function<void(int status, socket_poll_event events)> callback)
+    void socket_poll::set_callback(std::function<void(int status, socket_poll_event events)> callback)
     {
         __socket_poll->set_callback(callback);
     }

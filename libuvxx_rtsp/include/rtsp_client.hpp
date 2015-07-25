@@ -22,8 +22,8 @@ namespace uvxx { namespace rtsp
 
     using read_sample_delegate = std::function<void(const media_sample&)>;
 
-	using stream_closed_delegate = std::function<void(int stream_number)>;
-	
+    using stream_closed_delegate = std::function<void(int stream_number)>;
+    
     class rtsp_client : public event_dispatcher_object
     {
     public:
@@ -45,8 +45,8 @@ namespace uvxx { namespace rtsp
         pplx::task<void> play(std::vector<media_subsession> media_subsessions) const;
 
         void on_sample_set(read_sample_delegate callback) const;
-	    
-	    void on_stream_closed_set(stream_closed_delegate callback) const;
+        
+        void on_stream_closed_set(stream_closed_delegate callback) const;
 
         void read_stream_sample() const;
 
@@ -61,10 +61,10 @@ namespace uvxx { namespace rtsp
         transport_protocol protocol() const;
 
         void protocol_set(transport_protocol protocol);
-	    
-	    void timeout_set(std::chrono::milliseconds timeout);
+        
+        void timeout_set(std::chrono::milliseconds timeout);
 
-	    std::chrono::milliseconds timeout() const;
+        std::chrono::milliseconds timeout() const;
 
     private:
         details::_rtsp_client_impl_ptr __rtsp_client_imp;

@@ -15,7 +15,7 @@ namespace uvxx { namespace details
     public:
         _uv_async(_uv_loop* uv_loop, std::function<void()> callback);
 
-	    bool send();
+        bool send();
     private:
         static void async_callback(uv_async_t* handle);
 

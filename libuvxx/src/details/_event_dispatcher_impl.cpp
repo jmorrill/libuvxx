@@ -195,7 +195,7 @@ namespace uvxx { namespace details
             {
                 _dispatchers().erase(begin(_dispatchers()) + i);
                 i--;
-                continue;	
+                continue;    
             }
                     
             if (dispatcher->thread_id() == thread_id)

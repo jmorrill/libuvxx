@@ -34,15 +34,15 @@ namespace uvxx { namespace fs
         pplx::task<size_t> write_async(io::memory_buffer const & buffer, size_t start_pos, size_t count, int64_t file_position = -1) const;
       
         pplx::task<size_t> write_async(const uint8_t* buffer, size_t buffer_size, size_t start_pos, size_t count, int64_t file_position = -1) const;
-			   
+               
         int64_t file_position_get() const;
 
         void file_position_set(int64_t position) const;
         
         static pplx::task<void> delete_async(std::string const& file_name);
-			   
+               
         static pplx::task<void> move_async(std::string const& source_file, std::string const& destination_file);
-			   
+               
         static pplx::task<file_info> get_file_info_async(std::string const& filename);
 
 private:

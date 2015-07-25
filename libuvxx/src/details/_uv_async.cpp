@@ -25,13 +25,13 @@ namespace uvxx { namespace details
             return false;
         }
 
-	    if (static_cast<uv_async_t*>(*this)->loop)
+        if (static_cast<uv_async_t*>(*this)->loop)
         {
-		    return 0 == uv_async_send(*this);
-	    } 
+            return 0 == uv_async_send(*this);
+        } 
         else
         {
-		    return false;
-	    }
+            return false;
+        }
     }
 }}

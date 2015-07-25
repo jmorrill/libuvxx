@@ -150,7 +150,7 @@ namespace uvxx { namespace net { namespace details
             {
                  _busy_connecting = false;
 
-            	 _connect_event.set_exception(e);
+                 _connect_event.set_exception(e);
 
                  return;
             }

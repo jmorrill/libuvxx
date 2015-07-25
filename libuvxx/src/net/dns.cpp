@@ -10,11 +10,11 @@ using namespace uvxx::net::details;
 
 namespace uvxx { namespace net
 {
-	dns::~dns()
-	{
-	}
+    dns::~dns()
+    {
+    }
 
-	task<std::string> dns::resolve_host_async(std::string const& host_name)
+    task<std::string> dns::resolve_host_async(std::string const& host_name)
     {
        auto _dns = std::make_shared<_dns_impl>();
 

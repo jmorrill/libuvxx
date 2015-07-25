@@ -16,9 +16,9 @@ namespace uvxx { namespace details
     {
 
     public:
-	    _uv_timer(uvxx::details::_uv_loop*, std::function<void()> callback) ;
+        _uv_timer(uvxx::details::_uv_loop*, std::function<void()> callback) ;
 
-	    bool start(uint64_t timeout, uint64_t repeat);
+        bool start(uint64_t timeout, uint64_t repeat);
 
         bool stop();
 

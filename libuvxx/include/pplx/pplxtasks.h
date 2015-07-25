@@ -164,8 +164,8 @@ inline __declspec(noreturn) void cancel_current_task()
 namespace details
 {
 
-	void begin_invoke_on_current(std::function<void()> method);
-	
+    void begin_invoke_on_current(std::function<void()> method);
+    
     bool _HasDispatcher();
 
     /// <summary>
@@ -310,7 +310,7 @@ namespace details
     template<typename _Func>
     task<void> _To_task_void(_Func f);
     
-	struct _BadContinuationParamType{};
+    struct _BadContinuationParamType{};
 
     template <typename _Function, typename _Type> auto _ReturnTypeHelper(_Type t, _Function _Func, int, int) -> decltype(_Func(_To_task(t)));
     template <typename _Function, typename _Type> auto _ReturnTypeHelper(_Type t, _Function _Func, int, ...) -> decltype(_Func(t));
@@ -3250,13 +3250,13 @@ private:
             auto inline_mode = _task_inline_hack;
             auto func = std::move(_Func);
 
-	        std::function<void()> method = [=]
-	        {
-		        impl->_ScheduleTask(new _InitialTaskHandle<_InternalReturnType, _Function, typename _Async_type_traits::_AsyncKind>(impl, func), inline_mode);
-	        };
-	        
-	        ::uvxx::pplx::details::begin_invoke_on_current(method);
-	        
+            std::function<void()> method = [=]
+            {
+                impl->_ScheduleTask(new _InitialTaskHandle<_InternalReturnType, _Function, typename _Async_type_traits::_AsyncKind>(impl, func), inline_mode);
+            };
+            
+            ::uvxx::pplx::details::begin_invoke_on_current(method);
+            
         }
         else
         {

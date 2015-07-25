@@ -3,7 +3,7 @@
 #All other changes you make in this file will be preserved.
 #Visit http://visualgdb.com/makefiles for more details
 
-#VisualGDB: AutoSourceFiles		#<--- remove this line to disable auto-updating of SOURCEFILES and EXTERNAL_LIBS
+#VisualGDB: AutoSourceFiles        #<--- remove this line to disable auto-updating of SOURCEFILES and EXTERNAL_LIBS
 
 TARGETNAME := libuvxx_rtsp.a
 #TARGETTYPE can be APP, STATIC or SHARED
@@ -32,7 +32,7 @@ endif
 
 ifeq ($(BINARYDIR),)
 error:
-	$(error Invalid configuration, please check your inputs)
+    $(error Invalid configuration, please check your inputs)
 endif
 
 SOURCEFILES := src/details/media_framers/h26x/sps_parser.cpp src/details/media_framers/_h264_framer.cpp src/details/media_framers/_media_framer_base.cpp src/details/_live_rtsp_client.cpp src/details/_media_sample_impl.cpp src/details/_media_session_impl.cpp src/details/_rtsp_client_impl.cpp src/details/_streaming_media_session_impl.cpp src/details/_uvxx_task_scheduler.cpp src/media_sample.cpp src/media_session.cpp src/rtsp_client.cpp
@@ -64,27 +64,27 @@ endif
 LIBRARY_LDFLAGS = $(addprefix -l,$(LIBRARY_NAMES))
 
 ifeq ($(IS_LINUX_PROJECT),1)
-	RPATH_PREFIX := -Wl,--rpath='$$ORIGIN/../
-	LIBRARY_LDFLAGS += $(EXTERNAL_LIBS)
-	LIBRARY_LDFLAGS += -Wl,--rpath='$$ORIGIN'
-	LIBRARY_LDFLAGS += $(addsuffix ',$(addprefix $(RPATH_PREFIX),$(dir $(EXTERNAL_LIBS))))
-	
-	ifeq ($(TARGETTYPE),SHARED)
-		CFLAGS += -fPIC
-		CXXFLAGS += -fPIC
-		ASFLAGS += -fPIC
-		LIBRARY_LDFLAGS += -Wl,-soname,$(TARGETNAME)
-	endif
-	
-	ifneq ($(LINUX_PACKAGES),)
-		PACKAGE_CFLAGS := $(foreach pkg,$(LINUX_PACKAGES),$(shell pkg-config --cflags $(pkg)))
-		PACKAGE_LDFLAGS := $(foreach pkg,$(LINUX_PACKAGES),$(shell pkg-config --libs $(pkg)))
-		CFLAGS += $(PACKAGE_CFLAGS)
-		CXXFLAGS += $(PACKAGE_CFLAGS)
-		LIBRARY_LDFLAGS += $(PACKAGE_LDFLAGS)
-	endif	
+    RPATH_PREFIX := -Wl,--rpath='$$ORIGIN/../
+    LIBRARY_LDFLAGS += $(EXTERNAL_LIBS)
+    LIBRARY_LDFLAGS += -Wl,--rpath='$$ORIGIN'
+    LIBRARY_LDFLAGS += $(addsuffix ',$(addprefix $(RPATH_PREFIX),$(dir $(EXTERNAL_LIBS))))
+    
+    ifeq ($(TARGETTYPE),SHARED)
+        CFLAGS += -fPIC
+        CXXFLAGS += -fPIC
+        ASFLAGS += -fPIC
+        LIBRARY_LDFLAGS += -Wl,-soname,$(TARGETNAME)
+    endif
+    
+    ifneq ($(LINUX_PACKAGES),)
+        PACKAGE_CFLAGS := $(foreach pkg,$(LINUX_PACKAGES),$(shell pkg-config --cflags $(pkg)))
+        PACKAGE_LDFLAGS := $(foreach pkg,$(LINUX_PACKAGES),$(shell pkg-config --libs $(pkg)))
+        CFLAGS += $(PACKAGE_CFLAGS)
+        CXXFLAGS += $(PACKAGE_CFLAGS)
+        LIBRARY_LDFLAGS += $(PACKAGE_LDFLAGS)
+    endif    
 else
-	LIBRARY_LDFLAGS += $(EXTERNAL_LIBS)
+    LIBRARY_LDFLAGS += $(EXTERNAL_LIBS)
 endif
 
 LIBRARY_LDFLAGS += $(ADDITIONAL_LINKER_INPUTS)
@@ -92,9 +92,9 @@ LIBRARY_LDFLAGS += $(ADDITIONAL_LINKER_INPUTS)
 all_make_files := $(firstword $(MAKEFILE_LIST)) $(CONFIGURATION_FLAGS_FILE) $(ADDITIONAL_MAKE_FILES)
 
 ifeq ($(STARTUPFILES),)
-	all_source_files := $(SOURCEFILES)
+    all_source_files := $(SOURCEFILES)
 else
-	all_source_files := $(STARTUPFILES) $(filter-out $(STARTUPFILES),$(SOURCEFILES))
+    all_source_files := $(STARTUPFILES) $(filter-out $(STARTUPFILES),$(SOURCEFILES))
 endif
 
 source_obj1 := $(all_source_files:.cpp=.o)
@@ -123,110 +123,110 @@ endif
 all: $(PRIMARY_OUTPUTS)
 
 $(BINARYDIR)/$(basename $(TARGETNAME)).bin: $(BINARYDIR)/$(TARGETNAME)
-	$(OBJCOPY) -O binary $< $@
+    $(OBJCOPY) -O binary $< $@
 
 $(BINARYDIR)/$(basename $(TARGETNAME)).ihex: $(BINARYDIR)/$(TARGETNAME)
-	$(OBJCOPY) -O ihex $< $@
+    $(OBJCOPY) -O ihex $< $@
 
 ifeq ($(TARGETTYPE),APP)
 $(BINARYDIR)/$(TARGETNAME): $(all_objs) $(EXTERNAL_LIBS)
-	$(LD) -o $@ $(LDFLAGS) $(START_GROUP) $(all_objs) $(LIBRARY_LDFLAGS) $(END_GROUP)
+    $(LD) -o $@ $(LDFLAGS) $(START_GROUP) $(all_objs) $(LIBRARY_LDFLAGS) $(END_GROUP)
 endif
 
 ifeq ($(TARGETTYPE),SHARED)
 $(BINARYDIR)/$(TARGETNAME): $(all_objs) $(EXTERNAL_LIBS)
-	$(LD) -shared -o $@ $(LDFLAGS) $(START_GROUP) $(all_objs) $(LIBRARY_LDFLAGS) $(END_GROUP)
+    $(LD) -shared -o $@ $(LDFLAGS) $(START_GROUP) $(all_objs) $(LIBRARY_LDFLAGS) $(END_GROUP)
 endif
-	
+    
 ifeq ($(TARGETTYPE),STATIC)
 $(BINARYDIR)/$(TARGETNAME): $(all_objs)
-	$(AR) -r $@ $^
+    $(AR) -r $@ $^
 endif
 
 -include $(all_objs:.o=.dep)
 
 clean:
 ifeq ($(USE_DEL_TO_CLEAN),1)
-	cmd /C del /S /Q $(BINARYDIR)
+    cmd /C del /S /Q $(BINARYDIR)
 else
-	rm -rf $(BINARYDIR)
+    rm -rf $(BINARYDIR)
 endif
 
 $(BINARYDIR):
-	mkdir $(BINARYDIR)
+    mkdir $(BINARYDIR)
 
-#VisualGDB: FileSpecificTemplates		#<--- VisualGDB will use the following lines to define rules for source files in subdirectories
+#VisualGDB: FileSpecificTemplates        #<--- VisualGDB will use the following lines to define rules for source files in subdirectories
 $(BINARYDIR)/%.o : %.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 $(BINARYDIR)/%.o : %.c $(all_make_files) |$(BINARYDIR)
-	$(CC) $(CFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CC) $(CFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 $(BINARYDIR)/%.o : %.S $(all_make_files) |$(BINARYDIR)
-	$(CC) $(CFLAGS) $(ASFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CC) $(CFLAGS) $(ASFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 $(BINARYDIR)/%.o : %.s $(all_make_files) |$(BINARYDIR)
-	$(CC) $(CFLAGS) $(ASFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CC) $(CFLAGS) $(ASFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 $(BINARYDIR)/%.o : %.cc $(all_make_files) |$(BINARYDIR)
-	$(CC) $(CFLAGS) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CC) $(CFLAGS) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 $(BINARYDIR)/%.o : %.cxx $(all_make_files) |$(BINARYDIR)
-	$(CC) $(CFLAGS) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CC) $(CFLAGS) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
-#VisualGDB: GeneratedRules				#<--- All lines below are auto-generated
+#VisualGDB: GeneratedRules                #<--- All lines below are auto-generated
 
 
 $(BINARYDIR)/sps_parser.o : src/details/media_framers/h26x/sps_parser.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/_h264_framer.o : src/details/media_framers/_h264_framer.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/_media_framer_base.o : src/details/media_framers/_media_framer_base.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/_live_rtsp_client.o : src/details/_live_rtsp_client.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/_media_sample_impl.o : src/details/_media_sample_impl.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/_media_session_impl.o : src/details/_media_session_impl.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/_rtsp_client_impl.o : src/details/_rtsp_client_impl.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/_streaming_media_session_impl.o : src/details/_streaming_media_session_impl.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/_uvxx_task_scheduler.o : src/details/_uvxx_task_scheduler.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/media_sample.o : src/media_sample.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/media_session.o : src/media_session.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
 $(BINARYDIR)/rtsp_client.o : src/rtsp_client.cpp $(all_make_files) |$(BINARYDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+    $(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 $(BINARYDIR)/libuvxx.a : ../libuvxx/$(BINARYDIR)/libuvxx.a
-	$(CP) ../libuvxx/$(BINARYDIR)/libuvxx.a $(BINARYDIR)/libuvxx.a
+    $(CP) ../libuvxx/$(BINARYDIR)/libuvxx.a $(BINARYDIR)/libuvxx.a
 
 $(BINARYDIR)/libliveMedia.a : ../libraries/live555/$(BINARYDIR)/libliveMedia.a
-	$(CP) ../libraries/live555/$(BINARYDIR)/libliveMedia.a $(BINARYDIR)/libliveMedia.a
+    $(CP) ../libraries/live555/$(BINARYDIR)/libliveMedia.a $(BINARYDIR)/libliveMedia.a
 

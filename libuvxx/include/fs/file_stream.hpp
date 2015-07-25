@@ -448,7 +448,7 @@ namespace uvxx { namespace fs {
                     }
                     catch (uvxx_exception const& e)
                     {
-                    	return size_t(0);
+                        return size_t(0);
                     }
                     catch (...)
                     {
@@ -621,7 +621,7 @@ namespace uvxx { namespace fs {
                 }
                 catch (uvxx_exception_with_code const&)
                 {
-                	return traits::eof();
+                    return traits::eof();
                 }
             });
         }
@@ -661,7 +661,7 @@ namespace uvxx { namespace fs {
                 }
                 catch (uvxx_exception_with_code const&)
                 {
-                	return traits::eof();
+                    return traits::eof();
                 }
             });
         }

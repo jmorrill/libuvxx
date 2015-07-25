@@ -48,7 +48,7 @@ namespace uvxx
         void verify_access();
 
         template <typename T>
-		uvxx::pplx::task<decltype(std::declval<T>()())> 
+        uvxx::pplx::task<decltype(std::declval<T>()())> 
         inline begin_invoke(T fun, typename std::enable_if<!std::is_void< decltype( std::declval<T>()() ) >::value, T>::type* = 0)  
         {
             uvxx::pplx::task_completion_event<decltype(fun())> evt;
@@ -62,7 +62,7 @@ namespace uvxx
                 }
                 catch (std::exception const& e)
                 {
-        	        evt.set_exception(e);
+                    evt.set_exception(e);
                 }
             };
 

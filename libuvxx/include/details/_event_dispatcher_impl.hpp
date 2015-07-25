@@ -96,7 +96,7 @@ namespace uvxx { namespace details
                 }
                 catch (std::exception& e)
                 {
-        	        evt.set_exception(e);
+                    evt.set_exception(e);
                 }
             };
 

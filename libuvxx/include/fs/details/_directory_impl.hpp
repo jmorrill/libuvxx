@@ -103,32 +103,32 @@ namespace uvxx { namespace fs { namespace details
         virtual ~_directory_impl();
 
         pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path);
-	    
+        
         pplx::task<directory_entry_result_ptr> get_files_async(std::string const& path, bool recursive);
-	    
+        
         pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path);
-	    
+        
         pplx::task<directory_entry_result_ptr> get_directories_async(std::string const& path, bool recursive);
-	    
+        
         pplx::task<void> create_directory_async(std::string const& path);
-	    
+        
         pplx::task<bool> exists_async(std::string const& path);
-	    
+        
         pplx::task<void> delete_async(std::string const& path);
-	    
+        
         pplx::task<void> delete_async(std::string const& path, bool recursive);
 
     private:
         pplx::task<directory_entry_result_ptr> get_entries_async(std::string const& path, dir_entry_type type, bool recursive);
-	    
+        
         pplx::task<scandir_entry_result_ptr> get_all_scandir_entries_async(std::string const& path);
-	    
+        
         pplx::task<scandir_entry_result_ptr> get_entries_async(uv_fs_t* req, std::string const& path);
-	    
+        
         pplx::task<void> get_stat_async(std::string const& path);
-	    
+        
         pplx::task<void> create_directory_internal_async(std::string const& path);
-	    
+        
         static void on_scandir(uv_fs_t * req);
 
         static void on_mkdir(uv_fs_t * req);

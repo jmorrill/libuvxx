@@ -41,7 +41,7 @@ namespace uvxx { namespace fs
             _last_write_time = rhs._last_write_time;
             _last_access_time = rhs._last_access_time;
             _full_name = std::move(rhs._full_name);
-	        return *this;
+            return *this;
         }
 
         std::time_t creation_time_get() const

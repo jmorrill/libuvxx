@@ -260,7 +260,7 @@ namespace uvxx { namespace fs { namespace details
             }
             catch (no_file_or_directory const&)
             {
-            	return false;
+                return false;
             }
            
             return true;
@@ -338,7 +338,7 @@ namespace uvxx { namespace fs { namespace details
             }
             catch (end_of_file const&)
             {
-            	
+                
             }
 
             if (holder->nonexisting_dirs.empty())
@@ -370,7 +370,7 @@ namespace uvxx { namespace fs { namespace details
             }
             catch (end_of_file const&)
             {
-            	
+                
             }
         });
     }
@@ -444,7 +444,7 @@ namespace uvxx { namespace fs { namespace details
             }
             catch (end_of_file)
             {
-            	
+                
             }
             catch (...)
             {
@@ -482,7 +482,7 @@ namespace uvxx { namespace fs { namespace details
             }
             catch (end_of_file const&)
             {
-            	
+                
             }
             catch (...)
             {

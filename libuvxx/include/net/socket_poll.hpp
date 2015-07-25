@@ -20,9 +20,9 @@ namespace uvxx { namespace net
     class socket_poll : public event_dispatcher_object
     {
     public:
-	    socket_poll();
+        socket_poll();
 
-	    explicit socket_poll(int socket);
+        explicit socket_poll(int socket);
 
         socket_poll(const socket_poll&) = default;
 
@@ -38,9 +38,9 @@ namespace uvxx { namespace net
 
         void stop();
 
-	    operator bool();
+        operator bool();
 
-	    bool operator==(std::nullptr_t rhs);
+        bool operator==(std::nullptr_t rhs);
 
     private:
        std::function<void(int status, uvxx::net::socket_poll_event events)> _callback;

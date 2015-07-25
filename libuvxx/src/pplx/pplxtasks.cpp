@@ -5,12 +5,12 @@
 
 namespace uvxx { namespace pplx { namespace details 
 {
-	
+    
     void begin_invoke_on_current(std::function<void()> method)
-	{
-		uvxx::event_dispatcher::current_dispatcher().begin_invoke(std::move(method));
-	}
-	
+    {
+        uvxx::event_dispatcher::current_dispatcher().begin_invoke(std::move(method));
+    }
+    
     bool _ContextCallback::_IsCurrentOriginSTA()
     {
         auto has_dispatcher = uvxx::details::_event_dispatcher_impl::has_dispatcher();
