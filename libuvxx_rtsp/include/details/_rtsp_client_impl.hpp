@@ -119,12 +119,12 @@ namespace uvxx { namespace rtsp { namespace details
         std::string _password;
 
         read_sample_delegate _read_sample_delegate;
-	    
-	    stream_closed_delegate _stream_closed_delegate;
+        
+        stream_closed_delegate _stream_closed_delegate;
 
         event_dispatcher_timer _timeout_timer;
-	    
-	    std::chrono::milliseconds _timeout;
+        
+        std::chrono::milliseconds _timeout;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;
