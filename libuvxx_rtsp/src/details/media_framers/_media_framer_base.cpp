@@ -35,8 +35,6 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
 
     if (live_subsession->rtcpInstance())
     {
-        media_sample sample;
-
         _sample.capacity_set(DEFAULT_READ_BUFFER_SIZE);
 
         _sample.stream_number_set(subsession.stream_number());
