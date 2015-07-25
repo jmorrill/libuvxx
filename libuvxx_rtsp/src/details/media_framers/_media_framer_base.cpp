@@ -168,7 +168,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
         marker_bit = rtp_source->curPacketMarkerBit();
     }
 
-    microseconds reported_micro_seconds((ONE_MILLION * presentation_time.tv_sec) + presentation_time.tv_usec);
+    microseconds reported_micro_seconds(ONE_MILLION * presentation_time.tv_sec + presentation_time.tv_usec);
     
     if (_lastPresentationTime == microseconds::zero() || 
        (is_synced && !_was_synced))

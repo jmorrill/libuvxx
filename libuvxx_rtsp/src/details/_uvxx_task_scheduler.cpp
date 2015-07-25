@@ -152,21 +152,30 @@ void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, 
         return;
     }
 
+    auto iterator = _handlers.find(socket);
+
     if (condition_set == 0)
     {
-        _handlers.erase(socket);
+        if(iterator != _handlers.end())
+        {
+            _handlers.erase(iterator);
+        }
+
         return;
     }
 
-    if (_handlers.find(socket) == _handlers.end())
+    if (iterator == _handlers.end())
     {
-        socket_handler_descriptor socket_handler(socket, condition_set, handler_proc, client_data);
+        socket_handler_descriptor socket_handler(socket, 
+                                                 condition_set, 
+                                                 handler_proc, 
+                                                 client_data);
 
         _handlers.emplace(socket, std::move(socket_handler));
     }
     else
     {
-        auto& handler = _handlers.at(socket);
+        auto& handler = iterator->second;
 
         handler.set_handler(handler_proc, client_data);
 
@@ -181,13 +190,15 @@ void _uvxx_task_scheduler::moveSocketHandling(int old_socket, int new_socket)
         return;
     }
 
-    if (_handlers.find(old_socket) == _handlers.end())
+    auto iterator = _handlers.find(old_socket);
+
+    if (iterator == _handlers.end())
     {
-        auto handler = std::move(_handlers.at(old_socket));
+        auto handler = std::move(iterator->second);
 
         handler.set_socket(new_socket);
 
-        _handlers.erase(old_socket);
+        _handlers.erase(iterator);
 
         _handlers.emplace(new_socket, std::move(handler));
     }
