@@ -28,19 +28,19 @@ namespace uvxx { namespace rtsp { namespace details
     protected:
         virtual void doEventLoop(char* watchVariable);
 
-        virtual void SingleStep(unsigned max_delay_time);
+        virtual void SingleStep(unsigned max_delay_time) override;
 
-        virtual void setBackgroundHandling(int socket, int condition_set, BackgroundHandlerProc* handler_proc, void* client_data);
+        virtual void setBackgroundHandling(int socket, int condition_set, BackgroundHandlerProc* handler_proc, void* client_data) override;
 
-        virtual void moveSocketHandling(int old_socket, int new_socket);
+        virtual void moveSocketHandling(int old_socket, int new_socket) override;
 
-        virtual TaskToken scheduleDelayedTask(int64_t microseconds, TaskFunc* proc, void* client_data);
+        virtual TaskToken scheduleDelayedTask(int64_t microseconds, TaskFunc* proc, void* client_data) override;
 
         void set_next_timeout();
 
-        virtual void unscheduleDelayedTask(TaskToken& prevTask);
+        virtual void unscheduleDelayedTask(TaskToken& prevTask) override;
 
-        virtual void triggerEvent(EventTriggerId eventTriggerId, void* clientData = nullptr);
+        virtual void triggerEvent(EventTriggerId eventTriggerId, void* clientData = nullptr) override;
 
         class socket_handler_descriptor
         {

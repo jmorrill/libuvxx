@@ -57,7 +57,7 @@ int main(int argc, char* argv [])
     {
         client.on_sample_set(on_sample_callback);
 
-        client.on_stream_closed_set(stream_closed);
+	    client.on_stream_closed_set(stream_closed);
 
         client.credentials_set("admin", "12345");
 
