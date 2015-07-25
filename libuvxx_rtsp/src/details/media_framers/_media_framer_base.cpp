@@ -72,7 +72,7 @@ _media_framer_base::~_media_framer_base()
         subsessionSource->stopGettingFrames();
     }
 
-    live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, nullptr);
+    live_subsession->rtcpInstance()->setByeHandler(on_rtcp_bye, this);
 }
 
 void _media_framer_base::begin_reading()
@@ -83,6 +83,11 @@ void _media_framer_base::begin_reading()
 void _media_framer_base::on_sample_set(read_sample_delegate callback)
 {
     _sample_callback = std::move(callback);
+}
+
+void _media_framer_base::on_stream_closed_set(stream_closed_delegate callback)
+{
+	_stream_closed_delegate = std::move(callback);
 }
 
 void _media_framer_base::continue_reading()
@@ -105,8 +110,8 @@ void _media_framer_base::continue_reading()
                                 _sample.capacity(),
                                 on_after_getting_frame,
                                 this,
-                                nullptr,
-                                nullptr);
+                                on_rtcp_bye,
+                                this);
 }
 
 int _media_framer_base::stream_number()
@@ -190,14 +195,20 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
     sample_receieved(marker_bit);
 }
 
-void _media_framer_base::on_rtcp_bye(void* /*client_data*/)
+void _media_framer_base::on_rtcp_bye(void* client_data)
 {
-
+	assert(client_data);
+	
+	auto framer = static_cast<_media_framer_base*>(client_data);
+	
+	if (framer->_stream_closed_delegate)
+	{
+		framer->_stream_closed_delegate(framer->_subsession.stream_number());
+	}
 }
 
 void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample)
 {
-
     if (truncated_amount == 0)
     {
         return;

@@ -15,11 +15,11 @@ rtsp_client client;
 
 void on_sample_callback(const media_sample& sample)
 {
-    printf("codec: %s\t size: %d\t pts: %I64d \t s:%u",
-           sample.codec_name().c_str(),
-           sample.size(),
-           sample.presentation_time().count(),
-           sample.stream_number());
+    printf("codec: %s\t size: %d\t pts: %lld \t s:%u",
+        sample.codec_name().c_str(),
+        sample.size(),
+        sample.presentation_time().count(),
+        sample.stream_number());
 
     if (sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE) == sample_major_type::video)
     {
@@ -40,6 +40,11 @@ void on_sample_callback(const media_sample& sample)
     client.read_stream_sample();
 }
 
+void stream_closed(int stream_number)
+{
+    printf("%d stream closed\n", stream_number);
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -48,16 +53,20 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    printf("argv[1] is %s\n", argv[1]);
     {
         client.on_sample_set(on_sample_callback);
+
+        client.on_stream_closed_set(stream_closed);
 
         client.credentials_set("admin", "12345");
 
         client.protocol_set(transport_protocol::tcp);
- 
+
         client.open(argv[1]).then([=]
         {
-            return client.play(); 
+            printf("starting play \n");
+            return client.play();
         }).then([]
         {
             client.read_stream_sample();
@@ -74,13 +83,13 @@ int main(int argc, char* argv[])
             {
                 printf("timeout\n");
             }
-            catch (const rtsp_exception& e)
+            catch (const std::exception& e)
             {
                 printf("exception: ");
                 printf(e.what());
             }
 
-            event_dispatcher::current_dispatcher().begin_shutdown();
+           // event_dispatcher::current_dispatcher().begin_shutdown();
         });
 
         event_dispatcher::run();

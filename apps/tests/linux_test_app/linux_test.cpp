@@ -40,6 +40,11 @@ void on_sample_callback(const media_sample& sample)
     client.read_stream_sample();
 }
 
+void stream_closed(int stream_number)
+{
+    printf("%d stream closed\n", stream_number);
+}
+
 
 int main(int argc, char* argv [])
 {
@@ -50,8 +55,9 @@ int main(int argc, char* argv [])
     
     printf("argv[1] is %s\n", argv[1]);
     {
-        
         client.on_sample_set(on_sample_callback);
+
+        client.on_stream_closed_set(stream_closed);
 
         client.credentials_set("admin", "12345");
 

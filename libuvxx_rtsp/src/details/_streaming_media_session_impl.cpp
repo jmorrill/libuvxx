@@ -48,6 +48,15 @@ void _streaming_media_session_impl::on_sample_set(read_sample_delegate callback)
     }
 }
 
+void _streaming_media_session_impl::on_stream_closed_set(stream_closed_delegate callback)
+{
+	_stream_closed_delegate = std::move(callback);
+
+	for (auto& framer : _media_framers)
+	{
+		framer->on_stream_closed_set(_stream_closed_delegate);
+	}
+}
 
 void _streaming_media_session_impl::read_stream_sample()
 {

@@ -71,6 +71,16 @@ void rtsp_client::protocol_set(transport_protocol protocol)
     __rtsp_client_imp->protocol_set(protocol);
 }
 
+void rtsp_client::timeout_set(std::chrono::milliseconds timeout)
+{
+	__rtsp_client_imp->timeout_set(timeout);
+}
+
+std::chrono::milliseconds rtsp_client::timeout() const
+{
+	return __rtsp_client_imp->timeout();
+}
+
 void rtsp_client::read_stream_sample() const
 {
     __rtsp_client_imp->read_stream_sample();
@@ -81,4 +91,8 @@ void rtsp_client::on_sample_set(read_sample_delegate callback) const
     __rtsp_client_imp->on_sample_callback_set(std::move(callback));
 }
 
+void rtsp_client::on_stream_closed_set(stream_closed_delegate callback) const
+{
+	__rtsp_client_imp->on_stream_closed_set(callback);
+}
 

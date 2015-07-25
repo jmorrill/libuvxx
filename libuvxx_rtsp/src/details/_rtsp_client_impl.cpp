@@ -401,6 +401,16 @@ void _rtsp_client_impl::on_sample_callback_set(read_sample_delegate callback)
     }
 }
 
+void _rtsp_client_impl::on_stream_closed_set(stream_closed_delegate callback)
+{
+	_stream_closed_delegate = std::move(callback);
+	
+	if (_streaming_session)
+	{
+		_streaming_session->on_stream_closed_set(_stream_closed_delegate);
+	}
+}
+
 void _rtsp_client_impl::read_stream_sample()
 {
     verify_access();
