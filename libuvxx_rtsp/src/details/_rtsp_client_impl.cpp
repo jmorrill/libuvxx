@@ -14,20 +14,12 @@ using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
-template <int c>
+template <int code>
 struct result_code_constant
 {
     static int value()
     {
-        return c;
-    }
-};
-template <>
-struct result_code_constant<0>
-{
-    static int value()
-    {
-        return 0;
+        return code;
     }
 };
 
@@ -123,7 +115,6 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
 
     setup_event.set();
 }
-
 
 void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
 {
