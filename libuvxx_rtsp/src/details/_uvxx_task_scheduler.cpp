@@ -192,7 +192,7 @@ void _uvxx_task_scheduler::moveSocketHandling(int old_socket, int new_socket)
 
     auto iterator = _handlers.find(old_socket);
 
-    if (iterator == _handlers.end())
+    if (iterator != _handlers.end())
     {
         auto handler = std::move(iterator->second);
 
