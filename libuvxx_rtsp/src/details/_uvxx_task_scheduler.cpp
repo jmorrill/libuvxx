@@ -89,14 +89,14 @@ void _uvxx_task_scheduler::schedulerTickTask()
     scheduleDelayedTask(fMaxSchedulerGranularity, schedulerTickTask, this);
 }
 
-void _uvxx_task_scheduler::SingleStep(unsigned /*maxDelayTime*/) 
+void _uvxx_task_scheduler::SingleStep(unsigned /* maxDelayTime */) 
 {
     if (fTriggersAwaitingHandling != 0)
     {
         if (fTriggersAwaitingHandling == fLastUsedTriggerMask)
         {
-            // Common-case optimization for a single event trigger:
-            fTriggersAwaitingHandling &=~ fLastUsedTriggerMask;
+            /* Common-case optimization for a single event trigger */
+            fTriggersAwaitingHandling &= ~fLastUsedTriggerMask;
 
             if (fTriggeredEventHandlers[fLastUsedTriggerNum]) 
             {
@@ -105,14 +105,15 @@ void _uvxx_task_scheduler::SingleStep(unsigned /*maxDelayTime*/)
         } 
         else 
         {
-            /* Look for an event trigger that needs handling (making sure that we make forward progress through all possible triggers): */
+            /* Look for an event trigger that needs handling 
+			   making sure that we make forward progress through all possible triggers */
             unsigned i = fLastUsedTriggerNum;
 
             EventTriggerId mask = fLastUsedTriggerMask;
 
             do 
             {
-                i = (i+1) % MAX_NUM_EVENT_TRIGGERS;
+                i = (i + 1) % MAX_NUM_EVENT_TRIGGERS;
 
                 mask >>= 1;
 
@@ -153,10 +154,12 @@ void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, 
     }
 
     auto iterator = _handlers.find(socket);
+	
+	bool found = iterator != _handlers.end();
 
     if (condition_set == 0)
     {
-        if(iterator != _handlers.end())
+        if(found)
         {
             _handlers.erase(iterator);
         }
@@ -164,7 +167,7 @@ void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, 
         return;
     }
 
-    if (iterator == _handlers.end())
+    if (!found)
     {
         socket_handler_descriptor socket_handler(socket, 
                                                  condition_set, 
@@ -216,7 +219,6 @@ _uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(int s
 {
     start_poll();
 }
-
 
 _uvxx_task_scheduler::socket_handler_descriptor& _uvxx_task_scheduler::socket_handler_descriptor::operator=(socket_handler_descriptor&& rhs)
 {
