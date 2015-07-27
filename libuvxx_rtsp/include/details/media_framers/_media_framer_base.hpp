@@ -50,6 +50,8 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 
         std::chrono::microseconds _lastPresentationTime;
 
+		std::chrono::microseconds _presentation_time_base;
+
         std::chrono::microseconds _currentPresentationTime;
 
         bool _was_synced;

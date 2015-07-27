@@ -136,7 +136,6 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
     client_impl->_play_event.set();
 }
 
-
 void _rtsp_client_impl::on_timeout_timer_tick(event_dispatcher_timer* /*sender*/)
 {
     if (_live_client && _last_rtsp_command_id)
@@ -338,11 +337,11 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
                 return create_task(_play_event);
             });
         });
-    }).then([=](task<void> iterativeTask)
+    }).then([=](task<void> iterative_task)
     {
         try
         {
-            iterativeTask.get();
+            iterative_task.get();
         }
         catch (const iterative_task_complete_exception&)
         {
@@ -353,7 +352,6 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
         _streaming_session->on_sample_set(_read_sample_delegate);
     });
 }
-
 
 std::string _rtsp_client_impl::password() const
 {

@@ -163,6 +163,25 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
     {
         auto rtp_source = static_cast<RTPSource*>(framed_source);
 
+
+		RTPReceptionStatsDB::Iterator statsIter(rtp_source->receptionStatsDB());
+		// Assume that there's only one SSRC source (usually the case): 
+		RTPReceptionStats* stats = statsIter.next(True);
+		if (stats != nullptr) 
+		{
+			auto kBytesTotal = stats->totNumKBytesReceived();
+
+			auto totNumPacketsReceived = stats->totNumPacketsReceived();
+
+			auto totNumPacketsExpected = stats->totNumPacketsExpected();
+
+			auto packet_loss = 100.0 - ((totNumPacketsReceived / static_cast<double>(totNumPacketsExpected)) * 100.0);
+			
+			rtp_source->receptionStatsDB().reset();
+
+			printf("packet loss %f\n", packet_loss);
+		}
+
         is_synced = rtp_source->hasBeenSynchronizedUsingRTCP();
 
         marker_bit = rtp_source->curPacketMarkerBit();
@@ -174,15 +193,20 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
        (is_synced && !_was_synced))
     {
         _lastPresentationTime = reported_micro_seconds;
+
+		_presentation_time_base = reported_micro_seconds;
     }
 
     _was_synced = is_synced;
     
-    auto sample_duration = microseconds(std::abs(reported_micro_seconds.count() - _lastPresentationTime.count()));
-   
-    _currentPresentationTime += sample_duration;
+	if(marker_bit)
+	{
+		auto sample_duration = microseconds(std::abs(reported_micro_seconds.count() - _lastPresentationTime.count()));
 
-    _lastPresentationTime = reported_micro_seconds;
+		_currentPresentationTime += sample_duration;
+
+		_lastPresentationTime = reported_micro_seconds;
+	}
 
     _sample.presentation_time_set(_currentPresentationTime);
 
