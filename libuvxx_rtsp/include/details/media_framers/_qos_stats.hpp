@@ -5,14 +5,14 @@ class RTPReceptionStats;
 
 namespace uvxx { namespace rtsp { namespace details { namespace media_framers 
 {
-    class qos_stats
+    class _qos_stats
     {
     public:
-        explicit qos_stats();
+        explicit _qos_stats();
 
-        qos_stats(const qos_stats&) = default;
+        _qos_stats(const _qos_stats&) = default;
 
-        qos_stats& operator=(const qos_stats&) = default;
+        _qos_stats& operator=(const _qos_stats&) = default;
 
     public:
         void reset_statistics_interval(std::chrono::milliseconds reset_interval);

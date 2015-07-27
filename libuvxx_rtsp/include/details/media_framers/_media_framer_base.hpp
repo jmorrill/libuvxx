@@ -57,6 +57,6 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 
         bool _was_synced;
 
-        qos_stats _qos_stats;
+        _qos_stats _qos_stats;
     };
 }}}}
