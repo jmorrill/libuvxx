@@ -28,6 +28,7 @@
     <ClInclude Include="include\rtsp_client.hpp" />
     <ClInclude Include="include\rtsp_exceptions.hpp" />
     <ClInclude Include="include\rtsp_misc.hpp" />
+    <ClInclude Include="include\stream_statistics.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp" />

@@ -23,7 +23,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 
         uint32_t expected_packet_count() const;
 
-        uint32_t current_received_packet_count() const;
+        uint32_t received_packet_count() const;
 
         double total_kbytes_received() const;
 

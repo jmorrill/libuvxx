@@ -81,6 +81,11 @@ std::chrono::milliseconds rtsp_client::timeout() const
     return __rtsp_client_imp->timeout();
 }
 
+stream_statistics rtsp_client::stream_statistics_get(int stream_id) const
+{
+    return __rtsp_client_imp->stream_statistics_get(stream_id);
+}
+
 void rtsp_client::read_stream_sample() const
 {
     __rtsp_client_imp->read_stream_sample();

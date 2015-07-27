@@ -22,6 +22,8 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
             
         int stream_number();
 
+        _qos_stats& qos_stats_get();
+
     protected:
         virtual void sample_receieved(bool packet_marker_bit);
 
@@ -57,6 +59,6 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 
         bool _was_synced;
 
-        _qos_stats _qos_stats;
+        _qos_stats __qos_stats;
     };
 }}}}

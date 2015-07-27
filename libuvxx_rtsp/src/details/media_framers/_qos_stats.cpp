@@ -6,11 +6,11 @@
 using namespace uvxx::rtsp::details::media_framers;
 
 _qos_stats::_qos_stats(): _percent_packet_loss(0),
-                        _current_expected_packet_count(0),
-                        _current_received_packet_count(0),
-                        _last_expected_packet_count(0),
-                        _last_received_packet_count(0),
-                        _reset_statistics_interval(10)
+                          _current_expected_packet_count(0),
+                          _current_received_packet_count(0),
+                          _last_expected_packet_count(0),
+                          _last_received_packet_count(0),
+                          _reset_statistics_interval(10)
 {
 }
 
@@ -34,7 +34,7 @@ uint32_t _qos_stats::expected_packet_count() const
     return _current_expected_packet_count;
 }
 
-uint32_t _qos_stats::current_received_packet_count() const
+uint32_t _qos_stats::received_packet_count() const
 {
     return _current_received_packet_count;
 }
@@ -69,7 +69,7 @@ void _qos_stats::record_stats(RTPReceptionStats& stats)
 
     if (_percent_packet_loss < 0)
     {
-        _percent_packet_loss = std::abs(_percent_packet_loss);
+        _percent_packet_loss = 0;
     }
 
     if (time_to_reset)
@@ -79,10 +79,5 @@ void _qos_stats::record_stats(RTPReceptionStats& stats)
         _last_received_packet_count = _current_received_packet_count;
 
         _last_check_time = std::chrono::high_resolution_clock::now();
-    }
-
-    if (_percent_packet_loss > 0)
-    {
-        printf("packet loss %f\n", _percent_packet_loss);
     }
 }

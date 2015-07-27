@@ -269,6 +269,8 @@ void _rtsp_client_impl::protocol_set(transport_protocol protocol)
 
 void _rtsp_client_impl::timeout_set(std::chrono::milliseconds timeout)
 {
+    verify_access();
+
     _timeout = timeout;
 
     _timeout_timer.timeout_set(_timeout);
@@ -276,7 +278,21 @@ void _rtsp_client_impl::timeout_set(std::chrono::milliseconds timeout)
 
 std::chrono::milliseconds _rtsp_client_impl::timeout()
 {
+    verify_access();
+
     return _timeout;
+}
+
+stream_statistics _rtsp_client_impl::stream_statistics_get(int stream_id) const
+{
+    verify_access();
+
+    if(!_streaming_session)
+    {
+        throw std::invalid_argument("streaming session not configured");
+    }
+
+    return _streaming_session->stream_statistics_get(stream_id);
 }
 
 transport_protocol _rtsp_client_impl::protocol() const

@@ -113,6 +113,11 @@ void _media_framer_base::continue_reading()
                                 this);
 }
 
+_qos_stats& _media_framer_base::qos_stats_get()
+{
+    return __qos_stats;
+}
+
 int _media_framer_base::stream_number()
 {
     return _subsession.stream_number();
@@ -171,7 +176,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
 		if (stats != nullptr) 
 		{
-			_qos_stats.record_stats(*stats);
+			__qos_stats.record_stats(*stats);
 		}
 
         is_synced = rtp_source->hasBeenSynchronizedUsingRTCP();

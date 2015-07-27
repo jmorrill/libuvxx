@@ -79,6 +79,9 @@
     <ClInclude Include="include\details\media_framers\_qos_stats.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\stream_statistics.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
