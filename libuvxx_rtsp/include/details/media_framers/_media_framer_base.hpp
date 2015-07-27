@@ -2,7 +2,7 @@
 #include "rtsp_client.hpp"
 #include "media_session.hpp"
 #include "media_sample.hpp"
-#include "qos_stats.hpp"
+#include "_qos_stats.hpp"
 
 namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 {
