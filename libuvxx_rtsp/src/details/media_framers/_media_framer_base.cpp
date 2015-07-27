@@ -18,6 +18,7 @@ using namespace uvxx::rtsp::details::media_framers;
 static const size_t DEFAULT_READ_BUFFER_SIZE = 200 * 1024;
 static const size_t MAX_READ_BUFFER_SIZE     = 2 * 1024 * 1024;
 
+
 _media_framer_base::_media_framer_base(const media_subsession& subsession) :
     _subsession(std::move(subsession)),
     _last_presentation_time(0),
@@ -170,15 +171,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
 		if (stats != nullptr) 
 		{
-			auto kBytesTotal = stats->totNumKBytesReceived();
-
-			auto totNumPacketsReceived = stats->totNumPacketsReceived();
-
-			auto totNumPacketsExpected = stats->totNumPacketsExpected();
-
-			auto packet_loss = 100.0 - ((totNumPacketsReceived / static_cast<double>(totNumPacketsExpected)) * 100.0);
-			
-			printf("packet loss %f\n", packet_loss);
+			_qos_stats.record_stats(*stats);
 		}
 
         is_synced = rtp_source->hasBeenSynchronizedUsingRTCP();

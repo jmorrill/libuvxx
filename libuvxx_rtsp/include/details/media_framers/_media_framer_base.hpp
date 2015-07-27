@@ -2,6 +2,7 @@
 #include "rtsp_client.hpp"
 #include "media_session.hpp"
 #include "media_sample.hpp"
+#include "qos_stats.hpp"
 
 namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 {
@@ -17,8 +18,8 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     
         void on_sample_set(read_sample_delegate callback);
 
-	    void on_stream_closed_set(stream_closed_delegate callback);
-		    
+        void on_stream_closed_set(stream_closed_delegate callback);
+            
         int stream_number();
 
     protected:
@@ -45,15 +46,17 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         media_sample _sample;
 
         read_sample_delegate _sample_callback;
-	    
-	    stream_closed_delegate _stream_closed_delegate;
+        
+        stream_closed_delegate _stream_closed_delegate;
 
         std::chrono::microseconds _last_presentation_time;
 
-		std::chrono::microseconds _presentation_time_base;
+        std::chrono::microseconds _presentation_time_base;
 
         std::chrono::microseconds _current_presentation_time;
 
         bool _was_synced;
+
+        qos_stats _qos_stats;
     };
 }}}}

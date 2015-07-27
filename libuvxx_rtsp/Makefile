@@ -35,7 +35,7 @@ error:
 	$(error Invalid configuration, please check your inputs)
 endif
 
-SOURCEFILES := src/details/media_framers/h26x/sps_parser.cpp src/details/media_framers/_h264_framer.cpp src/details/media_framers/_media_framer_base.cpp src/details/_live_rtsp_client.cpp src/details/_media_sample_impl.cpp src/details/_media_session_impl.cpp src/details/_rtsp_client_impl.cpp src/details/_streaming_media_session_impl.cpp src/details/_uvxx_task_scheduler.cpp src/media_sample.cpp src/media_session.cpp src/rtsp_client.cpp
+SOURCEFILES := src/details/media_framers/h26x/sps_parser.cpp src/details/media_framers/qos_stats.cpp src/details/media_framers/_h264_framer.cpp src/details/media_framers/_media_framer_base.cpp src/details/_live_rtsp_client.cpp src/details/_media_sample_impl.cpp src/details/_media_session_impl.cpp src/details/_rtsp_client_impl.cpp src/details/_streaming_media_session_impl.cpp src/details/_uvxx_task_scheduler.cpp src/media_sample.cpp src/media_session.cpp src/rtsp_client.cpp
 EXTERNAL_LIBS := ../libuvxx/$(BINARYDIR)/libuvxx.a ../libraries/live555/$(BINARYDIR)/libliveMedia.a
 EXTERNAL_LIBS_COPIED := $(foreach lib, $(EXTERNAL_LIBS),$(BINARYDIR)/$(notdir $(lib)))
 
@@ -178,6 +178,10 @@ $(BINARYDIR)/%.o : %.cxx $(all_make_files) |$(BINARYDIR)
 
 
 $(BINARYDIR)/sps_parser.o : src/details/media_framers/h26x/sps_parser.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/qos_stats.o : src/details/media_framers/qos_stats.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 

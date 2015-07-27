@@ -63,6 +63,9 @@
     <ClInclude Include="include\sample_attributes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\media_framers\qos_stats.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp">
@@ -99,6 +102,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\media_framers\qos_stats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
