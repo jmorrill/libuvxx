@@ -106,7 +106,7 @@ void _uvxx_task_scheduler::SingleStep(unsigned /* maxDelayTime */)
         else 
         {
             /* Look for an event trigger that needs handling 
-			   making sure that we make forward progress through all possible triggers */
+               making sure that we make forward progress through all possible triggers */
             unsigned i = fLastUsedTriggerNum;
 
             EventTriggerId mask = fLastUsedTriggerMask;
@@ -154,8 +154,8 @@ void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, 
     }
 
     auto iterator = _handlers.find(socket);
-	
-	bool found = iterator != _handlers.end();
+    
+    bool found = iterator != _handlers.end();
 
     if (condition_set == 0)
     {
