@@ -20,8 +20,8 @@ static const size_t MAX_READ_BUFFER_SIZE     = 2 * 1024 * 1024;
 
 _media_framer_base::_media_framer_base(const media_subsession& subsession) :
     _subsession(std::move(subsession)),
-    _lastPresentationTime(0),
-    _currentPresentationTime(0),
+    _last_presentation_time(0),
+    _current_presentation_time(0),
     _was_synced(false)
 {
     auto live_subsession = subsession.__media_subsession->live_media_subsession();
@@ -163,10 +163,11 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
     {
         auto rtp_source = static_cast<RTPSource*>(framed_source);
 
-
 		RTPReceptionStatsDB::Iterator statsIter(rtp_source->receptionStatsDB());
+
 		// Assume that there's only one SSRC source (usually the case): 
 		RTPReceptionStats* stats = statsIter.next(True);
+
 		if (stats != nullptr) 
 		{
 			auto kBytesTotal = stats->totNumKBytesReceived();
@@ -177,8 +178,6 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
 			auto packet_loss = 100.0 - ((totNumPacketsReceived / static_cast<double>(totNumPacketsExpected)) * 100.0);
 			
-			rtp_source->receptionStatsDB().reset();
-
 			printf("packet loss %f\n", packet_loss);
 		}
 
@@ -189,10 +188,10 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
     microseconds reported_micro_seconds(ONE_MILLION * presentation_time.tv_sec + presentation_time.tv_usec);
     
-    if (_lastPresentationTime == microseconds::zero() || 
+    if (_last_presentation_time == microseconds::zero() || 
        (is_synced && !_was_synced))
     {
-        _lastPresentationTime = reported_micro_seconds;
+        _last_presentation_time = reported_micro_seconds;
 
 		_presentation_time_base = reported_micro_seconds;
     }
@@ -201,14 +200,14 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
     
 	if(marker_bit)
 	{
-		auto sample_duration = microseconds(std::abs(reported_micro_seconds.count() - _lastPresentationTime.count()));
+		auto sample_duration = microseconds(std::abs(reported_micro_seconds.count() - _last_presentation_time.count()));
 
-		_currentPresentationTime += sample_duration;
+		_current_presentation_time += sample_duration;
 
-		_lastPresentationTime = reported_micro_seconds;
+		_last_presentation_time = reported_micro_seconds;
 	}
 
-    _sample.presentation_time_set(_currentPresentationTime);
+    _sample.presentation_time_set(_current_presentation_time);
 
     _sample.is_truncated_set(truncated_bytes > 0);
 

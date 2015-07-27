@@ -48,11 +48,11 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 	    
 	    stream_closed_delegate _stream_closed_delegate;
 
-        std::chrono::microseconds _lastPresentationTime;
+        std::chrono::microseconds _last_presentation_time;
 
 		std::chrono::microseconds _presentation_time_base;
 
-        std::chrono::microseconds _currentPresentationTime;
+        std::chrono::microseconds _current_presentation_time;
 
         bool _was_synced;
     };
