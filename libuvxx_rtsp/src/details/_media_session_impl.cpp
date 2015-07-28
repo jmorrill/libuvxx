@@ -8,6 +8,8 @@ _media_subsession_impl::_media_subsession_impl(int stream_number, MediaSubsessio
     _stream_number(stream_number)
 {
     _live_subsession = live_subsession;
+
+    _medium_name = live_subsession->mediumName();
 }
 
 _media_subsession_impl::_media_subsession_impl() : _live_subsession(nullptr)
@@ -25,6 +27,7 @@ _media_subsession_impl& _media_subsession_impl::operator=(_media_subsession_impl
     if(this != &rhs)
     {
         _live_subsession = rhs._live_subsession;
+
         _live_subsession = nullptr;
     }
 
@@ -41,9 +44,14 @@ _media_subsession_impl::~_media_subsession_impl()
 
 }
 
-std::string _media_subsession_impl::codec_name()
+std::string _media_subsession_impl::codec_name() const
 {
     return _live_subsession->codecName();
+}
+
+std::string _media_subsession_impl::medium_name() const
+{
+    return _medium_name;
 }
 
 MediaSubsession* _media_subsession_impl::live_media_subsession() const
@@ -56,7 +64,17 @@ std::string _media_subsession_impl::get_attribute(const std::string& attribute_n
     return _live_subsession->attrVal_str(attribute_name.c_str());
 }
 
-int _media_subsession_impl::stream_number()
+uint32_t _media_subsession_impl::rtp_timestamp_frequency() const
+{
+    return _live_subsession->rtpTimestampFrequency();
+}
+
+uint32_t _media_subsession_impl::channel_count() const
+{
+    return _live_subsession->numChannels();
+}
+
+int _media_subsession_impl::stream_number() const
 {
     return _stream_number;
 }

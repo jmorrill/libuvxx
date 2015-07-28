@@ -41,15 +41,17 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
 
         _sample.stream_number_set(subsession.stream_number());
 
-        _sample.codec_name_set(live_subsession->codecName());
+        _sample.codec_name_set(subsession.codec_name());
 
         sample_major_type media_major = sample_major_type::unknown;
 
-        if (!strcmp(live_subsession->mediumName(), "video"))
+        auto medium_name = subsession.medium_name();
+
+        if (!strcmp(medium_name.c_str(), "video"))
         {
             media_major = sample_major_type::video;
         }
-        else if (!strcmp(live_subsession->mediumName(), "audio"))
+        else if (!strcmp(medium_name.c_str(), "audio"))
         {
             media_major = sample_major_type::audio;
         }

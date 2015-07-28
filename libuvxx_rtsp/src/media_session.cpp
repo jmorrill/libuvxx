@@ -52,6 +52,21 @@ int media_subsession::stream_number() const
     return __media_subsession->stream_number();
 }
 
+std::string media_subsession::medium_name() const
+{
+    return __media_subsession->medium_name();
+}
+
+uint32_t media_subsession::rtp_timestamp_frequency()
+{
+    return __media_subsession->rtp_timestamp_frequency();
+}
+
+uint32_t media_subsession::channel_count() const
+{
+    return __media_subsession->channel_count();
+}
+
 media_session::media_session(media_session&& rhs)
 {
     *this = std::move(rhs);

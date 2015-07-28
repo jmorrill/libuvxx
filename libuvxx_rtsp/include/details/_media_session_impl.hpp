@@ -35,16 +35,24 @@ namespace uvxx { namespace rtsp { namespace details
 
         bool initiate(int use_special_rtp_offset = -1);
 
-        std::string codec_name();
+        std::string codec_name() const;
 
-        int stream_number();
+        std::string medium_name() const;
+
+        int stream_number() const;
 
         std::string get_attribute(const std::string& attribute_name) const;
+
+        uint32_t rtp_timestamp_frequency() const;
+
+        uint32_t channel_count() const;
 
     private:
         MediaSubsession* _live_subsession;
 
         int _stream_number;
+
+        std::string _medium_name;
     };
 
     using _media_subsession_impl_ptr = std::shared_ptr<_media_subsession_impl>;

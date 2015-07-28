@@ -49,7 +49,11 @@ void on_sample_callback(const media_sample& sample)
 	{
 		auto samples_per_second = sample.attribute_get<int>(ATTRIBUTE_AUDIO_SAMPLES_PER_SECOND);
 
-		printf("\tsamples/s: %d", samples_per_second);
+        auto channels = sample.attribute_get<int>(ATTRIBUTE_AUDIO_CHANNEL_COUNT);
+
+		printf("\tfreq: %d", samples_per_second);
+
+        printf("\tchannels: %d", channels);
 	}
 
 	printf("\n");

@@ -13,6 +13,8 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp
 {
+   
+    
     class media_sample
     {
     public:
@@ -101,5 +103,45 @@ namespace uvxx { namespace rtsp
     private:
         std::shared_ptr<details::_media_sample_impl> __media_sample_impl;
     };
+    
+ 
+    template<>
+    inline void media_sample::attribute_set<>(const std::string& attribute_name, const std::string& value)
+    {
+        auto buffer = attribute_blob_get(attribute_name);
+
+        if (buffer)
+        {
+            if (buffer.length_get() == value.size() &&
+                !memcmp(buffer.data(), static_cast<void*>(const_cast<char*>(value.c_str())), value.size()))
+            {
+                return;
+            }
+        }
+
+        if (!buffer || buffer.length_get() != value.size())
+        {
+            buffer = io::memory_buffer(value.size());
+        }
+
+        memcpy(buffer.data(), value.c_str(), value.size());
+
+        attribute_blob_set(attribute_name, buffer);
+    }
+
+    template<>
+    inline std::string media_sample::attribute_get(const std::string& attribute_name) const
+    {
+        auto buffer = attribute_blob_get(attribute_name);
+
+        if (!buffer)
+        {
+            return std::string();
+        }
+
+        auto value = std::string((reinterpret_cast<char*>(static_cast<uint8_t*>(buffer))));
+
+        return value;
+    }
 }}
     

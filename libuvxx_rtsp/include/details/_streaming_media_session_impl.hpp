@@ -47,6 +47,7 @@ namespace uvxx { namespace rtsp { namespace details
 	    void on_stream_closed_set(stream_closed_delegate callback);
 
         stream_statistics stream_statistics_get(int stream_id) const;
+
     private:
         void close();
 

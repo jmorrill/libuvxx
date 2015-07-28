@@ -49,6 +49,12 @@ namespace uvxx { namespace rtsp
 
         int stream_number() const;
 
+        std::string medium_name() const;
+
+        uint32_t rtp_timestamp_frequency();
+
+        uint32_t channel_count() const;
+
     private:
         media_subsession();
 
