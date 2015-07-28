@@ -15,8 +15,8 @@ using namespace uvxx::rtsp::sample_attributes;
 using namespace uvxx::rtsp::details;
 using namespace uvxx::rtsp::details::media_framers;
 
-static const size_t DEFAULT_READ_BUFFER_SIZE = 200 * 1024;
-static const size_t MAX_READ_BUFFER_SIZE     = 2 * 1024 * 1024;
+static const size_t DEFAULT_READ_BUFFER_SIZE = 150 * 1024;
+static const size_t MAX_READ_BUFFER_SIZE     = 2   * 1024 * 1024;
 
 
 _media_framer_base::_media_framer_base(const media_subsession& subsession) :
@@ -37,12 +37,6 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
 
     if (live_subsession->rtcpInstance())
     {
-        _sample.capacity_set(DEFAULT_READ_BUFFER_SIZE);
-
-        _sample.stream_number_set(subsession.stream_number());
-
-        _sample.codec_name_set(subsession.codec_name());
-
         sample_major_type media_major = sample_major_type::unknown;
 
         auto medium_name = subsession.medium_name();
@@ -55,6 +49,20 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
         {
             media_major = sample_major_type::audio;
         }
+
+        if(media_major == sample_major_type::video)
+        {
+            _sample.capacity_set(DEFAULT_READ_BUFFER_SIZE);
+        }
+        else
+        {
+            _sample.capacity_set(DEFAULT_READ_BUFFER_SIZE / 8);
+        }
+
+        _sample.stream_number_set(subsession.stream_number());
+
+        _sample.codec_name_set(subsession.codec_name());
+
 
         _sample.attribute_set(ATTRIBUTE_SAMPLE_MAJOR_TYPE, media_major);
 
