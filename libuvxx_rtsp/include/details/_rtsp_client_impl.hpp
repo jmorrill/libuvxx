@@ -75,6 +75,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::chrono::milliseconds timeout();
 
+        stream_statistics stream_statistics_get(int stream_id) const;
+
     private:
         pplx::task<void> setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions);
 

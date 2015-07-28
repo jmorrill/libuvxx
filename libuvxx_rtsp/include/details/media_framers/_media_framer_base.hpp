@@ -2,6 +2,7 @@
 #include "rtsp_client.hpp"
 #include "media_session.hpp"
 #include "media_sample.hpp"
+#include "_qos_stats.hpp"
 
 namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 {
@@ -17,9 +18,11 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     
         void on_sample_set(read_sample_delegate callback);
 
-	    void on_stream_closed_set(stream_closed_delegate callback);
-		    
+        void on_stream_closed_set(stream_closed_delegate callback);
+            
         int stream_number();
+
+        _qos_stats& qos_stats_get();
 
     protected:
         virtual void sample_receieved(bool packet_marker_bit);
@@ -31,6 +34,8 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         media_subsession _subsession;
 
         void continue_reading();
+        
+        void use_rtp_marker_for_pts_set(bool use_rtp_marker);
 
     private:
         static void on_after_getting_frame(void* client_data, unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds);
@@ -45,15 +50,19 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         media_sample _sample;
 
         read_sample_delegate _sample_callback;
-	    
-	    stream_closed_delegate _stream_closed_delegate;
+        
+        stream_closed_delegate _stream_closed_delegate;
 
         std::chrono::microseconds _last_presentation_time;
 
-		std::chrono::microseconds _presentation_time_base;
+        std::chrono::microseconds _presentation_time_base;
 
         std::chrono::microseconds _current_presentation_time;
 
         bool _was_synced;
+
+        _qos_stats __qos_stats;
+        
+        bool _use_rtp_marker_for_pts;
     };
 }}}}

@@ -3,6 +3,7 @@
 
 #include "event_dispatcher_object.hpp"
 #include "rtsp_misc.hpp"
+#include "stream_statistics.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -65,6 +66,8 @@ namespace uvxx { namespace rtsp
         void timeout_set(std::chrono::milliseconds timeout);
 
         std::chrono::milliseconds timeout() const;
+
+        stream_statistics stream_statistics_get(int stream_id) const;
 
     private:
         details::_rtsp_client_impl_ptr __rtsp_client_imp;

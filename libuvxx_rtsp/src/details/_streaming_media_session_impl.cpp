@@ -58,6 +58,25 @@ void _streaming_media_session_impl::on_stream_closed_set(stream_closed_delegate 
     }
 }
 
+stream_statistics _streaming_media_session_impl::stream_statistics_get(int stream_id) const
+{
+    for (auto& framer : _media_framers)
+    {
+        if(framer->stream_number() == stream_id)
+        {
+            auto stats = framer->qos_stats_get();
+
+            return stream_statistics{ stats.total_kbytes_received(), 
+                                      stats.percent_packet_loss(), 
+                                      stats.expected_packet_count(),
+                                      stats.received_packet_count(),
+                                      stats.reset_statistics_interval() };
+        }
+    }
+
+    throw std::out_of_range("streamid does not exist");
+}
+
 void _streaming_media_session_impl::read_stream_sample()
 {
     for (auto& framer : _media_framers)

@@ -74,6 +74,8 @@ _h264_framer::_h264_framer(const media_subsession& subsession) :
     _media_framer_base(subsession),
     _has_received_key_frame(false)
 {
+    use_rtp_marker_for_pts_set(true);
+    
     auto prop_parameter_sets = subsession.get_attribute(RTSP_SPROP_PARAMETER_SET_ATTRIBUTE);
 
     uint32_t parameter_set_count = 0;

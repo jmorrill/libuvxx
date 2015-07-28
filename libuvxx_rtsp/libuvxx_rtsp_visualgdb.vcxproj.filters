@@ -46,6 +46,42 @@
     <ClInclude Include="include\sample_attributes.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\_uvxx_task_scheduler.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_live_authenticator.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_live_rtsp_client.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_media_sample_impl.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_media_session_impl.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_rtsp_client_impl.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_streaming_media_session_impl.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\media_framers\h26x\sps_parser.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\media_framers\_h264_framer.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\media_framers\_media_framer_base.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\media_framers\_qos_stats.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stream_statistics.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
@@ -82,6 +118,9 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\rtsp_client.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\media_framers\_qos_stats.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>
