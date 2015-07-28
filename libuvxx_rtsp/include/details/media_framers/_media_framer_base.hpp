@@ -34,6 +34,8 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         media_subsession _subsession;
 
         void continue_reading();
+        
+        void use_rtp_marker_for_pts_set(bool use_rtp_marker);
 
     private:
         static void on_after_getting_frame(void* client_data, unsigned packet_data_size, unsigned truncated_bytes, struct timeval presentation_time, unsigned duration_in_microseconds);
@@ -60,5 +62,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         bool _was_synced;
 
         _qos_stats __qos_stats;
+        
+        bool _use_rtp_marker_for_pts;
     };
 }}}}

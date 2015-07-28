@@ -23,7 +23,8 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
     _subsession(std::move(subsession)),
     _last_presentation_time(0),
     _current_presentation_time(0),
-    _was_synced(false)
+    _was_synced(false),
+    _use_rtp_marker_for_pts(false)
 {
     auto live_subsession = subsession.__media_subsession->live_media_subsession();
    
@@ -113,6 +114,11 @@ void _media_framer_base::continue_reading()
                                 this);
 }
 
+void _media_framer_base::use_rtp_marker_for_pts_set(bool use_rtp_marker)
+{
+    _use_rtp_marker_for_pts = use_rtp_marker;
+}
+
 _qos_stats& _media_framer_base::qos_stats_get()
 {
     return __qos_stats;
@@ -171,10 +177,10 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
 		RTPReceptionStatsDB::Iterator statsIter(rtp_source->receptionStatsDB());
 
-		// Assume that there's only one SSRC source (usually the case): 
-		RTPReceptionStats* stats = statsIter.next(True);
+		/* assumes only one ssrc - apparently the usual case */
+		auto stats = statsIter.next(True);
 
-		if (stats != nullptr) 
+		if (stats) 
 		{
 			__qos_stats.record_stats(*stats);
 		}
@@ -196,7 +202,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
     _was_synced = is_synced;
     
-	if(marker_bit)
+    if (marker_bit || !_use_rtp_marker_for_pts)
 	{
 		auto sample_duration = microseconds(std::abs(reported_micro_seconds.count() - _last_presentation_time.count()));
 
@@ -249,7 +255,7 @@ void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amo
         return;
     }
 
-    printf("resizing buffer to %u\n", new_size);
+    printf("resizing buffer to %zu\n", new_size);
 
     sample.capacity_set(new_size);
 }
