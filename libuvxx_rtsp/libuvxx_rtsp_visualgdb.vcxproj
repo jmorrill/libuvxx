@@ -117,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\details\media_framers\h26x\sps_parser.hpp" />
+    <ClInclude Include="include\details\media_framers\_g711_audio_framer.hpp" />
     <ClInclude Include="include\details\media_framers\_qos_stats.hpp" />
     <ClInclude Include="include\details\media_framers\_h264_framer.hpp" />
     <ClInclude Include="include\details\media_framers\_media_framer_base.hpp" />
@@ -137,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp" />
+    <ClCompile Include="src\details\media_framers\_g711_audio_framer.cpp" />
     <ClCompile Include="src\details\media_framers\_qos_stats.cpp" />
     <ClCompile Include="src\details\media_framers\_h264_framer.cpp" />
     <ClCompile Include="src\details\media_framers\_media_framer_base.cpp" />

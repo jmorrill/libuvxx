@@ -104,7 +104,6 @@ _h264_framer::_h264_framer(const media_subsession& subsession) :
             }
         }
     }
-
 }
 
 _h264_framer::~_h264_framer()

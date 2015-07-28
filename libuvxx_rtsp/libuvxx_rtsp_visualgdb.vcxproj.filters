@@ -82,6 +82,9 @@
     <ClInclude Include="include\stream_statistics.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\media_framers\_g711_audio_framer.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
@@ -121,6 +124,9 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\media_framers\_qos_stats.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\media_framers\_g711_audio_framer.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

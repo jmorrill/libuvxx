@@ -28,7 +28,9 @@ void on_sample_callback(const media_sample& sample)
         sample.presentation_time().count(),
         sample.stream_number());
 
-    if (sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE) == sample_major_type::video)
+    auto major_type = sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE);
+
+    if (major_type == sample_major_type::video)
     {
         auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
 
@@ -40,6 +42,12 @@ void on_sample_callback(const media_sample& sample)
         {
             printf("\tkey_frame");
         }
+    }
+    else if(major_type == sample_major_type::audio)
+    {
+        auto samples_per_second = sample.attribute_get<int>(ATTRIBUTE_AUDIO_SAMPLES_PER_SECOND);
+
+        printf("\tsamples/s: %d", samples_per_second);
     }
 
     printf("\n");

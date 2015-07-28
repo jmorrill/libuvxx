@@ -14,7 +14,7 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
         virtual ~_h264_framer();
     
     protected:
-        virtual void sample_receieved(bool packet_marker_bit);
+        virtual void sample_receieved(bool packet_marker_bit) override;
 
     private:
         void initialize_sequence_parameter_set();

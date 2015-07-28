@@ -2,6 +2,7 @@
 #include "media_sample.hpp"
 #include "details/_streaming_media_session_impl.hpp"
 #include "details/media_framers/_h264_framer.hpp"
+#include "details/media_framers/_g711_audio_framer.hpp"
 
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
@@ -16,13 +17,17 @@ _streaming_media_session_impl::_streaming_media_session_impl(const media_session
 
     for (auto& subsession : _subsessions)
     {
-        std::shared_ptr<media_framers::_media_framer_base> framer;
+        std::shared_ptr<_media_framer_base> framer;
 
         auto codec_name = subsession.codec_name();
 
         if (codec_name == "H264")
         {
             framer = std::make_shared<_h264_framer>(subsession);
+        }
+        else if(codec_name == "PCMA" || codec_name == "PCMU")
+        {
+            framer = std::make_shared<_g711_audio_framer>(subsession);
         }
         else
         {
