@@ -6,11 +6,31 @@
       <Directories />
       <PathStyle>MinGWUnixSlash</PathStyle>
     </CustomSourceDirectories>
-    <DeploymentHost>
-      <HostName>10.1.15.169</HostName>
-      <Transport>SSH</Transport>
-      <UserName>root</UserName>
-    </DeploymentHost>
+    <BuildHost>
+      <Transport>None</Transport>
+    </BuildHost>
+    <MainSourceTransferCommand>
+      <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
+      <RemoteHost>
+        <Transport>None</Transport>
+      </RemoteHost>
+      <LocalDirectory>$(ProjectDir)</LocalDirectory>
+      <RemoteDirectory>/tmp/VisualGDB/$(ProjectDirUnixStyle)</RemoteDirectory>
+      <FileMasks>
+        <string>*.cpp</string>
+        <string>*.h</string>
+        <string>*.c</string>
+        <string>*.cc</string>
+        <string>*.cxx</string>
+        <string>*.mak</string>
+        <string>Makefile</string>
+        <string>*.txt</string>
+        <string>*.cmake</string>
+      </FileMasks>
+      <TransferNewFilesOnly>true</TransferNewFilesOnly>
+      <IncludeSubdirectories>true</IncludeSubdirectories>
+      <SelectedDirectories />
+    </MainSourceTransferCommand>
     <AllowChangingHostForMainCommands>false</AllowChangingHostForMainCommands>
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>
     <IgnoreFileTransferErrors>false</IgnoreFileTransferErrors>
@@ -137,8 +157,8 @@
   <UserDefinedVariables />
   <CodeSense>
     <Enabled>True</Enabled>
-    <CFLAGS />
-    <CXXFLAGS />
+    <CFLAGS>-D__cplusplus=201103L</CFLAGS>
+    <CXXFLAGS>-D__cplusplus=201103L</CXXFLAGS>
     <ExternalSourceFileList />
   </CodeSense>
 </VisualGDBProjectSettings2>

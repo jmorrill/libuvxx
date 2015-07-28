@@ -234,7 +234,7 @@ void _media_framer_base::on_rtcp_bye(void* client_data)
     }
 }
 
-void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amount, const media_sample& sample)
+void _media_framer_base::adjust_buffer_for_trucated_bytes(unsigned truncated_amount, media_sample& sample)
 {
     if (truncated_amount == 0)
     {

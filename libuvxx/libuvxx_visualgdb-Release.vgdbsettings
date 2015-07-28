@@ -152,6 +152,9 @@
   </CustomShortcuts>
   <UserDefinedVariables />
   <CodeSense>
-    <Enabled>Unknown</Enabled>
+    <Enabled>True</Enabled>
+    <CFLAGS>-D__cplusplus=201103L</CFLAGS>
+    <CXXFLAGS>-D__cplusplus=201103L</CXXFLAGS>
+    <ExternalSourceFileList />
   </CodeSense>
 </VisualGDBProjectSettings2>

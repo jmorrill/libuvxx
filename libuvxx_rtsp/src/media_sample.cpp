@@ -55,7 +55,7 @@ int media_sample::stream_number() const
     return __media_sample_impl->stream_number();
 }
 
-void media_sample::size_set(size_t size) const
+void media_sample::size_set(size_t size)
 {
     __media_sample_impl->size_set(size);
 }
@@ -65,12 +65,12 @@ size_t media_sample::capacity() const
     return __media_sample_impl->capacity();
 }
 
-void media_sample::capacity_set(size_t size) const
+void media_sample::capacity_set(size_t size)
 {
     __media_sample_impl->capacity_set(size);
 }
 
-void media_sample::attribute_blob_set(const std::string& attribute_name, const memory_buffer& buffer) const
+void media_sample::attribute_blob_set(const std::string& attribute_name, const memory_buffer& buffer)
 {
     __media_sample_impl->attribute_set(attribute_name, buffer);
 }
@@ -85,12 +85,12 @@ void media_sample::codec_name_set(const std::string& codec_name)
     __media_sample_impl->codec_name_set(codec_name);
 }
 
-void media_sample::presentation_time_set(std::chrono::microseconds presentation_time) const
+void media_sample::presentation_time_set(std::chrono::microseconds presentation_time)
 {
     __media_sample_impl->presentation_time_set(presentation_time);
 }
 
-void media_sample::is_truncated_set(bool truncated) const
+void media_sample::is_truncated_set(bool truncated)
 {
     __media_sample_impl->is_truncated_set(truncated);
 }

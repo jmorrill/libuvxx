@@ -13,8 +13,6 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp
 {
-   
-    
     class media_sample
     {
     public:
@@ -35,21 +33,21 @@ namespace uvxx { namespace rtsp
 
         size_t size() const;
 
-        void size_set(size_t size) const;
+        void size_set(size_t size);
 
         size_t capacity() const;
 
-        void capacity_set(size_t size) const;
+        void capacity_set(size_t size);
 
         const uint8_t* data() const;
 
         std::chrono::microseconds presentation_time() const;
 
-        void presentation_time_set(std::chrono::microseconds presentation_time) const;
+        void presentation_time_set(std::chrono::microseconds presentation_time);
        
         bool is_truncated() const;
 
-        void is_truncated_set(bool truncated) const;
+        void is_truncated_set(bool truncated);
 
         void codec_name_set(const std::string& codec_name);
 
@@ -57,7 +55,7 @@ namespace uvxx { namespace rtsp
 
         void clear_attributes();
 
-        void attribute_blob_set(const std::string& attribute_name, const io::memory_buffer& buffer) const;
+        void attribute_blob_set(const std::string& attribute_name, const io::memory_buffer& buffer);
 
         io::memory_buffer attribute_blob_get(const std::string& attribute_name) const;
 
@@ -95,7 +93,7 @@ namespace uvxx { namespace rtsp
                 return T();
             }
 
-            T value = (*reinterpret_cast<T*>(static_cast<uint8_t*>(buffer)));
+            T value = (*reinterpret_cast<T*>(buffer.data()));
 
             return value;
         }
@@ -103,7 +101,6 @@ namespace uvxx { namespace rtsp
     private:
         std::shared_ptr<details::_media_sample_impl> __media_sample_impl;
     };
-    
  
     template<>
     inline void media_sample::attribute_set<>(const std::string& attribute_name, const std::string& value)
@@ -139,7 +136,7 @@ namespace uvxx { namespace rtsp
             return std::string();
         }
 
-        auto value = std::string((reinterpret_cast<char*>(static_cast<uint8_t*>(buffer))));
+        auto value = std::string((reinterpret_cast<char*>(buffer.data())));
 
         return value;
     }
