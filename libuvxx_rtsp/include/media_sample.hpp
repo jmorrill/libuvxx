@@ -60,14 +60,14 @@ namespace uvxx { namespace rtsp
         io::memory_buffer attribute_blob_get(const std::string& attribute_name) const;
 
         template<typename T>
-        void attribute_set(const std::string& attribute_name, T value)
+        void attribute_set(const std::string& attribute_name, const T& value)
         {
             auto buffer = attribute_blob_get(attribute_name);
 
             if (buffer)
             {
                 if (buffer.length_get() == sizeof(T) &&
-                    !memcmp(buffer.data(), static_cast<void*>(&value), sizeof(T)))
+                    !memcmp(buffer.data(), static_cast<void*>(const_cast<T*>(std::addressof(value))), sizeof(T)))
                 {
                     return;
                 }
@@ -78,7 +78,7 @@ namespace uvxx { namespace rtsp
                 buffer = io::memory_buffer(sizeof(T));
             }
 
-            memcpy(buffer.data(), &value, sizeof(T));
+            memcpy(buffer.data(), std::addressof(value), sizeof(T));
 
             attribute_blob_set(attribute_name, buffer);
         }
