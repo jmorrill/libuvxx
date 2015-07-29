@@ -5,6 +5,8 @@
 #include "media_sample.hpp"
 #include "sample_attributes.hpp"
 
+#include "rtsp_server.hpp"    
+
 using namespace std;
 using namespace uvxx;
 using namespace uvxx::pplx;
@@ -72,6 +74,12 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    rtsp_server server;
+
+    server.start_server(8554);
+
+    event_dispatcher::run();
+    return 0;
     printf("argv[1] is %s\n", argv[1]);
     {
         client.on_sample_set(on_sample_callback);

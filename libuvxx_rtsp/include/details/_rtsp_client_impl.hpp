@@ -20,7 +20,6 @@ namespace uvxx { namespace rtsp
 
 namespace uvxx { namespace rtsp { namespace details 
 {
- 
     class _uvxx_task_scheduler;
 
     class _rtsp_client_impl;

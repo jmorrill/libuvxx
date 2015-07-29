@@ -24,7 +24,7 @@ void on_sample_callback(const media_sample& sample)
 		printf("packet loss: %5.2f%%\n", stats.percent_packet_loss);
 	}
 
-	printf("codec: %s\t size: %d\t pts: %lld \t s:%u",
+	printf("codec: %s\t size: %d\t pts: %lld s:%u",
 		sample.codec_name().c_str(),
 		sample.size(),
 		sample.presentation_time().count(),
