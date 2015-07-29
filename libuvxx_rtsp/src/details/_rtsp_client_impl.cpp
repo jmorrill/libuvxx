@@ -80,6 +80,8 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
 void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
 {
+    printf("setup callback\n");
+
     auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
 
     client_impl->_timeout_timer.stop();
@@ -118,6 +120,7 @@ void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_
 
 void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
 {
+    printf("play callback\n");
     auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
 
     client_impl->_timeout_timer.stop();
@@ -223,6 +226,7 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
 
     return create_for_task<size_t>(0, subsessions_->size(), [=](size_t i)
     {
+        printf("setup inside for\n");
         auto& subsession = subsessions_->at(i);
 
         subsession.__media_subsession->initiate();
@@ -297,6 +301,8 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
     {
         return create_for_task<size_t>(0, subsession_ptr->size(), [=](size_t i)
         {
+            printf("play inside for\n");
+
             auto& subsession = subsession_ptr->at(i);
 
             _play_event = _current_event = task_completion_event<void>();
@@ -306,6 +312,9 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
             _timeout_timer.start();
 
             return create_task(_play_event);
+        }).then([=]
+        {
+            printf("test\n");
         });
     }).then([=]
     {

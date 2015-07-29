@@ -1,14 +1,10 @@
 #pragma once
 #include <memory>
 #include <chrono>
-#include <atomic>
-#include <vector>
-#include <mutex>
 #include <functional>
 #include <type_traits>
 #include "pplxtasks.h"
 #include "event_dispatcher_timer.hpp"
-#include "details/_utilities.hpp"
 
 namespace uvxx { namespace pplx { namespace details
 {
@@ -18,10 +14,9 @@ namespace uvxx { namespace pplx { namespace details
        version can probably be made using generalized lambda capture, but many compilers don't support yet.
        Note that vanilla pplx does not have movable task_completion events or task_continuation_context. 
        Unlike the original interative_task_impl, this only exits the loop by exception */
-    template<typename FunctionReturningTask>
     inline static void iterative_task_impl(
         task_completion_event<void> finished, 
-        FunctionReturningTask       body,
+        std::function<task<bool>()> body,
         cancellation_token          ct, 
         cancellation_token_source   cts, 
         task_continuation_context   context = task_continuation_context::use_default())
@@ -32,50 +27,44 @@ namespace uvxx { namespace pplx { namespace details
             return;
         }
 
-        using task_return_type = decltype(body().get());
+        auto body_result_task = body();
 
-        try
-        {
-            auto body_result_task = body();
-
-            std::function<void(task<task_return_type>)> b = std::bind([](
-            task<task_return_type>      previous,
-            task_completion_event<void> finished, 
-            FunctionReturningTask       body,
-            cancellation_token          ct, 
-            cancellation_token_source   cts, 
+        std::function<void(task<bool>)> b = std::bind([](
+            task<bool>                  previous,
+            task_completion_event<void> finished,
+            std::function<task<bool>()> body,
+            cancellation_token          ct,
+            cancellation_token_source   cts,
             task_continuation_context   context) mutable
+        {
+            try
             {
-                try 
-                {
-                    previous.get();
+                auto continue_result = previous.get();
 
-                    iterative_task_impl(std::move(finished), 
-                                        std::move(body), 
-                                        std::move(ct), 
-                                        std::move(cts), 
-                                        std::move(context));
-                }
-                catch (task_canceled) 
+                if (!continue_result)
                 {
-                    cts.cancel();
+                    finished.set();
+                    return;
                 }
-                catch (...) 
-                {
-                    finished.set_exception(std::current_exception());
-                }
-            }, std::placeholders::_1, std::move(finished), std::move(body), std::move(ct), std::move(cts), std::move(context));
 
-            body_result_task.then(b, context);
-        }
-        catch (task_canceled) 
-        {
-            cts.cancel();
-        }
-        catch (...) 
-        {
-            finished.set_exception(std::current_exception());
-        }
+                iterative_task_impl(std::move(finished),
+                    std::move(body),
+                    std::move(ct),
+                    std::move(cts),
+                    std::move(context));
+            }
+            catch (task_canceled)
+            {
+                cts.cancel();
+            }
+            catch (...)
+            {
+                finished.set_exception(std::current_exception());
+            }
+
+        }, std::placeholders::_1, std::move(finished), std::move(body), std::move(ct), std::move(cts), std::move(context));
+
+        body_result_task.then(b, context);
     }
 }
     /// <summary>
@@ -96,25 +85,21 @@ namespace uvxx { namespace pplx { namespace details
     ///     This function dynamically creates a long chain of continuations by iteratively concating tasks created by user Functor <paramref name="body"/>,
     ///     The iteration will not stop until the result of the returning task from user Functor <paramref name="body"/> throws an exception.
     /// </remarks>
-    template<typename FunctionReturningTask>
     inline task<void> create_iterative_task(
-        FunctionReturningTask     body,
-        task_continuation_context context = task_continuation_context::use_default(),
-        cancellation_token        ct = cancellation_token::none())
+        std::function<task<bool>()> body,
+        task_continuation_context   context = task_continuation_context::use_default(),
+        cancellation_token          ct = cancellation_token::none())
     {
         task_completion_event<void> finished;
         cancellation_token_source cts;
 
-        using task_return_type = decltype(body().get());
-
-        std::function<task<task_return_type>()> _body = std::move(body);
 
         std::function<void()> runnable = std::bind([](
-                                         task_completion_event<void>              finished, 
-                                         std::function<task<task_return_type>()>  body,
-                                         cancellation_token                       ct,
-                                         cancellation_token_source                cts,
-                                         task_continuation_context                context) mutable
+                                         task_completion_event<void> finished, 
+                                         std::function<task<bool>()> body,
+                                         cancellation_token          ct,
+                                         cancellation_token_source   cts,
+                                         task_continuation_context   context) mutable
         {
             try
             {
@@ -129,7 +114,7 @@ namespace uvxx { namespace pplx { namespace details
                 finished.set_exception(std::current_exception());
             }
 
-        }, finished, std::move(_body), std::move(ct), cts, context);
+        }, finished, std::move(body), std::move(ct), cts, context);
 
         if (context == task_continuation_context::use_current())
         {
@@ -150,15 +135,6 @@ namespace uvxx { namespace pplx { namespace details
         return timer.delay(timeout);
     }
 
-    class iterative_task_complete_exception : public std::exception
-    {
-    public:
-        iterative_task_complete_exception() : std::exception()
-        {
-
-        }
-    };
-
     template<typename T>
     inline task<void> create_for_task(T from_inclusive, T to_exclusive, std::function<task<void>(T)> loop_function)
     {
@@ -166,29 +142,26 @@ namespace uvxx { namespace pplx { namespace details
 
         return create_iterative_task([=]
         {
-            return create_task([=]
+            auto task_ = loop_function(*from_.get());
+
+            bool finished = false;
+
+            ++*from_.get();
+
+            if (*from_.get() >= to_exclusive)
             {
-                auto task_ = loop_function(*from_.get());
+                finished = true;
+            }
 
-                ++*from_.get();
-
-                if (*from_.get() >= to_exclusive)
+            return task_.then([=]
+            {
+                if(finished)
                 {
-                    throw iterative_task_complete_exception();
+                    return false;
                 }
-
-                return task_;
-            });
-        }).then([](task<void> t)
-        {
-            try
-            {
-                t.get();
-            }
-            catch(iterative_task_complete_exception&)
-            {
                 
-            }
+                return true;
+            });
         });
     }
 

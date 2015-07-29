@@ -198,7 +198,7 @@ namespace uvxx { namespace fs { namespace details
                             break;
                         }
                     }
-                });
+                }).then([] {return true; });
             });
         }).
         then([entry_holder](task<void> iterative_task) -> directory_entry_result_ptr
@@ -328,7 +328,7 @@ namespace uvxx { namespace fs { namespace details
                 {
                     throw_for_code(UV_EOF);
                 }
-            });
+            }).then([] { return true; });
         }).
         then([holder, this](task<void> iterative_task)
         {
@@ -359,7 +359,7 @@ namespace uvxx { namespace fs { namespace details
                     {
                         throw_for_code(UV_EOF);
                     }
-                });
+                }).then([] {return true; });
             });
         }).
         then([](task<void> iterative_task)
@@ -433,7 +433,7 @@ namespace uvxx { namespace fs { namespace details
 
                 file_deque->pop_front();
                 
-                return file_deleter->delete_async(file_name);
+                return file_deleter->delete_async(file_name).then([] { return true; });
             });
         }).
         then([path, this](task<void> iterative_task)
@@ -472,7 +472,10 @@ namespace uvxx { namespace fs { namespace details
 
                 dir_deque->pop_front();
 
-                return delete_async(dir_name);
+                return delete_async(dir_name).then([=]
+                {
+                    return true;
+                });
             });
         }).then([this, path](task<void> t)
         {
