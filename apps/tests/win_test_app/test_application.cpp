@@ -24,7 +24,7 @@ void on_sample_callback(const media_sample& sample)
         printf("packet loss: %5.2f%%\n", stats.percent_packet_loss);
     }
 
-    printf("codec: %s\t size: %d\t pts: %lld \t s:%u",
+    printf("codec: %s\t size: %d\t pts: %lld s:%u",
         sample.codec_name().c_str(),
         sample.size(),
         sample.presentation_time().count(),
@@ -78,17 +78,11 @@ int main(int argc, char* argv[])
 
     server.start_server(8554);
 
-    //int t = 10;
-    //int f = 0;
-    //create_for_task<int>(f, t, [](int i)
-    //{
-    //    printf("%d\n", i);
-    //    return task_from_result();
-    //});
-
     //event_dispatcher::run();
     //return 0;
+
     printf("argv[1] is %s\n", argv[1]);
+
     {
         client.on_sample_set(on_sample_callback);
 
