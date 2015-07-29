@@ -150,7 +150,7 @@ namespace uvxx { namespace pplx { namespace details
         return timer.delay(timeout);
     }
 
-    class iterative_task_complete_exception : std::exception
+    class iterative_task_complete_exception : public std::exception
     {
     public:
         iterative_task_complete_exception() : std::exception()
@@ -158,4 +158,38 @@ namespace uvxx { namespace pplx { namespace details
 
         }
     };
+
+    template<typename T>
+    inline task<void> create_for_task(T from_inclusive, T to_exclusive, std::function<task<void>(T)> loop_function)
+    {
+        auto from_ = std::make_shared<T>(from_inclusive);
+
+        return create_iterative_task([=]
+        {
+            return create_task([=]
+            {
+                auto task_ = loop_function(*from_.get());
+
+                ++*from_.get();
+
+                if (*from_.get() >= to_exclusive)
+                {
+                    throw iterative_task_complete_exception();
+                }
+
+                return task_;
+            });
+        }).then([](task<void> t)
+        {
+            try
+            {
+                t.get();
+            }
+            catch(iterative_task_complete_exception&)
+            {
+                
+            }
+        });
+    }
+
 }}

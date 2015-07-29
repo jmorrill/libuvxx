@@ -78,8 +78,16 @@ int main(int argc, char* argv[])
 
     server.start_server(8554);
 
-    event_dispatcher::run();
-    return 0;
+    //int t = 10;
+    //int f = 0;
+    //create_for_task<int>(f, t, [](int i)
+    //{
+    //    printf("%d\n", i);
+    //    return task_from_result();
+    //});
+
+    //event_dispatcher::run();
+    //return 0;
     printf("argv[1] is %s\n", argv[1]);
     {
         client.on_sample_set(on_sample_callback);

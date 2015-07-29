@@ -221,41 +221,24 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
 {
     verify_access();
 
-    auto current_index = std::make_shared<size_t>(0);
-
-    return create_iterative_task([=]
+    return create_for_task<size_t>(0, subsessions_->size(), [=](size_t i)
     {
-        return create_task([=]
-        {
-            auto& subsessions = *subsessions_.get();
+        auto& subsession = subsessions_->at(i);
 
-            auto subsession_index = *current_index;
+        subsession.__media_subsession->initiate();
 
-            if (subsession_index >= subsessions.size())
-            {
-                return task_from_exception<void>(iterative_task_complete_exception());
-            }
+        _setup_event = _current_event = task_completion_event<void>();
 
-            auto& subsession = subsessions.at(subsession_index);
-            
-            subsession.__media_subsession->initiate();
+        _last_rtsp_command_id = _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession(),
+                                                               setup_callback,
+                                                               false,
+                                                               _protocol == transport_protocol::tcp ? true : false);
 
-            (*current_index)++;
+        _current_media_subsession_setup = subsession;
 
-            _setup_event = _current_event = task_completion_event<void>();
+        _timeout_timer.start();
 
-            _last_rtsp_command_id = _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession(), 
-                                                                   setup_callback, 
-                                                                   false, 
-                                                                   _protocol == transport_protocol::tcp ? true : false);
-
-            _current_media_subsession_setup = subsession;
-
-            _timeout_timer.start();
-
-            return create_task(_setup_event);
-
-        });
+        return create_task(_setup_event);
     });
 }
 
@@ -306,63 +289,26 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
 {
     verify_access();
 
-    auto current_index = std::make_shared<size_t>(0);
-
     auto subsession_ptr = std::make_shared<std::vector<media_subsession>>();
 
     *(subsession_ptr.get()) = std::move(subsessions_);
 
-    return setup(subsession_ptr).then([=](task<void> iterativeTask)
+    return setup(subsession_ptr).then([=]
     {
-        _current_media_subsession_setup = nullptr;
-
-        try
+        return create_for_task<size_t>(0, subsession_ptr->size(), [=](size_t i)
         {
-            iterativeTask.get();
-        }
-        catch (const iterative_task_complete_exception&)
-        {
-        }
+            auto& subsession = subsession_ptr->at(i);
 
-        (*current_index) = 0;
+            _play_event = _current_event = task_completion_event<void>();
 
-        return create_iterative_task([=]
-        {
-            return create_task([=]
-            {
-                auto subsession_index = *current_index;
+            _last_rtsp_command_id = _live_client->sendPlayCommand(*(subsession.__media_subsession)->live_media_subsession(), play_callback);
 
-                auto& subsessions = *subsession_ptr.get();
+            _timeout_timer.start();
 
-                if (subsession_index >= subsessions.size())
-                {
-                    return task_from_exception<void>(iterative_task_complete_exception());
-                }
-
-                auto& subsession = subsessions.at(subsession_index);
-
-                (*current_index)++;
-
-                _play_event = _current_event = task_completion_event<void>();
-
-                _last_rtsp_command_id = _live_client->sendPlayCommand(*(subsession.__media_subsession)->live_media_subsession(), 
-                                                                      play_callback);
-
-                _timeout_timer.start();
-
-                return create_task(_play_event);
-            });
+            return create_task(_play_event);
         });
-    }).then([=](task<void> iterative_task)
+    }).then([=]
     {
-        try
-        {
-            iterative_task.get();
-        }
-        catch (const iterative_task_complete_exception&)
-        {
-        }
-
         _streaming_session = std::make_shared<_streaming_media_session_impl>(_session, std::move(*subsession_ptr.get()));
 
         _streaming_session->on_sample_set(_read_sample_delegate);
