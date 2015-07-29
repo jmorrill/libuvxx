@@ -17,48 +17,53 @@ rtsp_client client;
 
 void on_sample_callback(const media_sample& sample)
 {
-    auto stats = client.stream_statistics_get(sample.stream_number());
 
-    if(stats.percent_packet_loss)
+    create_task([=]
     {
-        printf("packet loss: %5.2f%%\n", stats.percent_packet_loss);
-    }
+        auto stats = client.stream_statistics_get(sample.stream_number());
 
-    printf("codec: %s\t size: %d\t pts: %lld s:%u",
-        sample.codec_name().c_str(),
-        sample.size(),
-        sample.presentation_time().count(),
-        sample.stream_number());
-
-    auto major_type = sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE);
-
-    if (major_type == sample_major_type::video)
-    {
-        auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
-
-        bool key_frame = sample.attribute_get<bool>(ATTRIBUTE_VIDEO_KEYFRAME);
-
-        printf("\twxh: %dx%d", video_size.width, video_size.height);
-
-        if (key_frame)
+        if (stats.percent_packet_loss)
         {
-            printf("\tkey_frame");
+            printf("packet loss: %5.2f%%\n", stats.percent_packet_loss);
         }
-    }
-    else if(major_type == sample_major_type::audio)
+
+        printf("codec: %s\t size: %d\t pts: %lld s:%u",
+            sample.codec_name().c_str(),
+            sample.size(),
+            sample.presentation_time().count(),
+            sample.stream_number());
+
+        auto major_type = sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE);
+
+        if (major_type == sample_major_type::video)
+        {
+            auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
+
+            bool key_frame = sample.attribute_get<bool>(ATTRIBUTE_VIDEO_KEYFRAME);
+
+            printf("\twxh: %dx%d", video_size.width, video_size.height);
+
+            if (key_frame)
+            {
+                printf("\tkey_frame");
+            }
+        }
+        else if (major_type == sample_major_type::audio)
+        {
+            auto samples_per_second = sample.attribute_get<int>(ATTRIBUTE_AUDIO_SAMPLES_PER_SECOND);
+
+            auto channels = sample.attribute_get<int>(ATTRIBUTE_AUDIO_CHANNEL_COUNT);
+
+            printf("\tfreq: %d", samples_per_second);
+
+            printf("\tchannels: %d", channels);
+        }
+
+        printf("\n");
+    }).then([=]
     {
-        auto samples_per_second = sample.attribute_get<int>(ATTRIBUTE_AUDIO_SAMPLES_PER_SECOND);
-
-        auto channels = sample.attribute_get<int>(ATTRIBUTE_AUDIO_CHANNEL_COUNT);
-
-        printf("\tfreq: %d", samples_per_second);
-
-        printf("\tchannels: %d", channels);
-    }
-
-    printf("\n");
-
-    client.read_stream_sample();
+        client.read_stream_sample();
+    });
 }
 
 void stream_closed(int stream_number)
@@ -74,11 +79,12 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    rtsp_server server;
+    //rtsp_server server;
 
-    server.start_server(8554);
+    //server.start_server(8554);
 
     //event_dispatcher::run();
+
     //return 0;
 
     printf("argv[1] is %s\n", argv[1]);
@@ -90,7 +96,7 @@ int main(int argc, char* argv[])
 
         client.credentials_set("admin", "12345");
 
-        client.protocol_set(transport_protocol::udp);
+        client.protocol_set(transport_protocol::tcp);
 
         client.open(argv[1]).then([=]
         {

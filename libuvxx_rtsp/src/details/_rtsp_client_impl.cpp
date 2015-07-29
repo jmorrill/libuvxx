@@ -133,7 +133,7 @@ void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_c
         return;
     }
 
-    client_impl->_play_event.set();
+    play_event.set();
 }
 
 void _rtsp_client_impl::on_timeout_timer_tick(event_dispatcher_timer* /*sender*/)

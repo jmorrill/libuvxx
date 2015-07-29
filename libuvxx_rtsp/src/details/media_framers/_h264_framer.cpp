@@ -150,7 +150,7 @@ void _h264_framer::sample_receieved(bool packet_marker_bit)
     }
     else
     {
-        printf("undefined nal %d size - %d\n", nal_type, media_sample.size());
+        //printf("undefined nal %d size - %d\n", nal_type, media_sample.size());
     }
 
     if (!full_sample_ready)
