@@ -15,7 +15,7 @@ using namespace uvxx::rtsp::sample_attributes;
 using namespace uvxx::rtsp::details;
 using namespace uvxx::rtsp::details::media_framers;
 
-static const size_t DEFAULT_READ_BUFFER_SIZE = 150 * 1024;
+static const size_t DEFAULT_READ_BUFFER_SIZE = 320 * 1024;
 static const size_t MAX_READ_BUFFER_SIZE     = 2   * 1024 * 1024;
 
 
@@ -171,6 +171,8 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
     auto live_subsession = _subsession.__media_subsession->live_media_subsession();
 
     FramedSource* framed_source = live_subsession->readSource();
+
+    framed_source->stopGettingFrames();
 
     if (truncated_bytes)
     {

@@ -35,7 +35,7 @@ error:
 	$(error Invalid configuration, please check your inputs)
 endif
 
-SOURCEFILES := src/details/media_framers/h26x/sps_parser.cpp src/details/media_framers/_g711_audio_framer.cpp src/details/media_framers/_qos_stats.cpp src/details/media_framers/_h264_framer.cpp src/details/media_framers/_media_framer_base.cpp src/details/_live_rtsp_client.cpp src/details/_media_sample_impl.cpp src/details/_media_session_impl.cpp src/details/_rtsp_client_impl.cpp src/details/_streaming_media_session_impl.cpp src/details/_uvxx_task_scheduler.cpp src/media_sample.cpp src/media_session.cpp src/rtsp_client.cpp
+SOURCEFILES := src/details/media_framers/h26x/sps_parser.cpp src/details/media_framers/_g711_audio_framer.cpp src/details/media_framers/_qos_stats.cpp src/details/media_framers/_h264_framer.cpp src/details/media_framers/_media_framer_base.cpp src/details/_live_rtsp_client.cpp src/details/_live_rtsp_server.cpp src/details/_media_sample_impl.cpp src/details/_media_session_impl.cpp src/details/_rtsp_client_impl.cpp src/details/_rtsp_server_impl.cpp src/details/_streaming_media_session_impl.cpp src/details/_uvxx_task_scheduler.cpp src/media_sample.cpp src/media_session.cpp src/rtsp_client.cpp src/rtsp_server.cpp
 EXTERNAL_LIBS := ../libuvxx/$(BINARYDIR)/libuvxx.a ../libraries/live555/$(BINARYDIR)/libliveMedia.a
 EXTERNAL_LIBS_COPIED := $(foreach lib, $(EXTERNAL_LIBS),$(BINARYDIR)/$(notdir $(lib)))
 
@@ -201,6 +201,10 @@ $(BINARYDIR)/_live_rtsp_client.o : src/details/_live_rtsp_client.cpp $(all_make_
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
+$(BINARYDIR)/_live_rtsp_server.o : src/details/_live_rtsp_server.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
 $(BINARYDIR)/_media_sample_impl.o : src/details/_media_sample_impl.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
@@ -210,6 +214,10 @@ $(BINARYDIR)/_media_session_impl.o : src/details/_media_session_impl.cpp $(all_m
 
 
 $(BINARYDIR)/_rtsp_client_impl.o : src/details/_rtsp_client_impl.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_rtsp_server_impl.o : src/details/_rtsp_server_impl.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
@@ -230,6 +238,10 @@ $(BINARYDIR)/media_session.o : src/media_session.cpp $(all_make_files) |$(BINARY
 
 
 $(BINARYDIR)/rtsp_client.o : src/rtsp_client.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/rtsp_server.o : src/rtsp_server.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 $(BINARYDIR)/libuvxx.a : ../libuvxx/$(BINARYDIR)/libuvxx.a

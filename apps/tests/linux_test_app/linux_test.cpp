@@ -17,7 +17,6 @@ rtsp_client client;
 
 void on_sample_callback(const media_sample& sample)
 {
-
 	create_task([=]
 	{
 		auto stats = client.stream_statistics_get(sample.stream_number());
@@ -115,7 +114,7 @@ int main(int argc, char* argv [])
 				printf(e.what());
 			}
 
-			           // event_dispatcher::current_dispatcher().begin_shutdown();
+            // event_dispatcher::current_dispatcher().begin_shutdown();
 		});
 
 		event_dispatcher::run();

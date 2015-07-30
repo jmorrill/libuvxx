@@ -64,6 +64,9 @@
     </Toolchain>
     <MakeCommandTemplate>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
+      <RemoteHost>
+        <Transport>None</Transport>
+      </RemoteHost>
       <Command>cmd.exe</Command>
       <Arguments>/c "C:\SysGCC\raspberry\bin\make.exe"</Arguments>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>

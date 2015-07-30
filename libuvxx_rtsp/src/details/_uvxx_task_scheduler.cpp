@@ -343,7 +343,9 @@ void _uvxx_task_scheduler::socket_handler_descriptor::poll_callback(int status, 
         mask |= SOCKET_EXCEPTION;
     }
 
-    if (_condition_set & SOCKET_EXCEPTION || _condition_set & SOCKET_WRITABLE || _condition_set & SOCKET_READABLE)
+    if (_condition_set & SOCKET_EXCEPTION || 
+        _condition_set & SOCKET_WRITABLE  || 
+        _condition_set & SOCKET_READABLE)
     {
         _handler_proc(_client_data, mask);
     }

@@ -85,6 +85,15 @@
     <ClInclude Include="include\details\media_framers\_g711_audio_framer.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\rtsp_server.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_live_rtsp_server.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_rtsp_server_impl.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
@@ -127,6 +136,15 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\media_framers\_g711_audio_framer.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_rtsp_server_impl.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_live_rtsp_server.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rtsp_server.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -102,7 +102,7 @@
 #define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 1
 #endif
 #ifndef __GCC_ATOMIC_CHAR_LOCK_FREE
-#define __GCC_ATOMIC_CHAR_LOCK_FREE 1
+#define __GCC_ATOMIC_CHAR_LOCK_FREE 2
 #endif
 #ifndef __GCC_IEC_559
 #define __GCC_IEC_559 2
@@ -192,7 +192,7 @@
 #define __UINT_LEAST8_MAX__ 255
 #endif
 #ifndef __GCC_ATOMIC_BOOL_LOCK_FREE
-#define __GCC_ATOMIC_BOOL_LOCK_FREE 1
+#define __GCC_ATOMIC_BOOL_LOCK_FREE 2
 #endif
 #ifndef __UINTMAX_TYPE__
 #define __UINTMAX_TYPE__ long long unsigned int
@@ -261,7 +261,7 @@
 #define NDEBUG 1
 #endif
 #ifndef __GCC_ATOMIC_CHAR16_T_LOCK_FREE
-#define __GCC_ATOMIC_CHAR16_T_LOCK_FREE 1
+#define __GCC_ATOMIC_CHAR16_T_LOCK_FREE 2
 #endif
 #ifndef __USACCUM_IBIT__
 #define __USACCUM_IBIT__ 8
@@ -429,7 +429,7 @@
 #define __LDBL_HAS_DENORM__ 1
 #endif
 #ifndef __ARM_FEATURE_LDREX
-#define __ARM_FEATURE_LDREX 4
+#define __ARM_FEATURE_LDREX 15
 #endif
 //VS2005-2012 treats all files as C++, while VS2013+ can treat C files correctly.
 #if defined(_MSC_VER) && (_MSC_VER < 1800 || defined(__cplusplus))
@@ -627,6 +627,9 @@
 #ifndef __STDC_IEC_559_COMPLEX__
 #define __STDC_IEC_559_COMPLEX__ 1
 #endif
+#ifndef __ARM_NEON__
+#define __ARM_NEON__ 1
+#endif
 #ifndef __DEC64_EPSILON__
 #define __DEC64_EPSILON__ 1E-15DD
 #endif
@@ -684,6 +687,9 @@
 #ifndef __INT_LEAST16_TYPE__
 #define __INT_LEAST16_TYPE__ short int
 #endif
+#ifndef __ARM_ARCH_PROFILE
+#define __ARM_ARCH_PROFILE 65
+#endif
 #ifndef __LDBL_EPSILON__
 #define __LDBL_EPSILON__ 2.2204460492503131e-16L
 #endif
@@ -710,9 +716,6 @@
 #endif
 #ifndef __INT_FAST16_MAX__
 #define __INT_FAST16_MAX__ 2147483647
-#endif
-#ifndef __ARM_ARCH_6__
-#define __ARM_ARCH_6__ 1
 #endif
 #ifndef __UINT_FAST32_MAX__
 #define __UINT_FAST32_MAX__ 4294967295U
@@ -802,13 +805,13 @@
 #define __DEC32_MAX_EXP__ 97
 #endif
 #ifndef __ARM_ARCH_ISA_THUMB
-#define __ARM_ARCH_ISA_THUMB 1
+#define __ARM_ARCH_ISA_THUMB 2
 #endif
 #ifndef __INT_FAST8_MAX__
 #define __INT_FAST8_MAX__ 127
 #endif
 #ifndef __ARM_ARCH
-#define __ARM_ARCH 6
+#define __ARM_ARCH 7
 #endif
 #ifndef __INTPTR_MAX__
 #define __INTPTR_MAX__ 2147483647
@@ -936,6 +939,9 @@
 #ifndef __WCHAR_UNSIGNED__
 #define __WCHAR_UNSIGNED__ 1
 #endif
+#ifndef __ARM_ARCH_7A__
+#define __ARM_ARCH_7A__ 1
+#endif
 #ifndef __LDBL_MAX_10_EXP__
 #define __LDBL_MAX_10_EXP__ 308
 #endif
@@ -956,6 +962,9 @@
 #endif
 #ifndef __UINT64_TYPE__
 #define __UINT64_TYPE__ long long unsigned int
+#endif
+#ifndef __ARM_NEON
+#define __ARM_NEON 1
 #endif
 #ifndef __LLFRACT_MAX__
 #define __LLFRACT_MAX__ 0X7FFFFFFFFFFFFFFFP-63LLR
@@ -1120,7 +1129,7 @@
 #define __SACCUM_IBIT__ 8
 #endif
 #ifndef __GCC_ATOMIC_LLONG_LOCK_FREE
-#define __GCC_ATOMIC_LLONG_LOCK_FREE 1
+#define __GCC_ATOMIC_LLONG_LOCK_FREE 2
 #endif
 #ifndef __LDBL_DIG__
 #define __LDBL_DIG__ 15
@@ -1132,7 +1141,7 @@
 #define __UINT_FAST16_MAX__ 4294967295U
 #endif
 #ifndef __GCC_ATOMIC_SHORT_LOCK_FREE
-#define __GCC_ATOMIC_SHORT_LOCK_FREE 1
+#define __GCC_ATOMIC_SHORT_LOCK_FREE 2
 #endif
 #ifndef __ULLFRACT_MAX__
 #define __ULLFRACT_MAX__ 0XFFFFFFFFFFFFFFFFP-64ULLR
