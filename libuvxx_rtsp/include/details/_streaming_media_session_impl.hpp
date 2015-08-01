@@ -43,8 +43,8 @@ namespace uvxx { namespace rtsp { namespace details
         void read_stream_sample();
 
         void on_sample_set(read_sample_delegate callback);
-	    
-	    void on_stream_closed_set(stream_closed_delegate callback);
+        
+        void on_stream_closed_set(stream_closed_delegate callback);
 
         stream_statistics stream_statistics_get(int stream_id) const;
 
@@ -58,8 +58,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         read_sample_delegate _on_sample_callback;
 
-	    stream_closed_delegate _stream_closed_delegate;
-	    
+        stream_closed_delegate _stream_closed_delegate;
+        
         media_session _session;
     };
 

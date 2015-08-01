@@ -98,6 +98,6 @@ void rtsp_client::on_sample_set(read_sample_delegate callback) const
 
 void rtsp_client::on_stream_closed_set(stream_closed_delegate callback) const
 {
-	__rtsp_client_imp->on_stream_closed_set(callback);
+    __rtsp_client_imp->on_stream_closed_set(callback);
 }
 

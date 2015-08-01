@@ -187,15 +187,15 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
     {
         auto rtp_source = static_cast<RTPSource*>(framed_source);
 
-		RTPReceptionStatsDB::Iterator statsIter(rtp_source->receptionStatsDB());
+        RTPReceptionStatsDB::Iterator statsIter(rtp_source->receptionStatsDB());
 
-		/* assumes only one ssrc - apparently the usual case */
-		auto stats = statsIter.next(True);
+        /* assumes only one ssrc - apparently the usual case */
+        auto stats = statsIter.next(True);
 
-		if (stats) 
-		{
-			__qos_stats.record_stats(*stats);
-		}
+        if (stats) 
+        {
+            __qos_stats.record_stats(*stats);
+        }
 
         is_synced = rtp_source->hasBeenSynchronizedUsingRTCP();
 
@@ -209,19 +209,19 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
     {
         _last_presentation_time = reported_micro_seconds;
 
-		_presentation_time_base = reported_micro_seconds;
+        _presentation_time_base = reported_micro_seconds;
     }
 
     _was_synced = is_synced;
     
     if (marker_bit || !_use_rtp_marker_for_pts)
-	{
-		auto sample_duration = microseconds(std::abs(reported_micro_seconds.count() - _last_presentation_time.count()));
+    {
+        auto sample_duration = microseconds(std::abs(reported_micro_seconds.count() - _last_presentation_time.count()));
 
-		_current_presentation_time += sample_duration;
+        _current_presentation_time += sample_duration;
 
-		_last_presentation_time = reported_micro_seconds;
-	}
+        _last_presentation_time = reported_micro_seconds;
+    }
 
     _sample.presentation_time_set(_current_presentation_time);
 
