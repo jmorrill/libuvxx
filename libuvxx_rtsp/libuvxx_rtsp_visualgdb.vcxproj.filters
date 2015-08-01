@@ -94,6 +94,9 @@
     <ClInclude Include="include\details\_rtsp_server_impl.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="src\details\_rtsp_client_impl_helpers.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">

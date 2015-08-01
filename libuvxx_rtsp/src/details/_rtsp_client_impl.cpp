@@ -8,64 +8,28 @@
 #include "details/_rtsp_client_impl.hpp"
 #include "details/_streaming_media_session_impl.hpp"
 #include "details/_live_rtsp_client.hpp"
+#include "_rtsp_client_impl_helpers.hpp"
 
 using namespace uvxx;
 using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
-template <int code>
-struct result_code_constant
-{
-    static int value()
-    {
-        return code;
-    }
-};
-
-#define CAST_RTSP_CLIENT(live_rtsp_client)static_cast<uvxx::rtsp::details::_rtsp_client_impl*>(static_cast<uvxx::rtsp::details::_live_rtsp_client*>(live_rtsp_client)->context());
-
-#define SET_RTSP_EXCEPTION(code, message, task_event)\
-if(!code)\
-{\
-    task_event.set_exception(rtsp_exception(message ? message : ""));\
-}\
-else if(code < 0)\
-{\
-    task_event.set_exception(rtsp_network_exception(std::abs(code), message ? message : ""));\
-}\
-else\
-{\
-    task_event.set_exception(rtsp_transport_exception(code, message ? message : ""));\
-}\
-
 void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string) 
 {
-    auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
+    BEGIN_CALLBACK(live_rtsp_client, client_impl, _describe_event, result_code, result_string);
 
-    client_impl->_timeout_timer.stop();
-
-    auto resultstring = std::unique_ptr<char[]>(result_string);
-
-    auto& describe_event = client_impl->_describe_event;
-        
-    if (result_code)
-    {
-        SET_RTSP_EXCEPTION(result_code, result_string, describe_event);
-        return;
-    }
-    
     /* create a media session object from this SDP description */
     auto session = MediaSession::createNew(*client_impl->_usage_environment, resultstring.get());
 
     if (!session)
     {
-        SET_RTSP_EXCEPTION(result_code_constant<0>::value(), "failed to create a MediaSession from the SDP description", describe_event);
+        SET_RTSP_EXCEPTION(result_code_constant<0>::value(), "failed to create a MediaSession from the SDP description", client_impl->_describe_event);
         return;
     }
     else if (!session->hasSubsessions())
     {
-        SET_RTSP_EXCEPTION(result_code_constant<0>::value(), "failed to create a MediaSession from the SDP description", describe_event);
+        SET_RTSP_EXCEPTION(result_code_constant<0>::value(), "failed to create a MediaSession from the SDP description", client_impl->_describe_event);
         return;
     }
 
@@ -75,68 +39,21 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     client_impl->_session = media_session(session_impl);
 
-    describe_event.set();
+    END_CALLBACK(client_impl, _describe_event);
 }
 
 void _rtsp_client_impl::setup_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
 {
-    printf("setup callback\n");
+    BEGIN_CALLBACK(live_rtsp_client, client_impl, _setup_event, result_code, result_string);
 
-    auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
-
-    client_impl->_timeout_timer.stop();
-
-    auto resultstring = std::unique_ptr<char[]>(result_string);
-
-    auto& setup_event = client_impl->_setup_event;
-
-    if (result_code)
-    {
-        SET_RTSP_EXCEPTION(result_code, result_string, setup_event);
-
-        return;
-    }
-
-    /*
-    auto& subsession = client_impl->_current_media_subsession_setup;
-    
-    auto live_subsession = subsession.__media_subsession->live_media_subsession();
-  
-    unsigned const thresh = 1200000; // 1.2 seconds
-
-    live_subsession->rtpSource()->setPacketReorderingThresholdTime(thresh);
-
-    int socketNum = live_subsession->rtpSource()->RTPgs()->socketNum();
-
-    unsigned curBufferSize = getReceiveBufferSize(live_subsession->rtpSource()->envir(), socketNum);
-      
-    unsigned newBufferSize = 200 * 1024;
-
-    newBufferSize = setReceiveBufferTo(live_subsession->rtpSource()->envir(), socketNum, newBufferSize);
-    */
-
-    setup_event.set();
+    END_CALLBACK(client_impl, _setup_event);
 }
 
 void _rtsp_client_impl::play_callback(RTSPClient* live_rtsp_client, int result_code, char* result_string)
 {
-    printf("play callback\n");
-    auto client_impl = CAST_RTSP_CLIENT(live_rtsp_client);
+    BEGIN_CALLBACK(live_rtsp_client, client_impl, _play_event, result_code, result_string);
 
-    client_impl->_timeout_timer.stop();
-
-    auto resultstring = std::unique_ptr<char[]>(result_string);
-
-    auto& play_event = client_impl->_play_event;
-
-    if (result_code)
-    {
-        SET_RTSP_EXCEPTION(result_code, result_string, play_event);
-
-        return;
-    }
-
-    play_event.set();
+    END_CALLBACK(client_impl, _play_event);
 }
 
 void _rtsp_client_impl::on_timeout_timer_tick(event_dispatcher_timer* /*sender*/)
@@ -207,10 +124,7 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
     _timeout_timer.start();
 
-    return create_task(_describe_event).then([this]
-    {
-        printf("describe complete\n");
-    });
+    return create_task(_describe_event);
 }
 
 media_session _rtsp_client_impl::session()
@@ -226,7 +140,6 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
 
     return create_for_task<size_t>(0, subsessions_->size(), [=](size_t i)
     {
-        printf("setup inside for\n");
         auto& subsession = subsessions_->at(i);
 
         subsession.__media_subsession->initiate();
@@ -245,7 +158,6 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
         return create_task(_setup_event);
     });
 }
-
 
 void _rtsp_client_impl::protocol_set(transport_protocol protocol)
 {
@@ -301,8 +213,6 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
     {
         return create_for_task<size_t>(0, subsession_ptr->size(), [=](size_t i)
         {
-            printf("play inside for\n");
-
             auto& subsession = subsession_ptr->at(i);
 
             _play_event = _current_event = task_completion_event<void>();
@@ -312,9 +222,6 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
             _timeout_timer.start();
 
             return create_task(_play_event);
-        }).then([=]
-        {
-            printf("test\n");
         });
     }).then([=]
     {

@@ -45,6 +45,9 @@
     <ClCompile Include="src\details\_media_sample_impl.cpp" />
     <ClCompile Include="src\details\_media_session_impl.cpp" />
     <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
+    <ClCompile Include="src\details\_rtsp_client_impl_helpers.hpp">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
     <ClCompile Include="src\details\_rtsp_server_impl.cpp" />
     <ClCompile Include="src\details\_streaming_media_session_impl.cpp" />
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp" />

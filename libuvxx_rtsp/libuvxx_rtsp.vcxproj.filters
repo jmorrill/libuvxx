@@ -134,5 +134,8 @@
     <ClCompile Include="src\rtsp_server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\details\_rtsp_client_impl_helpers.hpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
