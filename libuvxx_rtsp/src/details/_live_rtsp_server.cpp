@@ -3,7 +3,10 @@
 using namespace uvxx::rtsp::details;
 
 _live_rtsp_server::_live_rtsp_server(const _usage_environment_ptr& environment, int port) : 
-    RTSPServerSupportingHTTPStreaming(*environment.get(), setup_socket(environment, port), port, nullptr, 65)
+    RTSPServerSupportingHTTPStreaming(*environment.get(), setup_socket(environment, port), 
+        port, 
+        nullptr, 
+        65)
 {
 }
 

@@ -8,6 +8,7 @@
 #include "details/_rtsp_client_impl.hpp"
 #include "details/_streaming_media_session_impl.hpp"
 #include "details/_live_rtsp_client.hpp"
+
 #include "_rtsp_client_impl_helpers.hpp"
 
 using namespace uvxx;
@@ -20,7 +21,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
     BEGIN_CALLBACK(live_rtsp_client, client_impl, _describe_event, result_code, result_string);
 
     /* create a media session object from this SDP description */
-    auto session = MediaSession::createNew(*client_impl->_usage_environment, resultstring.get());
+    auto session = MediaSession::createNew(*client_impl->_usage_environment, result_string);
 
     if (!session)
     {
@@ -29,7 +30,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
     }
     else if (!session->hasSubsessions())
     {
-        SET_RTSP_EXCEPTION(result_code_constant<0>::value(), "failed to create a MediaSession from the SDP description", client_impl->_describe_event);
+        SET_RTSP_EXCEPTION(result_code_constant<0>::value(), "failed to create a MediaSession. There was no subsessions", client_impl->_describe_event);
         return;
     }
 
@@ -150,8 +151,6 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
                                                                setup_callback,
                                                                false,
                                                                _protocol == transport_protocol::tcp ? true : false);
-
-        _current_media_subsession_setup = subsession;
 
         _timeout_timer.start();
 

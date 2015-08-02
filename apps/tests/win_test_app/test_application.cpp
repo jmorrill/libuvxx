@@ -79,9 +79,9 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    //rtsp_server server;
+    rtsp_server server;
 
-    //server.start_server(8554);
+    server.start_server(8554);
 
     //event_dispatcher::run();
 
