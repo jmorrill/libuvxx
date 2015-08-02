@@ -8,22 +8,9 @@ rtsp_server::rtsp_server()
 {
 }
 
-rtsp_server::rtsp_server(const rtsp_server& client)
+int rtsp_server::port() const
 {
-}
-//
-//rtsp_server::rtsp_server(rtsp_server&& rhs)
-//{
-//}
-//
-//rtsp_server& rtsp_server::operator=(rtsp_server&& rhs)
-//{
-//    
-//}
-
-int rtsp_server::port_get() const
-{
-    return -1;
+	return __rtsp_server_impl ? __rtsp_server_impl->port() : 0;
 }
 
 void rtsp_server::start_server(int port)

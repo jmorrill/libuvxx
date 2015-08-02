@@ -13,7 +13,7 @@ namespace uvxx { namespace details
     public:
         _event_dispatcher_frame_impl();
 
-        _event_dispatcher_frame_impl(bool exitWhenRequested);
+	    explicit _event_dispatcher_frame_impl(bool exitWhenRequested);
 
         bool get_continue();
 

@@ -15,18 +15,14 @@ namespace uvxx { namespace rtsp
     class rtsp_server : public event_dispatcher_object
     {
     public:
-        rtsp_server();
+        explicit rtsp_server();
 
-        rtsp_server(const rtsp_server& client);
+        rtsp_server(const rtsp_server& client) = default;
 
         virtual rtsp_server& operator=(const rtsp_server&) = default;
-
-        //rtsp_server(rtsp_server&& rhs);
-
-        //virtual rtsp_server& operator=(rtsp_server&& rhs);
-    public:
-        
-        int port_get() const;
+    
+	public:
+        int port() const;
 
         void start_server(int port);
 

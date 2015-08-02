@@ -1,12 +1,15 @@
 #include "BasicUsageEnvironment.hh"
+#include "ServerMediaSession.hh"
 
+#include "event_dispatcher_frame.hpp"
 #include "details/_rtsp_server_impl.hpp"
 #include "details/_live_rtsp_server.hpp"
 #include "details/_uvxx_task_scheduler.hpp"
 
 using namespace uvxx::rtsp::details;
 
-_rtsp_server_impl::_rtsp_server_impl(uint16_t port) 
+_rtsp_server_impl::_rtsp_server_impl(uint16_t port) :
+	_port(0)
 {
     _task_scheduler = _uvxx_task_scheduler::createNew();
 
@@ -30,4 +33,27 @@ _rtsp_server_impl::_rtsp_server_impl(uint16_t port)
     {
         Medium::close(client);
     });
+
+	_live_server->set_on_lookup_media_session(std::bind(&_rtsp_server_impl::on_media_session_lookup, this, std::placeholders::_1));
+}
+
+uint16_t _rtsp_server_impl::port()
+{
+	return _port;
+}
+
+ServerMediaSession* _rtsp_server_impl::on_media_session_lookup(const std::string& stream_name)
+{
+	auto dispatcher = event_dispatcher_object::dispatcher();
+
+	uvxx::event_dispatcher_frame frame(true);
+	
+	dispatcher.begin_invoke([=]() mutable
+	{
+		frame.continue_set(false);
+	});
+	dispatcher.push_frame(frame);
+
+	printf("exiting frame");
+	return nullptr;
 }

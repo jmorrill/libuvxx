@@ -19,6 +19,7 @@ namespace uvxx
     event_dispatcher_frame::event_dispatcher_frame(event_dispatcher_frame&& dispatcher_frame) : 
         event_dispatcher_object(std::move(dispatcher_frame))
     {
+		__event_dispatcher_frame_impl = std::move(dispatcher_frame.__event_dispatcher_frame_impl);
     }
     
     event_dispatcher_frame& event_dispatcher_frame::operator=(event_dispatcher_frame&& rhs)

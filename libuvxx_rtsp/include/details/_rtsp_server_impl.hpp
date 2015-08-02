@@ -4,6 +4,8 @@
 
 class UsageEnvironment;
 
+class ServerMediaSession;
+
 namespace uvxx { namespace rtsp
 {
     class media_session;
@@ -13,6 +15,7 @@ namespace uvxx { namespace rtsp
 
 namespace uvxx { namespace rtsp { namespace details 
 {
+
     class _uvxx_task_scheduler;
 
     class _live_rtsp_server;
@@ -28,12 +31,20 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         _rtsp_server_impl(uint16_t port);
 
+	public:
+	    uint16_t port();
+
     private:
+		ServerMediaSession* on_media_session_lookup(const std::string& stream_name);
+
+	private:
         _usage_environment_ptr _usage_environment;
 
         _live_rtsp_server_ptr _live_server;
 
         _uvxx_task_scheduler* _task_scheduler;
+
+		uint16_t _port;
     };
 
 }}}

@@ -16,7 +16,7 @@ namespace uvxx
     public:
         event_dispatcher_frame();
 
-        event_dispatcher_frame(bool exitWhenRequested);
+	    explicit event_dispatcher_frame(bool exitWhenRequested);
 
         event_dispatcher_frame(const event_dispatcher_frame&) = default;
 
@@ -26,7 +26,7 @@ namespace uvxx
 
         event_dispatcher_frame& operator=(event_dispatcher_frame&& rhs);
 
-        operator bool() const;
+        operator bool() const override;
 
         bool continue_get();
 
