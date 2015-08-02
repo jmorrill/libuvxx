@@ -46,14 +46,16 @@ ServerMediaSession* _rtsp_server_impl::on_media_session_lookup(const std::string
 {
 	auto dispatcher = event_dispatcher_object::dispatcher();
 
-	uvxx::event_dispatcher_frame frame(true);
+	event_dispatcher_frame frame(true);
 	
 	dispatcher.begin_invoke([=]() mutable
 	{
 		frame.continue_set(false);
 	});
+    
 	dispatcher.push_frame(frame);
 
 	printf("exiting frame");
+    
 	return nullptr;
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-#include "event_dispatcher_timer.hpp"
 
 class UsageEnvironment;
 
