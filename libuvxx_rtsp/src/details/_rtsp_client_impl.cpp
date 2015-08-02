@@ -125,7 +125,7 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
     _timeout_timer.start();
 
-    return create_task(_describe_event);
+    return task<void>(_describe_event);
 }
 
 media_session _rtsp_client_impl::session()
