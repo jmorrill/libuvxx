@@ -10,7 +10,7 @@ namespace uvxx { namespace rtsp { namespace details
 {
     using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
 
-	using _lookup_media_session_delegate = std::function<ServerMediaSession*(const std::string& stream_name)>;
+    using _lookup_media_session_delegate = std::function<ServerMediaSession*(const std::string& stream_name)>;
 
     class _live_rtsp_server : public RTSPServerSupportingHTTPStreaming
     {
@@ -23,8 +23,8 @@ namespace uvxx { namespace rtsp { namespace details
     
         virtual ~_live_rtsp_server() override;
 
-	public:
-		void set_on_lookup_media_session(_lookup_media_session_delegate callback);
+    public:
+        void set_on_lookup_media_session(_lookup_media_session_delegate callback);
 
     protected:
         virtual ServerMediaSession* lookupServerMediaSession(char const* stream_name, Boolean is_first_lookup_in_session) override;
@@ -34,7 +34,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         _usage_environment_ptr _usage_environment;
 
-		_lookup_media_session_delegate __lookup_media_session_delegate;
+        _lookup_media_session_delegate __lookup_media_session_delegate;
     };
 
     using _live_rtsp_server_ptr = std::shared_ptr<_live_rtsp_server>;

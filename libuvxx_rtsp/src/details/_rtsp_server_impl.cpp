@@ -9,7 +9,7 @@
 using namespace uvxx::rtsp::details;
 
 _rtsp_server_impl::_rtsp_server_impl(uint16_t port) :
-	_port(0)
+    _port(0)
 {
     _task_scheduler = _uvxx_task_scheduler::createNew();
 
@@ -34,28 +34,28 @@ _rtsp_server_impl::_rtsp_server_impl(uint16_t port) :
         Medium::close(client);
     });
 
-	_live_server->set_on_lookup_media_session(std::bind(&_rtsp_server_impl::on_media_session_lookup, this, std::placeholders::_1));
+    _live_server->set_on_lookup_media_session(std::bind(&_rtsp_server_impl::on_media_session_lookup, this, std::placeholders::_1));
 }
 
 uint16_t _rtsp_server_impl::port()
 {
-	return _port;
+    return _port;
 }
 
 ServerMediaSession* _rtsp_server_impl::on_media_session_lookup(const std::string& stream_name)
 {
-	auto dispatcher = event_dispatcher_object::dispatcher();
+    auto dispatcher = event_dispatcher_object::dispatcher();
 
-	event_dispatcher_frame frame(true);
-	
-	dispatcher.begin_invoke([=]() mutable
-	{
-		frame.continue_set(false);
-	});
+    event_dispatcher_frame frame(true);
     
-	dispatcher.push_frame(frame);
+    dispatcher.begin_invoke([=]() mutable
+    {
+        frame.continue_set(false);
+    });
+    
+    dispatcher.push_frame(frame);
 
-	printf("exiting frame");
+    printf("exiting frame");
     
-	return nullptr;
+    return nullptr;
 }
