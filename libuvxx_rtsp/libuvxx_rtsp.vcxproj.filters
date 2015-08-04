@@ -134,9 +134,6 @@
     <ClCompile Include="src\details\media_framers\_qos_stats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\details\media_framers\_g711_audio_framer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\details\_rtsp_server_impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -159,6 +156,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\_h264_media_subsession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_g711_audio_framer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
