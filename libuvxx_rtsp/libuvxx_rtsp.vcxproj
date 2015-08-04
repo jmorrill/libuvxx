@@ -18,8 +18,10 @@
     <ClInclude Include="include\details\media_framers\_qos_stats.hpp" />
     <ClInclude Include="include\details\_live_authenticator.hpp" />
     <ClInclude Include="include\details\_live_rtsp_server.hpp" />
+    <ClInclude Include="include\details\_live_server_media_session.hpp" />
     <ClInclude Include="include\details\_media_sample_impl.hpp" />
     <ClInclude Include="include\details\_rtsp_server_impl.hpp" />
+    <ClInclude Include="include\details\_server_media_session_impl.hpp" />
     <ClInclude Include="include\details\_streaming_media_session_impl.hpp" />
     <ClInclude Include="include\details\_media_session_impl.hpp" />
     <ClInclude Include="include\details\_uvxx_task_scheduler.hpp" />
@@ -33,10 +35,11 @@
     <ClInclude Include="include\rtsp_client.hpp" />
     <ClInclude Include="include\rtsp_exceptions.hpp" />
     <ClInclude Include="include\rtsp_misc.hpp" />
+    <ClInclude Include="include\server_media_session.hpp" />
     <ClInclude Include="include\stream_statistics.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\details\h264_media_subsession.cpp" />
+    <ClCompile Include="src\details\_h264_media_subsession.cpp" />
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp" />
     <ClCompile Include="src\details\media_framers\_g711_audio_framer.cpp" />
     <ClCompile Include="src\details\media_framers\_h264_framer.cpp" />
@@ -44,6 +47,7 @@
     <ClCompile Include="src\details\media_framers\_qos_stats.cpp" />
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
     <ClCompile Include="src\details\_live_rtsp_server.cpp" />
+    <ClCompile Include="src\details\_live_server_media_session.cpp" />
     <ClCompile Include="src\details\_media_sample_impl.cpp" />
     <ClCompile Include="src\details\_media_session_impl.cpp" />
     <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
@@ -51,12 +55,14 @@
       <FileType>CppHeader</FileType>
     </ClCompile>
     <ClCompile Include="src\details\_rtsp_server_impl.cpp" />
+    <ClCompile Include="src\details\_server_media_session_impl.cpp" />
     <ClCompile Include="src\details\_streaming_media_session_impl.cpp" />
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp" />
     <ClCompile Include="src\media_sample.cpp" />
     <ClCompile Include="src\media_session.cpp" />
     <ClCompile Include="src\rtsp_client.cpp" />
     <ClCompile Include="src\rtsp_server.cpp" />
+    <ClCompile Include="src\server_media_session.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A75D232B-1970-4910-AED3-D0BF54232C62}</ProjectGuid>

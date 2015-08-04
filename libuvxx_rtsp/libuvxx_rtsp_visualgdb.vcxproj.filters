@@ -97,6 +97,18 @@
     <ClInclude Include="src\details\_rtsp_client_impl_helpers.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\server_media_session.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_h264_media_subsession.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_live_server_media_session.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_server_media_session_impl.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
@@ -148,6 +160,18 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\rtsp_server.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\server_media_session.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_server_media_session_impl.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_live_server_media_session.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_h264_media_subsession.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

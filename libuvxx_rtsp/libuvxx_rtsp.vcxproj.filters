@@ -84,6 +84,15 @@
     <ClInclude Include="include\details\_h264_media_subsession.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\_server_media_session_impl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_live_server_media_session.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\server_media_session.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp">
@@ -140,7 +149,16 @@
     <ClCompile Include="src\details\_rtsp_client_impl_helpers.hpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\details\h264_media_subsession.cpp">
+    <ClCompile Include="src\details\_server_media_session_impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_live_server_media_session.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\server_media_session.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_h264_media_subsession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

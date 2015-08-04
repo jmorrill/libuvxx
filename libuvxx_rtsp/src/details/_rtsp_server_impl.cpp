@@ -5,6 +5,10 @@
 #include "details/_rtsp_server_impl.hpp"
 #include "details/_live_rtsp_server.hpp"
 #include "details/_uvxx_task_scheduler.hpp"
+#include "details/_server_media_session_impl.hpp"
+#include "details/_live_server_media_session.hpp"
+#include "details/_h264_media_subsession.hpp"
+#include "server_media_session.hpp"
 
 using namespace uvxx::rtsp::details;
 
@@ -42,14 +46,16 @@ uint16_t _rtsp_server_impl::port()
     return _port;
 }
 
+
 ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::string& stream_name)
 {
     auto dispatcher = event_dispatcher_object::dispatcher();
 
     event_dispatcher_frame frame;
-    
+
     dispatcher.begin_invoke([=]() mutable
     {
+      
         frame.continue_set(false);
     });
     
@@ -57,5 +63,9 @@ ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::s
 
     printf("exiting frame");
     
-    return nullptr;
+    auto session = _server_media_session.__server_media_session_impl->__live_server_media_session.get();
+
+    session->addSubsession(new _h264_media_subsession(_usage_environment));
+
+    return session;
 }
