@@ -81,6 +81,9 @@
     <ClInclude Include="include\rtsp_server.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\h264_media_subsession.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp">
@@ -135,6 +138,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\_rtsp_client_impl_helpers.hpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\h264_media_subsession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

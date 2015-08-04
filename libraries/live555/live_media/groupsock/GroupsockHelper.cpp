@@ -117,8 +117,14 @@ int setupDatagramSocket(UsageEnvironment& env, Port port) {
   // Windoze doesn't properly handle SO_REUSEPORT or IP_MULTICAST_LOOP
 #else
 #ifdef SO_REUSEPORT
-  if (setsockopt(newSocket, SOL_SOCKET, SO_REUSEPORT,
-		 (const char*)&reuseFlag, sizeof reuseFlag) < 0) {
+    int res = setsockopt(newSocket,
+        SOL_SOCKET,
+        SO_REUSEPORT,
+        (const char*)&reuseFlag,
+        sizeof reuseFlag);
+    
+    printf("%d", res);
+  if (res < 0) {
     socketErr(env, "setsockopt(SO_REUSEPORT) error: ");
     closeSocket(newSocket);
     return -1;

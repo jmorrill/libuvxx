@@ -15,7 +15,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _live_rtsp_server : public RTSPServerSupportingHTTPStreaming
     {
     public:
-        _live_rtsp_server(const _usage_environment_ptr& environment, int port);
+        _live_rtsp_server(const _usage_environment_ptr& environment, uint16_t port);
 
         _live_rtsp_server(const _live_rtsp_server&) = delete;
 
@@ -30,7 +30,7 @@ namespace uvxx { namespace rtsp { namespace details
         virtual ServerMediaSession* lookupServerMediaSession(char const* stream_name, Boolean is_first_lookup_in_session) override;
 
     private:
-        static int setup_socket(const _usage_environment_ptr& environment, int port);
+        static int setup_socket(const _usage_environment_ptr& environment, uint16_t port);
 
         _usage_environment_ptr _usage_environment;
 

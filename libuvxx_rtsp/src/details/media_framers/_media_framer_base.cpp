@@ -63,7 +63,6 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
 
         _sample.codec_name_set(subsession.codec_name());
 
-
         _sample.attribute_set(ATTRIBUTE_SAMPLE_MAJOR_TYPE, media_major);
 
         /* set a 'BYE' handler for this subsession's RTCP instance: */

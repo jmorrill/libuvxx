@@ -25,6 +25,7 @@
     <ClInclude Include="include\details\_uvxx_task_scheduler.hpp" />
     <ClInclude Include="include\details\_live_rtsp_client.hpp" />
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />
+    <ClInclude Include="include\details\h264_media_subsession.hpp" />
     <ClInclude Include="include\media_sample.hpp" />
     <ClInclude Include="include\rtsp_server.hpp" />
     <ClInclude Include="include\sample_attributes.hpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="include\stream_statistics.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\details\h264_media_subsession.cpp" />
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp" />
     <ClCompile Include="src\details\media_framers\_g711_audio_framer.cpp" />
     <ClCompile Include="src\details\media_framers\_h264_framer.cpp" />

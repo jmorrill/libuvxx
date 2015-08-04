@@ -34,7 +34,7 @@ _rtsp_server_impl::_rtsp_server_impl(uint16_t port) :
         Medium::close(client);
     });
 
-    _live_server->set_on_lookup_media_session(std::bind(&_rtsp_server_impl::on_media_session_lookup, this, std::placeholders::_1));
+    _live_server->set_on_lookup_media_session(std::bind(&_rtsp_server_impl::on_live_media_session_lookup, this, std::placeholders::_1));
 }
 
 uint16_t _rtsp_server_impl::port()
@@ -42,11 +42,11 @@ uint16_t _rtsp_server_impl::port()
     return _port;
 }
 
-ServerMediaSession* _rtsp_server_impl::on_media_session_lookup(const std::string& stream_name)
+ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::string& stream_name)
 {
     auto dispatcher = event_dispatcher_object::dispatcher();
 
-    event_dispatcher_frame frame(true);
+    event_dispatcher_frame frame;
     
     dispatcher.begin_invoke([=]() mutable
     {

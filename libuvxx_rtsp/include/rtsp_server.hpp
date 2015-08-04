@@ -22,9 +22,9 @@ namespace uvxx { namespace rtsp
         virtual rtsp_server& operator=(const rtsp_server&) = default;
     
 	public:
-        int port() const;
+        uint16_t port() const;
 
-        void start_server(int port);
+        void start_server(uint16_t port);
 
     private:
         details::_rtsp_server_impl_ptr __rtsp_server_impl;
