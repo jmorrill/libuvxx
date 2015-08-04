@@ -9,16 +9,16 @@ namespace uvxx { namespace rtsp { namespace details
 {
     using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
 
-    class h264_media_subsession : public OnDemandServerMediaSubsession, public event_dispatcher_object
+    class _h264_media_subsession : public OnDemandServerMediaSubsession, public event_dispatcher_object
     {
     public:
-        explicit h264_media_subsession(const _usage_environment_ptr& usage_environment);
+        explicit _h264_media_subsession(const _usage_environment_ptr& usage_environment);
 
-        h264_media_subsession(const h264_media_subsession&) = delete;
+        _h264_media_subsession(const _h264_media_subsession&) = delete;
 
-        const h264_media_subsession& operator=(const h264_media_subsession&) = delete;
+        const _h264_media_subsession& operator=(const _h264_media_subsession&) = delete;
 
-        virtual ~h264_media_subsession() = default;
+        virtual ~_h264_media_subsession() = default;
 
         // Used to implement "getAuxSDPLine()":
         void checkForAuxSDPLine1();

@@ -81,7 +81,7 @@
     <ClInclude Include="include\rtsp_server.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\details\h264_media_subsession.hpp">
+    <ClInclude Include="include\details\_h264_media_subsession.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -25,7 +25,7 @@
     <ClInclude Include="include\details\_uvxx_task_scheduler.hpp" />
     <ClInclude Include="include\details\_live_rtsp_client.hpp" />
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />
-    <ClInclude Include="include\details\h264_media_subsession.hpp" />
+    <ClInclude Include="include\details\_h264_media_subsession.hpp" />
     <ClInclude Include="include\media_sample.hpp" />
     <ClInclude Include="include\rtsp_server.hpp" />
     <ClInclude Include="include\sample_attributes.hpp" />
