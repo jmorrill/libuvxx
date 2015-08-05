@@ -81,6 +81,7 @@ int _media_subsession_impl::stream_number() const
 
 _media_session_impl::~_media_session_impl()
 {
+
     if (_live_session)
     {
         Medium::close(_live_session);

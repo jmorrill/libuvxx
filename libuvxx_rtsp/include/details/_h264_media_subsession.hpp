@@ -24,9 +24,9 @@ namespace uvxx { namespace rtsp { namespace details
         void setDoneFlag() { fDoneFlag = ~0; }
 
     protected:
-        virtual char const* getAuxSDPLine(RTPSink* rtpSink, FramedSource* inputSource) override;
+        virtual char const* getAuxSDPLine(RTPSink* rtp_sink, FramedSource* input_source) override;
 
-        virtual FramedSource* createNewStreamSource(unsigned clientSessionId, unsigned& estBitrate) override;
+        virtual FramedSource* createNewStreamSource(unsigned client_session_id, unsigned& estimated_kbps) override;
 
         virtual RTPSink* createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* input_source) override;
 

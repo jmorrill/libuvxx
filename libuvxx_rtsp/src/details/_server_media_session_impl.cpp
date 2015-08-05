@@ -23,7 +23,10 @@ _server_media_session_impl::_server_media_session_impl()
 
 _server_media_session_impl::~_server_media_session_impl()
 {
-    __live_server_media_session->on_session_closed(nullptr);
+    if(__live_server_media_session)
+    {
+        __live_server_media_session->on_session_closed(nullptr);
+    }
 }
 
 void _server_media_session_impl::on_session_closed()

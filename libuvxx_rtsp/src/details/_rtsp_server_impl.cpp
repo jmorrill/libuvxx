@@ -4,7 +4,8 @@
 #include "event_dispatcher_frame.hpp"
 
 #include "server_media_session.hpp"
-#include "details/_live_common.hpp"
+#include "rtsp_server.hpp"
+
 #include "details/_rtsp_server_impl.hpp"
 #include "details/_live_rtsp_server.hpp"
 #include "details/_uvxx_task_scheduler.hpp"
@@ -18,9 +19,9 @@ _rtsp_server_impl::_rtsp_server_impl(uint16_t port) :
     _port(0)
 {
     _live_server = _live_rtsp_server_ptr(new _live_rtsp_server(port),
-    [](_live_rtsp_server* client)
+    [](_live_rtsp_server* server)
     {
-        Medium::close(client);
+        Medium::close(server);
     });
 
     _live_server->set_on_lookup_media_session(std::bind(&_rtsp_server_impl::on_live_media_session_lookup, this, std::placeholders::_1));
@@ -31,22 +32,48 @@ uint16_t _rtsp_server_impl::port()
     return _port;
 }
 
+void _rtsp_server_impl::on_session_request_set(uvxx::rtsp::on_session_request_delegate callback)
+{
+    _on_session_request_delegate = callback;
+}
+
 ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::string& stream_name)
 {
+    if(!_on_session_request_delegate)
+    {
+        return nullptr;
+    }
+
     auto dispatcher = event_dispatcher_object::dispatcher();
 
-    server_media_session _server_media_session;
+    server_media_session server_session;
 
     event_dispatcher_frame frame;
 
     dispatcher.begin_invoke([=]() mutable
     {
-        frame.continue_set(false);
+        auto t = _on_session_request_delegate(stream_name);
+
+        t.then([=](uvxx::pplx::task<server_media_session> get_session_task) mutable
+        {
+            try
+            {
+                server_session = get_session_task.get();
+            }
+            catch (const std::exception&)
+            {
+
+            }
+
+            frame.continue_set(false);
+        });
     });
     
+    /* This callback requires to be syncronous and expects a result after
+       returning.  Here we fake async by entering a dispatcher frame */
     dispatcher.push_frame(frame);
     
-    auto session = _server_media_session.__server_media_session_impl->__live_server_media_session.get();
+    auto session = server_session.__server_media_session_impl->__live_server_media_session.get();
 
     session->addSubsession(new _h264_media_subsession());
 

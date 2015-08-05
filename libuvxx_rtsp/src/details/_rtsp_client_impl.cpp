@@ -100,7 +100,6 @@ task<void> _rtsp_client_impl::open(const std::string& url)
     _usage_environment = _get_live_environment();
 
     _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(url.c_str(), this, 2),
-    /* deleter */
     [](_live_rtsp_client* client)
     {
         Medium::close(client);

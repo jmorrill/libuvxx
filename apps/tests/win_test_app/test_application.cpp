@@ -70,6 +70,10 @@ void stream_closed(int stream_number)
     printf("%d stream closed\n", stream_number);
 }
 
+task<server_media_session> on_session_requested(const std::string& stream_name)
+{
+    return task_from_result<server_media_session>(server_media_session());
+}
 
 int main(int argc, char* argv[])
 {
@@ -82,9 +86,7 @@ int main(int argc, char* argv[])
 
     server.start_server(8554);
 
-    //event_dispatcher::run();
-
-    //return 0;
+    server.on_session_request_set(on_session_requested);
 
     printf("argv[1] is %s\n", argv[1]);
 
@@ -106,7 +108,7 @@ int main(int argc, char* argv[])
             client.read_stream_sample();
         }).then([]
         {
-            return create_timer_task(std::chrono::milliseconds(5000));
+            return create_timer_task(std::chrono::milliseconds(55000));
         }).then([](task<void> t)
         {
             try

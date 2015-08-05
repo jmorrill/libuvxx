@@ -1,6 +1,6 @@
 #pragma once
 #include "event_dispatcher_object.hpp"
-#include "rtsp_misc.hpp"
+#include "server_media_session.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -12,6 +12,8 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp 
 {
+    using on_session_request_delegate = std::function<uvxx::pplx::task<server_media_session>(const std::string& stream_name)>;
+
     class rtsp_server : public event_dispatcher_object
     {
     public:
@@ -25,6 +27,8 @@ namespace uvxx { namespace rtsp
         uint16_t port() const;
 
         void start_server(uint16_t port);
+
+        void on_session_request_set(on_session_request_delegate callback);
 
     private:
         details::_rtsp_server_impl_ptr __rtsp_server_impl;

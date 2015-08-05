@@ -23,6 +23,8 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         uint16_t port();
 
+        void on_session_request_set(on_session_request_delegate callback);
+
     private:
         ServerMediaSession* on_live_media_session_lookup(const std::string& stream_name);
 
@@ -30,5 +32,7 @@ namespace uvxx { namespace rtsp { namespace details
         _live_rtsp_server_ptr _live_server;
 
         uint16_t _port;
+
+        on_session_request_delegate _on_session_request_delegate;
     };
 }}}

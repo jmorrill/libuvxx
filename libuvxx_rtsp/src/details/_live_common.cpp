@@ -28,6 +28,8 @@ _usage_environment_ptr uvxx::rtsp::details::_get_live_environment()
         }
     });
 
+    /* usage environment owns this pointer now,
+       so don't delete me brah */
     scheduler.release();
 
     return _live_environment_;
