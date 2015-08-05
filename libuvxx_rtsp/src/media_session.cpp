@@ -88,6 +88,16 @@ media_session& media_session::operator=(media_session&& rhs)
     return *this;
 }
 
+void media_session::operator=(std::nullptr_t)
+{
+    __media_session = nullptr;
+}
+
+bool media_session::operator==(std::nullptr_t)
+{
+    return __media_session != nullptr;
+}
+
 size_t media_session::subsession_count() const
 {
     return __media_session->subsessions().size();

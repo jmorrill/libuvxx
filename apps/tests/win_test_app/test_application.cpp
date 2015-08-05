@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
             client.read_stream_sample();
         }).then([]
         {
-            return create_timer_task(std::chrono::milliseconds(45000));
+            return create_timer_task(std::chrono::milliseconds(5000));
         }).then([](task<void> t)
         {
             try

@@ -86,6 +86,10 @@ namespace uvxx { namespace rtsp
 
         virtual media_session& operator=(media_session&& rhs);
 
+        virtual void operator=(std::nullptr_t);
+
+        virtual bool operator==(std::nullptr_t);
+
     public:
         std::vector<media_subsession> subsessions() const;
 

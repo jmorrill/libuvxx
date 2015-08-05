@@ -65,7 +65,7 @@ namespace uvxx { namespace rtsp { namespace details
         _media_session_impl(_media_session_impl&& rhs);
 
         _media_session_impl& operator=(_media_session_impl&& rhs);
-
+        
     public:
         void live_media_session_set(MediaSession* live_session);
 
