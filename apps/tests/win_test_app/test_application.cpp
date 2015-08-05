@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
                 printf(e.what());
             }
 
-           // event_dispatcher::current_dispatcher().begin_shutdown();
+            //event_dispatcher::current_dispatcher().begin_shutdown();
         });
 
         event_dispatcher::run();

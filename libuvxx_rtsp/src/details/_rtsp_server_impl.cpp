@@ -1,6 +1,7 @@
 #include "BasicUsageEnvironment.hh"
 #include "ServerMediaSession.hh"
 
+#include "details/_live_common.hpp"
 #include "event_dispatcher_frame.hpp"
 #include "details/_rtsp_server_impl.hpp"
 #include "details/_live_rtsp_server.hpp"
@@ -15,21 +16,7 @@ using namespace uvxx::rtsp::details;
 _rtsp_server_impl::_rtsp_server_impl(uint16_t port) :
     _port(0)
 {
-    _task_scheduler = _uvxx_task_scheduler::createNew();
-
-    _usage_environment = _usage_environment_ptr(BasicUsageEnvironment::createNew(*_task_scheduler),
-    /* deleter*/
-    [](UsageEnvironment* env)
-    {
-        auto& task_scheduler = env->taskScheduler();
-
-        delete &task_scheduler;
-
-        if (!env->reclaim())
-        {
-            assert(false);
-        }
-    });
+    _usage_environment = _get_live_environment();
 
     _live_server = _live_rtsp_server_ptr(new _live_rtsp_server(_usage_environment, port),
     /* deleter */

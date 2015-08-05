@@ -41,8 +41,6 @@ namespace uvxx { namespace rtsp { namespace details
 
         _live_rtsp_server_ptr _live_server;
 
-        _uvxx_task_scheduler* _task_scheduler;
-
         uint16_t _port;
     };
 }}}

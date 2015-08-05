@@ -174,5 +174,8 @@
     <ClCompile Include="src\details\_g711_audio_framer.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="src\details\_live_common.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

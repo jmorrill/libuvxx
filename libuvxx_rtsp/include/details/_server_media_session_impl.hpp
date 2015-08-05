@@ -22,6 +22,8 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         _server_media_session_impl();
 
+        virtual ~_server_media_session_impl();
+
     private:
         void on_session_closed();
 

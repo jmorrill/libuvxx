@@ -4,7 +4,7 @@
 #include "media_session.hpp"
 #include "rtsp_exceptions.hpp"
 
-#include "details/_uvxx_task_scheduler.hpp"
+#include "details/_live_common.hpp"
 #include "details/_rtsp_client_impl.hpp"
 #include "details/_streaming_media_session_impl.hpp"
 #include "details/_live_rtsp_client.hpp"
@@ -70,7 +70,6 @@ void _rtsp_client_impl::on_timeout_timer_tick(event_dispatcher_timer* /*sender*/
 }
 
 _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
-                                         _task_scheduler(nullptr),
                                          _protocol(transport_protocol::udp),
                                          _timeout(10000)
 {
@@ -96,21 +95,7 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
     _streaming_session = nullptr;
 
-    _task_scheduler = _uvxx_task_scheduler::createNew();
-
-    _usage_environment = _usage_environment_ptr(BasicUsageEnvironment::createNew(*_task_scheduler),
-    /* deleter*/
-    [](UsageEnvironment* environment)
-    {
-        auto& task_scheduler = environment->taskScheduler();
-
-        delete &task_scheduler;
-
-        if(!environment->reclaim())
-        {
-            assert(false);
-        }
-    });
+    _usage_environment = _get_live_environment();
     
     _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(_usage_environment, url.c_str(), this, 2),
     /* deleter */

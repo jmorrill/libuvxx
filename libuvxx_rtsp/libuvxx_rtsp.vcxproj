@@ -16,6 +16,7 @@
     <ClInclude Include="include\details\media_framers\_h264_framer.hpp" />
     <ClInclude Include="include\details\media_framers\_media_framer_base.hpp" />
     <ClInclude Include="include\details\media_framers\_qos_stats.hpp" />
+    <ClInclude Include="include\details\_live_common.hpp" />
     <ClInclude Include="include\details\_live_authenticator.hpp" />
     <ClInclude Include="include\details\_live_rtsp_server.hpp" />
     <ClInclude Include="include\details\_live_server_media_session.hpp" />
@@ -45,6 +46,7 @@
     <ClCompile Include="src\details\media_framers\_h264_framer.cpp" />
     <ClCompile Include="src\details\media_framers\_media_framer_base.cpp" />
     <ClCompile Include="src\details\media_framers\_qos_stats.cpp" />
+    <ClCompile Include="src\details\_live_common.cpp" />
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
     <ClCompile Include="src\details\_live_rtsp_server.cpp" />
     <ClCompile Include="src\details\_live_server_media_session.cpp" />

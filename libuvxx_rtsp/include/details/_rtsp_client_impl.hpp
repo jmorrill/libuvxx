@@ -105,8 +105,6 @@ namespace uvxx { namespace rtsp { namespace details
 
         _live_rtsp_client_ptr _live_client;
 
-        _uvxx_task_scheduler* _task_scheduler;
-
         _streaming_media_session_impl_ptr _streaming_session;
 
         _live_authenticator _authenticator;

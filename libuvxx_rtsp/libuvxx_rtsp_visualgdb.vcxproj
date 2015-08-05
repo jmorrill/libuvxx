@@ -151,6 +151,7 @@
     <ClCompile Include="src\details\media_framers\_h264_framer.cpp" />
     <ClCompile Include="src\details\media_framers\_media_framer_base.cpp" />
     <ClCompile Include="src\details\_h264_media_subsession.cpp" />
+    <ClCompile Include="src\details\_live_common.cpp" />
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
     <ClCompile Include="src\details\_live_rtsp_server.cpp" />
     <ClCompile Include="src\details\_live_server_media_session.cpp" />
