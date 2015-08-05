@@ -18,9 +18,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         const _h264_media_subsession& operator=(const _h264_media_subsession&) = delete;
 
-        virtual ~_h264_media_subsession() = default;
+        virtual ~_h264_media_subsession();
 
-        // Used to implement "getAuxSDPLine()":
         void checkForAuxSDPLine1();
 
         void afterPlayingDummy1();
@@ -28,7 +27,7 @@ namespace uvxx { namespace rtsp { namespace details
     protected:
         void setDoneFlag() { fDoneFlag = ~0; }
 
-    protected: // redefined virtual functions
+    protected:
         virtual char const* getAuxSDPLine(RTPSink* rtpSink, FramedSource* inputSource) override;
 
         virtual FramedSource* createNewStreamSource(unsigned clientSessionId, unsigned& estBitrate) override;
@@ -36,8 +35,12 @@ namespace uvxx { namespace rtsp { namespace details
         virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock, unsigned char rtpPayloadTypeIfDynamic, FramedSource* inputSource) override;
 
     private:
+        _usage_environment_ptr _usage_environment;
+
         char* fAuxSDPLine;
+
         char fDoneFlag; // used when setting up "fAuxSDPLine"
+
         RTPSink* fDummyRTPSink; // ditto
     };
  }}}

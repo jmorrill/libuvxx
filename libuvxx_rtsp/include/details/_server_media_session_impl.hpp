@@ -23,6 +23,9 @@ namespace uvxx { namespace rtsp { namespace details
         _server_media_session_impl();
 
     private:
+        void on_session_closed();
+
+    private:
         _uvxx_task_scheduler* _task_scheduler;
 
         _usage_environment_ptr _usage_environment;

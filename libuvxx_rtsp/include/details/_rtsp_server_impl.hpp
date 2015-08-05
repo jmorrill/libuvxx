@@ -37,9 +37,6 @@ namespace uvxx { namespace rtsp { namespace details
         ServerMediaSession* on_live_media_session_lookup(const std::string& stream_name);
 
     private:
-
-        uvxx::rtsp::server_media_session _server_media_session;
-
         _usage_environment_ptr _usage_environment;
 
         _live_rtsp_server_ptr _live_server;

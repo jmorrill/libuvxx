@@ -46,26 +46,26 @@ uint16_t _rtsp_server_impl::port()
     return _port;
 }
 
-
 ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::string& stream_name)
 {
     auto dispatcher = event_dispatcher_object::dispatcher();
+
+    uvxx::rtsp::server_media_session _server_media_session;
 
     event_dispatcher_frame frame;
 
     dispatcher.begin_invoke([=]() mutable
     {
-      
         frame.continue_set(false);
     });
     
     dispatcher.push_frame(frame);
-
-    printf("exiting frame");
     
     auto session = _server_media_session.__server_media_session_impl->__live_server_media_session.get();
 
-    session->addSubsession(new _h264_media_subsession(_usage_environment));
+    session->addSubsession(new _h264_media_subsession(_server_media_session.__server_media_session_impl->_usage_environment));
+
+    session->is_externally_owned_set(true);
 
     return session;
 }
