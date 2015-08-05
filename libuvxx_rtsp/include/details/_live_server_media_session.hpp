@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include "ServerMediaSession.hh"
+#include "_live_environment_base.hpp"
 
 namespace uvxx { namespace rtsp { namespace details 
 {
@@ -8,7 +9,7 @@ namespace uvxx { namespace rtsp { namespace details
 
     using _live_session_closed_delegate = std::function<void()>;
 
-    class _live_server_media_session : public ServerMediaSession
+    class _live_server_media_session : public ServerMediaSession, protected _live_environment_base
     {
     public:
         _live_server_media_session();

@@ -14,7 +14,7 @@ _server_media_session_impl::_server_media_session_impl()
     {
         if(!session->is_externally_owned())
         {
-            delete session;
+            Medium::close(session);
         }
     });
 
