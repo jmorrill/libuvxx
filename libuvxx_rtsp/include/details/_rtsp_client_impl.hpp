@@ -5,6 +5,7 @@
 #include "_live_authenticator.hpp"
 #include "rtsp_misc.hpp"
 #include "media_session.hpp"
+#include "_live_common.hpp"
 
 class RTSPClient;
 
@@ -113,6 +114,8 @@ namespace uvxx { namespace rtsp { namespace details
         event_dispatcher_timer _timeout_timer;
         
         std::chrono::milliseconds _timeout;
+
+        _usage_environment_ptr _usage_environment;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;

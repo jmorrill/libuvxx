@@ -73,6 +73,7 @@ void _rtsp_client_impl::on_timeout_timer_tick(event_dispatcher_timer* /*sender*/
 _rtsp_client_impl::_rtsp_client_impl() : _last_rtsp_command_id(0),
                                          _protocol(transport_protocol::udp),
                                          _timeout(10000)
+                                        
 {
     _timeout_timer.timeout_set(_timeout);
 
@@ -88,6 +89,10 @@ _rtsp_client_impl::~_rtsp_client_impl()
 
         _last_rtsp_command_id = 0;
     }
+
+    /* force client to run dtor before thread-local
+       usage environment does (case w/ global static instances) */
+    _live_client = nullptr;
 }
 
 task<void> _rtsp_client_impl::open(const std::string& url)
@@ -95,6 +100,8 @@ task<void> _rtsp_client_impl::open(const std::string& url)
     verify_access();
 
     _streaming_session = nullptr;
+
+    _usage_environment = _get_live_environment();
 
     _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(url.c_str(), this, 2),
     /* deleter */

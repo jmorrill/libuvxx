@@ -13,13 +13,13 @@ using namespace uvxx::pplx;
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::sample_attributes;
 
-std::unique_ptr<rtsp_client> client;
+rtsp_client client;
 
 void on_sample_callback(const media_sample& sample)
 {
     create_task([=]
     {
-        auto stats = client->stream_statistics_get(sample.stream_number());
+        auto stats = client.stream_statistics_get(sample.stream_number());
 
         if (stats.percent_packet_loss)
         {
@@ -61,7 +61,7 @@ void on_sample_callback(const media_sample& sample)
         printf("\n");
     }).then([=]
     {
-        client->read_stream_sample();
+        client.read_stream_sample();
     });
 }
 
@@ -88,24 +88,22 @@ int main(int argc, char* argv[])
 
     printf("argv[1] is %s\n", argv[1]);
 
-    client = std::make_unique<rtsp_client>();
-
     {
-        client->on_sample_set(on_sample_callback);
+        client.on_sample_set(on_sample_callback);
 
-        client->on_stream_closed_set(stream_closed);
+        client.on_stream_closed_set(stream_closed);
 
-        client->credentials_set("admin", "12345");
+        client.credentials_set("admin", "12345");
 
-        client->protocol_set(transport_protocol::udp);
+        client.protocol_set(transport_protocol::udp);
 
-        client->open(argv[1]).then([=]
+        client.open(argv[1]).then([=]
         {
             printf("starting play \n");
-            return client->play();
+            return client.play();
         }).then([]
         {
-            client->read_stream_sample();
+            client.read_stream_sample();
         }).then([]
         {
             return create_timer_task(std::chrono::milliseconds(45000));
@@ -130,6 +128,6 @@ int main(int argc, char* argv[])
 
         event_dispatcher::run();
     }
-    client = nullptr;
+
     return 0;
 }
