@@ -10,7 +10,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _uvxx_task_scheduler : public BasicTaskScheduler0
     {
     public:
-        static _uvxx_task_scheduler* createNew(unsigned maxSchedulerGranularity = 1000000 /*microseconds*/ );
+        explicit _uvxx_task_scheduler(unsigned maxSchedulerGranularity);
 
         virtual ~_uvxx_task_scheduler();
 
@@ -19,8 +19,6 @@ namespace uvxx { namespace rtsp { namespace details
         _uvxx_task_scheduler& operator=(const _uvxx_task_scheduler&) = delete;
 
     protected:
-        explicit _uvxx_task_scheduler(unsigned maxSchedulerGranularity);
-
         static void schedulerTickTask(void* client_data);
 
         void schedulerTickTask();

@@ -9,11 +9,6 @@ using namespace uvxx;
 using namespace uvxx::net;
 using namespace uvxx::rtsp::details;
 
-_uvxx_task_scheduler* _uvxx_task_scheduler::createNew(unsigned maxSchedulerGranularity)
-{
-    return new _uvxx_task_scheduler(maxSchedulerGranularity);
-}
-
 _uvxx_task_scheduler::_uvxx_task_scheduler(unsigned maxSchedulerGranularity)
   : BasicTaskScheduler0(), 
     fMaxSchedulerGranularity(maxSchedulerGranularity)
