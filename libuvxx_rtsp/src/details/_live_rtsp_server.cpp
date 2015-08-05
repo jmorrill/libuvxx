@@ -1,9 +1,10 @@
+#include "details/_live_common.hpp"
 #include "details/_live_rtsp_server.hpp"
 
 using namespace uvxx::rtsp::details;
 
-_live_rtsp_server::_live_rtsp_server(const _usage_environment_ptr& environment, uint16_t port) : 
-    RTSPServerSupportingHTTPStreaming(*environment.get(), setup_socket(environment, port), 
+_live_rtsp_server::_live_rtsp_server(uint16_t port) : 
+    RTSPServerSupportingHTTPStreaming(*_get_live_environment().get(), setup_socket(port),
         port, 
         nullptr, 
         65)
@@ -24,11 +25,11 @@ ServerMediaSession* _live_rtsp_server::lookupServerMediaSession(char const* stre
     return __lookup_media_session_delegate ? __lookup_media_session_delegate(stream_name) : nullptr;
 }
 
-int _live_rtsp_server::setup_socket(const _usage_environment_ptr& environment, uint16_t port)
+int _live_rtsp_server::setup_socket(uint16_t port)
 {
     Port port_(port);
 
-    auto socket = setUpOurSocket(*environment.get(), port_);
+    auto socket = setUpOurSocket(*_get_live_environment().get(), port_);
 
     return socket;
 }

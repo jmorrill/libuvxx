@@ -3,16 +3,12 @@
 #include <string>
 #include <vector>
 
-class UsageEnvironment;
-
 class MediaSubsession;
 
 class MediaSession;
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-    using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
-
     class _media_subsession_impl
     {
     public:
@@ -71,7 +67,7 @@ namespace uvxx { namespace rtsp { namespace details
         _media_session_impl& operator=(_media_session_impl&& rhs);
 
     public:
-        void live_media_session_set(const _usage_environment_ptr& usage_environment, MediaSession* live_session);
+        void live_media_session_set(MediaSession* live_session);
 
         virtual ~_media_session_impl();
 
@@ -85,8 +81,6 @@ namespace uvxx { namespace rtsp { namespace details
 
     private:
         std::vector<_media_subsession_impl_ptr> _subsessions;
-
-        _usage_environment_ptr _usage_environment;
 
         MediaSession* _live_session;
     };

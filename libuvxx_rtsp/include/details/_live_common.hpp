@@ -1,6 +1,6 @@
 #pragma once
-#include "BasicUsageEnvironment.hh"
 #include <memory>
+#include "BasicUsageEnvironment.hh"
 
 namespace uvxx { namespace rtsp { namespace details
 {

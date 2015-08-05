@@ -21,7 +21,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
     BEGIN_CALLBACK(live_rtsp_client, client_impl, _describe_event, result_code, result_string);
 
     /* create a media session object from this SDP description */
-    auto session = MediaSession::createNew(*client_impl->_usage_environment, result_string);
+    auto session = MediaSession::createNew(*_get_live_environment().get(), result_string);
 
     if (!session)
     {
@@ -36,7 +36,7 @@ void _rtsp_client_impl::describe_callback(RTSPClient* live_rtsp_client, int resu
 
     auto session_impl = std::make_shared<_media_session_impl>();
 
-    session_impl->live_media_session_set(client_impl->_usage_environment, session);
+    session_impl->live_media_session_set(session);
 
     client_impl->_session = media_session(session_impl);
 
@@ -95,9 +95,7 @@ task<void> _rtsp_client_impl::open(const std::string& url)
 
     _streaming_session = nullptr;
 
-    _usage_environment = _get_live_environment();
-    
-    _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(_usage_environment, url.c_str(), this, 2),
+    _live_client = _live_rtsp_client_ptr(new _live_rtsp_client(url.c_str(), this, 2),
     /* deleter */
     [](_live_rtsp_client* client)
     {

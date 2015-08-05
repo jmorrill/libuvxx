@@ -1,27 +1,15 @@
 #pragma once
 #include <memory>
-#include <server_media_session.hpp>
 
 class UsageEnvironment;
 
 class ServerMediaSession;
 
-namespace uvxx { namespace rtsp
-{
-    class media_session;
-
-    class media_subsession;
-}}
-
 namespace uvxx { namespace rtsp { namespace details 
 {
-    class _uvxx_task_scheduler;
-
     class _live_rtsp_server;
 
     using _live_rtsp_server_ptr = std::shared_ptr<_live_rtsp_server>;
-
-    using _uvxx_task_scheduler_ptr = std::shared_ptr<_uvxx_task_scheduler>;
 
     using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
    

@@ -7,8 +7,6 @@
 #include "rtsp_misc.hpp"
 #include "media_session.hpp"
 
-class UsageEnvironment;
-
 class RTSPClient;
 
 namespace uvxx { namespace rtsp
@@ -20,8 +18,6 @@ namespace uvxx { namespace rtsp
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-    class _uvxx_task_scheduler;
-
     class _rtsp_client_impl;
 
     class _live_rtsp_client;
@@ -31,8 +27,6 @@ namespace uvxx { namespace rtsp { namespace details
     using _streaming_media_session_impl_ptr = std::shared_ptr<_streaming_media_session_impl>;
 
     using _live_rtsp_client_ptr = std::shared_ptr<_live_rtsp_client>;
-
-    using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;
    
@@ -100,8 +94,6 @@ namespace uvxx { namespace rtsp { namespace details
         pplx::task_completion_event<void> _play_event;
 
         media_session _session;
-
-        _usage_environment_ptr _usage_environment;
 
         _live_rtsp_client_ptr _live_client;
 

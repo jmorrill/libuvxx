@@ -1,21 +1,18 @@
 #pragma once
 #include <memory>
 #include <functional>
-
 #include "RTSPServerSupportingHTTPStreaming.hh"
 
 class RTSPServerSupportingHTTPStreaming;
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-    using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
-
     using _lookup_media_session_delegate = std::function<ServerMediaSession*(const std::string& stream_name)>;
 
     class _live_rtsp_server : public RTSPServerSupportingHTTPStreaming
     {
     public:
-        _live_rtsp_server(const _usage_environment_ptr& environment, uint16_t port);
+        _live_rtsp_server(uint16_t port);
 
         _live_rtsp_server(const _live_rtsp_server&) = delete;
 
@@ -30,9 +27,7 @@ namespace uvxx { namespace rtsp { namespace details
         virtual ServerMediaSession* lookupServerMediaSession(char const* stream_name, Boolean is_first_lookup_in_session) override;
 
     private:
-        static int setup_socket(const _usage_environment_ptr& environment, uint16_t port);
-
-        _usage_environment_ptr _usage_environment;
+        static int setup_socket(uint16_t port);
 
         _lookup_media_session_delegate __lookup_media_session_delegate;
     };

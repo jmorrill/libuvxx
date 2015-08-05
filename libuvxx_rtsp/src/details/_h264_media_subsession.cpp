@@ -1,12 +1,13 @@
 #include "H264VideoRTPSink.hh"
+#include "H264VideoStreamDiscreteFramer.hh"
+
+#include "details/_live_common.hpp"
 #include "details/_h264_media_subsession.hpp"
-#include <H264VideoStreamDiscreteFramer.hh>
 
 using namespace uvxx::rtsp::details;
 
-_h264_media_subsession::_h264_media_subsession(const _usage_environment_ptr& usage_environment) : 
-    OnDemandServerMediaSubsession(*usage_environment.get(), false),
-    _usage_environment(usage_environment)
+_h264_media_subsession::_h264_media_subsession() : 
+    OnDemandServerMediaSubsession(*_get_live_environment().get(), false)
 {
 }
 

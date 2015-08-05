@@ -1,11 +1,11 @@
-#include "details/_live_server_media_session.hpp"
 #include <functional>
+#include "details/_live_common.hpp"
+#include "details/_live_server_media_session.hpp"
 
 using namespace uvxx::rtsp::details;
 
-_live_server_media_session::_live_server_media_session(const _usage_environment_ptr& environment) : 
-    ServerMediaSession(*(environment.get()), "stream", nullptr, nullptr, false, nullptr),
-    _usage_environment(environment),
+_live_server_media_session::_live_server_media_session() : 
+    ServerMediaSession(*(_get_live_environment().get()), "stream", nullptr, nullptr, false, nullptr),
     _is_externally_owned(false)
 {
     deleteWhenUnreferenced() = true;

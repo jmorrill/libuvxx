@@ -1,18 +1,14 @@
 #pragma once
-#pragma once
-#include <memory>
-
 #include "OnDemandServerMediaSubsession.hh"
+
 #include "event_dispatcher_object.hpp"
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-    using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
-
     class _h264_media_subsession : public OnDemandServerMediaSubsession, public event_dispatcher_object
     {
     public:
-        explicit _h264_media_subsession(const _usage_environment_ptr& usage_environment);
+        explicit _h264_media_subsession();
 
         _h264_media_subsession(const _h264_media_subsession&) = delete;
 
@@ -35,8 +31,6 @@ namespace uvxx { namespace rtsp { namespace details
         virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock, unsigned char rtpPayloadTypeIfDynamic, FramedSource* inputSource) override;
 
     private:
-        _usage_environment_ptr _usage_environment;
-
         char* fAuxSDPLine;
 
         char fDoneFlag; // used when setting up "fAuxSDPLine"

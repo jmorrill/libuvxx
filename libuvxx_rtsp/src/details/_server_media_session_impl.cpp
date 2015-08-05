@@ -8,9 +8,7 @@ using namespace uvxx::rtsp::details;
 
 _server_media_session_impl::_server_media_session_impl()
 {
-    _usage_environment = _get_live_environment();
-
-    __live_server_media_session = _live_server_media_session_ptr(new _live_server_media_session(_usage_environment),
+    __live_server_media_session = _live_server_media_session_ptr(new _live_server_media_session(),
     [](_live_server_media_session* session)
     {
         if(!session->is_externally_owned())

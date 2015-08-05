@@ -87,13 +87,11 @@ _media_session_impl::~_media_session_impl()
     }
 }
 
-void _media_session_impl::live_media_session_set(const _usage_environment_ptr& usage_environment, MediaSession* live_session)
+void _media_session_impl::live_media_session_set(MediaSession* live_session)
 {
     reset();
 
     _live_session = live_session;
-
-    _usage_environment = usage_environment;
 
     auto iter = std::make_unique<MediaSubsessionIterator>(*_live_session);
 
@@ -115,7 +113,6 @@ void _media_session_impl::live_media_session_set(const _usage_environment_ptr& u
 void _media_session_impl::reset()
 {
     _subsessions.clear();
-    _usage_environment = nullptr;
 }
 
 _media_session_impl& _media_session_impl::operator=(_media_session_impl&& rhs)
