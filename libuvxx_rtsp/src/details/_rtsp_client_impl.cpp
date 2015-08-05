@@ -130,7 +130,7 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
 {
     verify_access();
 
-    return create_for_task<size_t>(0, subsessions_->size(), [=](size_t i)
+    return create_for_loop_task<size_t>(0, subsessions_->size(), [=](size_t i)
     {
         auto& subsession = subsessions_->at(i);
 
@@ -145,7 +145,7 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
 
         _timeout_timer.start();
 
-        return create_task(_setup_event);
+        return task<void>(_setup_event);
     });
 }
 
@@ -201,7 +201,7 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
 
     return setup(subsession_ptr).then([=]
     {
-        return create_for_task<size_t>(0, subsession_ptr->size(), [=](size_t i)
+        return create_for_loop_task<size_t>(0, subsession_ptr->size(), [=](size_t i)
         {
             auto& subsession = subsession_ptr->at(i);
 
@@ -211,7 +211,7 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
 
             _timeout_timer.start();
 
-            return create_task(_play_event);
+            return task<void>(_play_event);
         });
     }).then([=]
     {

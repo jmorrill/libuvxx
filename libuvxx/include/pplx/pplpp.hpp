@@ -31,11 +31,11 @@ namespace uvxx { namespace pplx { namespace details
 
         std::function<void(task<bool>)> b = std::bind([](
             task<bool>                  previous,
-            task_completion_event<void> finished,
-            std::function<task<bool>()> body,
-            cancellation_token          ct,
-            cancellation_token_source   cts,
-            task_continuation_context   context) mutable
+            task_completion_event<void> finished_,
+            std::function<task<bool>()> body_,
+            cancellation_token          ct_,
+            cancellation_token_source   cts_,
+            task_continuation_context   context_) mutable
         {
             try
             {
@@ -43,23 +43,23 @@ namespace uvxx { namespace pplx { namespace details
 
                 if (!continue_result)
                 {
-                    finished.set();
+                    finished_.set();
                     return;
                 }
 
-                iterative_task_impl(std::move(finished),
-                    std::move(body),
-                    std::move(ct),
-                    std::move(cts),
-                    std::move(context));
+                iterative_task_impl(std::move(finished_),
+                    std::move(body_),
+                    std::move(ct_),
+                    std::move(cts_),
+                    std::move(context_));
             }
             catch (task_canceled)
             {
-                cts.cancel();
+                cts_.cancel();
             }
             catch (...)
             {
-                finished.set_exception(std::current_exception());
+                finished_.set_exception(std::current_exception());
             }
 
         }, std::placeholders::_1, std::move(finished), std::move(body), std::move(ct), std::move(cts), std::move(context));
@@ -95,23 +95,23 @@ namespace uvxx { namespace pplx { namespace details
 
 
         std::function<void()> runnable = std::bind([](
-                                         task_completion_event<void> finished, 
-                                         std::function<task<bool>()> body,
-                                         cancellation_token          ct,
-                                         cancellation_token_source   cts,
-                                         task_continuation_context   context) mutable
+                                         task_completion_event<void> finished_, 
+                                         std::function<task<bool>()> body_,
+                                         cancellation_token          ct_,
+                                         cancellation_token_source   cts_,
+                                         task_continuation_context   context_) mutable
         {
             try
             {
-                details::iterative_task_impl(finished, 
-                                             std::move(body), 
-                                             std::move(ct), 
-                                             std::move(cts), 
-                                             std::move(context));
+                details::iterative_task_impl(finished_, 
+                                             std::move(body_), 
+                                             std::move(ct_), 
+                                             std::move(cts_), 
+                                             std::move(context_));
             }
             catch(...)
             {
-                finished.set_exception(std::current_exception());
+                finished_.set_exception(std::current_exception());
             }
 
         }, finished, std::move(body), std::move(ct), cts, context);
@@ -125,7 +125,7 @@ namespace uvxx { namespace pplx { namespace details
             create_task(std::move(runnable));
         }
 
-        return create_task(finished, cts.get_token());
+        return task<void>(finished, cts.get_token());
     }
 
     inline task<void> create_timer_task(std::chrono::milliseconds timeout)
@@ -136,7 +136,7 @@ namespace uvxx { namespace pplx { namespace details
     }
 
     template<typename T>
-    inline task<void> create_for_task(T from_inclusive, T to_exclusive, std::function<task<void>(T)> loop_function)
+    inline task<void> create_for_loop_task(T from_inclusive, T to_exclusive, std::function<task<void>(T)> loop_function)
     {
         auto from_ = std::make_shared<T>(from_inclusive);
 
