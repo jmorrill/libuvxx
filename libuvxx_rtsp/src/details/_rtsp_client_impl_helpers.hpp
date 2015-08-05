@@ -31,6 +31,8 @@ auto rtsp_client = CAST_RTSP_CLIENT(live_rtsp_client)\
 \
 rtsp_client->_timeout_timer.stop();\
 \
+rtsp_client->_last_rtsp_command_id = 0;\
+\
 auto resultstring = std::unique_ptr<char[]>(rs);\
 \
 if (result_code)\

@@ -3,13 +3,15 @@
 #include <string>
 #include <vector>
 
+#include "_live_environment_base.hpp"
+
 class MediaSubsession;
 
 class MediaSession;
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-    class _media_subsession_impl
+    class _media_subsession_impl : protected _live_environment_base
     {
     public:
         _media_subsession_impl(int stream_number, MediaSubsession* live_subsession);
@@ -53,7 +55,7 @@ namespace uvxx { namespace rtsp { namespace details
 
     using _media_subsession_impl_ptr = std::shared_ptr<_media_subsession_impl>;
 
-    class _media_session_impl
+    class _media_session_impl : protected _live_environment_base
     {
     public:
         _media_session_impl();

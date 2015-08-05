@@ -96,6 +96,9 @@
     <ClInclude Include="include\details\_live_common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\_live_environment_base.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp">
@@ -165,6 +168,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\_live_common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_live_environment_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

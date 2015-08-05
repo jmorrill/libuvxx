@@ -4,6 +4,7 @@
 
 #include "rtsp_client.hpp"
 #include "media_session.hpp"
+#include "_live_environment_base.hpp"
 
 namespace uvxx { namespace rtsp
 {
@@ -24,7 +25,7 @@ namespace uvxx { namespace rtsp
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-    class _streaming_media_session_impl
+    class _streaming_media_session_impl : protected _live_environment_base
     {
     public:
         _streaming_media_session_impl(const media_session& session, std::vector<media_subsession> subsessions);

@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 
+#include "_live_environment_base.hpp"
+
 class UsageEnvironment;
 
 class ServerMediaSession;
@@ -13,7 +15,7 @@ namespace uvxx { namespace rtsp { namespace details
 
     using _usage_environment_ptr = std::shared_ptr<UsageEnvironment>;
    
-    class _rtsp_server_impl : public event_dispatcher_object
+    class _rtsp_server_impl : public event_dispatcher_object, protected _live_environment_base
     {
     public:
         _rtsp_server_impl(uint16_t port);
@@ -25,8 +27,6 @@ namespace uvxx { namespace rtsp { namespace details
         ServerMediaSession* on_live_media_session_lookup(const std::string& stream_name);
 
     private:
-        _usage_environment_ptr _usage_environment;
-
         _live_rtsp_server_ptr _live_server;
 
         uint16_t _port;

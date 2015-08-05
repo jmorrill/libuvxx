@@ -1,10 +1,11 @@
 #pragma once
 #include <memory>
 #include "RTSPClient.hh"
+#include "_live_environment_base.hpp"
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-    class _live_rtsp_client : public RTSPClient
+    class _live_rtsp_client : public RTSPClient, protected _live_environment_base
     {
     public:
         _live_rtsp_client(char const* rtsp_url,

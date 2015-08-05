@@ -89,14 +89,6 @@ _rtsp_client_impl::~_rtsp_client_impl()
 
         _last_rtsp_command_id = 0;
     }
-
-    /* force client to run dtor before thread-local
-       usage environment does (case w/ global static instances) */
-    _live_client = nullptr;
-
-    _streaming_session = nullptr;
-
-    _session = nullptr;
 }
 
 task<void> _rtsp_client_impl::open(const std::string& url)

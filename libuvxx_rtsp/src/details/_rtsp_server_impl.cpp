@@ -17,8 +17,6 @@ using namespace uvxx::rtsp::details;
 _rtsp_server_impl::_rtsp_server_impl(uint16_t port) :
     _port(0)
 {
-    _usage_environment = _get_live_environment();
-
     _live_server = _live_rtsp_server_ptr(new _live_rtsp_server(port),
     /* deleter */
     [](_live_rtsp_server* client)
