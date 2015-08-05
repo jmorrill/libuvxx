@@ -28,13 +28,13 @@ namespace uvxx { namespace rtsp { namespace details
 
         virtual FramedSource* createNewStreamSource(unsigned clientSessionId, unsigned& estBitrate) override;
 
-        virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock, unsigned char rtpPayloadTypeIfDynamic, FramedSource* inputSource) override;
+        virtual RTPSink* createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* input_source) override;
 
     private:
         char* fAuxSDPLine;
 
-        char fDoneFlag; // used when setting up "fAuxSDPLine"
+        char fDoneFlag;
 
-        RTPSink* fDummyRTPSink; // ditto
+        RTPSink* fDummyRTPSink;
     };
  }}}

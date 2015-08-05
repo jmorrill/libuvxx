@@ -27,7 +27,7 @@ FramedSource* _h264_media_subsession::createNewStreamSource(unsigned client_sess
     return nullptr; //H264VideoStreamDiscreteFramer::createNew(envir(), nullptr);
 }
 
-RTPSink* _h264_media_subsession::createNewRTPSink(Groupsock* rtpGroupsock, unsigned char rtpPayloadTypeIfDynamic, FramedSource* /*inputSource*/) 
+RTPSink* _h264_media_subsession::createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* /*inputSource*/) 
 {
-    return H264VideoRTPSink::createNew(envir(), rtpGroupsock, rtpPayloadTypeIfDynamic);
+    return H264VideoRTPSink::createNew(envir(), rtp_groupsock, rtp_payload_type_if_dynamic);
 }

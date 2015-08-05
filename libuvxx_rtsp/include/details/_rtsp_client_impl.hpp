@@ -2,7 +2,6 @@
 #include <memory>
 #include "rtsp_client.hpp"
 #include "event_dispatcher_timer.hpp"
-#include "_media_session_impl.hpp"
 #include "_live_authenticator.hpp"
 #include "rtsp_misc.hpp"
 #include "media_session.hpp"

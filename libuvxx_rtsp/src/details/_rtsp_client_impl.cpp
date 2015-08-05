@@ -4,6 +4,7 @@
 #include "media_session.hpp"
 #include "rtsp_exceptions.hpp"
 
+#include "details/_media_session_impl.hpp"
 #include "details/_live_common.hpp"
 #include "details/_rtsp_client_impl.hpp"
 #include "details/_streaming_media_session_impl.hpp"
