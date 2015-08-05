@@ -43,5 +43,5 @@ _server_media_session_impl::_server_media_session_impl()
 
 void _server_media_session_impl::on_session_closed()
 {
-
+    __live_server_media_session = nullptr;
 }
