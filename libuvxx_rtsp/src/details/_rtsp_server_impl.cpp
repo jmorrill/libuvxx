@@ -46,11 +46,10 @@ ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::s
 
     auto dispatcher = event_dispatcher_object::dispatcher();
 
-    server_media_session server_session;
 
-    event_dispatcher_frame frame;
+    //event_dispatcher_frame frame;
 
-    dispatcher.begin_invoke([=, &server_session]() mutable
+    /*dispatcher.begin_invoke([=, &server_session]() mutable
     {
         auto t = _on_session_request_delegate(stream_name);
 
@@ -67,11 +66,12 @@ ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::s
 
             frame.continue_set(false);
         });
-    });
+    });*/
     
+    server_media_session server_session = _on_session_request_delegate(stream_name);
     /* This callback requires to be syncronous and expects a result after
        returning.  Here we fake async by entering a dispatcher frame */
-    dispatcher.push_frame(frame);
+    //dispatcher.push_frame(frame);
     
     auto session = server_session.__server_media_session_impl->__live_server_media_session.get();
 

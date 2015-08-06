@@ -1,37 +1,16 @@
 #include "BasicUsageEnvironment.hh"
 
+#include "media_sample.hpp"
 #include "details/_live_common.hpp"
 #include "details/_live_server_media_session.hpp"
 #include "details/_server_media_session_impl.hpp"
 #include "details/_uvxx_task_scheduler.hpp"
 #include "details/_h264_media_subsession.hpp"
-#include "media_sample.hpp"
 #include "details/_live_common.hpp"
 
 using namespace uvxx::rtsp::details;
 
-class _framed_source : public FramedSource
-{
-public:
-    _framed_source() : FramedSource(*_get_live_environment().get())
-    {
-        FramedSource::afterGetting(this);
-    }
-
-public:
-
-    virtual void doGetNextFrame() 
-    {
-        printf("do get next\n");
-    }
-
-    virtual void newFrameHandler1()
-    {
-        
-    }
-};
-
-_server_media_session_impl::_server_media_session_impl()
+_server_media_session_impl::_server_media_session_impl() : _source(nullptr)
 {
     __live_server_media_session = _live_server_media_session_ptr(new _live_server_media_session(),
     [](_live_server_media_session* session)
@@ -45,6 +24,10 @@ _server_media_session_impl::_server_media_session_impl()
     });
 
     __live_server_media_session->on_session_closed(std::bind(&_server_media_session_impl::on_session_closed, this));
+
+    OutPacketBuffer::maxSize = 450 * 1024;
+
+    _source = new _live_framed_source(std::bind(&_server_media_session_impl::on_framed_source_closed, this));
 }
 
 _server_media_session_impl::~_server_media_session_impl()
@@ -58,6 +41,11 @@ _server_media_session_impl::~_server_media_session_impl()
 void _server_media_session_impl::on_session_closed()
 {
     __live_server_media_session.reset(static_cast<_live_server_media_session*>(nullptr));
+}
+
+void _server_media_session_impl::on_framed_source_closed()
+{
+    _source = nullptr;
 }
 
 _server_media_session_impl::_server_media_session_impl(_server_media_session_impl&& rhs)
@@ -83,7 +71,12 @@ void _server_media_session_impl::set_media_descriptor(const uvxx::rtsp::media_de
 
 void _server_media_session_impl::deliver_sample(int stream_id, const uvxx::rtsp::media_sample& sample)
 {
+    if(_source)
+    {
+        _source->deliver_sample(sample);
+    }
 }
+
 
 void _server_media_session_impl::configure_session()
 {
@@ -93,7 +86,12 @@ void _server_media_session_impl::configure_session()
     {
         if(stream.codec_name() == "H264")
         {
-            __live_server_media_session->addSubsession(new _h264_media_subsession(new _framed_source()));
+            __live_server_media_session->addSubsession(new _h264_media_subsession(std::bind(&_server_media_session_impl::create_framed_source, this, std::placeholders::_1)));
         }
     }
+}
+
+FramedSource* _server_media_session_impl::create_framed_source(unsigned client_id)
+{
+    return _source;
 }

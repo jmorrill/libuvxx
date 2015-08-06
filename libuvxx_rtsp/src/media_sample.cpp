@@ -54,6 +54,23 @@ media_sample& media_sample::operator=(media_sample&& rhs)
     return *this;
 }
 
+bool media_sample::operator=(std::nullptr_t)
+{
+    __media_sample_impl = nullptr;
+
+    return true;
+}
+
+bool media_sample::operator==(std::nullptr_t)
+{
+    return __media_sample_impl == nullptr;
+}
+
+bool media_sample::operator!=(std::nullptr_t)
+{
+    return __media_sample_impl != nullptr;
+}
+
 int media_sample::stream_number() const
 {
     return __media_sample_impl->stream_number();

@@ -15,7 +15,7 @@ using namespace uvxx::rtsp::sample_attributes;
 using namespace uvxx::rtsp::details;
 using namespace uvxx::rtsp::details::media_framers;
 
-static const size_t DEFAULT_READ_BUFFER_SIZE = 320 * 1024;
+static const size_t DEFAULT_READ_BUFFER_SIZE = 500 * 1024;
 static const size_t MAX_READ_BUFFER_SIZE     = 2   * 1024 * 1024;
 
 

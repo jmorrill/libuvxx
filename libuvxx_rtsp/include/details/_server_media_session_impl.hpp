@@ -1,6 +1,10 @@
 #pragma once
 #include "event_dispatcher_object.hpp"
 #include "media_descriptor.hpp"
+#include "media_sample.hpp"
+#include "FramedSource.hh"
+#include "details/_live_common.hpp"
+#include "details/_live_framed_source.hpp"
 
 namespace uvxx { namespace rtsp {
     class media_sample;
@@ -38,12 +42,18 @@ namespace uvxx { namespace rtsp { namespace details
     private:
         void on_session_closed();
 
+        void on_framed_source_closed();
+
         void configure_session();
+
+        FramedSource* create_framed_source(unsigned client_id);
 
     private:
         _live_server_media_session_ptr __live_server_media_session;
 
         media_descriptor _descriptor;
+
+        _live_framed_source* _source;
 
         friend _rtsp_server_impl;
     };

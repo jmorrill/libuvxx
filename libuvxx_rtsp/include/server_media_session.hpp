@@ -15,6 +15,8 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp 
 {
+    class media_sample;
+
     class server_media_session : public event_dispatcher_object
     {
     public:
@@ -29,8 +31,11 @@ namespace uvxx { namespace rtsp
         server_media_session& operator=(server_media_session&& session);
 
         virtual ~server_media_session() = default;
+
     public:
         void set_media_descriptor(const media_descriptor& descriptor);
+
+        void deliver_sample(int stream_id, const media_sample& sample);
 
     private:
         details::_server_media_session_impl_ptr __server_media_session_impl;

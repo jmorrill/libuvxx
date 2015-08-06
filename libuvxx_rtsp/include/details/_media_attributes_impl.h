@@ -1,8 +1,6 @@
 #pragma once
 #include <memory>
-#include <chrono>
 #include <string>
-#include <vector>
 #include <unordered_map>
 
 #include "io/memory_buffer.hpp"
@@ -18,11 +16,12 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         _media_attributes_impl();
 
-        _media_attributes_impl(const _media_attributes_impl&) = delete;
+        _media_attributes_impl(const _media_attributes_impl&) = default;
 
-        _media_attributes_impl& operator=(const _media_attributes_impl&) = delete;
+        _media_attributes_impl& operator=(const _media_attributes_impl&) = default;
 
         virtual ~_media_attributes_impl() = default;
+
     public:
         void clear_attributes();
 

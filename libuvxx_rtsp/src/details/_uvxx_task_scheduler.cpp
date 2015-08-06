@@ -280,7 +280,8 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_handler(BackgroundHand
     {
         start_poll();
     }
-    else if(!_handler_proc)
+    
+    if(!_handler_proc)
     {
         _poller.stop();
     }

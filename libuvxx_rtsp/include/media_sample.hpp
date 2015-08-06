@@ -31,6 +31,12 @@ namespace uvxx { namespace rtsp
 
         media_sample& operator=(media_sample&& rhs);
 
+        bool operator=(std::nullptr_t /*rhs*/);
+
+        bool operator==(std::nullptr_t /*rhs*/);
+
+        bool operator!=(std::nullptr_t /*rhs*/);
+
     public:
         int stream_number() const;
 

@@ -3,9 +3,7 @@
 #include <chrono>
 #include <string>
 #include <vector>
-#include <unordered_map>
 
-#include "io/memory_buffer.hpp"
 #include "_media_attributes_impl.h"
 
 namespace uvxx { namespace rtsp { namespace details 
@@ -15,9 +13,9 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         _media_sample_impl();
 
-        _media_sample_impl(const _media_sample_impl&) = delete;
+        _media_sample_impl(const _media_sample_impl&) = default;
 
-        _media_sample_impl& operator=(const _media_sample_impl&) = delete;
+        _media_sample_impl& operator=(const _media_sample_impl&) = default;
 
         virtual ~_media_sample_impl();
 

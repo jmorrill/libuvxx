@@ -6,10 +6,11 @@
 
 using namespace uvxx::rtsp::details;
 
-_h264_media_subsession::_h264_media_subsession(FramedSource* framed_source) :
+_h264_media_subsession::_h264_media_subsession(std::function<FramedSource*(unsigned client_session_id)> factory) :
     OnDemandServerMediaSubsession(*_get_live_environment().get(), false), 
-    _framed_source(framed_source)
+    _framed_source(factory)
 {
+   
 }
 
 _h264_media_subsession::~_h264_media_subsession()
@@ -25,10 +26,16 @@ FramedSource* _h264_media_subsession::createNewStreamSource(unsigned client_sess
 {
     estimated_kbps = 500; /* kbps, estimate */
 
-    return H264VideoStreamDiscreteFramer::createNew(envir(), _framed_source);
+    auto framesource = H264VideoStreamDiscreteFramer::createNew(envir(), _framed_source(client_session_id));
+
+    return framesource;
 }
 
 RTPSink* _h264_media_subsession::createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* /*inputSource*/) 
 {
     return H264VideoRTPSink::createNew(envir(), rtp_groupsock, rtp_payload_type_if_dynamic);
+}
+
+void _h264_media_subsession::closeStreamSource(FramedSource* inputSource)
+{
 }
