@@ -1,12 +1,11 @@
 #pragma once
+#include "FramedSource.hh"
+
 #include "event_dispatcher_object.hpp"
 #include "media_descriptor.hpp"
 #include "media_sample.hpp"
-#include "FramedSource.hh"
 #include "sample_attributes.hpp"
 #include "media_sample.hpp"
-#include "details/_live_common.hpp"
-#include "details/_live_framed_source.hpp"
 
 namespace uvxx { namespace rtsp 
 {
@@ -16,47 +15,48 @@ namespace uvxx { namespace rtsp
 
 namespace uvxx { namespace rtsp { namespace details
 {
+    using _framed_source_closed_delegate = std::function<void(int stream_id)>;
+
     class _live_framed_source : public FramedSource
     {
     public:
-        explicit _live_framed_source(std::function<void()> source_closed) : FramedSource(*_get_live_environment().get()),
-            _closed(source_closed)
-        {
-            buf = new unsigned char[400000];
-            fTo = nullptr;
-        }
+        explicit _live_framed_source(int stream_id);
 
-        virtual ~_live_framed_source()
-        {
-            if (_closed)
-            {
-                _closed();
-            }
-        }
-        unsigned char* buf;
-        int fbuffsize;
+        virtual ~_live_framed_source();
+
+        unsigned char* _payload;
+        int _payload_size;
         int stage = 0;
         media_sample _sample;
+
+        uvxx::io::memory_buffer _sps;
+
+        uvxx::io::memory_buffer _pps;
+
+        void on_closed_set(_framed_source_closed_delegate source_closed);
     public:
 
-        virtual void doStopGettingFrames() override
-        {
-
-        }
         void deliver_sample(const media_sample& sample)
         {
             if (!isCurrentlyAwaitingData() || _sample != nullptr)
                 return;
 
             _sample = sample;
+
             stage = 0;
-            memcpy(buf, const_cast<unsigned char*>(_sample.data()), _sample.size());
-            fbuffsize = _sample.size();
+
+            memcpy(_payload, const_cast<unsigned char*>(_sample.data()), _sample.size());
+
+            _payload_size = _sample.size();
+
+            _sps = _sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET);
+
+            _pps = _sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_PICTURE_PARAMETER_SET);
+
             fDurationInMicroseconds = 0;
-            fFrameSize = sample.size();
 
             fPresentationTime.tv_sec = static_cast<long>(sample.presentation_time().count() / 1000000);
-            fPresentationTime.tv_usec = static_cast<long>(sample.presentation_time().count() % 100000);
+            fPresentationTime.tv_usec = static_cast<long>(sample.presentation_time().count() % 1000000);
 
             doStage();
         }
@@ -72,37 +72,38 @@ namespace uvxx { namespace rtsp { namespace details
 
             switch (stage)
             {
-            case 0:
-            {
-                auto sps = _sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET);
-                memcpy(fTo, sps.data(), sps.length_get());
-                fFrameSize = sps.length_get();
-                break;
-            }
-            case 1:
-            {
-                auto pps = _sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_PICTURE_PARAMETER_SET);
-                memcpy(fTo, pps.data(), pps.length_get());
-                fFrameSize = pps.length_get();
-                break;
-            }
-            case 2:
-            {
-                memcpy(fTo, buf, fbuffsize);
-                fFrameSize = fbuffsize;
-                break;
-            }
+                case 0:
+                {
+                   
+                    memcpy(fTo, _sps.data(), _sps.length_get());
+                    fFrameSize = _sps.length_get();
+                    break;
+                }
+                case 1:
+                {
+                    memcpy(fTo, _pps.data(), _pps.length_get());
+                    fFrameSize = _pps.length_get();
+                    break;
+                }
+                case 2:
+                {
+                    memcpy(fTo, _payload, _payload_size);
+                    fFrameSize = _payload_size;
+                    break;
+                }
             }
             stage++;
             FramedSource::afterGetting(this);
         }
+
         virtual void doGetNextFrame() override
         {
             doStage();
-            printf("do get next\n");
         }
 
     private:
-        std::function<void()> _closed;
+        _framed_source_closed_delegate _on_source_closed;
+
+        int _stream_id;
     };
 }}}

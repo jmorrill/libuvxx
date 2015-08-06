@@ -1,9 +1,9 @@
 #pragma once
+#include <unordered_map>
 #include "event_dispatcher_object.hpp"
 #include "media_descriptor.hpp"
 #include "media_sample.hpp"
 #include "FramedSource.hh"
-#include "details/_live_common.hpp"
 #include "details/_live_framed_source.hpp"
 
 namespace uvxx { namespace rtsp {
@@ -42,18 +42,18 @@ namespace uvxx { namespace rtsp { namespace details
     private:
         void on_session_closed();
 
-        void on_framed_source_closed();
+        void on_framed_source_closed(int stream_id);
 
         void configure_session();
 
-        FramedSource* create_framed_source(unsigned client_id);
+        FramedSource* create_framed_source(int stream_id, unsigned client_session_id);
 
     private:
         _live_server_media_session_ptr __live_server_media_session;
 
         media_descriptor _descriptor;
 
-        _live_framed_source* _source;
+        std::unordered_map<int, std::shared_ptr<_live_framed_source>> _stream_sources;
 
         friend _rtsp_server_impl;
     };

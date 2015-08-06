@@ -39,7 +39,7 @@ void on_sample_callback(const media_sample& sample)
         {
             bool key_frame = sample.attribute_get<bool>(ATTRIBUTE_VIDEO_KEYFRAME);
 
-            if(server_session && key_frame)
+            if(server_session)
             {
                 server_session->deliver_sample(1, sample);
             }
@@ -84,7 +84,7 @@ server_media_session on_session_requested(const std::string& stream_name)
 
     media_descriptor descriptor;
 
-    descriptor.add_stream_from_attributes(0, "H264", media_attributes());
+    descriptor.add_stream_from_attributes(1, "H264", media_attributes());
     
     server_session->set_media_descriptor(descriptor);
 

@@ -1,16 +1,14 @@
 #include "BasicUsageEnvironment.hh"
 
 #include "media_sample.hpp"
-#include "details/_live_common.hpp"
 #include "details/_live_server_media_session.hpp"
 #include "details/_server_media_session_impl.hpp"
 #include "details/_uvxx_task_scheduler.hpp"
 #include "details/_h264_media_subsession.hpp"
-#include "details/_live_common.hpp"
 
 using namespace uvxx::rtsp::details;
 
-_server_media_session_impl::_server_media_session_impl() : _source(nullptr)
+_server_media_session_impl::_server_media_session_impl()
 {
     __live_server_media_session = _live_server_media_session_ptr(new _live_server_media_session(),
     [](_live_server_media_session* session)
@@ -26,8 +24,6 @@ _server_media_session_impl::_server_media_session_impl() : _source(nullptr)
     __live_server_media_session->on_session_closed(std::bind(&_server_media_session_impl::on_session_closed, this));
 
     OutPacketBuffer::maxSize = 450 * 1024;
-
-    _source = new _live_framed_source(std::bind(&_server_media_session_impl::on_framed_source_closed, this));
 }
 
 _server_media_session_impl::~_server_media_session_impl()
@@ -43,10 +39,6 @@ void _server_media_session_impl::on_session_closed()
     __live_server_media_session.reset(static_cast<_live_server_media_session*>(nullptr));
 }
 
-void _server_media_session_impl::on_framed_source_closed()
-{
-    _source = nullptr;
-}
 
 _server_media_session_impl::_server_media_session_impl(_server_media_session_impl&& rhs)
 {
@@ -71,12 +63,17 @@ void _server_media_session_impl::set_media_descriptor(const uvxx::rtsp::media_de
 
 void _server_media_session_impl::deliver_sample(int stream_id, const uvxx::rtsp::media_sample& sample)
 {
-    if(_source)
-    {
-        _source->deliver_sample(sample);
-    }
-}
+    auto it = _stream_sources.find(stream_id);
 
+    if(it == _stream_sources.end())
+    {
+        throw std::exception();
+    }
+
+    auto& source = it->second;
+  
+    source->deliver_sample(sample);
+}
 
 void _server_media_session_impl::configure_session()
 {
@@ -86,12 +83,39 @@ void _server_media_session_impl::configure_session()
     {
         if(stream.codec_name() == "H264")
         {
-            __live_server_media_session->addSubsession(new _h264_media_subsession(std::bind(&_server_media_session_impl::create_framed_source, this, std::placeholders::_1)));
+            auto subsession = new _h264_media_subsession(stream.stream_id());
+
+            subsession->source_factory_create_set(std::bind(&_server_media_session_impl::create_framed_source, this, std::placeholders::_1, std::placeholders::_2));
+
+            __live_server_media_session->addSubsession(subsession);
         }
     }
 }
 
-FramedSource* _server_media_session_impl::create_framed_source(unsigned client_id)
+void _server_media_session_impl::on_framed_source_closed(int stream_id)
 {
-    return _source;
+    auto it = _stream_sources.find(stream_id);
+
+    if (it == _stream_sources.end())
+    {
+        throw std::exception();
+    }
+
+    _stream_sources.erase(it);
+}
+
+FramedSource* _server_media_session_impl::create_framed_source(int stream_id, unsigned /*client_session_id*/)
+{
+    auto it = _stream_sources.find(stream_id);
+
+    std::shared_ptr<_live_framed_source> source = std::shared_ptr<_live_framed_source>(new _live_framed_source(stream_id), [](_live_framed_source*)
+    {
+        /* todo add logic later in case live55 doesn't free*/
+    });
+
+    source->on_closed_set(std::bind(&_server_media_session_impl::on_framed_source_closed, this, std::placeholders::_1));
+    
+    _stream_sources[stream_id] = source;
+    
+    return source.get();
 }

@@ -5,10 +5,12 @@
 
 namespace uvxx { namespace rtsp { namespace details 
 {
+    using framed_source_factory_delegate = std::function<FramedSource*(int stream_id, unsigned client_session_id)>;
+
     class _h264_media_subsession : public OnDemandServerMediaSubsession, public event_dispatcher_object
     {
     public:
-        explicit _h264_media_subsession(std::function<FramedSource*(unsigned)> factory);
+        explicit _h264_media_subsession(int stream_id);
 
         _h264_media_subsession(const _h264_media_subsession&) = delete;
 
@@ -16,9 +18,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         virtual ~_h264_media_subsession();
 
-        void checkForAuxSDPLine1();
-
-        void afterPlayingDummy1();
+        void source_factory_create_set(framed_source_factory_delegate factory);
 
     protected:
         void setDoneFlag() { fDoneFlag = ~0; }
@@ -30,14 +30,16 @@ namespace uvxx { namespace rtsp { namespace details
 
         virtual RTPSink* createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* input_source) override;
 
-        virtual void closeStreamSource(FramedSource *inputSource);
+        virtual void closeStreamSource(FramedSource *inputSource) override;
     private:
-        std::function<FramedSource*(unsigned)> _framed_source;
+        framed_source_factory_delegate _framed_source_factory;
 
         char* fAuxSDPLine;
 
         char fDoneFlag;
 
         RTPSink* fDummyRTPSink;
+
+        int _stream_id;
     };
  }}}
