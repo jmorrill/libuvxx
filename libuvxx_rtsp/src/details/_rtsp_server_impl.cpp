@@ -50,15 +50,15 @@ ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::s
 
     event_dispatcher_frame frame;
 
-    dispatcher.begin_invoke([=]() mutable
+    dispatcher.begin_invoke([=, &server_session]() mutable
     {
         auto t = _on_session_request_delegate(stream_name);
 
-        t.then([=](uvxx::pplx::task<server_media_session> get_session_task) mutable
+        t.then([=, &server_session](uvxx::pplx::task<server_media_session> get_session_task) mutable
         {
             try
             {
-                server_session = get_session_task.get();
+                server_session = std::move(get_session_task.get());
             }
             catch (const std::exception&)
             {
@@ -74,8 +74,6 @@ ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::s
     dispatcher.push_frame(frame);
     
     auto session = server_session.__server_media_session_impl->__live_server_media_session.get();
-
-    session->addSubsession(new _h264_media_subsession());
 
     session->is_externally_owned_set(true);
 

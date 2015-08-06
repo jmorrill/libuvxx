@@ -5,9 +5,13 @@ using namespace uvxx::io;
 using namespace uvxx::rtsp;
 using namespace details;
 
-media_sample::media_sample()
+media_sample::media_sample() : media_sample(std::make_shared<_media_sample_impl>())
 {
-    __media_sample_impl = std::make_shared<_media_sample_impl>();
+}
+
+media_sample::media_sample(const details::_media_sample_impl_ptr& impl) : 
+    media_attributes(impl), __media_sample_impl(impl)
+{
 }
 
 size_t media_sample::size() const
@@ -70,16 +74,6 @@ void media_sample::capacity_set(size_t size)
     __media_sample_impl->capacity_set(size);
 }
 
-void media_sample::attribute_blob_set(const std::string& attribute_name, const memory_buffer& buffer)
-{
-    __media_sample_impl->attribute_set(attribute_name, buffer);
-}
-
-memory_buffer media_sample::attribute_blob_get(const std::string& attribute_name) const
-{
-    return __media_sample_impl->attribute_get(attribute_name);
-}
-
 void media_sample::codec_name_set(const std::string& codec_name)
 {
     __media_sample_impl->codec_name_set(codec_name);
@@ -93,11 +87,6 @@ void media_sample::presentation_time_set(std::chrono::microseconds presentation_
 void media_sample::is_truncated_set(bool truncated)
 {
     __media_sample_impl->is_truncated_set(truncated);
-}
-
-void media_sample::clear_attributes()
-{
-    __media_sample_impl->clear_attributes();
 }
 
 void media_sample::stream_number_set(int stream_number)

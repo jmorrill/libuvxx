@@ -6,10 +6,11 @@
 #include <unordered_map>
 
 #include "io/memory_buffer.hpp"
+#include "_media_attributes_impl.h"
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-    class _media_sample_impl
+    class _media_sample_impl : public _media_attributes_impl
     {
     public:
         _media_sample_impl();
@@ -47,12 +48,6 @@ namespace uvxx { namespace rtsp { namespace details
 
         void codec_name_set(const std::string& codec_name);
 
-        void clear_attributes();
-
-        void attribute_set(const std::string& attribute_name, const io::memory_buffer& buffer);
-
-        io::memory_buffer attribute_get(const std::string& attribute_name);
-
     private:
         int _stream_number;
         
@@ -66,6 +61,5 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::chrono::microseconds _presentation_time;
 
-        std::unordered_map<std::string, io::memory_buffer> _attribute_map;
     };
 }}}

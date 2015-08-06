@@ -8,7 +8,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _h264_media_subsession : public OnDemandServerMediaSubsession, public event_dispatcher_object
     {
     public:
-        explicit _h264_media_subsession();
+        explicit _h264_media_subsession(FramedSource* framed_source);
 
         _h264_media_subsession(const _h264_media_subsession&) = delete;
 
@@ -31,6 +31,8 @@ namespace uvxx { namespace rtsp { namespace details
         virtual RTPSink* createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* input_source) override;
 
     private:
+        FramedSource * _framed_source;
+
         char* fAuxSDPLine;
 
         char fDoneFlag;

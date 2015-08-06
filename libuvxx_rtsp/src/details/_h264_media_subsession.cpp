@@ -6,8 +6,9 @@
 
 using namespace uvxx::rtsp::details;
 
-_h264_media_subsession::_h264_media_subsession() : 
-    OnDemandServerMediaSubsession(*_get_live_environment().get(), false)
+_h264_media_subsession::_h264_media_subsession(FramedSource* framed_source) :
+    OnDemandServerMediaSubsession(*_get_live_environment().get(), false), 
+    _framed_source(framed_source)
 {
 }
 
@@ -24,7 +25,7 @@ FramedSource* _h264_media_subsession::createNewStreamSource(unsigned client_sess
 {
     estimated_kbps = 500; /* kbps, estimate */
 
-    return nullptr; //H264VideoStreamDiscreteFramer::createNew(envir(), nullptr);
+    return H264VideoStreamDiscreteFramer::createNew(envir(), _framed_source);
 }
 
 RTPSink* _h264_media_subsession::createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* /*inputSource*/) 

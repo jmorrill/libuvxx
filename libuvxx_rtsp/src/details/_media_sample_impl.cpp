@@ -83,29 +83,7 @@ void _media_sample_impl::capacity_set(size_t capacity)
     _buffer.resize(capacity);
 }
 
-void _media_sample_impl::attribute_set(const std::string& attribute_name, const memory_buffer& buffer)
-{
-    _attribute_map[attribute_name] = buffer;
-}
-
-memory_buffer _media_sample_impl::attribute_get(const std::string& attribute_name)
-{
-    auto iterator = _attribute_map.find(attribute_name);
-
-    if (iterator == _attribute_map.end())
-    {
-        return nullptr;
-    }
-
-    return iterator->second;
-}
-
 void _media_sample_impl::is_truncated_set(bool truncated)
 {
     _is_truncated = truncated;
-}
-
-void _media_sample_impl::clear_attributes()
-{
-    _attribute_map.clear();
 }

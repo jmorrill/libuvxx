@@ -1,6 +1,8 @@
 #pragma once
 #include "event_dispatcher_object.hpp"
 
+#include "media_descriptor.hpp"
+
 namespace uvxx { namespace rtsp { namespace details
 {
     /* implementation forward */
@@ -18,11 +20,17 @@ namespace uvxx { namespace rtsp
     public:
         server_media_session();
 
-        server_media_session(const server_media_session& client) = default;
+        server_media_session(const server_media_session& client);
 
-        virtual server_media_session& operator=(const server_media_session&) = default;
+        server_media_session& operator=(const server_media_session&);
    
+        server_media_session(server_media_session&& session);
+
+        server_media_session& operator=(server_media_session&& session);
+
         virtual ~server_media_session() = default;
+    public:
+        void set_media_descriptor(const media_descriptor& descriptor);
 
     private:
         details::_server_media_session_impl_ptr __server_media_session_impl;

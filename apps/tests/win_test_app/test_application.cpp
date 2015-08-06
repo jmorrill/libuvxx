@@ -72,7 +72,15 @@ void stream_closed(int stream_number)
 
 task<server_media_session> on_session_requested(const std::string& stream_name)
 {
-    return task_from_result<server_media_session>(server_media_session());
+    server_media_session session;
+
+    media_descriptor descriptor;
+
+    descriptor.add_stream_from_attributes(0, "H264", media_attributes());
+    
+    session.set_media_descriptor(descriptor);
+
+    return task_from_result<server_media_session>(std::move(session));
 }
 
 int main(int argc, char* argv[])
@@ -125,7 +133,7 @@ int main(int argc, char* argv[])
                 printf(e.what());
             }
 
-            event_dispatcher::current_dispatcher().begin_shutdown();
+            //event_dispatcher::current_dispatcher().begin_shutdown();
         });
 
         event_dispatcher::run();

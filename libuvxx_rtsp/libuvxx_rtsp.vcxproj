@@ -21,6 +21,7 @@
     <ClInclude Include="include\details\_live_environment_base.hpp" />
     <ClInclude Include="include\details\_live_rtsp_server.hpp" />
     <ClInclude Include="include\details\_live_server_media_session.hpp" />
+    <ClInclude Include="include\details\_media_descriptor_impl.hpp" />
     <ClInclude Include="include\details\_media_sample_impl.hpp" />
     <ClInclude Include="include\details\_rtsp_server_impl.hpp" />
     <ClInclude Include="include\details\_server_media_session_impl.hpp" />
@@ -30,6 +31,8 @@
     <ClInclude Include="include\details\_live_rtsp_client.hpp" />
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />
     <ClInclude Include="include\details\_h264_media_subsession.hpp" />
+    <ClInclude Include="include\media_attributes.hpp" />
+    <ClInclude Include="include\media_descriptor.hpp" />
     <ClInclude Include="include\media_sample.hpp" />
     <ClInclude Include="include\rtsp_server.hpp" />
     <ClInclude Include="include\sample_attributes.hpp" />
@@ -39,6 +42,7 @@
     <ClInclude Include="include\rtsp_misc.hpp" />
     <ClInclude Include="include\server_media_session.hpp" />
     <ClInclude Include="include\stream_statistics.hpp" />
+    <ClInclude Include="include\details\_media_attributes_impl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\_g711_audio_framer.cpp" />
@@ -52,6 +56,8 @@
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
     <ClCompile Include="src\details\_live_rtsp_server.cpp" />
     <ClCompile Include="src\details\_live_server_media_session.cpp" />
+    <ClCompile Include="src\details\_media_attributes_impl.cpp" />
+    <ClCompile Include="src\details\_media_descriptor_impl.cpp" />
     <ClCompile Include="src\details\_media_sample_impl.cpp" />
     <ClCompile Include="src\details\_media_session_impl.cpp" />
     <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
@@ -62,6 +68,8 @@
     <ClCompile Include="src\details\_server_media_session_impl.cpp" />
     <ClCompile Include="src\details\_streaming_media_session_impl.cpp" />
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp" />
+    <ClCompile Include="src\media_attributes.cpp" />
+    <ClCompile Include="src\media_descriptor.cpp" />
     <ClCompile Include="src\media_sample.cpp" />
     <ClCompile Include="src\media_session.cpp" />
     <ClCompile Include="src\rtsp_client.cpp" />
