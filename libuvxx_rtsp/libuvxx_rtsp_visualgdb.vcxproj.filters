@@ -109,6 +109,30 @@
     <ClInclude Include="include\details\_server_media_session_impl.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\media_attributes.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\media_descriptor.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_h264_framed_source.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_live_common.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_live_environment_base.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_live_framed_source.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_media_attributes_impl.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_media_descriptor_impl.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
@@ -175,6 +199,27 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\_live_common.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\media_attributes.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\media_descriptor.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_h264_framed_source.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_live_environment_base.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_live_framed_source.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_media_attributes_impl.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_media_descriptor_impl.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

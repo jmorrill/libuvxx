@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <iostream>
-
 #include "uvxx.hpp"
 #include "rtsp_client.hpp"
+
 #include "rtsp_exceptions.hpp"
 #include "media_sample.hpp"
 #include "sample_attributes.hpp"
+
+#include "rtsp_server.hpp"    
 
 using namespace std;
 using namespace uvxx;
@@ -14,6 +16,7 @@ using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::sample_attributes;
 
 rtsp_client client;
+std::shared_ptr<server_media_session> server_session;
 
 void on_sample_callback(const media_sample& sample)
 {
@@ -26,21 +29,27 @@ void on_sample_callback(const media_sample& sample)
 			printf("packet loss: %5.2f%%\n", stats.percent_packet_loss);
 		}
 
-		printf("codec: %s\t size: %d\t pts: %lld s:%u",
-			sample.codec_name().c_str(),
-			sample.size(),
-			sample.presentation_time().count(),
-			sample.stream_number());
+		//printf("codec: %s\t size: %d\t pts: %lld s:%u",
+			//sample.codec_name().c_str(),
+			//sample.size(),
+			//sample.presentation_time().count(),
+			//sample.stream_number());
 
 		auto major_type = sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE);
 
 		if (major_type == sample_major_type::video)
 		{
-			auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
-
 			bool key_frame = sample.attribute_get<bool>(ATTRIBUTE_VIDEO_KEYFRAME);
 
-			printf("\twxh: %dx%d", video_size.width, video_size.height);
+			if (server_session)
+			{
+				server_session->deliver_sample(1, sample);
+			}
+
+			auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
+
+
+			//printf("\twxh: %dx%d", video_size.width, video_size.height);
 
 			if (key_frame)
 			{
@@ -71,6 +80,19 @@ void stream_closed(int stream_number)
 }
 
 
+server_media_session on_session_requested(const std::string& stream_name)
+{
+	server_session = std::make_shared<server_media_session>();
+
+	media_descriptor descriptor;
+
+	descriptor.add_stream_from_attributes(1, "H264", media_attributes());
+    
+	server_session->set_media_descriptor(descriptor);
+
+	return *server_session.get();
+}
+
 int main(int argc, char* argv [])
 {
 	if (argc < 2)
@@ -78,7 +100,14 @@ int main(int argc, char* argv [])
 		return -1;
 	}
 
+	rtsp_server server;
+
+	server.start_server(8554);
+
+	server.on_session_request_set(on_session_requested);
+
 	printf("argv[1] is %s\n", argv[1]);
+
 	{
 		client.on_sample_set(on_sample_callback);
 
@@ -86,7 +115,7 @@ int main(int argc, char* argv [])
 
 		client.credentials_set("admin", "12345");
 
-		client.protocol_set(transport_protocol::udp);
+		client.protocol_set(transport_protocol::tcp);
 
 		client.open(argv[1]).then([=]
 		{
@@ -97,7 +126,7 @@ int main(int argc, char* argv [])
 			client.read_stream_sample();
 		}).then([]
 		{
-			return create_timer_task(std::chrono::milliseconds(45000));
+			return create_timer_task(std::chrono::milliseconds(55000));
 		}).then([](task<void> t)
 		{
 			try
@@ -114,7 +143,7 @@ int main(int argc, char* argv [])
 				printf(e.what());
 			}
 
-            // event_dispatcher::current_dispatcher().begin_shutdown();
+            //event_dispatcher::current_dispatcher().begin_shutdown();
 		});
 
 		event_dispatcher::run();
