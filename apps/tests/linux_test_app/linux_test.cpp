@@ -62,12 +62,12 @@ void on_sample_callback(const media_sample& sample)
 
 			auto channels = sample.attribute_get<int>(ATTRIBUTE_AUDIO_CHANNEL_COUNT);
 
-			printf("\tfreq: %d", samples_per_second);
-
-			printf("\tchannels: %d", channels);
+			//printf("\tfreq: %d", samples_per_second);
+//
+			//printf("\tchannels: %d", channels);
 		}
 
-		printf("\n");
+		//printf("\n");
 	}).then([=]
 	{
 		client.read_stream_sample();
@@ -115,7 +115,7 @@ int main(int argc, char* argv [])
 
 		client.credentials_set("admin", "12345");
 
-		client.protocol_set(transport_protocol::tcp);
+		client.protocol_set(transport_protocol::udp);
 
 		client.open(argv[1]).then([=]
 		{
