@@ -24,17 +24,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         virtual ~_live_framed_source();
 
-        unsigned char* _payload;
-        int _payload_size;
-        int stage = 0;
-        media_sample _sample;
-
-        uvxx::io::memory_buffer _sps;
-
-        uvxx::io::memory_buffer _pps;
-
-        void on_closed_set(_framed_source_closed_delegate source_closed);
     public:
+        void on_closed_set(_framed_source_closed_delegate source_closed);
 
         void deliver_sample(const media_sample& sample)
         {
@@ -102,6 +93,18 @@ namespace uvxx { namespace rtsp { namespace details
         }
 
     private:
+        unsigned char* _payload;
+
+        int _payload_size;
+
+        int stage = 0;
+
+        media_sample _sample;
+
+        uvxx::io::memory_buffer _sps;
+
+        uvxx::io::memory_buffer _pps;
+
         _framed_source_closed_delegate _on_source_closed;
 
         int _stream_id;
