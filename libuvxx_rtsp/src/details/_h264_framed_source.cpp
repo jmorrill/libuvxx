@@ -29,15 +29,24 @@ void _h264_framed_source::deliver_sample_override(const media_sample& sample)
 
     fPresentationTime.tv_usec = static_cast<long>(_presentation_time.count() % 1000000);
 
-    _nal_to_deliver = nal_to_deliver::sps;
-
     memcpy(_payload.data(), const_cast<unsigned char*>(sample.data()), sample.size());
 
     _payload_size = sample.size();
 
-    _sps = sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET);
+    bool is_key_frame = sample.attribute_get<bool>(sample_attributes::ATTRIBUTE_VIDEO_KEYFRAME);
 
-    _pps = sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_PICTURE_PARAMETER_SET);
+    if(is_key_frame)
+    {
+        _sps = sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET);
+
+        _pps = sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_PICTURE_PARAMETER_SET);
+
+        _nal_to_deliver = nal_to_deliver::sps;
+    }
+    else
+    {
+        _nal_to_deliver = nal_to_deliver::payload;
+    }
 
     _busy_delivering = true;
 

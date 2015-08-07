@@ -12,7 +12,7 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp 
 {
-    using on_session_request_delegate = std::function<server_media_session(const std::string& stream_name)>;
+    using on_session_request_delegate = std::function<uvxx::pplx::task<server_media_session>(const std::string& stream_name)>;
 
     class rtsp_server : public event_dispatcher_object
     {

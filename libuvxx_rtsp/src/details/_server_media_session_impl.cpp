@@ -68,7 +68,8 @@ void _server_media_session_impl::deliver_sample(int stream_id, const uvxx::rtsp:
 
     if(it == _stream_sources.end())
     {
-        throw std::exception();
+        //throw std::exception();
+        return;
     }
 
     auto& source = it->second;
