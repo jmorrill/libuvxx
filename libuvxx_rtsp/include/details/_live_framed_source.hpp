@@ -25,88 +25,22 @@ namespace uvxx { namespace rtsp { namespace details
         virtual ~_live_framed_source();
 
     public:
+        int stream_id();
+
         void on_closed_set(_framed_source_closed_delegate source_closed);
 
-        void deliver_sample(const media_sample& sample)
-        {
-            if (!isCurrentlyAwaitingData() || _sample != nullptr)
-                return;
+        void deliver_sample(const media_sample& sample);
 
-            _sample = sample;
-
-            stage = 0;
-
-            memcpy(_payload, const_cast<unsigned char*>(_sample.data()), _sample.size());
-
-            _payload_size = _sample.size();
-
-            _sps = _sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET);
-
-            _pps = _sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_PICTURE_PARAMETER_SET);
-
-            fDurationInMicroseconds = 0;
-
-            fPresentationTime.tv_sec = static_cast<long>(sample.presentation_time().count() / 1000000);
-            fPresentationTime.tv_usec = static_cast<long>(sample.presentation_time().count() % 1000000);
-
-            doStage();
-        }
-    private:
-
-        void doStage()
-        {
-            if (stage > 2 || _sample.size() == 0 || !isCurrentlyAwaitingData())
-            {
-                _sample = nullptr;
-                return;
-            }
-
-            switch (stage)
-            {
-                case 0:
-                {
-                   
-                    memcpy(fTo, _sps.data(), _sps.length_get());
-                    fFrameSize = _sps.length_get();
-                    break;
-                }
-                case 1:
-                {
-                    memcpy(fTo, _pps.data(), _pps.length_get());
-                    fFrameSize = _pps.length_get();
-                    break;
-                }
-                case 2:
-                {
-                    memcpy(fTo, _payload, _payload_size);
-                    fFrameSize = _payload_size;
-                    break;
-                }
-            }
-            stage++;
-            FramedSource::afterGetting(this);
-        }
-
-        virtual void doGetNextFrame() override
-        {
-            doStage();
-        }
+    protected:
+        virtual void deliver_sample_override(const media_sample& sample);
 
     private:
-        unsigned char* _payload;
+        virtual void doGetNextFrame() override;
 
-        int _payload_size;
-
-        int stage = 0;
-
-        media_sample _sample;
-
-        uvxx::io::memory_buffer _sps;
-
-        uvxx::io::memory_buffer _pps;
+    private:
+        int _stream_id;
 
         _framed_source_closed_delegate _on_source_closed;
 
-        int _stream_id;
     };
 }}}

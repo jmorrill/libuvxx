@@ -1,10 +1,11 @@
 #include "BasicUsageEnvironment.hh"
 
 #include "media_sample.hpp"
+
 #include "details/_live_server_media_session.hpp"
 #include "details/_server_media_session_impl.hpp"
-#include "details/_uvxx_task_scheduler.hpp"
 #include "details/_h264_media_subsession.hpp"
+#include "details/_h264_framed_source.hpp"
 
 using namespace uvxx::rtsp::details;
 
@@ -106,9 +107,7 @@ void _server_media_session_impl::on_framed_source_closed(int stream_id)
 
 FramedSource* _server_media_session_impl::create_framed_source(int stream_id, unsigned /*client_session_id*/)
 {
-    auto it = _stream_sources.find(stream_id);
-
-    std::shared_ptr<_live_framed_source> source = std::shared_ptr<_live_framed_source>(new _live_framed_source(stream_id), [](_live_framed_source*)
+    auto source = std::shared_ptr<_live_framed_source>(new _h264_framed_source(stream_id), [](_live_framed_source* )
     {
         /* todo add logic later in case live55 doesn't free*/
     });
