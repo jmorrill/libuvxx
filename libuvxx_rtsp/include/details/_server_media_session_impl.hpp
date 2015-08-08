@@ -3,7 +3,6 @@
 #include "event_dispatcher_object.hpp"
 #include "media_descriptor.hpp"
 #include "media_sample.hpp"
-#include "FramedSource.hh"
 #include "details/_live_framed_source.hpp"
 
 namespace uvxx { namespace rtsp {
@@ -46,7 +45,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         void configure_session();
 
-        FramedSource* create_framed_source(int stream_id, unsigned client_session_id);
+        void on_framed_source_created(int stream_id, unsigned client_session_id, const std::shared_ptr<_live_framed_source>& source);
 
     private:
         _live_server_media_session_ptr __live_server_media_session;

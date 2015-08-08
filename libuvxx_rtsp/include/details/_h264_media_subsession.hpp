@@ -2,10 +2,15 @@
 #include "OnDemandServerMediaSubsession.hh"
 
 #include "event_dispatcher_object.hpp"
+#include "event_dispatcher_frame.hpp"
 
 namespace uvxx { namespace rtsp { namespace details 
 {
-    using framed_source_factory_delegate = std::function<FramedSource*(int stream_id, unsigned client_session_id)>;
+    class _live_framed_source;
+
+    class _h264_framed_source;
+
+    using framed_source_created_delegate = std::function<void(int stream_id, unsigned client_session_id, const std::shared_ptr<_live_framed_source>& source)>;
 
     class _h264_media_subsession : public OnDemandServerMediaSubsession, public event_dispatcher_object
     {
@@ -18,10 +23,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         virtual ~_h264_media_subsession();
 
-        void source_factory_create_set(framed_source_factory_delegate factory);
-
-    protected:
-        void setDoneFlag() { fDoneFlag = ~0; }
+        void framed_source_created_set(framed_source_created_delegate callback);
 
     protected:
         virtual char const* getAuxSDPLine(RTPSink* rtp_sink, FramedSource* input_source) override;
@@ -31,12 +33,21 @@ namespace uvxx { namespace rtsp { namespace details
         virtual RTPSink* createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* input_source) override;
 
         virtual void closeStreamSource(FramedSource *inputSource) override;
+
+        void after_playing_dummy();
+
+        static void after_playing_dummy_callback(void* client_data);
+       
+        void check_for_aux_sdp_line();
+
     private:
-        framed_source_factory_delegate _framed_source_factory;
+        framed_source_created_delegate _framed_source_created;
 
-        char* fAuxSDPLine;
+        std::shared_ptr<_h264_framed_source> _source;
 
-        char fDoneFlag;
+        uvxx::event_dispatcher_frame _sdp_check_dispatcher_frame;
+
+        std::string _aux_sdp_line;
 
         RTPSink* fDummyRTPSink;
 

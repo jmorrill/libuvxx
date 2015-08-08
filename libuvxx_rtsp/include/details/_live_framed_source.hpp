@@ -34,12 +34,18 @@ namespace uvxx { namespace rtsp { namespace details
     protected:
         virtual void deliver_sample_override(const media_sample& sample);
 
+        bool _busy_delivering;
+
     private:
         virtual void doGetNextFrame() override;
 
     private:
         int _stream_id;
 
+        bool _is_first_sample;
+
+        std::chrono::microseconds _presentation_time_base;
+         
         _framed_source_closed_delegate _on_source_closed;
 
     };

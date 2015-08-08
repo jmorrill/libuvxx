@@ -1,11 +1,14 @@
 #include "details/_live_framed_source.hpp"
 #include "details/_live_common.hpp"
+#include <GroupsockHelper.hh>
 
 using namespace uvxx::rtsp::details;
 
 _live_framed_source::_live_framed_source(int stream_id) : 
     FramedSource(*_get_live_environment().get()),
-    _stream_id(stream_id)
+    _stream_id(stream_id),
+    _is_first_sample(true),
+    _busy_delivering(false)
 {
     fTo = nullptr;
 }
@@ -30,11 +33,31 @@ void _live_framed_source::on_closed_set(_framed_source_closed_delegate source_cl
 
 void _live_framed_source::deliver_sample(const uvxx::rtsp::media_sample& sample)
 {
-    if (!isCurrentlyAwaitingData())
+    if (!isCurrentlyAwaitingData() || _busy_delivering)
     {
         return;
     }
 
+    auto current_presentation_time = sample.presentation_time();
+
+    if (_is_first_sample)
+    {
+        struct timeval time_now_val;
+
+        gettimeofday(&time_now_val, nullptr);
+
+        std::chrono::microseconds time_now(1000000ll * time_now_val.tv_sec + time_now_val.tv_usec);
+
+        _presentation_time_base = time_now - current_presentation_time;
+
+        _is_first_sample = false;
+    }
+
+    auto presentation_time = _presentation_time_base + current_presentation_time;
+
+    fPresentationTime.tv_sec = static_cast<long>(presentation_time.count() / 1000000);
+
+    fPresentationTime.tv_usec = static_cast<long>(presentation_time.count() % 1000000);
 
     deliver_sample_override(sample);
 }

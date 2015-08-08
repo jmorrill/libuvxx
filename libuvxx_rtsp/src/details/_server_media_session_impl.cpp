@@ -5,7 +5,6 @@
 #include "details/_live_server_media_session.hpp"
 #include "details/_server_media_session_impl.hpp"
 #include "details/_h264_media_subsession.hpp"
-#include "details/_h264_framed_source.hpp"
 
 using namespace uvxx::rtsp::details;
 
@@ -87,7 +86,11 @@ void _server_media_session_impl::configure_session()
         {
             auto subsession = new _h264_media_subsession(stream.stream_id());
 
-            subsession->source_factory_create_set(std::bind(&_server_media_session_impl::create_framed_source, this, std::placeholders::_1, std::placeholders::_2));
+            subsession->framed_source_created_set(std::bind(&_server_media_session_impl::on_framed_source_created, 
+                                                            this, 
+                                                            std::placeholders::_1, 
+                                                            std::placeholders::_2, 
+                                                            std::placeholders::_3));
 
             __live_server_media_session->addSubsession(subsession);
         }
@@ -106,16 +109,9 @@ void _server_media_session_impl::on_framed_source_closed(int stream_id)
     _stream_sources.erase(it);
 }
 
-FramedSource* _server_media_session_impl::create_framed_source(int stream_id, unsigned /*client_session_id*/)
+void _server_media_session_impl::on_framed_source_created(int stream_id, unsigned client_session_id, const std::shared_ptr<_live_framed_source>& source)
 {
-    auto source = std::shared_ptr<_live_framed_source>(new _h264_framed_source(stream_id), [](_live_framed_source* )
-    {
-        /* todo add logic later in case live55 doesn't free*/
-    });
-
     source->on_closed_set(std::bind(&_server_media_session_impl::on_framed_source_closed, this, std::placeholders::_1));
     
     _stream_sources[stream_id] = source;
-    
-    return source.get();
 }

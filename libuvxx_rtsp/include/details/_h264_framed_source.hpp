@@ -17,7 +17,7 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         _h264_framed_source(int stream_id);
 
-        virtual ~_h264_framed_source() = default;
+        virtual ~_h264_framed_source();
 
     protected:
         virtual void deliver_sample_override(const media_sample& sample) override;
@@ -28,7 +28,7 @@ namespace uvxx { namespace rtsp { namespace details
         void do_iterative_nal_delivery();
 
     private:
-        bool _busy_delivering;
+       
 
         nal_to_deliver _nal_to_deliver;
 

@@ -1,16 +1,20 @@
+#include "GroupsockHelper.hh"
+
 #include "details/_h264_framed_source.hpp"
 #include "media_sample.hpp"
-#include <GroupsockHelper.hh>
 
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
 _h264_framed_source::_h264_framed_source(int stream_id): 
     _live_framed_source(stream_id), 
-    _busy_delivering(false), 
     _nal_to_deliver(nal_to_deliver::none),
-    _payload_size(0), 
-    _payload(400000)
+    _payload(400000), 
+    _payload_size(0)
+{
+}
+
+_h264_framed_source::~_h264_framed_source()
 {
 }
 
@@ -23,11 +27,11 @@ void _h264_framed_source::deliver_sample_override(const media_sample& sample)
 
     fDurationInMicroseconds = 0;
 
-    _presentation_time = sample.presentation_time();
+   /* _presentation_time = sample.presentation_time();
 
     fPresentationTime.tv_sec = static_cast<long>(_presentation_time.count() / 1000000);
 
-    fPresentationTime.tv_usec = static_cast<long>(_presentation_time.count() % 1000000);
+    fPresentationTime.tv_usec = static_cast<long>(_presentation_time.count() % 1000000);*/
 
     memcpy(_payload.data(), const_cast<unsigned char*>(sample.data()), sample.size());
 

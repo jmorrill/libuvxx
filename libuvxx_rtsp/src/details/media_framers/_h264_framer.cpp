@@ -34,7 +34,6 @@ enum class h26x_nal_type
     slice_extension = 20
 };
 
-
 static bool set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const media_sample& sample)
 {
     bool are_equal = true;
