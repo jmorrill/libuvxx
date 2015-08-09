@@ -1,5 +1,3 @@
-#include "GroupsockHelper.hh"
-
 #include "details/_h264_framed_source.hpp"
 #include "media_sample.hpp"
 
@@ -10,7 +8,8 @@ _h264_framed_source::_h264_framed_source(int stream_id):
     _live_framed_source(stream_id), 
     _nal_to_deliver(nal_to_deliver::none),
     _payload(400000), 
-    _payload_size(0)
+    _payload_size(0),
+    _start_time(std::chrono::high_resolution_clock::now())
 {
 }
 
@@ -27,19 +26,19 @@ void _h264_framed_source::deliver_sample_override(const media_sample& sample)
 
     fDurationInMicroseconds = 0;
 
-   /* _presentation_time = sample.presentation_time();
-
-    fPresentationTime.tv_sec = static_cast<long>(_presentation_time.count() / 1000000);
-
-    fPresentationTime.tv_usec = static_cast<long>(_presentation_time.count() % 1000000);*/
-
     memcpy(_payload.data(), const_cast<unsigned char*>(sample.data()), sample.size());
 
     _payload_size = sample.size();
 
     bool is_key_frame = sample.attribute_get<bool>(sample_attributes::ATTRIBUTE_VIDEO_KEYFRAME);
 
-    if(is_key_frame)
+    auto now = std::chrono::high_resolution_clock::now();
+
+    auto time_since_start = std::chrono::duration_cast<std::chrono::seconds>(now - _start_time);
+
+    static std::chrono::seconds one_second(1);
+
+    if(is_key_frame || time_since_start > one_second)
     {
         _sps = sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET);
 

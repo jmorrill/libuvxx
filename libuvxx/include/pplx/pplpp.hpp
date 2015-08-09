@@ -135,8 +135,13 @@ namespace uvxx { namespace pplx { namespace details
         return timer.delay(timeout);
     }
 
+    class for_loop_task_break_exception : public std::exception
+    {
+    
+    };
+
     template<typename T>
-    inline task<void> create_for_loop_task(T from_inclusive, T to_exclusive, std::function<task<void>(T)> loop_function)
+    inline task<void> create_for_loop_task(T from_inclusive, T to_exclusive, std::function<task<void>(T&)> loop_function)
     {
         auto from_ = std::make_shared<T>(from_inclusive);
 

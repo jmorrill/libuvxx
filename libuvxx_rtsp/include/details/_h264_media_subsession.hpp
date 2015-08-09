@@ -38,7 +38,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         static void after_playing_dummy_callback(void* client_data);
        
-        void check_for_aux_sdp_line();
+        bool check_for_aux_sdp_line();
 
     private:
         framed_source_created_delegate _framed_source_created;

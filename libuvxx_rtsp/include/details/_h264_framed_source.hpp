@@ -1,5 +1,5 @@
 #pragma once
-
+#include <chrono>
 #include "_live_framed_source.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
@@ -28,8 +28,6 @@ namespace uvxx { namespace rtsp { namespace details
         void do_iterative_nal_delivery();
 
     private:
-       
-
         nal_to_deliver _nal_to_deliver;
 
         std::vector<uint8_t> _payload;
@@ -41,5 +39,7 @@ namespace uvxx { namespace rtsp { namespace details
         uvxx::io::memory_buffer _pps;
 
         std::chrono::microseconds _presentation_time;
+
+        std::chrono::high_resolution_clock::time_point _start_time;
     };
 }}}

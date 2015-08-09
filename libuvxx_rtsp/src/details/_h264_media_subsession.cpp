@@ -58,18 +58,31 @@ char const* _h264_media_subsession::getAuxSDPLine(RTPSink* rtp_sink, FramedSourc
 
     dispatcher.begin_invoke([=]
     {
-        return uvxx::pplx::create_timer_task(std::chrono::milliseconds(1000)).then([=]() mutable
+        return uvxx::pplx::create_for_loop_task<int>(0, 10, [=](int& iteration)
         {
+            if(check_for_aux_sdp_line())
+            {
+                iteration = 10;
+                return pplx::task_from_result();
+            }
+
+            return uvxx::pplx::create_timer_task(std::chrono::milliseconds(100));
+        }).then([=](uvxx::pplx::task<void> t)
+        {
+            try
+            {
+                t.get();
+            }
+            catch (...)
+            {
+            }
+
             _sdp_check_dispatcher_frame.continue_set(false);
-        });
+        });;
     });
 
     dispatcher.push_frame(_sdp_check_dispatcher_frame);
     
-    _sdp_check_dispatcher_frame.continue_set(false);
-
-    check_for_aux_sdp_line();
-
     return _aux_sdp_line.size() ? _aux_sdp_line.c_str() : nullptr;
 }
 
@@ -109,13 +122,13 @@ void _h264_media_subsession::after_playing_dummy()
 {
 }
 
-void _h264_media_subsession::check_for_aux_sdp_line()
+bool _h264_media_subsession::check_for_aux_sdp_line()
 {
     char const* dasl;
 
-    if (_aux_sdp_line.size()) 
+    if (!_aux_sdp_line.empty()) 
     {
-        _sdp_check_dispatcher_frame.continue_set(false);
+        return true;
     }
     else if (fDummyRTPSink != nullptr && (dasl = fDummyRTPSink->auxSDPLine()) != nullptr)
     {
@@ -123,6 +136,8 @@ void _h264_media_subsession::check_for_aux_sdp_line()
 
         fDummyRTPSink = nullptr;
 
-        _sdp_check_dispatcher_frame.continue_set(false);
+        return true;
     }
+
+    return false;
 }
