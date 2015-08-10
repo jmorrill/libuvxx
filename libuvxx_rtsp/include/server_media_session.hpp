@@ -30,6 +30,19 @@ namespace uvxx { namespace rtsp
 
         server_media_session& operator=(server_media_session&& session);
 
+        bool operator !=(std::nullptr_t);
+
+        bool operator==(std::nullptr_t)
+        {
+            if(!__server_media_session_impl)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         virtual ~server_media_session() = default;
 
     public:

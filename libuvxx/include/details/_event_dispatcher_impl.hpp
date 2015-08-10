@@ -132,6 +132,8 @@ namespace uvxx { namespace details
 
         std::thread::id const & thread_id() const;
 
+        int frame_depth() const;
+
         static bool has_dispatcher();
 
         static std::thread::id this_thread_id();

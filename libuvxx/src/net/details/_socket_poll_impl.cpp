@@ -10,6 +10,11 @@ _socket_poll_impl::_socket_poll_impl(int socket) : _poll(&dispatcher()->_loop,
 
 }
 
+_socket_poll_impl::~_socket_poll_impl()
+{
+    _poll.close();
+}
+
 void _socket_poll_impl::start(int events)
 {
     _poll.start(events);

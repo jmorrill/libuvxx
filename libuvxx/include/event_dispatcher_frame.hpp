@@ -22,7 +22,7 @@ namespace uvxx
 
         event_dispatcher_frame& operator=(const event_dispatcher_frame&) = default;
 
-        event_dispatcher_frame(event_dispatcher_frame&& dispatcher);
+        event_dispatcher_frame(event_dispatcher_frame&& frame);
 
         event_dispatcher_frame& operator=(event_dispatcher_frame&& rhs);
 

@@ -88,6 +88,11 @@ namespace uvxx
         __event_dispatcher_impl->verify_access();
     }
 
+    int event_dispatcher::frame_depth() const
+    {
+        return __event_dispatcher_impl->frame_depth();
+    }
+
     std::thread::id const & event_dispatcher::thread_id()
     {
         return __event_dispatcher_impl->thread_id();

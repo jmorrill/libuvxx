@@ -47,6 +47,8 @@ namespace uvxx
 
         void verify_access();
 
+        int frame_depth() const;
+
         template <typename T>
         uvxx::pplx::task<decltype(std::declval<T>()())> 
         inline begin_invoke(T fun, typename std::enable_if<!std::is_void< decltype( std::declval<T>()() ) >::value, T>::type* = 0)  

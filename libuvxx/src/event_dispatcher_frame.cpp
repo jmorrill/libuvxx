@@ -16,16 +16,16 @@ namespace uvxx
        
     }
 
-    event_dispatcher_frame::event_dispatcher_frame(event_dispatcher_frame&& dispatcher_frame) : 
-        event_dispatcher_object(std::move(dispatcher_frame))
+    event_dispatcher_frame::event_dispatcher_frame(event_dispatcher_frame&& dispatcher_frame) 
     {
-		__event_dispatcher_frame_impl = std::move(dispatcher_frame.__event_dispatcher_frame_impl);
+        *this = std::move(dispatcher_frame);
     }
     
     event_dispatcher_frame& event_dispatcher_frame::operator=(event_dispatcher_frame&& rhs)
     {
         __event_dispatcher_frame_impl = std::move(rhs.__event_dispatcher_frame_impl);
-        return static_cast<event_dispatcher_frame&>(event_dispatcher_object::operator=(std::move(rhs))); 
+
+        return *this;
     }
 
     bool event_dispatcher_frame::continue_get()

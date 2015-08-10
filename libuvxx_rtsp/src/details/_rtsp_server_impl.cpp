@@ -51,23 +51,19 @@ ServerMediaSession* _rtsp_server_impl::on_live_media_session_lookup(const std::s
 
     server_media_session server_session;
 
-    dispatcher.begin_invoke([=, &server_session]() mutable
+    auto t = _on_session_request_delegate(stream_name).
+    then([=, &server_session, &frame](uvxx::pplx::task<server_media_session> get_session_task) mutable
     {
-        auto t = _on_session_request_delegate(stream_name);
-
-        t.then([=, &server_session](uvxx::pplx::task<server_media_session> get_session_task) mutable
+        try
         {
-            try
-            {
-                server_session = std::move(get_session_task.get());
-            }
-            catch (const std::exception&)
-            {
+            server_session = get_session_task.get();
+        }
+        catch (const std::exception&)
+        {
+            printf("err");
+        }
 
-            }
-
-            frame.continue_set(false);
-        });
+        frame.continue_set(false);
     });
     
     /* This callback requires to be syncronous and expects a result after

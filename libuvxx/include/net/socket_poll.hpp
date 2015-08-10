@@ -43,8 +43,6 @@ namespace uvxx { namespace net
         bool operator==(std::nullptr_t rhs);
 
     private:
-       std::function<void(int status, uvxx::net::socket_poll_event events)> _callback;
-
        std::shared_ptr<details::_socket_poll_impl> __socket_poll;
     };
 }}

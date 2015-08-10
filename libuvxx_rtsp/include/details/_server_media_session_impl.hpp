@@ -38,6 +38,11 @@ namespace uvxx { namespace rtsp { namespace details
 
         void deliver_sample(int stream_id, const media_sample& sample);
 
+        bool has_live_session()
+        {
+            return __live_server_media_session != nullptr;
+        }
+
     private:
         void on_session_closed();
 

@@ -24,6 +24,7 @@ _h264_media_subsession::_h264_media_subsession(int stream_id) :
 
 _h264_media_subsession::~_h264_media_subsession()
 {
+    printf("_h264_media_subsession::~_h264_media_subsession()\n");
 }
 
 void _h264_media_subsession::framed_source_created_set(framed_source_created_delegate callback)
@@ -33,9 +34,11 @@ void _h264_media_subsession::framed_source_created_set(framed_source_created_del
 
 char const* _h264_media_subsession::getAuxSDPLine(RTPSink* rtp_sink, FramedSource* input_source)
 {
+
+    return nullptr;
     check_for_aux_sdp_line();
 
-    if (_aux_sdp_line.size())
+    if (!_aux_sdp_line.empty())
     {
         return _aux_sdp_line.c_str(); // it's already been set up (for a previous client)
     }
@@ -56,34 +59,38 @@ char const* _h264_media_subsession::getAuxSDPLine(RTPSink* rtp_sink, FramedSourc
 
     auto dispatcher = event_dispatcher::current_dispatcher();
 
-    dispatcher.begin_invoke([=]
+    printf("begin_invoke\n");
+
+    uvxx::pplx::create_for_loop_task<int>(0, 10, [&](int& iteration)
     {
-        return uvxx::pplx::create_for_loop_task<int>(0, 10, [=](int& iteration)
-        {
-            if(check_for_aux_sdp_line())
-            {
-                iteration = 10;
-                return pplx::task_from_result();
-            }
+        printf("create_for_loop_task\n");
 
-            return uvxx::pplx::create_timer_task(std::chrono::milliseconds(100));
-        }).then([=](uvxx::pplx::task<void> t)
+        if(check_for_aux_sdp_line())
         {
-            try
-            {
-                t.get();
-            }
-            catch (...)
-            {
-            }
+            iteration = 100;
+            printf("create_for_loop_task finished\n");
+            return pplx::task_from_result();
+        }
 
-            _sdp_check_dispatcher_frame.continue_set(false);
-        });;
+        printf("create_for_loop_task continuing\n");
+
+        return uvxx::pplx::create_timer_task(std::chrono::milliseconds(100));
+    }).then([&](uvxx::pplx::task<void> t)
+    {
+        try
+        {
+            t.get();
+        }
+        catch (...)
+        {
+        }
+        printf("exiting frame\n");
+        _sdp_check_dispatcher_frame.continue_set(false);
     });
 
     dispatcher.push_frame(_sdp_check_dispatcher_frame);
-    
-    return _aux_sdp_line.size() ? _aux_sdp_line.c_str() : nullptr;
+    printf("finished frame\n");
+    return !_aux_sdp_line.empty() ? _aux_sdp_line.c_str() : nullptr;
 }
 
 FramedSource* _h264_media_subsession::createNewStreamSource(unsigned client_session_id, unsigned& estimated_kbps)

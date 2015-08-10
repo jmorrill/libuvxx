@@ -246,6 +246,11 @@ namespace uvxx { namespace details
         return _threadId;
     }
 
+    int _event_dispatcher_impl::frame_depth() const
+    {
+        return _frameDepth;
+    }
+
     void _event_dispatcher_impl::begin_shutdown()
     {
         begin_invoke([this]

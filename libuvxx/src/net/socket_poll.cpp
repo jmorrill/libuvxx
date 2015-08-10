@@ -17,16 +17,15 @@ namespace uvxx { namespace net
     {
     }
 
-    socket_poll::socket_poll(socket_poll&& rhs) : event_dispatcher_object(std::move(rhs)), 
-                                                  __socket_poll(std::move(rhs.__socket_poll))
+    socket_poll::socket_poll(socket_poll&& rhs)
     {
-
+        *this = std::move(rhs);
     }
 
     socket_poll& socket_poll::operator=(socket_poll&& rhs)
     {
         __socket_poll = std::move(rhs.__socket_poll);
-        return static_cast<socket_poll&>(event_dispatcher_object::operator=(std::move(rhs))); 
+        return *this;
     }
 
     void socket_poll::start(socket_poll_event events)

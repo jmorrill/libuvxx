@@ -17,7 +17,7 @@ namespace uvxx { namespace details
     {
         auto w = reinterpret_cast<_uv_work*>(handle->data);
 
-        w->_work_function();
+                                    w->_work_function();
     }
 
     void _uv_work::work_callback_after(uv_work_t* handle, int /*status*/)

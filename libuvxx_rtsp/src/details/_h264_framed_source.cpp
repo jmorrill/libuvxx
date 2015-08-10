@@ -15,6 +15,7 @@ _h264_framed_source::_h264_framed_source(int stream_id):
 
 _h264_framed_source::~_h264_framed_source()
 {
+    
 }
 
 void _h264_framed_source::deliver_sample_override(const media_sample& sample)
