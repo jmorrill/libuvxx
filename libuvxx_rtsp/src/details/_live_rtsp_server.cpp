@@ -1,3 +1,7 @@
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <functional>
 #include "Base64.hh"
 #include "GroupsockHelper.hh"
