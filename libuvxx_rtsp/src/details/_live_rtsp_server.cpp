@@ -432,11 +432,10 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
 
             subsession = fStreamStates[trackNum].subsession;
         }
-        // ASSERT: subsession != NULL
 
         void*& token = fStreamStates[trackNum].streamToken; // alias
 
-        if (token != NULL) 
+        if (token != nullptr) 
         {
             // We already handled a "SETUP" for this track (to the same client),
             // so stop any existing streaming of it, before we set it up again:
@@ -525,7 +524,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         u_int8_t destinationTTL = 255;
 
 #ifdef RTSP_ALLOW_CLIENT_DESTINATION_SETTING
-        if (clientsDestinationAddressStr != NULL) {
+        if (clientsDestinationAddressStr != nullptr) {
             // Use the client-provided "destination" address.
             // Note: This potentially allows the server to be used in denial-of-service
             // attacks, so don't enable this code unless you're sure that clients are
@@ -896,6 +895,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                     ptr[toIndex++] = c;
                 }
             }
+
             newBytesRead = toIndex;
 
             unsigned numBytesToDecode = fBase64RemainderCount + newBytesRead;
@@ -984,15 +984,16 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
         fLastCRLF[2] = '\0'; // temporarily, for parsing
 
         bool parseSucceeded = parseRTSPRequestString(reinterpret_cast<char*>(fRequestBuffer), fLastCRLF + 2 - fRequestBuffer,
-                                                        cmdName, sizeof cmdName,
-                                                        urlPreSuffix, sizeof urlPreSuffix,
-                                                        urlSuffix, sizeof urlSuffix,
-                                                        cseq, sizeof cseq,
-                                                        sessionIdStr, sizeof sessionIdStr,
-                                                        contentLength);
+                                                     cmdName, sizeof cmdName,
+                                                     urlPreSuffix, sizeof urlPreSuffix,
+                                                     urlSuffix, sizeof urlSuffix,
+                                                     cseq, sizeof cseq,
+                                                     sessionIdStr, sizeof sessionIdStr,
+                                                     contentLength);
         fLastCRLF[2] = '\r'; // restore its value
 
         bool playAfterSetup = false;
+
         if (parseSucceeded)
         {
 #ifdef DEBUG
@@ -1049,7 +1050,10 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                     handleCmd_notSupported();
                 }
             }
-            else if (strcmp(cmdName, "DESCRIBE") == 0) {
+            else if (strcmp(cmdName, "DESCRIBE") == 0) 
+            {
+                envir().taskScheduler().disableBackgroundHandling(fOurSocket);
+
                 begin_handle_describe(urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer), [=]() mutable
                 {
                     send(fClientOutputSocket, reinterpret_cast<char const*>(fResponseBuffer), strlen(reinterpret_cast<char*>(fResponseBuffer)), 0);
@@ -1087,6 +1091,10 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                             delete this;
                         }
                     }
+                    else
+                    {
+                        envir().taskScheduler().setBackgroundHandling(fOurSocket, SOCKET_READABLE | SOCKET_EXCEPTION, incomingRequestHandler, this);
+                    }
                 });
 
                 return;
@@ -1095,7 +1103,8 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
             {
                 bool areAuthenticated = true;
 
-                if (!requestIncludedSessionId) {
+                if (!requestIncludedSessionId)
+                {
                     // No session id was present in the request.  So create a new "RTSPClientSession" object
                     // for this request.  Choose a random (unused) 32-bit integer for the session id
                     // (it will be encoded as a 8-digit hex number).  (We avoid choosing session id 0,
@@ -1109,6 +1118,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                     if (urlPreSuffix[0] != '\0') 
                     {
                         strcat(urlTotalSuffix, urlPreSuffix);
+
                         strcat(urlTotalSuffix, "/");
                     }
 
@@ -1143,6 +1153,8 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 
                     std::string urlPreSuffix_ = urlPreSuffix;
                     std::string urlSuffix_ = urlSuffix;
+
+                    envir().taskScheduler().disableBackgroundHandling(fOurSocket);
 
                     clientSession->begin_handle_setup(this, urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer),[=]() mutable
                     {
@@ -1187,6 +1199,10 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                             {
                                 delete this;
                             }
+                        }
+                        else
+                        {
+                            envir().taskScheduler().setBackgroundHandling(fOurSocket, SOCKET_READABLE | SOCKET_EXCEPTION, incomingRequestHandler, this);
                         }
                     });
 
