@@ -15,25 +15,35 @@
 
 using namespace uvxx::rtsp::details;
 
-typedef enum StreamingMode 
+enum class StreamingMode 
 {
     RTP_UDP,
     RTP_TCP,
     RAW_UDP
-} StreamingMode;
+};
+
+
+template <int code>
+struct constant_expresion
+{
+    static int value()
+    {
+        return code;
+    }
+};
 
 static void parseTransportHeader(char const* buf,
-    StreamingMode& streamingMode,
-    char*& streamingModeString,
-    char*& destinationAddressStr,
-    u_int8_t& destinationTTL,
-    portNumBits& clientRTPPortNum, // if UDP
-    portNumBits& clientRTCPPortNum, // if UDP
-    unsigned char& rtpChannelId, // if TCP
-    unsigned char& rtcpChannelId // if TCP
-    ) {
+                                 StreamingMode& streamingMode,
+                                 char*& streamingModeString,
+                                 char*& destinationAddressStr,
+                                 u_int8_t& destinationTTL,
+                                 portNumBits& clientRTPPortNum,  /* if UDP */
+                                 portNumBits& clientRTCPPortNum, /* if UDP */
+                                 unsigned char& rtpChannelId,    /* if TCP */
+                                 unsigned char& rtcpChannelId    /* if TCP */) 
+{
     // Initialize the result parameters to default values:
-    streamingMode = RTP_UDP;
+    streamingMode = StreamingMode::RTP_UDP;
 
     streamingModeString = nullptr;
 
@@ -74,12 +84,12 @@ static void parseTransportHeader(char const* buf,
     {
         if (strcmp(field, "RTP/AVP/TCP") == 0) 
         {
-            streamingMode = RTP_TCP;
+            streamingMode = StreamingMode::RTP_TCP;
         }
         else if (strcmp(field, "RAW/RAW/UDP") == 0 ||
                  strcmp(field, "MP2T/H2221/UDP") == 0) 
         {
-            streamingMode = RAW_UDP;
+            streamingMode = StreamingMode::RAW_UDP;
 
             streamingModeString = strDup(field);
         }
@@ -97,13 +107,13 @@ static void parseTransportHeader(char const* buf,
         {
             clientRTPPortNum = p1;
 
-            clientRTCPPortNum = streamingMode == RAW_UDP ? 0 : p2; // ignore the second port number if the client asked for raw UDP
+            clientRTCPPortNum = streamingMode == StreamingMode::RAW_UDP ? 0 : p2; // ignore the second port number if the client asked for raw UDP
         }
         else if (sscanf(field, "client_port=%hu", &p1) == 1)
         {
             clientRTPPortNum = p1;
 
-            clientRTCPPortNum = streamingMode == RAW_UDP ? 0 : p1 + 1;
+            clientRTCPPortNum = streamingMode == StreamingMode::RAW_UDP ? 0 : p1 + 1;
         }
         else if (sscanf(field, "interleaved=%u-%u", &rtpCid, &rtcpCid) == 2) 
         {
@@ -447,21 +457,21 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
                              clientRTPPortNum, clientRTCPPortNum,
                              rtpChannelId, rtcpChannelId);
 
-        if ((streamingMode == RTP_TCP && rtpChannelId == 0xFF) ||
-            (streamingMode != RTP_TCP && ourClientConnection->client_output_socket() != ourClientConnection->client_input_socket()))
+        if ((streamingMode == StreamingMode::RTP_TCP && rtpChannelId == 0xFF) ||
+            (streamingMode != StreamingMode::RTP_TCP && ourClientConnection->client_output_socket() != ourClientConnection->client_input_socket()))
         {
             // An anomolous situation, caused by a buggy client.  Either:
             //     1/ TCP streaming was requested, but with no "interleaving=" fields.  (QuickTime Player sometimes does this.), or
             //     2/ TCP streaming was not requested, but we're doing RTSP-over-HTTP tunneling (which implies TCP streaming).
             // In either case, we assume TCP streaming, and set the RTP and RTCP channel ids to proper values:
-            streamingMode = RTP_TCP;
+            streamingMode = StreamingMode::RTP_TCP;
 
             rtpChannelId = fTCPStreamIdCount; 
             
             rtcpChannelId = fTCPStreamIdCount + 1;
         }
 
-        if (streamingMode == RTP_TCP)
+        if (streamingMode == StreamingMode::RTP_TCP)
         {
             fTCPStreamIdCount += 2;
         }
@@ -494,7 +504,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         }
 
         // Then, get server parameters from the 'subsession':
-        if (streamingMode == RTP_TCP) 
+        if (streamingMode == StreamingMode::RTP_TCP) 
         {
             // Note that we'll be streaming over the RTSP TCP connection:
             fStreamStates[trackNum].tcpSocketNum = ourClientConnection->client_output_socket();
@@ -566,107 +576,107 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         {
             switch (streamingMode)
             {
-            case RTP_UDP:
-            {
-                snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
-                    "RTSP/1.0 200 OK\r\n"
-                    "CSeq: %s\r\n"
-                    "%s"
-                    "Transport: RTP/AVP;multicast;destination=%s;source=%s;port=%d-%d;ttl=%d\r\n"
-                    "Session: %08X%s\r\n\r\n",
-                    cseq,
-                    dateHeader(),
-                    destAddrStr.val(), sourceAddrStr.val(), ntohs(serverRTPPort.num()), ntohs(serverRTCPPort.num()), destinationTTL,
-                    fOurSessionId, timeoutParameterString);
-                
-                break;
-            }
-            case RTP_TCP: 
-            {
-                // multicast streams can't be sent via TCP
-                ourClientConnection->handleCmd_unsupportedTransport();
-
-                break;
-            }
-            case RAW_UDP: 
-            {
-                snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
-                    "RTSP/1.0 200 OK\r\n"
-                    "CSeq: %s\r\n"
-                    "%s"
-                    "Transport: %s;multicast;destination=%s;source=%s;port=%d;ttl=%d\r\n"
-                    "Session: %08X%s\r\n\r\n",
-                    cseq,
-                    dateHeader(),
-                    streamingModeString, destAddrStr.val(), sourceAddrStr.val(), ntohs(serverRTPPort.num()), destinationTTL,
-                    fOurSessionId, timeoutParameterString);
-
-                break;
-            }
-            }
-        }
-        else
-        {
-            switch (streamingMode) 
-            {
-            case RTP_UDP: 
-            {
-                snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
-                    "RTSP/1.0 200 OK\r\n"
-                    "CSeq: %s\r\n"
-                    "%s"
-                    "Transport: RTP/AVP;unicast;destination=%s;source=%s;client_port=%d-%d;server_port=%d-%d\r\n"
-                    "Session: %08X%s\r\n\r\n",
-                    cseq,
-                    dateHeader(),
-                    destAddrStr.val(), sourceAddrStr.val(), ntohs(clientRTPPort.num()), ntohs(clientRTCPPort.num()), ntohs(serverRTPPort.num()), ntohs(serverRTCPPort.num()),
-                    fOurSessionId, timeoutParameterString);
-
-                break;
-            }
-            case RTP_TCP: 
-            {
-                if (!_our_server.allow_streaming_rtp_over_tcp()) 
-                {
-                    ourClientConnection->handleCmd_unsupportedTransport();
-                }
-                else 
+                case StreamingMode::RTP_UDP:
                 {
                     snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
                         "RTSP/1.0 200 OK\r\n"
                         "CSeq: %s\r\n"
                         "%s"
-                        "Transport: RTP/AVP/TCP;unicast;destination=%s;source=%s;interleaved=%d-%d\r\n"
+                        "Transport: RTP/AVP;multicast;destination=%s;source=%s;port=%d-%d;ttl=%d\r\n"
                         "Session: %08X%s\r\n\r\n",
                         cseq,
                         dateHeader(),
-                        destAddrStr.val(), sourceAddrStr.val(), rtpChannelId, rtcpChannelId,
+                        destAddrStr.val(), sourceAddrStr.val(), ntohs(serverRTPPort.num()), ntohs(serverRTCPPort.num()), destinationTTL,
                         fOurSessionId, timeoutParameterString);
-                }
-
-                break;
-            }
-            case RAW_UDP: 
-            {
-                snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
-                    "RTSP/1.0 200 OK\r\n"
-                    "CSeq: %s\r\n"
-                    "%s"
-                    "Transport: %s;unicast;destination=%s;source=%s;client_port=%d;server_port=%d\r\n"
-                    "Session: %08X%s\r\n\r\n",
-                    cseq,
-                    dateHeader(),
-                    streamingModeString, destAddrStr.val(), sourceAddrStr.val(), ntohs(clientRTPPort.num()), ntohs(serverRTPPort.num()),
-                    fOurSessionId, timeoutParameterString);
                 
-                break;
+                    break;
+                }
+                case StreamingMode::RTP_TCP: 
+                {
+                    // multicast streams can't be sent via TCP
+                    ourClientConnection->handleCmd_unsupportedTransport();
+
+                    break;
+                }
+                case StreamingMode::RAW_UDP: 
+                {
+                    snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
+                        "RTSP/1.0 200 OK\r\n"
+                        "CSeq: %s\r\n"
+                        "%s"
+                        "Transport: %s;multicast;destination=%s;source=%s;port=%d;ttl=%d\r\n"
+                        "Session: %08X%s\r\n\r\n",
+                        cseq,
+                        dateHeader(),
+                        streamingModeString, destAddrStr.val(), sourceAddrStr.val(), ntohs(serverRTPPort.num()), destinationTTL,
+                        fOurSessionId, timeoutParameterString);
+
+                    break;
+                }
+                }
             }
+            else
+            {
+                switch (streamingMode) 
+                {
+                case StreamingMode::RTP_UDP: 
+                {
+                    snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
+                        "RTSP/1.0 200 OK\r\n"
+                        "CSeq: %s\r\n"
+                        "%s"
+                        "Transport: RTP/AVP;unicast;destination=%s;source=%s;client_port=%d-%d;server_port=%d-%d\r\n"
+                        "Session: %08X%s\r\n\r\n",
+                        cseq,
+                        dateHeader(),
+                        destAddrStr.val(), sourceAddrStr.val(), ntohs(clientRTPPort.num()), ntohs(clientRTCPPort.num()), ntohs(serverRTPPort.num()), ntohs(serverRTCPPort.num()),
+                        fOurSessionId, timeoutParameterString);
+
+                    break;
+                }
+                case StreamingMode::RTP_TCP: 
+                {
+                    if (!_our_server.allow_streaming_rtp_over_tcp()) 
+                    {
+                        ourClientConnection->handleCmd_unsupportedTransport();
+                    }
+                    else 
+                    {
+                        snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
+                            "RTSP/1.0 200 OK\r\n"
+                            "CSeq: %s\r\n"
+                            "%s"
+                            "Transport: RTP/AVP/TCP;unicast;destination=%s;source=%s;interleaved=%d-%d\r\n"
+                            "Session: %08X%s\r\n\r\n",
+                            cseq,
+                            dateHeader(),
+                            destAddrStr.val(), sourceAddrStr.val(), rtpChannelId, rtcpChannelId,
+                            fOurSessionId, timeoutParameterString);
+                    }
+
+                    break;
+                }
+                case StreamingMode::RAW_UDP: 
+                {
+                    snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
+                        "RTSP/1.0 200 OK\r\n"
+                        "CSeq: %s\r\n"
+                        "%s"
+                        "Transport: %s;unicast;destination=%s;source=%s;client_port=%d;server_port=%d\r\n"
+                        "Session: %08X%s\r\n\r\n",
+                        cseq,
+                        dateHeader(),
+                        streamingModeString, destAddrStr.val(), sourceAddrStr.val(), ntohs(clientRTPPort.num()), ntohs(serverRTPPort.num()),
+                        fOurSessionId, timeoutParameterString);
+                
+                    break;
+                }
             }
         }
 
         delete[] streamingModeString;
 
-    } while (0);
+    } while (constant_expresion<0>::value());
 
     delete[] concatenatedStreamName;
 }
@@ -763,7 +773,8 @@ void _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describe(char
             rtspURL,
             sdpDescriptionSize,
             sdpDescription);
-        } while (0);
+        } 
+        while (constant_expresion<0>::value());
 
         if (session != nullptr) 
         {
