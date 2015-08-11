@@ -29,10 +29,13 @@ namespace uvxx { namespace rtsp { namespace details
     protected:
         virtual ServerMediaSession* lookupServerMediaSession(char const* stream_name, Boolean is_first_lookup_in_session = true) override;
 
-        virtual void begin_lookup_server_media_session(char const* stream_name, Boolean is_first_lookup_in_session, _server_media_session_callback_delegate end_handle_describe_callback);
+        virtual void begin_lookup_server_media_session(char const* stream_name, bool is_first_lookup_in_session, _server_media_session_callback_delegate end_handle_describe_callback);
 
         virtual ClientSession* createNewClientSession(u_int32_t session_id) override;
+
     protected:
+        virtual ClientConnection* createNewClientConnection(int client_socket, struct sockaddr_in client_addr) override;
+
         class _live_rtsp_client_connection;
 
         class _live_rtsp_client_session : public RTSPClientSession
@@ -55,6 +58,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         protected:
             _live_rtsp_server& _our_server;
+
         };
 
         class _live_rtsp_client_connection : public RTSPClientConnectionSupportingHTTPStreaming
@@ -85,17 +89,18 @@ namespace uvxx { namespace rtsp { namespace details
             virtual void handleCmd_notFound() override;
 
             virtual void handleCmd_bad() override;
+
         private:
             _live_rtsp_server& __live_rtsp_server;
 
         };
 
-        virtual ClientConnection* createNewClientConnection(int client_socket, struct sockaddr_in client_addr) override;
-
     private:
         static int setup_socket(uint16_t port);
 
+    private:
         _lookup_media_session_delegate __lookup_media_session_delegate;
+
     };
 
     using _live_rtsp_server_ptr = std::shared_ptr<_live_rtsp_server>;

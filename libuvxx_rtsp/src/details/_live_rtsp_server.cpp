@@ -228,7 +228,7 @@ bool _live_rtsp_server::allow_streaming_rtp_over_tcp()
     return fAllowStreamingRTPOverTCP;
 }
 
-ServerMediaSession* _live_rtsp_server::lookupServerMediaSession(char const* /*stream_name*/, bool /*is_first_lookup_in_session*/)
+ServerMediaSession* _live_rtsp_server::lookupServerMediaSession(char const* /*stream_name*/, Boolean /*is_first_lookup_in_session*/)
 {
     return nullptr;
 }
@@ -494,7 +494,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
 
         char* absStart = nullptr; char* absEnd = nullptr;
 
-        bool startTimeIsNow;
+        Boolean startTimeIsNow;
 
         if (parseRangeHeader(full_request_string, rangeStart, rangeEnd, absStart, absEnd, startTimeIsNow)) 
         {
@@ -544,7 +544,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         // Make sure that we transmit on the same interface that's used by the client (in case we're a multi-homed server):
         struct sockaddr_in sourceAddr; SOCKLEN_T namelen = sizeof sourceAddr;
 
-        getsockname(client_connection->client_input_socket(), reinterpret_cast<struct sockaddr*>(&sourceAddr), &namelen);
+	    getsockname(client_connection->client_input_socket(), reinterpret_cast<struct sockaddr*>(&sourceAddr), reinterpret_cast<socklen_t*>(&namelen));
         
         netAddressBits origSendingInterfaceAddr = SendingInterfaceAddr;
         
