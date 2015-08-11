@@ -147,9 +147,9 @@ static bool parsePlayNowHeader(char const* buf) {
 
 // A special version of "parseTransportHeader()", used just for parsing the "Transport:" header in an incoming "REGISTER" command:
 static void parseTransportHeaderForREGISTER(char const* buf,
-    bool &reuseConnection,
-    bool& deliverViaTCP,
-    char*& proxyURLSuffix) 
+                                            bool &reuseConnection,
+                                            bool& deliverViaTCP,
+                                            char*& proxyURLSuffix) 
 {
     // Initialize the result parameters to default values:
     reuseConnection = false;
@@ -194,6 +194,7 @@ static void parseTransportHeaderForREGISTER(char const* buf,
         else if (_strncasecmp(field, "proxy_url_suffix=", 17) == 0)
         {
             delete[] proxyURLSuffix;
+
             proxyURLSuffix = strDup(field + 17);
         }
 
@@ -241,7 +242,15 @@ void _live_rtsp_server::begin_lookup_server_media_session(char const* stream_nam
     {
         __lookup_media_session_delegate(stream_name).then([=](pplx::task<ServerMediaSession*> t)
         {
-            callback(t.get());
+            try
+            {
+                auto session = t.get();
+                callback(session);
+            }
+            catch (const std::exception&)
+            {
+                callback(nullptr);
+            }
         });
     }
 }
@@ -264,7 +273,6 @@ int _live_rtsp_server::setup_socket(uint16_t port)
 
     return socket;
 }
-
 
 _live_rtsp_server::_live_rtsp_client_session::_live_rtsp_client_session(_live_rtsp_server& our_server, u_int32_t session_id) :
     RTSPClientSession(our_server, session_id),
@@ -363,7 +371,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
             }
         }
 
-        if (fStreamStates == NULL)
+        if (fStreamStates == nullptr)
         {
             // This is the first "SETUP" for this session.  Set up our array of states for all of this session's subsessions (tracks):
             ServerMediaSubsessionIterator iter(*fOurServerMediaSession);
@@ -563,6 +571,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         AddressString sourceAddrStr(sourceAddr);
         
         char timeoutParameterString[100];
+
         if (_our_server.fReclamationSeconds > 0) 
         {
             sprintf(timeoutParameterString, ";timeout=%u", _our_server.fReclamationSeconds);
@@ -591,6 +600,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
                 
                     break;
                 }
+
                 case StreamingMode::RTP_TCP: 
                 {
                     // multicast streams can't be sent via TCP
@@ -598,6 +608,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
 
                     break;
                 }
+
                 case StreamingMode::RAW_UDP: 
                 {
                     snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
@@ -613,12 +624,12 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
 
                     break;
                 }
-                }
             }
-            else
+        }
+        else
+        {
+            switch (streamingMode) 
             {
-                switch (streamingMode) 
-                {
                 case StreamingMode::RTP_UDP: 
                 {
                     snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
@@ -926,8 +937,9 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
         unsigned char* tmpPtr = fLastCRLF + 2;
 
         if (fBase64RemainderCount == 0) 
-        { // no more Base-64 bytes remain to be read/decoded
-          // Look for the end of the message: <CR><LF><CR><LF>
+        { 
+           // no more Base-64 bytes remain to be read/decoded
+           // Look for the end of the message: <CR><LF><CR><LF>
            if (tmpPtr < fRequestBuffer) tmpPtr = fRequestBuffer;
 
             while (tmpPtr < &ptr[newBytesRead - 1]) 
@@ -935,7 +947,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                 if (*tmpPtr == '\r' && *(tmpPtr + 1) == '\n')
                 {
                     if (tmpPtr - fLastCRLF == 2)
-                    { // This is it:
+                    {   // This is it:
                         endOfMsg = True;
                         break;
                     }
