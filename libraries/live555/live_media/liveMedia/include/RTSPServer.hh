@@ -274,6 +274,8 @@ private:
   static void incomingConnectionHandlerHTTP(void*, int /*mask*/);
   void incomingConnectionHandlerHTTP();
 
+/* jeremiah mod to make these public */
+public:
   void noteTCPStreamingOnSocket(int socketNum, RTSPClientSession* clientSession, unsigned trackNum);
   void unnoteTCPStreamingOnSocket(int socketNum, RTSPClientSession* clientSession, unsigned trackNum);
   void stopTCPStreamingOnSocket(int socketNum);
@@ -292,6 +294,9 @@ private:
   HashTable* fPendingRegisterRequests;
   unsigned fRegisterRequestCounter;
   UserAuthenticationDatabase* fAuthDB;
+  /* mod by jeremiah */
+  public:
+
   Boolean fAllowStreamingRTPOverTCP; // by default, True
 };
 

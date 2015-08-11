@@ -123,7 +123,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)..\libraries\live555\live_media\liveMedia\include;$(ProjectDir)..\libraries\live555\live_media\groupsock\include;$(ProjectDir)..\libraries\live555\live_media\BasicUsageEnvironment\include;$(ProjectDir)..\libraries\live555\live_media\UsageEnvironment\include;$(ProjectDir)..\libuvxx\include;$(ProjectDir)include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -142,7 +142,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)..\libraries\live555\live_media\liveMedia\include;$(ProjectDir)..\libraries\live555\live_media\groupsock\include;$(ProjectDir)..\libraries\live555\live_media\BasicUsageEnvironment\include;$(ProjectDir)..\libraries\live555\live_media\UsageEnvironment\include;$(ProjectDir)..\libuvxx\include;$(ProjectDir)include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

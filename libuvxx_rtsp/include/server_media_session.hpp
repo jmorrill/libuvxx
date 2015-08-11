@@ -22,28 +22,15 @@ namespace uvxx { namespace rtsp
     public:
         server_media_session();
 
-        server_media_session(const server_media_session& client);
+        server_media_session(const server_media_session& client) = default;
 
-        server_media_session& operator=(const server_media_session&);
+        server_media_session& operator=(const server_media_session&) = default;
    
         server_media_session(server_media_session&& session);
 
         server_media_session& operator=(server_media_session&& session);
 
-        bool operator !=(std::nullptr_t);
-
-        bool operator==(std::nullptr_t)
-        {
-            if(!__server_media_session_impl)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        virtual ~server_media_session() = default;
+        virtual ~server_media_session();
 
     public:
         void set_media_descriptor(const media_descriptor& descriptor);
