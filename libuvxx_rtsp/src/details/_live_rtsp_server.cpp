@@ -693,6 +693,9 @@ void _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describe(char
             }
         }
 
+        delete[] sdpDescription;
+        delete[] rtspURL;
+
         end_describe_callback();
     });
 }
