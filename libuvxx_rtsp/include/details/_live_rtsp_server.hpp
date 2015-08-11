@@ -66,8 +66,6 @@ namespace uvxx { namespace rtsp { namespace details
 
             virtual void handleRequestBytes(int newBytesRead) override;
 
-            virtual void handleCmd_DESCRIBE(char const* url_pre_suffix, char const* url_suffix, char const* full_request_str) override;
-
             virtual void handleCmd_unsupportedTransport() override;
 
             virtual void begin_handle_describe(char const* url_pre_suffix, char const* url_suffix, char const* full_request_str, std::function<void()> end_describe_callback);

@@ -3,9 +3,11 @@
 #include "GroupsockHelper.hh"
 #include "RTSPCommon.hh"
 
+#include "pplx/pplxtasks.h"
 #include "details/_live_common.hpp"
 #include "details/_live_rtsp_server.hpp"
-#include <pplx/pplxtasks.h>
+
+#define RTSP_PARAM_STRING_MAX 200
 
 using namespace uvxx::rtsp::details;
 
@@ -14,7 +16,6 @@ typedef enum StreamingMode {
     RTP_TCP,
     RAW_UDP
 } StreamingMode;
-
 
 static void parseTransportHeader(char const* buf,
     StreamingMode& streamingMode,
@@ -97,67 +98,6 @@ static Boolean parsePlayNowHeader(char const* buf) {
     return True;
 }
 
-
-_live_rtsp_server::_live_rtsp_server(uint16_t port) : 
-    RTSPServerSupportingHTTPStreaming(*_get_live_environment().get(), setup_socket(port),
-        port, 
-        nullptr, 
-        65)
-{
-}
-
-_live_rtsp_server::~_live_rtsp_server()
-{
-}
-
-void _live_rtsp_server::set_on_lookup_media_session(_lookup_media_session_delegate callback)
-{
-    __lookup_media_session_delegate = callback;
-}
-
-bool _live_rtsp_server::allow_streaming_rtp_over_tcp()
-{
-    return fAllowStreamingRTPOverTCP;
-}
-
-ServerMediaSession* _live_rtsp_server::lookupServerMediaSession(char const* stream_name, Boolean /*is_first_lookup_in_session*/)
-{
-    return nullptr;// __lookup_media_session_delegate ? __lookup_media_session_delegate(stream_name) : nullptr;
-}
-
-void _live_rtsp_server::begin_lookup_server_media_session(char const* stream_name, Boolean is_first_lookup_in_session, _server_media_session_callback_delegate callback)
-{
-    __lookup_media_session_delegate(stream_name).then([=](pplx::task<ServerMediaSession*> t)
-    {
-        callback(t.get());
-    });
-}
-
-GenericMediaServer::ClientSession* _live_rtsp_server::createNewClientSession(u_int32_t session_id)
-{
-    return new _live_rtsp_client_session(*this, session_id);
-}
-
-GenericMediaServer::ClientConnection* _live_rtsp_server::createNewClientConnection(int client_socket, sockaddr_in client_addr)
-{
-    return new _live_rtsp_client_connection(*this, client_socket, client_addr);
-}
-
-int _live_rtsp_server::setup_socket(uint16_t port)
-{
-    Port port_(port);
-
-    auto socket = setUpOurSocket(*_get_live_environment().get(), port_);
-
-    return socket;
-}
-
-
-#define RTSP_PARAM_STRING_MAX 200
-
-using namespace uvxx::rtsp::details;
-
-
 // A special version of "parseTransportHeader()", used just for parsing the "Transport:" header in an incoming "REGISTER" command:
 static void parseTransportHeaderForREGISTER(char const* buf,
     Boolean &reuseConnection,
@@ -202,6 +142,64 @@ static void parseTransportHeaderForREGISTER(char const* buf,
     delete[] field;
 }
 
+_live_rtsp_server::_live_rtsp_server(uint16_t port) : 
+    RTSPServerSupportingHTTPStreaming(*_get_live_environment().get(), setup_socket(port), port, nullptr, 30)
+{
+}
+
+_live_rtsp_server::~_live_rtsp_server()
+{
+}
+
+void _live_rtsp_server::set_on_lookup_media_session(_lookup_media_session_delegate callback)
+{
+    __lookup_media_session_delegate = callback;
+}
+
+bool _live_rtsp_server::allow_streaming_rtp_over_tcp()
+{
+    return fAllowStreamingRTPOverTCP;
+}
+
+ServerMediaSession* _live_rtsp_server::lookupServerMediaSession(char const* stream_name, Boolean /*is_first_lookup_in_session*/)
+{
+    return nullptr;
+}
+
+void _live_rtsp_server::begin_lookup_server_media_session(char const* stream_name, Boolean is_first_lookup_in_session, _server_media_session_callback_delegate callback)
+{
+    if(!__lookup_media_session_delegate)
+    {
+        callback(nullptr);
+    }
+    else
+    {
+        __lookup_media_session_delegate(stream_name).then([=](pplx::task<ServerMediaSession*> t)
+        {
+            callback(t.get());
+        });
+    }
+}
+
+GenericMediaServer::ClientSession* _live_rtsp_server::createNewClientSession(u_int32_t session_id)
+{
+    return new _live_rtsp_client_session(*this, session_id);
+}
+
+GenericMediaServer::ClientConnection* _live_rtsp_server::createNewClientConnection(int client_socket, sockaddr_in client_addr)
+{
+    return new _live_rtsp_client_connection(*this, client_socket, client_addr);
+}
+
+int _live_rtsp_server::setup_socket(uint16_t port)
+{
+    Port port_(port);
+
+    auto socket = setUpOurSocket(*_get_live_environment().get(), port_);
+
+    return socket;
+}
+
 
 _live_rtsp_server::_live_rtsp_client_session::_live_rtsp_client_session(_live_rtsp_server& our_server, u_int32_t session_id) :
     RTSPClientSession(our_server, session_id),
@@ -243,8 +241,6 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
     char* concatenatedStreamName = NULL; // in the normal case
 
     do {
-        // First, make sure the specified stream name exists:
-       
         if (sms == NULL) {
             // Check for the special case (noted above), before we give up:
             if (urlPreSuffix[0] == '\0') {
@@ -533,74 +529,6 @@ _live_rtsp_server::_live_rtsp_client_connection::~_live_rtsp_client_connection()
 {
 }
 
-void _live_rtsp_server::_live_rtsp_client_connection::handleCmd_DESCRIBE(char const* urlPreSuffix, char const* urlSuffix, char const* fullRequestStr) {
-    ServerMediaSession* session = NULL;
-    char* sdpDescription = NULL;
-    char* rtspURL = NULL;
-    do {
-        char urlTotalSuffix[RTSP_PARAM_STRING_MAX];
-        urlTotalSuffix[0] = '\0';
-        if (urlPreSuffix[0] != '\0') {
-            strcat(urlTotalSuffix, urlPreSuffix);
-            strcat(urlTotalSuffix, "/");
-        }
-        strcat(urlTotalSuffix, urlSuffix);
-
-        if (!authenticationOK("DESCRIBE", urlTotalSuffix, fullRequestStr)) break;
-
-        // We should really check that the request contains an "Accept:" #####
-        // for "application/sdp", because that's what we're sending back #####
-
-        // Begin by looking up the "ServerMediaSession" object for the specified "urlTotalSuffix":
-        session = fOurServer.lookupServerMediaSession(urlTotalSuffix);
-        if (session == NULL) {
-            handleCmd_notFound();
-            break;
-        }
-
-        // Increment the "ServerMediaSession" object's reference count, in case someone removes it
-        // while we're using it:
-        session->incrementReferenceCount();
-
-        // Then, assemble a SDP description for this session:
-        sdpDescription = session->generateSDPDescription();
-        if (sdpDescription == NULL) {
-            // This usually means that a file name that was specified for a
-            // "ServerMediaSubsession" does not exist.
-            setRTSPResponse("404 File Not Found, Or In Incorrect Format");
-            break;
-        }
-        unsigned sdpDescriptionSize = strlen(sdpDescription);
-
-        // Also, generate our RTSP URL, for the "Content-Base:" header
-        // (which is necessary to ensure that the correct URL gets used in subsequent "SETUP" requests).
-        rtspURL = fOurRTSPServer.rtspURL(session, fClientInputSocket);
-
-        snprintf((char*)fResponseBuffer, sizeof fResponseBuffer,
-            "RTSP/1.0 200 OK\r\nCSeq: %s\r\n"
-            "%s"
-            "Content-Base: %s/\r\n"
-            "Content-Type: application/sdp\r\n"
-            "Content-Length: %d\r\n\r\n"
-            "%s",
-            fCurrentCSeq,
-            dateHeader(),
-            rtspURL,
-            sdpDescriptionSize,
-            sdpDescription);
-    } while (0);
-
-    if (session != NULL) {
-        // Decrement its reference count, now that we're done using it:
-        session->decrementReferenceCount();
-        if (session->referenceCount() == 0 && session->deleteWhenUnreferenced()) {
-            fOurServer.removeServerMediaSession(session);
-        }
-    }
-
-    delete[] sdpDescription;
-    delete[] rtspURL;
-}
 
 void _live_rtsp_server::_live_rtsp_client_connection::handleCmd_unsupportedTransport()
 {
@@ -895,7 +823,9 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                     // Check whether there are extra bytes remaining in the buffer, after the end of the request (a rare case).
                     // If so, move them to the front of our buffer, and keep processing it, because it might be a following, pipelined request.
                     unsigned requestSize = (fLastCRLF + 4 - fRequestBuffer) + contentLength;
+
                     numBytesRemaining = fRequestBytesAlreadySeen - requestSize;
+
                     resetRequestBuffer(); // to prepare for any subsequent request
 
                     if (numBytesRemaining > 0) 
@@ -904,12 +834,13 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                         newBytesRead = numBytesRemaining;
                     }
 
-                    if(numBytesRemaining)
+                    if(numBytesRemaining > 0)
                     {
                         handleRequestBytes(numBytesRemaining);
                     }
 
                     --fRecursionCount;
+
                     if (!fIsActive) 
                     {
                         if (fRecursionCount > 0)
@@ -957,31 +888,35 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                 }
                 if (clientSession != NULL) 
                 {
-                    unsigned char* request_buffer = fRequestBuffer;
-                    unsigned char* response_buffer = fResponseBuffer;
+                    auto request_buffer = fRequestBuffer;
+                    auto response_buffer = fResponseBuffer;
 
                     std::string urlPreSuffix_ = urlPreSuffix;
                     std::string urlSuffix_ = urlSuffix;
 
-                    clientSession->begin_handle_setup(this, urlPreSuffix, urlSuffix, (char const*)fRequestBuffer,[=]() mutable
+                    clientSession->begin_handle_setup(this, urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer),[=]() mutable
                     {
                         playAfterSetup = clientSession->stream_after_setup_get();
                         
-                        send(fClientOutputSocket, (char const*)response_buffer, strlen((char*)response_buffer), 0);
+                        send(fClientOutputSocket, reinterpret_cast<char const*>(response_buffer), strlen(reinterpret_cast<char*>(response_buffer)), 0);
 
-                        if (playAfterSetup) {
+                        if (playAfterSetup)
+                        {
                             // The client has asked for streaming to commence now, rather than after a
                             // subsequent "PLAY" command.  So, simulate the effect of a "PLAY" command:
-                            clientSession->handle_cmd_within_session(this, "PLAY", urlPreSuffix_.c_str(), urlSuffix_.c_str(), (char const*)request_buffer);
+                            clientSession->handle_cmd_within_session(this, "PLAY", urlPreSuffix_.c_str(), urlSuffix_.c_str(), reinterpret_cast<char const*>(request_buffer));
                         }
 
                         unsigned requestSize = (fLastCRLF + 4 - fRequestBuffer) + contentLength;
+
                         numBytesRemaining = fRequestBytesAlreadySeen - requestSize;
+
                         resetRequestBuffer(); // to prepare for any subsequent request
 
                         if (numBytesRemaining > 0)
                         {
                             memmove(fRequestBuffer, &fRequestBuffer[requestSize], numBytesRemaining);
+
                             newBytesRead = numBytesRemaining;
                         }
 
@@ -991,6 +926,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                         }
 
                         --fRecursionCount;
+
                         if (!fIsActive)
                         {
                             if (fRecursionCount > 0)
