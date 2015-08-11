@@ -118,6 +118,7 @@ static void parseTransportHeader(char const* buf,
         else if (sscanf(field, "interleaved=%u-%u", &rtpCid, &rtcpCid) == 2) 
         {
             rtpChannelId = static_cast<unsigned char>(rtpCid);
+
             rtcpChannelId = static_cast<unsigned char>(rtcpCid);
         }
 
@@ -302,33 +303,33 @@ void _live_rtsp_server::_live_rtsp_client_session::begin_handle_setup(_live_rtsp
     });
 }
 
-void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_client_connection* ourClientConnection, ServerMediaSession* sms, char const* cseq, char const* urlPreSuffix, char const* urlSuffix, char const* fullRequestStr)
+void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_client_connection* client_connection, ServerMediaSession* live_server_media_session, char const* cseq, char const* url_pre_suffix_string, char const* url_suffix_string, char const* full_request_string)
 {
-    // Normally, "urlPreSuffix" should be the session (stream) name, and "urlSuffix" should be the subsession (track) name.
+    // Normally, "url_pre_suffix" should be the session (stream) name, and "url_suffix" should be the subsession (track) name.
     // However (being "liberal in what we accept"), we also handle 'aggregate' SETUP requests (i.e., without a track name),
     // in the special case where we have only a single track.  I.e., in this case, we also handle:
-    //    "urlPreSuffix" is empty and "urlSuffix" is the session (stream) name, or
-    //    "urlPreSuffix" concatenated with "urlSuffix" (with "/" inbetween) is the session (stream) name.
+    //    "url_pre_suffix" is empty and "url_suffix" is the session (stream) name, or
+    //    "url_pre_suffix" concatenated with "url_suffix" (with "/" inbetween) is the session (stream) name.
     char const* streamName; 
 
-    char const* trackId = urlSuffix; // in the normal case
+    char const* trackId = url_suffix_string; // in the normal case
 
     char* concatenatedStreamName = nullptr; // in the normal case
 
     do
     {
-        if (sms == nullptr) 
+        if (live_server_media_session == nullptr) 
         {
             // Check for the special case (noted above), before we give up:
-            if (urlPreSuffix[0] == '\0')
+            if (url_pre_suffix_string[0] == '\0')
             {
-                streamName = urlSuffix;
+                streamName = url_suffix_string;
             }
             else 
             {
-                concatenatedStreamName = new char[strlen(urlPreSuffix) + strlen(urlSuffix) + 2]; // allow for the "/" and the trailing '\0'
+                concatenatedStreamName = new char[strlen(url_pre_suffix_string) + strlen(url_suffix_string) + 2]; // allow for the "/" and the trailing '\0'
                 
-                sprintf(concatenatedStreamName, "%s/%s", urlPreSuffix, urlSuffix);
+                sprintf(concatenatedStreamName, "%s/%s", url_pre_suffix_string, url_suffix_string);
                 
                 streamName = concatenatedStreamName;
             }
@@ -336,20 +337,20 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
             trackId = nullptr;
 
             // Check again:
-            sms = fOurServer.lookupServerMediaSession(streamName, fOurServerMediaSession == nullptr);
+            live_server_media_session = fOurServer.lookupServerMediaSession(streamName, fOurServerMediaSession == nullptr);
         }
 
-        if (sms == nullptr) 
+        if (live_server_media_session == nullptr) 
         {
             if (fOurServerMediaSession == nullptr) 
             {
                 // The client asked for a stream that doesn't exist (and this session descriptor has not been used before):
-                ourClientConnection->handleCmd_notFound();
+                client_connection->handleCmd_notFound();
             }
             else
             {
                 // The client asked for a stream that doesn't exist, but using a stream id for a stream that does exist. Bad request:
-                ourClientConnection->handleCmd_bad();
+                client_connection->handleCmd_bad();
             }
             break;
         }
@@ -358,14 +359,14 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
             if (fOurServerMediaSession == nullptr) 
             {
                 // We're accessing the "ServerMediaSession" for the first time.
-                fOurServerMediaSession = sms;
+                fOurServerMediaSession = live_server_media_session;
 
                 fOurServerMediaSession->incrementReferenceCount();
             }
-            else if (sms != fOurServerMediaSession)
+            else if (live_server_media_session != fOurServerMediaSession)
             {
                 // The client asked for a stream that's different from the one originally requested for this stream id.  Bad request:
-                ourClientConnection->handleCmd_bad();
+                client_connection->handleCmd_bad();
 
                 break;
             }
@@ -412,7 +413,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
             if (trackNum >= fNumStreamStates)
             {
                 // The specified track id doesn't exist, so this request fails:
-                ourClientConnection->handleCmd_notFound();
+                client_connection->handleCmd_notFound();
 
                 break;
             }
@@ -423,7 +424,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
             // This works only if we have only one subsession:
             if (fNumStreamStates != 1 || fStreamStates[0].subsession == nullptr)
             {
-                ourClientConnection->handleCmd_bad();
+                client_connection->handleCmd_bad();
 
                 break;
             }
@@ -459,13 +460,13 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
 
         unsigned char rtpChannelId, rtcpChannelId;
 
-        parseTransportHeader(fullRequestStr, streamingMode, streamingModeString,
+        parseTransportHeader(full_request_string, streamingMode, streamingModeString,
                              clientsDestinationAddressStr, clientsDestinationTTL,
                              clientRTPPortNum, clientRTCPPortNum,
                              rtpChannelId, rtcpChannelId);
 
         if ((streamingMode == StreamingMode::RTP_TCP && rtpChannelId == 0xFF) ||
-            (streamingMode != StreamingMode::RTP_TCP && ourClientConnection->client_output_socket() != ourClientConnection->client_input_socket()))
+            (streamingMode != StreamingMode::RTP_TCP && client_connection->client_output_socket() != client_connection->client_input_socket()))
         {
             // An anomolous situation, caused by a buggy client.  Either:
             //     1/ TCP streaming was requested, but with no "interleaving=" fields.  (QuickTime Player sometimes does this.), or
@@ -495,13 +496,13 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
 
         bool startTimeIsNow;
 
-        if (parseRangeHeader(fullRequestStr, rangeStart, rangeEnd, absStart, absEnd, startTimeIsNow)) 
+        if (parseRangeHeader(full_request_string, rangeStart, rangeEnd, absStart, absEnd, startTimeIsNow)) 
         {
             delete[] absStart; delete[] absEnd;
 
             fStreamAfterSETUP = true;
         }
-        else if (parsePlayNowHeader(fullRequestStr)) 
+        else if (parsePlayNowHeader(full_request_string)) 
         {
             fStreamAfterSETUP = true;
         }
@@ -514,7 +515,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         if (streamingMode == StreamingMode::RTP_TCP) 
         {
             // Note that we'll be streaming over the RTSP TCP connection:
-            fStreamStates[trackNum].tcpSocketNum = ourClientConnection->client_output_socket();
+            fStreamStates[trackNum].tcpSocketNum = client_connection->client_output_socket();
 
             _our_server.noteTCPStreamingOnSocket(fStreamStates[trackNum].tcpSocketNum, this, trackNum);
         }
@@ -543,7 +544,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         // Make sure that we transmit on the same interface that's used by the client (in case we're a multi-homed server):
         struct sockaddr_in sourceAddr; SOCKLEN_T namelen = sizeof sourceAddr;
 
-        getsockname(ourClientConnection->client_input_socket(), reinterpret_cast<struct sockaddr*>(&sourceAddr), &namelen);
+        getsockname(client_connection->client_input_socket(), reinterpret_cast<struct sockaddr*>(&sourceAddr), &namelen);
         
         netAddressBits origSendingInterfaceAddr = SendingInterfaceAddr;
         
@@ -554,7 +555,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         ReceivingInterfaceAddr = SendingInterfaceAddr = sourceAddr.sin_addr.s_addr;
 #endif
 
-        subsession->getStreamParameters(fOurSessionId, ourClientConnection->client_addr().sin_addr.s_addr,
+        subsession->getStreamParameters(fOurSessionId, client_connection->client_addr().sin_addr.s_addr,
                                         clientRTPPort, clientRTCPPort,
                                         fStreamStates[trackNum].tcpSocketNum, rtpChannelId, rtcpChannelId,
                                         destinationAddress, destinationTTL, fIsMulticast,
@@ -586,7 +587,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
             {
                 case StreamingMode::RTP_UDP:
                 {
-                    snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
+                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
                         "RTSP/1.0 200 OK\r\n"
                         "CSeq: %s\r\n"
                         "%s"
@@ -603,14 +604,14 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
                 case StreamingMode::RTP_TCP: 
                 {
                     // multicast streams can't be sent via TCP
-                    ourClientConnection->handleCmd_unsupportedTransport();
+                    client_connection->handleCmd_unsupportedTransport();
 
                     break;
                 }
 
                 case StreamingMode::RAW_UDP: 
                 {
-                    snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
+                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
                         "RTSP/1.0 200 OK\r\n"
                         "CSeq: %s\r\n"
                         "%s"
@@ -631,7 +632,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
             {
                 case StreamingMode::RTP_UDP: 
                 {
-                    snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
+                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
                         "RTSP/1.0 200 OK\r\n"
                         "CSeq: %s\r\n"
                         "%s"
@@ -648,11 +649,11 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
                 {
                     if (!_our_server.allow_streaming_rtp_over_tcp()) 
                     {
-                        ourClientConnection->handleCmd_unsupportedTransport();
+                        client_connection->handleCmd_unsupportedTransport();
                     }
                     else 
                     {
-                        snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
+                        snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
                             "RTSP/1.0 200 OK\r\n"
                             "CSeq: %s\r\n"
                             "%s"
@@ -668,7 +669,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
                 }
                 case StreamingMode::RAW_UDP: 
                 {
-                    snprintf(reinterpret_cast<char*>(ourClientConnection->response_buffer()), ourClientConnection->response_buffer_size(),
+                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
                         "RTSP/1.0 200 OK\r\n"
                         "CSeq: %s\r\n"
                         "%s"
