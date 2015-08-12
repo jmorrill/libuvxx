@@ -1,5 +1,7 @@
 #ifdef _MSC_VER
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 #endif
 
 #include <functional>
@@ -461,10 +463,15 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
 
         unsigned char rtpChannelId, rtcpChannelId;
 
-        parseTransportHeader(full_request_string, streamingMode, streamingModeString,
-                             clientsDestinationAddressStr, clientsDestinationTTL,
-                             clientRTPPortNum, clientRTCPPortNum,
-                             rtpChannelId, rtcpChannelId);
+        parseTransportHeader(full_request_string, 
+                             streamingMode, 
+                             streamingModeString,
+                             clientsDestinationAddressStr, 
+                             clientsDestinationTTL,
+                             clientRTPPortNum, 
+                             clientRTCPPortNum,
+                             rtpChannelId,
+                             rtcpChannelId);
 
         if ((streamingMode == StreamingMode::RTP_TCP && rtpChannelId == 0xFF) ||
             (streamingMode != StreamingMode::RTP_TCP && client_connection->client_output_socket() != client_connection->client_input_socket()))
@@ -526,7 +533,8 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         u_int8_t destinationTTL = 255;
 
 #ifdef RTSP_ALLOW_CLIENT_DESTINATION_SETTING
-        if (clientsDestinationAddressStr != nullptr) {
+        if (clientsDestinationAddressStr != nullptr)
+        {
             // Use the client-provided "destination" address.
             // Note: This potentially allows the server to be used in denial-of-service
             // attacks, so don't enable this code unless you're sure that clients are
@@ -536,6 +544,7 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         // Also use the client-provided TTL.
         destinationTTL = clientsDestinationTTL;
 #endif
+
         delete[] clientsDestinationAddressStr;
 
         Port serverRTPPort(0);
@@ -556,11 +565,18 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
         ReceivingInterfaceAddr = SendingInterfaceAddr = sourceAddr.sin_addr.s_addr;
 #endif
 
-        subsession->getStreamParameters(fOurSessionId, client_connection->client_addr().sin_addr.s_addr,
-                                        clientRTPPort, clientRTCPPort,
-                                        fStreamStates[trackNum].tcpSocketNum, rtpChannelId, rtcpChannelId,
-                                        destinationAddress, destinationTTL, fIsMulticast,
-                                        serverRTPPort, serverRTCPPort,
+        subsession->getStreamParameters(fOurSessionId, 
+                                        client_connection->client_addr().sin_addr.s_addr,
+                                        clientRTPPort, 
+                                        clientRTCPPort,
+                                        fStreamStates[trackNum].tcpSocketNum,
+                                        rtpChannelId, 
+                                        rtcpChannelId,
+                                        destinationAddress,
+                                        destinationTTL, 
+                                        fIsMulticast,
+                                        serverRTPPort, 
+                                        serverRTCPPort,
                                         fStreamStates[trackNum].streamToken);
 
         SendingInterfaceAddr = origSendingInterfaceAddr;
@@ -588,16 +604,21 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
             {
                 case StreamingMode::RTP_UDP:
                 {
-                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
-                        "RTSP/1.0 200 OK\r\n"
-                        "CSeq: %s\r\n"
-                        "%s"
-                        "Transport: RTP/AVP;multicast;destination=%s;source=%s;port=%d-%d;ttl=%d\r\n"
-                        "Session: %08X%s\r\n\r\n",
-                        cseq,
-                        dateHeader(),
-                        destAddrStr.val(), sourceAddrStr.val(), ntohs(serverRTPPort.num()), ntohs(serverRTCPPort.num()), destinationTTL,
-                        fOurSessionId, timeoutParameterString);
+                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
+                             client_connection->response_buffer_size(),
+                             "RTSP/1.0 200 OK\r\n"
+                             "CSeq: %s\r\n"
+                             "%s"
+                             "Transport: RTP/AVP;multicast;destination=%s;source=%s;port=%d-%d;ttl=%d\r\n"
+                             "Session: %08X%s\r\n\r\n",
+                             cseq,
+                             dateHeader(),
+                             destAddrStr.val(), 
+                             sourceAddrStr.val(), 
+                             ntohs(serverRTPPort.num()), 
+                             ntohs(serverRTCPPort.num()), 
+                             destinationTTL,
+                             fOurSessionId, timeoutParameterString);
                 
                     break;
                 }
@@ -612,16 +633,22 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
 
                 case StreamingMode::RAW_UDP: 
                 {
-                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
-                        "RTSP/1.0 200 OK\r\n"
-                        "CSeq: %s\r\n"
-                        "%s"
-                        "Transport: %s;multicast;destination=%s;source=%s;port=%d;ttl=%d\r\n"
-                        "Session: %08X%s\r\n\r\n",
-                        cseq,
-                        dateHeader(),
-                        streamingModeString, destAddrStr.val(), sourceAddrStr.val(), ntohs(serverRTPPort.num()), destinationTTL,
-                        fOurSessionId, timeoutParameterString);
+                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
+                             client_connection->response_buffer_size(),
+                             "RTSP/1.0 200 OK\r\n"
+                             "CSeq: %s\r\n"
+                             "%s"
+                             "Transport: %s;multicast;destination=%s;source=%s;port=%d;ttl=%d\r\n"
+                             "Session: %08X%s\r\n\r\n",
+                             cseq,
+                             dateHeader(),
+                             streamingModeString, 
+                             destAddrStr.val(), 
+                             sourceAddrStr.val(), 
+                             ntohs(serverRTPPort.num()), 
+                             destinationTTL,
+                             fOurSessionId, 
+                             timeoutParameterString);
 
                     break;
                 }
@@ -633,16 +660,23 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
             {
                 case StreamingMode::RTP_UDP: 
                 {
-                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
-                        "RTSP/1.0 200 OK\r\n"
-                        "CSeq: %s\r\n"
-                        "%s"
-                        "Transport: RTP/AVP;unicast;destination=%s;source=%s;client_port=%d-%d;server_port=%d-%d\r\n"
-                        "Session: %08X%s\r\n\r\n",
-                        cseq,
-                        dateHeader(),
-                        destAddrStr.val(), sourceAddrStr.val(), ntohs(clientRTPPort.num()), ntohs(clientRTCPPort.num()), ntohs(serverRTPPort.num()), ntohs(serverRTCPPort.num()),
-                        fOurSessionId, timeoutParameterString);
+                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
+                             client_connection->response_buffer_size(),
+                             "RTSP/1.0 200 OK\r\n"
+                             "CSeq: %s\r\n"
+                             "%s"
+                             "Transport: RTP/AVP;unicast;destination=%s;source=%s;client_port=%d-%d;server_port=%d-%d\r\n"
+                             "Session: %08X%s\r\n\r\n",
+                             cseq,
+                             dateHeader(),
+                             destAddrStr.val(), 
+                             sourceAddrStr.val(), 
+                             ntohs(clientRTPPort.num()), 
+                             ntohs(clientRTCPPort.num()), 
+                             ntohs(serverRTPPort.num()), 
+                             ntohs(serverRTCPPort.num()),
+                             fOurSessionId, 
+                             timeoutParameterString);
 
                     break;
                 }
@@ -654,32 +688,43 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
                     }
                     else 
                     {
-                        snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
-                            "RTSP/1.0 200 OK\r\n"
-                            "CSeq: %s\r\n"
-                            "%s"
-                            "Transport: RTP/AVP/TCP;unicast;destination=%s;source=%s;interleaved=%d-%d\r\n"
-                            "Session: %08X%s\r\n\r\n",
-                            cseq,
-                            dateHeader(),
-                            destAddrStr.val(), sourceAddrStr.val(), rtpChannelId, rtcpChannelId,
-                            fOurSessionId, timeoutParameterString);
+                        snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
+                                 client_connection->response_buffer_size(),
+                                 "RTSP/1.0 200 OK\r\n"
+                                 "CSeq: %s\r\n"
+                                 "%s"
+                                 "Transport: RTP/AVP/TCP;unicast;destination=%s;source=%s;interleaved=%d-%d\r\n"
+                                 "Session: %08X%s\r\n\r\n",
+                                 cseq,
+                                 dateHeader(),
+                                 destAddrStr.val(), 
+                                 sourceAddrStr.val(),
+                                 rtpChannelId, 
+                                 rtcpChannelId,
+                                 fOurSessionId, 
+                                 timeoutParameterString);
                     }
 
                     break;
                 }
                 case StreamingMode::RAW_UDP: 
                 {
-                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), client_connection->response_buffer_size(),
-                        "RTSP/1.0 200 OK\r\n"
-                        "CSeq: %s\r\n"
-                        "%s"
-                        "Transport: %s;unicast;destination=%s;source=%s;client_port=%d;server_port=%d\r\n"
-                        "Session: %08X%s\r\n\r\n",
-                        cseq,
-                        dateHeader(),
-                        streamingModeString, destAddrStr.val(), sourceAddrStr.val(), ntohs(clientRTPPort.num()), ntohs(serverRTPPort.num()),
-                        fOurSessionId, timeoutParameterString);
+                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
+                             client_connection->response_buffer_size(),
+                             "RTSP/1.0 200 OK\r\n"
+                             "CSeq: %s\r\n"
+                             "%s"
+                             "Transport: %s;unicast;destination=%s;source=%s;client_port=%d;server_port=%d\r\n"
+                             "Session: %08X%s\r\n\r\n",
+                             cseq,
+                             dateHeader(),
+                             streamingModeString, 
+                             destAddrStr.val(), 
+                             sourceAddrStr.val(), 
+                             ntohs(clientRTPPort.num()), 
+                             ntohs(serverRTPPort.num()),
+                             fOurSessionId, 
+                             timeoutParameterString);
                 
                     break;
                 }
@@ -773,18 +818,19 @@ void _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describe(char
         // (which is necessary to ensure that the correct URL gets used in subsequent "SETUP" requests).
         rtspURL = fOurRTSPServer.rtspURL(session, fClientInputSocket);
 
-        snprintf(reinterpret_cast<char*>(fResponseBuffer), sizeof fResponseBuffer,
-            "RTSP/1.0 200 OK\r\nCSeq: %s\r\n"
-            "%s"
-            "Content-Base: %s/\r\n"
-            "Content-Type: application/sdp\r\n"
-            "Content-Length: %d\r\n\r\n"
-            "%s",
-            cseq.c_str(),
-            dateHeader(),
-            rtspURL,
-            sdpDescriptionSize,
-            sdpDescription);
+        snprintf(reinterpret_cast<char*>(fResponseBuffer), 
+                 sizeof fResponseBuffer,
+                 "RTSP/1.0 200 OK\r\nCSeq: %s\r\n"
+                 "%s"
+                 "Content-Base: %s/\r\n"
+                 "Content-Type: application/sdp\r\n"
+                 "Content-Length: %d\r\n\r\n"
+                 "%s",
+                 cseq.c_str(),
+                 dateHeader(),
+                 rtspURL,
+                 sdpDescriptionSize,
+                 sdpDescription);
         } 
         while (constant_expresion<0>::value());
 
@@ -985,11 +1031,13 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 
         fLastCRLF[2] = '\0'; // temporarily, for parsing
 
-        bool parseSucceeded = parseRTSPRequestString(reinterpret_cast<char*>(fRequestBuffer), fLastCRLF + 2 - fRequestBuffer,
-                                                     cmdName, sizeof cmdName,
+        auto request_buff = reinterpret_cast<char*>(fRequestBuffer);
+
+        bool parseSucceeded = parseRTSPRequestString(request_buff, fLastCRLF + 2 - fRequestBuffer,
+                                                     cmdName,      sizeof cmdName,
                                                      urlPreSuffix, sizeof urlPreSuffix,
-                                                     urlSuffix, sizeof urlSuffix,
-                                                     cseq, sizeof cseq,
+                                                     urlSuffix,    sizeof urlSuffix,
+                                                     cseq,         sizeof cseq,
                                                      sessionIdStr, sizeof sessionIdStr,
                                                      contentLength);
         fLastCRLF[2] = '\r'; // restore its value
@@ -1058,7 +1106,10 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 
                 begin_handle_describe(urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer), [=]() mutable
                 {
-                    send(fClientOutputSocket, reinterpret_cast<char const*>(fResponseBuffer), strlen(reinterpret_cast<char*>(fResponseBuffer)), 0);
+                    send(fClientOutputSocket, 
+                         reinterpret_cast<char const*>(fResponseBuffer), 
+                         strlen(reinterpret_cast<char*>(fResponseBuffer)), 
+                         0);
 
                     // Check whether there are extra bytes remaining in the buffer, after the end of the request (a rare case).
                     // If so, move them to the front of our buffer, and keep processing it, because it might be a following, pipelined request.
@@ -1095,7 +1146,9 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                     }
                     else
                     {
-                        envir().taskScheduler().setBackgroundHandling(fOurSocket, SOCKET_READABLE | SOCKET_EXCEPTION, incomingRequestHandler, this);
+                        envir().taskScheduler().setBackgroundHandling(fOurSocket, 
+                                                                      SOCKET_READABLE | SOCKET_EXCEPTION, 
+                                                                      incomingRequestHandler, this);
                     }
                 });
 
@@ -1162,13 +1215,20 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                     {
                         playAfterSetup = clientSession->stream_after_setup_get();
                         
-                        send(fClientOutputSocket, reinterpret_cast<char const*>(response_buffer), strlen(reinterpret_cast<char*>(response_buffer)), 0);
+                        send(fClientOutputSocket, 
+                             reinterpret_cast<char const*>(response_buffer), 
+                             strlen(reinterpret_cast<char*>(response_buffer)), 
+                             0);
 
                         if (playAfterSetup)
                         {
                             // The client has asked for streaming to commence now, rather than after a
                             // subsequent "PLAY" command.  So, simulate the effect of a "PLAY" command:
-                            clientSession->handle_cmd_within_session(this, "PLAY", urlPreSuffix_.c_str(), urlSuffix_.c_str(), reinterpret_cast<char const*>(request_buffer));
+                            clientSession->handle_cmd_within_session(this, 
+                                                                     "PLAY", 
+                                                                     urlPreSuffix_.c_str(), 
+                                                                     urlSuffix_.c_str(), 
+                                                                     reinterpret_cast<char const*>(request_buffer));
                         }
 
                         unsigned requestSize = (fLastCRLF + 4 - fRequestBuffer) + contentLength;
@@ -1204,7 +1264,10 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                         }
                         else
                         {
-                            envir().taskScheduler().setBackgroundHandling(fOurSocket, SOCKET_READABLE | SOCKET_EXCEPTION, incomingRequestHandler, this);
+                            envir().taskScheduler().setBackgroundHandling(fOurSocket, 
+                                                                          SOCKET_READABLE | SOCKET_EXCEPTION, 
+                                                                          incomingRequestHandler, 
+                                                                          this);
                         }
                     });
 
@@ -1215,15 +1278,19 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                     handleCmd_sessionNotFound();
                 }
             }
-            else if (strcmp(cmdName, "TEARDOWN") == 0
-                || strcmp(cmdName, "PLAY") == 0
-                || strcmp(cmdName, "PAUSE") == 0
-                || strcmp(cmdName, "GET_PARAMETER") == 0
-                || strcmp(cmdName, "SET_PARAMETER") == 0) 
+            else if (strcmp(cmdName, "TEARDOWN")      == 0
+                  || strcmp(cmdName, "PLAY")          == 0
+                  || strcmp(cmdName, "PAUSE")         == 0
+                  || strcmp(cmdName, "GET_PARAMETER") == 0
+                  || strcmp(cmdName, "SET_PARAMETER") == 0) 
             {
                 if (clientSession != nullptr) 
                 {
-                    clientSession->handle_cmd_within_session(this, cmdName, urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer));
+                    clientSession->handle_cmd_within_session(this, 
+                                                             cmdName, 
+                                                             urlPreSuffix, 
+                                                             urlSuffix, 
+                                                             reinterpret_cast<char const*>(fRequestBuffer));
                 }
                 else 
                 {
@@ -1243,9 +1310,17 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 
                     char* proxyURLSuffix;
 
-                    parseTransportHeaderForREGISTER(reinterpret_cast<const char*>(fRequestBuffer), reuseConnection, deliverViaTCP, proxyURLSuffix);
+                    parseTransportHeaderForREGISTER(reinterpret_cast<const char*>(fRequestBuffer), 
+                                                    reuseConnection, 
+                                                    deliverViaTCP, 
+                                                    proxyURLSuffix);
 
-                    handleCmd_REGISTER(url, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer), reuseConnection, deliverViaTCP, proxyURLSuffix);
+                    handleCmd_REGISTER(url, 
+                                       urlSuffix, 
+                                       reinterpret_cast<char const*>(fRequestBuffer), 
+                                       reuseConnection, 
+                                       deliverViaTCP, 
+                                       proxyURLSuffix);
                     
                     delete[] proxyURLSuffix;
                 }
@@ -1344,13 +1419,20 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 #ifdef DEBUG
         fprintf(stderr, "sending response: %s", fResponseBuffer);
 #endif
-        send(fClientOutputSocket, reinterpret_cast<char const*>(fResponseBuffer), strlen(reinterpret_cast<char*>(fResponseBuffer)), 0);
+        send(fClientOutputSocket, 
+             reinterpret_cast<char const*>(fResponseBuffer), 
+             strlen(reinterpret_cast<char*>(fResponseBuffer)), 
+             0);
      
         if (playAfterSetup)
         {
             // The client has asked for streaming to commence now, rather than after a
             // subsequent "PLAY" command.  So, simulate the effect of a "PLAY" command:
-            clientSession->handle_cmd_within_session(this, "PLAY", urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer));
+            clientSession->handle_cmd_within_session(this, 
+                                                     "PLAY", 
+                                                     urlPreSuffix, 
+                                                     urlSuffix, 
+                                                     reinterpret_cast<char const*>(fRequestBuffer));
         }
 
         // Check whether there are extra bytes remaining in the buffer, after the end of the request (a rare case).
