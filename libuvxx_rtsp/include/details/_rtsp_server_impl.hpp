@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "_live_environment_base.hpp"
+#include "_live_server_media_session.hpp"
 
 class UsageEnvironment;
 
@@ -26,7 +27,7 @@ namespace uvxx { namespace rtsp { namespace details
         void on_session_request_set(on_session_request_delegate callback);
 
     private:
-        uvxx::pplx::task<ServerMediaSession*> on_live_media_session_lookup(const std::string& stream_name);
+        uvxx::pplx::task<_live_server_media_session*> on_live_media_session_lookup(const std::string& stream_name);
 
     private:
         _live_rtsp_server_ptr _live_server;

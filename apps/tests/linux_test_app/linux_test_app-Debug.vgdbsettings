@@ -33,6 +33,7 @@
       </FileMasks>
       <TransferNewFilesOnly>false</TransferNewFilesOnly>
       <IncludeSubdirectories>true</IncludeSubdirectories>
+      <SelectedDirectories />
     </MainSourceTransferCommand>
     <AllowChangingHostForMainCommands>false</AllowChangingHostForMainCommands>
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>
@@ -122,7 +123,8 @@
     <LaunchGDBSettings xsi:type="GDBLaunchParametersNewInstance">
       <DebuggedProgram>$(TargetPath)</DebuggedProgram>
       <GDBServerPort>2000</GDBServerPort>
-      <ProgramArguments>"rtsp://10.1.30.126:8554"</ProgramArguments>
+      <ProgramArguments>"rtsp://admin:hv3515@10.1.30.55"</ProgramArguments>
+      <ProgramEnvironment>handle SIGPIPE nostop noprint pass</ProgramEnvironment>
     </LaunchGDBSettings>
     <GenerateCtrlBreakInsteadOfCtrlC>false</GenerateCtrlBreakInsteadOfCtrlC>
     <DeploymentTargetPath>/tmp/$(TargetFileName)</DeploymentTargetPath>
@@ -155,8 +157,5 @@
     <CFLAGS>-D__cplusplus=201103L</CFLAGS>
     <CXXFLAGS>-D__cplusplus=201103L</CXXFLAGS>
     <ExternalSourceFileList />
-    <ExtraSettings>
-      <HideErrorsInSystemHeaders>false</HideErrorsInSystemHeaders>
-    </ExtraSettings>
   </CodeSense>
 </VisualGDBProjectSettings2>

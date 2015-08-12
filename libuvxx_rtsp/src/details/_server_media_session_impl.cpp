@@ -109,7 +109,7 @@ void _server_media_session_impl::on_framed_source_closed(int stream_id)
     _stream_sources.erase(it);
 }
 
-void _server_media_session_impl::on_framed_source_created(int stream_id, unsigned client_session_id, const std::shared_ptr<_live_framed_source>& source)
+void _server_media_session_impl::on_framed_source_created(int stream_id, unsigned /*client_session_id*/, const std::shared_ptr<_live_framed_source>& source)
 {
     source->on_closed_set(std::bind(&_server_media_session_impl::on_framed_source_closed, this, std::placeholders::_1));
     

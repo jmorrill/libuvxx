@@ -133,6 +133,9 @@
     <ClInclude Include="include\details\_media_descriptor_impl.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\_live_server_media_subsession.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
@@ -220,6 +223,9 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\_media_descriptor_impl.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_live_server_media_subsession.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

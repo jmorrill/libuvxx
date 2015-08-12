@@ -1,4 +1,13 @@
 #include <stdio.h>
+
+#include <signal.h>
+
+void handler(int s) {
+    printf("Caught SIGPIPE\n");
+}
+
+
+
 #include <iostream>
 #include "uvxx.hpp"
 #include "rtsp_client.hpp"
@@ -80,21 +89,24 @@ void stream_closed(int stream_number)
 
 task<server_media_session> on_session_requested(const std::string& stream_name)
 {
-    auto session = std::make_shared<server_media_session>();
+    printf("creating session\n");
+
+    server_session = std::make_shared<server_media_session>();
 
     media_descriptor descriptor;
 
     descriptor.add_stream_from_attributes(1, "H264", media_attributes());
 
-    session->set_media_descriptor(descriptor);
+    server_session->set_media_descriptor(descriptor);
 
-    server_session = session;
-
+    printf("returning session\n");
     return task_from_result(*server_session.get());
 }
 
 int main(int argc, char* argv[])
 {
+    signal(SIGPIPE, SIG_IGN);
+    
     if (argc < 2)
     {
         return -1;

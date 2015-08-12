@@ -12,7 +12,7 @@ AR := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-ar.exe
 OBJCOPY := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
-PREPROCESSOR_MACROS := NDEBUG RELEASE
+PREPROCESSOR_MACROS := SO_NOSIGPIPE NDEBUG RELEASE __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
 INCLUDE_DIRS := ../../../libraries/libuv/include ../../../libuvxx/include ../../../libuvxx_rtsp/include
 LIBRARY_DIRS := ../../../libraries/libuv/Release ../../../libuvxx/Release ../../../libuvxx_rtsp/Release ../../../libraries/live555/Release
 LIBRARY_NAMES := uv uvxx liveMedia uvxx_rtsp pthread
@@ -20,8 +20,8 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -s -ffunction-sections -O3 -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon
-CXXFLAGS := -s -ffunction-sections -O3 -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon
+CFLAGS := -s -ffunction-sections -O3 -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon
+CXXFLAGS := -s -ffunction-sections -O3 -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon
 ASFLAGS := 
 LDFLAGS := -s -ffunction-sections -O3 -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon
 COMMONFLAGS := 

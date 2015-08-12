@@ -2,6 +2,7 @@
 #include <functional>
 #include "ServerMediaSession.hh"
 #include "_live_environment_base.hpp"
+#include <pplx/pplxtasks.h>
 
 namespace uvxx { namespace rtsp { namespace details 
 {
@@ -27,6 +28,7 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         void on_session_closed(_live_session_closed_delegate callback);
 
+        pplx::task<void> preload_sdp_data();
     private:
         _live_session_closed_delegate __live_session_closed_delegate;
 

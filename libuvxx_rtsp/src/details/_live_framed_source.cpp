@@ -6,9 +6,9 @@ using namespace uvxx::rtsp::details;
 
 _live_framed_source::_live_framed_source(int stream_id) : 
     FramedSource(*_get_live_environment().get()),
+    _busy_delivering(false),
     _stream_id(stream_id),
-    _is_first_sample(true),
-    _busy_delivering(false)
+    _is_first_sample(true)
 {
     fTo = nullptr;
 }

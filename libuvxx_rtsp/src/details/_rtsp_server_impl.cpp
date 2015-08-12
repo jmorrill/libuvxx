@@ -8,10 +8,8 @@
 
 #include "details/_rtsp_server_impl.hpp"
 #include "details/_live_rtsp_server.hpp"
-#include "details/_uvxx_task_scheduler.hpp"
 #include "details/_server_media_session_impl.hpp"
 #include "details/_live_server_media_session.hpp"
-#include "details/_h264_media_subsession.hpp"
 
 using namespace uvxx::rtsp::details;
 
@@ -37,11 +35,11 @@ void _rtsp_server_impl::on_session_request_set(uvxx::rtsp::on_session_request_de
     _on_session_request_delegate = callback;
 }
 
-uvxx::pplx::task<ServerMediaSession*> _rtsp_server_impl::on_live_media_session_lookup(const std::string& stream_name)
+uvxx::pplx::task<_live_server_media_session*> _rtsp_server_impl::on_live_media_session_lookup(const std::string& stream_name)
 {
     if(!_on_session_request_delegate)
     {
-        return pplx::task_from_result<ServerMediaSession*>(nullptr);
+        return pplx::task_from_result<_live_server_media_session*>(nullptr);
     }
 
     auto dispatcher = event_dispatcher_object::dispatcher();
@@ -58,14 +56,14 @@ uvxx::pplx::task<ServerMediaSession*> _rtsp_server_impl::on_live_media_session_l
             if(session)
             {
                 session->is_externally_owned_set(true);
-
-                return static_cast<ServerMediaSession*>(session);
+                
+                return static_cast<_live_server_media_session*>(session);
             }
         }
         catch (const std::exception&)
         {
         }
 
-        return static_cast<ServerMediaSession*>(nullptr);
+        return static_cast<_live_server_media_session*>(nullptr);
     });
 }

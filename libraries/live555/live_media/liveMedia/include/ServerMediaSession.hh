@@ -52,7 +52,7 @@ public:
                               char const* mediumName,
                               ServerMediaSession*& resultSession);
 
-  char* generateSDPDescription(); // based on the entire session
+    virtual char* generateSDPDescription(); // based on the entire session
       // Note: The caller is responsible for freeing the returned string
 
   char const* streamName() const { return fStreamName; }

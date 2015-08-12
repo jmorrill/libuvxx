@@ -206,6 +206,9 @@
 #ifndef __DEC32_EPSILON__
 #define __DEC32_EPSILON__ 1E-6DF
 #endif
+#ifndef __OPTIMIZE__
+#define __OPTIMIZE__ 1
+#endif
 #ifndef __CHAR_UNSIGNED__
 #define __CHAR_UNSIGNED__ 1
 #endif
@@ -564,9 +567,6 @@
 #ifndef __UHA_FBIT__
 #define __UHA_FBIT__ 8
 #endif
-#ifndef __NO_INLINE__
-#define __NO_INLINE__ 1
-#endif
 #ifndef __SFRACT_MIN__
 #define __SFRACT_MIN__ (-0.5HR-0.5HR)
 #endif
@@ -653,9 +653,6 @@
 #endif
 #ifndef __UDQ_FBIT__
 #define __UDQ_FBIT__ 64
-#endif
-#ifndef DEBUG
-#define DEBUG 1
 #endif
 #ifndef __INT8_TYPE__
 #define __INT8_TYPE__ signed char
@@ -959,9 +956,6 @@
 #endif
 #ifndef __INT_FAST8_TYPE__
 #define __INT_FAST8_TYPE__ signed char
-#endif
-#ifndef _DEBUG
-#define _DEBUG 1
 #endif
 #ifndef __ULLACCUM_EPSILON__
 #define __ULLACCUM_EPSILON__ 0x1P-32ULLK

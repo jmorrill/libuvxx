@@ -68,6 +68,9 @@
 #ifndef __WINT_MAX__
 #define __WINT_MAX__ 4294967295U
 #endif
+#ifndef SO_NOSIGPIPE
+#define SO_NOSIGPIPE 1
+#endif
 #ifndef __USFRACT_FBIT__
 #define __USFRACT_FBIT__ 8
 #endif

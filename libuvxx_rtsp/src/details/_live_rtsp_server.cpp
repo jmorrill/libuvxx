@@ -15,6 +15,7 @@
 
 #define RTSP_PARAM_STRING_MAX 200
 
+using namespace uvxx::pplx;
 using namespace uvxx::rtsp::details;
 
 enum class StreamingMode 
@@ -228,11 +229,11 @@ ServerMediaSession* _live_rtsp_server::lookupServerMediaSession(char const* /*st
     return nullptr;
 }
 
-uvxx::pplx::task<ServerMediaSession*> _live_rtsp_server::begin_lookup_server_media_session(const std::string& stream_name, bool /*is_first_lookup_in_session*/)
+task<_live_server_media_session*> _live_rtsp_server::begin_lookup_server_media_session(const std::string& stream_name, bool /*is_first_lookup_in_session*/)
 {
     if(!__lookup_media_session_delegate)
     {
-        return uvxx::pplx::task_from_result<ServerMediaSession*>(nullptr);
+        return task_from_result<_live_server_media_session*>(nullptr);
     }
     else
     {
@@ -278,11 +279,11 @@ void _live_rtsp_server::_live_rtsp_client_session::note_liveness()
     noteLiveness();
 }
 
-uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::begin_handle_setup(_live_rtsp_client_connection* our_client_connection, const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str)
+task<void> _live_rtsp_server::_live_rtsp_client_session::begin_handle_setup(_live_rtsp_client_connection* our_client_connection, const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str)
 {
     std::string cseq = our_client_connection->current_cseq();
 
-    return  _our_server.begin_lookup_server_media_session(url_pre_suffix.c_str(), true).then([=](uvxx::pplx::task<ServerMediaSession*> t)
+    return  _our_server.begin_lookup_server_media_session(url_pre_suffix.c_str(), true).then([=](task<_live_server_media_session*> t)
     {
         auto sms = t.get();
 
@@ -290,17 +291,17 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::begin_handl
     });
 }
 
-uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_client_connection* client_connection, ServerMediaSession* live_server_media_session, const std::string& cseq, const std::string& url_pre_suffix_string, const std::string& url_suffix_string, const std::string& full_request_string)
+task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_client_connection* client_connection, _live_server_media_session* live_server_media_session, const std::string& cseq, const std::string& url_pre_suffix_string, const std::string& url_suffix_string, const std::string& full_request_string)
 {
     auto trackId = std::make_shared<std::string>();
-
-    return pplx::create_task([=]
+    
+    return create_task([=]
     {
         // Normally, "url_pre_suffix" should be the session (stream) name, and "url_suffix" should be the subsession (track) name.
         // However (being "liberal in what we accept"), we also handle 'aggregate' SETUP requests (i.e., without a track name),
         // in the special case where we have only a single track.  I.e., in this case, we also handle:
-        //    "url_pre_suffix" is empty and "url_suffix" is the session (stream) name, or
-        //    "url_pre_suffix" concatenated with "url_suffix" (with "/" inbetween) is the session (stream) name.
+        // "url_pre_suffix" is empty and "url_suffix" is the session (stream) name, or
+        // "url_pre_suffix" concatenated with "url_suffix" (with "/" inbetween) is the session (stream) name.
         std::string streamName;
 
         *trackId = url_suffix_string; // in the normal case
@@ -329,9 +330,9 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_
             return _our_server.begin_lookup_server_media_session(streamName, fOurServerMediaSession == nullptr);
         }
 
-        return pplx::task_from_result(live_server_media_session);
+        return task_from_result(live_server_media_session);
 
-    }).then([=](ServerMediaSession* session)
+    }).then([=](_live_server_media_session* session)
     {
         if (session == nullptr)
         {
@@ -599,21 +600,21 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_
                 case StreamingMode::RTP_UDP:
                 {
                     snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
-                        client_connection->response_buffer_size(),
-                        "RTSP/1.0 200 OK\r\n"
-                        "CSeq: %s\r\n"
-                        "%s"
-                        "Transport: RTP/AVP;multicast;destination=%s;source=%s;port=%d-%d;ttl=%d\r\n"
-                        "Session: %08X%s\r\n\r\n",
-                        cseq.c_str(),
-                        dateHeader(),
-                        destAddrStr.val(),
-                        sourceAddrStr.val(),
-                        ntohs(serverRTPPort.num()),
-                        ntohs(serverRTCPPort.num()),
-                        destinationTTL,
-                        fOurSessionId,
-                        timeoutParameterString);
+                             client_connection->response_buffer_size(),
+                             "RTSP/1.0 200 OK\r\n"
+                             "CSeq: %s\r\n"
+                             "%s"
+                             "Transport: RTP/AVP;multicast;destination=%s;source=%s;port=%d-%d;ttl=%d\r\n"
+                             "Session: %08X%s\r\n\r\n",
+                             cseq.c_str(),
+                             dateHeader(),
+                             destAddrStr.val(),
+                             sourceAddrStr.val(),
+                             ntohs(serverRTPPort.num()),
+                             ntohs(serverRTCPPort.num()),
+                             destinationTTL,
+                             fOurSessionId,
+                             timeoutParameterString);
 
                     break;
                 }
@@ -629,21 +630,21 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_
                 case StreamingMode::RAW_UDP:
                 {
                     snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
-                        client_connection->response_buffer_size(),
-                        "RTSP/1.0 200 OK\r\n"
-                        "CSeq: %s\r\n"
-                        "%s"
-                        "Transport: %s;multicast;destination=%s;source=%s;port=%d;ttl=%d\r\n"
-                        "Session: %08X%s\r\n\r\n",
-                        cseq.c_str(),
-                        dateHeader(),
-                        streamingModeString.c_str(),
-                        destAddrStr.val(),
-                        sourceAddrStr.val(),
-                        ntohs(serverRTPPort.num()),
-                        destinationTTL,
-                        fOurSessionId,
-                        timeoutParameterString);
+                             client_connection->response_buffer_size(),
+                             "RTSP/1.0 200 OK\r\n"
+                             "CSeq: %s\r\n"
+                             "%s"
+                             "Transport: %s;multicast;destination=%s;source=%s;port=%d;ttl=%d\r\n"
+                             "Session: %08X%s\r\n\r\n",
+                             cseq.c_str(),
+                             dateHeader(),
+                             streamingModeString.c_str(),
+                             destAddrStr.val(),
+                             sourceAddrStr.val(),
+                             ntohs(serverRTPPort.num()),
+                             destinationTTL,
+                             fOurSessionId,
+                             timeoutParameterString);
 
                     break;
                 }
@@ -656,22 +657,22 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_
                 case StreamingMode::RTP_UDP:
                 {
                     snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
-                        client_connection->response_buffer_size(),
-                        "RTSP/1.0 200 OK\r\n"
-                        "CSeq: %s\r\n"
-                        "%s"
-                        "Transport: RTP/AVP;unicast;destination=%s;source=%s;client_port=%d-%d;server_port=%d-%d\r\n"
-                        "Session: %08X%s\r\n\r\n",
-                        cseq.c_str(),
-                        dateHeader(),
-                        destAddrStr.val(),
-                        sourceAddrStr.val(),
-                        ntohs(clientRTPPort.num()),
-                        ntohs(clientRTCPPort.num()),
-                        ntohs(serverRTPPort.num()),
-                        ntohs(serverRTCPPort.num()),
-                        fOurSessionId,
-                        timeoutParameterString);
+                            client_connection->response_buffer_size(),
+                            "RTSP/1.0 200 OK\r\n"
+                            "CSeq: %s\r\n"
+                            "%s"
+                            "Transport: RTP/AVP;unicast;destination=%s;source=%s;client_port=%d-%d;server_port=%d-%d\r\n"
+                            "Session: %08X%s\r\n\r\n",
+                            cseq.c_str(),
+                            dateHeader(),
+                            destAddrStr.val(),
+                            sourceAddrStr.val(),
+                            ntohs(clientRTPPort.num()),
+                            ntohs(clientRTCPPort.num()),
+                            ntohs(serverRTPPort.num()),
+                            ntohs(serverRTCPPort.num()),
+                            fOurSessionId,
+                            timeoutParameterString);
 
                     break;
                 }
@@ -684,20 +685,20 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_
                     else
                     {
                         snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
-                            client_connection->response_buffer_size(),
-                            "RTSP/1.0 200 OK\r\n"
-                            "CSeq: %s\r\n"
-                            "%s"
-                            "Transport: RTP/AVP/TCP;unicast;destination=%s;source=%s;interleaved=%d-%d\r\n"
-                            "Session: %08X%s\r\n\r\n",
-                            cseq.c_str(),
-                            dateHeader(),
-                            destAddrStr.val(),
-                            sourceAddrStr.val(),
-                            rtpChannelId,
-                            rtcpChannelId,
-                            fOurSessionId,
-                            timeoutParameterString);
+                                 client_connection->response_buffer_size(),
+                                 "RTSP/1.0 200 OK\r\n"
+                                 "CSeq: %s\r\n"
+                                 "%s"
+                                 "Transport: RTP/AVP/TCP;unicast;destination=%s;source=%s;interleaved=%d-%d\r\n"
+                                 "Session: %08X%s\r\n\r\n",
+                                 cseq.c_str(),
+                                 dateHeader(),
+                                 destAddrStr.val(),
+                                 sourceAddrStr.val(),
+                                 rtpChannelId,
+                                 rtcpChannelId,
+                                 fOurSessionId,
+                                 timeoutParameterString);
                     }
 
                     break;
@@ -705,21 +706,21 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_
                 case StreamingMode::RAW_UDP:
                 {
                     snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
-                        client_connection->response_buffer_size(),
-                        "RTSP/1.0 200 OK\r\n"
-                        "CSeq: %s\r\n"
-                        "%s"
-                        "Transport: %s;unicast;destination=%s;source=%s;client_port=%d;server_port=%d\r\n"
-                        "Session: %08X%s\r\n\r\n",
-                        cseq.c_str(),
-                        dateHeader(),
-                        streamingModeString.c_str(),
-                        destAddrStr.val(),
-                        sourceAddrStr.val(),
-                        ntohs(clientRTPPort.num()),
-                        ntohs(serverRTPPort.num()),
-                        fOurSessionId,
-                        timeoutParameterString);
+                             client_connection->response_buffer_size(),
+                             "RTSP/1.0 200 OK\r\n"
+                             "CSeq: %s\r\n"
+                             "%s"
+                             "Transport: %s;unicast;destination=%s;source=%s;client_port=%d;server_port=%d\r\n"
+                             "Session: %08X%s\r\n\r\n",
+                             cseq.c_str(),
+                             dateHeader(),
+                             streamingModeString.c_str(),
+                             destAddrStr.val(),
+                             sourceAddrStr.val(),
+                             ntohs(clientRTPPort.num()),
+                             ntohs(serverRTPPort.num()),
+                             fOurSessionId,
+                             timeoutParameterString);
 
                     break;
                 }
@@ -750,7 +751,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleCmd_unsupportedTrans
     RTSPClientConnection::handleCmd_unsupportedTransport();
 }
 
-uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describe(const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str)
+task<void> _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describe(const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str)
 {
     std::string url_total_suffix;
 
@@ -767,17 +768,49 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_connection::begin_ha
 
     if (!authenticationOK("DESCRIBE", url_total_suffix.c_str(), full_request_str.c_str()))
     {
-        return uvxx::pplx::task_from_result();
+        return task_from_result();
     }
   
     std::string cseq = fCurrentCSeq;
-
-    return __live_rtsp_server.begin_lookup_server_media_session(url_total_suffix, true).then([=](ServerMediaSession* session) mutable
+    
+    struct pointer_holder
     {
-        if (session == nullptr) 
+        pointer_holder() : session(nullptr)
+        {
+        }
+
+        _live_server_media_session* session = nullptr;
+    };
+
+    auto session_holder = std::make_shared<pointer_holder>();
+
+    return __live_rtsp_server.begin_lookup_server_media_session(url_total_suffix, true).then([=](_live_server_media_session* session) mutable
+    {
+        if (session == nullptr)
         {
             handleCmd_notFound();
 
+            return task_from_result();
+        }
+
+        session_holder->session = session;
+
+        return session->preload_sdp_data();
+
+    }).then([=](task<void> loaded_task)
+    {
+        try
+        {
+            loaded_task.get();
+        }catch(std::exception& e)
+        {
+            printf(e.what());
+        }
+        
+        auto session = session_holder->session;
+
+        if(session == nullptr)
+        {
             return;
         }
 
@@ -793,6 +826,7 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_connection::begin_ha
             // This usually means that a file name that was specified for a
             // "ServerMediaSubsession" does not exist.
             setRTSPResponse("404 File Not Found, Or In Incorrect Format");
+
             return;
         }
 
@@ -882,13 +916,12 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
     {
         _live_rtsp_client_session* clientSession = nullptr;
 
-        if (newBytesRead < 0 || 
-            static_cast<unsigned>(newBytesRead) >= fRequestBufferBytesLeft)
+        if (newBytesRead < 0 || static_cast<unsigned>(newBytesRead) >= fRequestBufferBytesLeft)
         {
             // Either the client socket has died, or the request was too big for us.
             // Terminate this connection:
 #ifdef DEBUG
-            fprintf(stderr, "RTSPClientConnection[%p]::handleRequestBytes() read %d new bytes (of %d); terminating connection!\n", this, newBytesRead, fRequestBufferBytesLeft);
+            fprintf(stderr, "RTSPClientConnection[%p]::handleRequestBytes(int) read %d new bytes (of %d); terminating connection!\n", this, newBytesRead, fRequestBufferBytesLeft);
 #endif
             fIsActive = false;
             break;
@@ -902,7 +935,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
         ptr[newBytesRead] = '\0';
 
         fprintf(stderr, 
-                "RTSPClientConnection[%p]::handleRequestBytes() %s %d new bytes:%s\n",
+                "RTSPClientConnection[%p]::handleRequestBytes(  ) %s %d new bytes:%s\n",
                 this, 
                 numBytesRemaining > 0 ? "processing" : "read", 
                 newBytesRead, 

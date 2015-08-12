@@ -130,6 +130,7 @@
     <ClInclude Include="include\details\_live_rtsp_client.hpp" />
     <ClInclude Include="include\details\_live_rtsp_server.hpp" />
     <ClInclude Include="include\details\_live_server_media_session.hpp" />
+    <ClInclude Include="include\details\_live_server_media_subsession.hpp" />
     <ClInclude Include="include\details\_media_attributes_impl.h" />
     <ClInclude Include="include\details\_media_descriptor_impl.hpp" />
     <ClInclude Include="include\details\_media_sample_impl.hpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="src\details\_live_rtsp_client.cpp" />
     <ClCompile Include="src\details\_live_rtsp_server.cpp" />
     <ClCompile Include="src\details\_live_server_media_session.cpp" />
+    <ClCompile Include="src\details\_live_server_media_subsession.cpp" />
     <ClCompile Include="src\details\_media_attributes_impl.cpp" />
     <ClCompile Include="src\details\_media_descriptor_impl.cpp" />
     <ClCompile Include="src\details\_media_sample_impl.cpp" />
