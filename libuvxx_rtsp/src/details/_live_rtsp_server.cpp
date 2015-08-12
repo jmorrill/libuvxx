@@ -1091,7 +1091,8 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
             {
                 envir().taskScheduler().disableBackgroundHandling(fOurSocket);
 
-                begin_handle_describe(urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer)).then([=]() mutable
+                begin_handle_describe(urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer)).
+                then([=]() mutable
                 {
                     send(fClientOutputSocket, 
                          reinterpret_cast<char const*>(fResponseBuffer), 
@@ -1198,7 +1199,8 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 
                     envir().taskScheduler().disableBackgroundHandling(fOurSocket);
 
-                    clientSession->begin_handle_setup(this, urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer)).then([=]() mutable
+                    clientSession->begin_handle_setup(this, urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer)).
+                    then([=]() mutable
                     {
                         playAfterSetup = clientSession->stream_after_setup_get();
                         
