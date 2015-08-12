@@ -29,7 +29,7 @@ namespace uvxx { namespace rtsp { namespace details
     protected:
         virtual ServerMediaSession* lookupServerMediaSession(char const* stream_name, Boolean is_first_lookup_in_session = true) override;
 
-        virtual uvxx::pplx::task<ServerMediaSession*> begin_lookup_server_media_session(char const* stream_name, bool is_first_lookup_in_session);
+        virtual uvxx::pplx::task<ServerMediaSession*> begin_lookup_server_media_session(const std::string& stream_name, bool is_first_lookup_in_session);
 
         virtual ClientSession* createNewClientSession(u_int32_t session_id) override;
 
@@ -52,7 +52,7 @@ namespace uvxx { namespace rtsp { namespace details
 
             virtual uvxx::pplx::task<void> begin_handle_setup(_live_rtsp_client_connection* our_client_connection, const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str);
 
-            virtual void handle_cmd_setup(_live_rtsp_client_connection* our_client_connection, ServerMediaSession* sms, char const* cseq, char const* url_pre_suffix, char const* url_suffix, char const* full_request_str);
+            virtual void handle_cmd_setup(_live_rtsp_client_connection* our_client_connection, ServerMediaSession* sms, const std::string& cseq, const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str);
 
             virtual void handle_cmd_within_session(RTSPClientConnection* ourClientConnection, char const* cmdName, char const* urlPreSuffix, char const* urlSuffix, char const* fullRequestStr);
 
@@ -72,7 +72,7 @@ namespace uvxx { namespace rtsp { namespace details
 
             virtual void handleCmd_unsupportedTransport() override;
 
-            virtual uvxx::pplx::task<void> begin_handle_describe(char const* url_pre_suffix, char const* url_suffix, char const* full_request_str);
+            virtual uvxx::pplx::task<void> begin_handle_describe(const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str);
 
             int client_output_socket();
 
