@@ -44,5 +44,10 @@ void server_media_session::set_media_descriptor(const media_descriptor& descript
 
 void server_media_session::deliver_sample(int stream_id, const media_sample& sample)
 {
+    if (!__server_media_session_impl)
+    {
+        return;
+    }
+    
     __server_media_session_impl->deliver_sample(stream_id, sample);
 }

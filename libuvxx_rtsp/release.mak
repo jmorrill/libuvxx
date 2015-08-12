@@ -20,10 +20,10 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -ggdb -ffunction-sections -O3 -Wall -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -D_NO_ASYNCRTIMP -Wno-unknown-pragmas  -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon -finline-limit=900
-CXXFLAGS := -ggdb -ffunction-sections -O3 -std=c++1y -Wall -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -D_NO_ASYNCRTIMP -Wno-unknown-pragmas  -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon -finline-limit=900
+CFLAGS := -s -ffunction-sections -O3 -Wall -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -D_NO_ASYNCRTIMP -Wno-unknown-pragmas  -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon
+CXXFLAGS := -s -ffunction-sections -O3 -std=c++1y -Wall -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -D_NO_ASYNCRTIMP -Wno-unknown-pragmas  -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon
 ASFLAGS := 
-LDFLAGS := -Wl,-gc-sections
+LDFLAGS := -Wl,-gc-sections -s
 COMMONFLAGS := 
 LINKER_SCRIPT := 
 

@@ -272,6 +272,7 @@ int _live_rtsp_server::setup_socket(uint16_t port)
 
     auto socket = setUpOurSocket(*_get_live_environment().get(), port_);
 
+    printf("opened server socket on %d\n", socket);
     return socket;
 }
 
@@ -1344,7 +1345,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
         fprintf(stderr, "sending response: %s", fResponseBuffer);
 #endif
         send(fClientOutputSocket, reinterpret_cast<char const*>(fResponseBuffer), strlen(reinterpret_cast<char*>(fResponseBuffer)), 0);
-
+     
         if (playAfterSetup)
         {
             // The client has asked for streaming to commence now, rather than after a

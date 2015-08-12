@@ -162,16 +162,13 @@ void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, 
         return;
     }
 
-    if (!found)
+    if (!found && condition_set)
     {
-        socket_handler_descriptor socket_handler(socket, 
-                                                 condition_set, 
-                                                 handler_proc, 
-                                                 client_data);
-
-        _handlers.emplace(socket, std::move(socket_handler));
+	    _handlers.emplace(std::piecewise_construct, 
+	                      std::forward_as_tuple(socket), 
+	                      std::forward_as_tuple(socket, condition_set, handler_proc, client_data));
     }
-    else
+    else if(condition_set)
     {
         auto& handler = iterator->second;
 

@@ -108,7 +108,7 @@ FramedSource* _h264_media_subsession::createNewStreamSource(unsigned client_sess
         }
     }
 
-    estimated_kbps = 2500; /* kbps, estimate */
+    estimated_kbps = 4500; /* kbps, estimate */
 
     auto framesource = H264VideoStreamDiscreteFramer::createNew(envir(), _source.get());
 

@@ -55,13 +55,15 @@ uvxx::pplx::task<ServerMediaSession*> _rtsp_server_impl::on_live_media_session_l
 
             auto session = server_session.__server_media_session_impl->__live_server_media_session.get();
 
-            session->is_externally_owned_set(true);
+            if(session)
+            {
+                session->is_externally_owned_set(true);
 
-            return static_cast<ServerMediaSession*>(session);
+                return static_cast<ServerMediaSession*>(session);
+            }
         }
         catch (const std::exception&)
         {
-            printf("err");
         }
 
         return static_cast<ServerMediaSession*>(nullptr);

@@ -116,6 +116,8 @@ namespace uvxx { namespace rtsp { namespace details
         std::chrono::milliseconds _timeout;
 
         _usage_environment_ptr _usage_environment;
+        
+        media_subsession _current_media_subsession_setup;
     };
 
     using _rtsp_client_impl_ptr = std::shared_ptr<_rtsp_client_impl>;

@@ -79,22 +79,19 @@ void stream_closed(int stream_number)
 
 task<server_media_session> on_session_requested(const std::string& stream_name)
 {
-    server_session = nullptr;
+    printf("creating session\n");
 
     auto session = std::make_shared<server_media_session>();
 
     media_descriptor descriptor;
 
     descriptor.add_stream_from_attributes(1, "H264", media_attributes());
-    
+
     session->set_media_descriptor(descriptor);
 
     server_session = session;
 
-    return create_task([]
-    {
-        return *server_session.get();
-    });
+    return task_from_result(*server_session.get());
 }
 
 int main(int argc, char* argv[])
@@ -117,7 +114,7 @@ int main(int argc, char* argv[])
 
         client.on_stream_closed_set(stream_closed);
 
-        client.credentials_set("admin", "12345");
+        client.credentials_set("admin", "hv3515");
 
         client.protocol_set(transport_protocol::udp);
 

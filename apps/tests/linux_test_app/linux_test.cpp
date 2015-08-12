@@ -41,7 +41,7 @@ void on_sample_callback(const media_sample& sample)
         {
             bool key_frame = sample.attribute_get<bool>(ATTRIBUTE_VIDEO_KEYFRAME);
 
-            if (server_session)
+            if (server_session )
             {
                 server_session->deliver_sample(1, sample);
             }
@@ -49,11 +49,12 @@ void on_sample_callback(const media_sample& sample)
             auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
 
 
-            //printf("\twxh: %dx%d", video_size.width, video_size.height);
+          //  printf("\twxh: %dx%d", video_size.width, video_size.height);
 
             if (key_frame)
             {
-                //printf("\tkey_frame");
+                printf("\tkey_frame");
+                printf("\n");
             }
         }
         else if (major_type == sample_major_type::audio)
@@ -66,8 +67,6 @@ void on_sample_callback(const media_sample& sample)
             
             //printf("\tchannels: %d", channels);
         }
-
-         //printf("\n");
     }).then([=]
     {
         client.read_stream_sample();
@@ -81,13 +80,15 @@ void stream_closed(int stream_number)
 
 task<server_media_session> on_session_requested(const std::string& stream_name)
 {
-    server_session = std::make_shared<server_media_session>();
+    auto session = std::make_shared<server_media_session>();
 
     media_descriptor descriptor;
 
     descriptor.add_stream_from_attributes(1, "H264", media_attributes());
 
-    server_session->set_media_descriptor(descriptor);
+    session->set_media_descriptor(descriptor);
+
+    server_session = session;
 
     return task_from_result(*server_session.get());
 }
@@ -114,7 +115,7 @@ int main(int argc, char* argv[])
 
         client.credentials_set("admin", "12345");
 
-        client.protocol_set(transport_protocol::tcp);
+        client.protocol_set(transport_protocol::udp);
 
         client.open(argv[1]).then([=]
         {

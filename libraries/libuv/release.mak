@@ -20,10 +20,10 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -ggdb -ffunction-sections -O3 -fexceptions
-CXXFLAGS := -ggdb -ffunction-sections -O3 -fexceptions
+CFLAGS := -s -ffunction-sections -O3 -fexceptions
+CXXFLAGS := -s -ffunction-sections -O3 -fexceptions
 ASFLAGS := 
-LDFLAGS := -Wl,-gc-sections  -ggdb -ffunction-sections -O3 -fexceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto-partition=none -finline-limit=900
+LDFLAGS := -s -Wl,-gc-sections  -ggdb -ffunction-sections -O3 -fexceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto-partition=none
 COMMONFLAGS := 
 
 START_GROUP := -Wl,--start-group
