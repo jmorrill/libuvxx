@@ -286,331 +286,339 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::begin_handl
     {
         auto sms = t.get();
 
-        handle_cmd_setup(our_client_connection, sms, cseq.c_str(), url_pre_suffix.c_str(), url_suffix.c_str(), full_request_str.c_str());
+        return handle_cmd_setup(our_client_connection, sms, cseq.c_str(), url_pre_suffix.c_str(), url_suffix.c_str(), full_request_str.c_str());
     });
 }
 
-void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_client_connection* client_connection, ServerMediaSession* live_server_media_session, const std::string& cseq, const std::string& url_pre_suffix_string, const std::string& url_suffix_string, const std::string& full_request_string)
+uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_client_connection* client_connection, ServerMediaSession* live_server_media_session, const std::string& cseq, const std::string& url_pre_suffix_string, const std::string& url_suffix_string, const std::string& full_request_string)
 {
-    // Normally, "url_pre_suffix" should be the session (stream) name, and "url_suffix" should be the subsession (track) name.
-    // However (being "liberal in what we accept"), we also handle 'aggregate' SETUP requests (i.e., without a track name),
-    // in the special case where we have only a single track.  I.e., in this case, we also handle:
-    //    "url_pre_suffix" is empty and "url_suffix" is the session (stream) name, or
-    //    "url_pre_suffix" concatenated with "url_suffix" (with "/" inbetween) is the session (stream) name.
-    std::string streamName; 
+    auto trackId = std::make_shared<std::string>();
 
-    std::string trackId = url_suffix_string; // in the normal case
-
-    std::unique_ptr<char[]> concatenatedStreamName;
-
-    if (live_server_media_session == nullptr) 
+    return pplx::create_task([=]
     {
-        // Check for the special case (noted above), before we give up:
-        if (url_pre_suffix_string[0] == '\0')
+        // Normally, "url_pre_suffix" should be the session (stream) name, and "url_suffix" should be the subsession (track) name.
+        // However (being "liberal in what we accept"), we also handle 'aggregate' SETUP requests (i.e., without a track name),
+        // in the special case where we have only a single track.  I.e., in this case, we also handle:
+        //    "url_pre_suffix" is empty and "url_suffix" is the session (stream) name, or
+        //    "url_pre_suffix" concatenated with "url_suffix" (with "/" inbetween) is the session (stream) name.
+        std::string streamName;
+
+        *trackId = url_suffix_string; // in the normal case
+
+        std::unique_ptr<char[]> concatenatedStreamName;
+
+        if (live_server_media_session == nullptr)
         {
-            streamName = url_suffix_string;
+            // Check for the special case (noted above), before we give up:
+            if (url_pre_suffix_string[0] == '\0')
+            {
+                streamName = url_suffix_string;
+            }
+            else
+            {
+                concatenatedStreamName = std::make_unique<char[]>(url_pre_suffix_string.length() + url_suffix_string.length() + 2); // allow for the "/" and the trailing '\0'
+
+                sprintf(concatenatedStreamName.get(), "%s/%s", url_pre_suffix_string.c_str(), url_suffix_string.c_str());
+
+                streamName = concatenatedStreamName.get();
+            }
+
+            trackId->clear();
+
+            // Check again:
+            return _our_server.begin_lookup_server_media_session(streamName, fOurServerMediaSession == nullptr);
         }
-        else 
-        {
-            concatenatedStreamName = std::make_unique<char[]>(url_pre_suffix_string.length() + url_suffix_string.length() + 2); // allow for the "/" and the trailing '\0'
-                
-            sprintf(concatenatedStreamName.get(), "%s/%s", url_pre_suffix_string.c_str(), url_suffix_string.c_str());
-                
-            streamName = concatenatedStreamName.get();
-        }
 
-        trackId.clear();
+        return pplx::task_from_result(live_server_media_session);
 
-        // Check again:
-        live_server_media_session = fOurServer.lookupServerMediaSession(streamName.c_str(), fOurServerMediaSession == nullptr);
-    }
-
-    if (live_server_media_session == nullptr) 
+    }).then([=](ServerMediaSession* session)
     {
-        if (fOurServerMediaSession == nullptr) 
+        if (session == nullptr)
         {
-            // The client asked for a stream that doesn't exist (and this session descriptor has not been used before):
-            client_connection->handleCmd_notFound();
+            if (fOurServerMediaSession == nullptr)
+            {
+                // The client asked for a stream that doesn't exist (and this session descriptor has not been used before):
+                client_connection->handleCmd_notFound();
+            }
+            else
+            {
+                // The client asked for a stream that doesn't exist, but using a stream id for a stream that does exist. Bad request:
+                client_connection->handleCmd_bad();
+            }
+
+            return;
         }
         else
         {
-            // The client asked for a stream that doesn't exist, but using a stream id for a stream that does exist. Bad request:
-            client_connection->handleCmd_bad();
+            if (fOurServerMediaSession == nullptr)
+            {
+                // We're accessing the "ServerMediaSession" for the first time.
+                fOurServerMediaSession = session;
+
+                fOurServerMediaSession->incrementReferenceCount();
+            }
+            else if (session != fOurServerMediaSession)
+            {
+                // The client asked for a stream that's different from the one originally requested for this stream id.  Bad request:
+                client_connection->handleCmd_bad();
+
+                return;
+            }
         }
 
-        return;
-    }
-    else
-    {
-        if (fOurServerMediaSession == nullptr) 
+        if (fStreamStates == nullptr)
         {
-            // We're accessing the "ServerMediaSession" for the first time.
-            fOurServerMediaSession = live_server_media_session;
+            // This is the first "SETUP" for this session.  Set up our array of states for all of this session's subsessions (tracks):
+            ServerMediaSubsessionIterator iter(*fOurServerMediaSession);
 
-            fOurServerMediaSession->incrementReferenceCount();
+            for (fNumStreamStates = 0; iter.next() != nullptr; ++fNumStreamStates) {} // begin by counting the number of subsessions (tracks)
+
+            fStreamStates = new struct streamState[fNumStreamStates];
+
+            iter.reset();
+
+            ServerMediaSubsession* subsession;
+
+            for (unsigned i = 0; i < fNumStreamStates; ++i)
+            {
+                subsession = iter.next();
+
+                fStreamStates[i].subsession = subsession;
+
+                fStreamStates[i].tcpSocketNum = -1; // for now; may get set for RTP-over-TCP streaming
+
+                fStreamStates[i].streamToken = nullptr; // for now; it may be changed by the "getStreamParameters()" call that comes later
+            }
         }
-        else if (live_server_media_session != fOurServerMediaSession)
-        {
-            // The client asked for a stream that's different from the one originally requested for this stream id.  Bad request:
-            client_connection->handleCmd_bad();
 
-            return;
+        // Look up information for the specified subsession (track):
+        ServerMediaSubsession* subsession = nullptr;
+
+        unsigned trackNum;
+
+        if (!trackId->empty() && trackId->at(0) != '\0')
+        {   // normal case
+            for (trackNum = 0; trackNum < fNumStreamStates; ++trackNum)
+            {
+                subsession = fStreamStates[trackNum].subsession;
+
+                if (subsession != nullptr && strcmp(trackId->c_str(), subsession->trackId()) == 0) break;
+            }
+            if (trackNum >= fNumStreamStates)
+            {
+                // The specified track id doesn't exist, so this request fails:
+                client_connection->handleCmd_notFound();
+
+                return;
+            }
         }
-    }
-
-    if (fStreamStates == nullptr)
-    {
-        // This is the first "SETUP" for this session.  Set up our array of states for all of this session's subsessions (tracks):
-        ServerMediaSubsessionIterator iter(*fOurServerMediaSession);
-            
-        for (fNumStreamStates = 0; iter.next() != nullptr; ++fNumStreamStates) {} // begin by counting the number of subsessions (tracks)
-
-        fStreamStates = new struct streamState[fNumStreamStates];
-
-        iter.reset();
-
-        ServerMediaSubsession* subsession;
-
-        for (unsigned i = 0; i < fNumStreamStates; ++i) 
+        else
         {
-            subsession = iter.next();
+            // Weird case: there was no track id in the URL.
+            // This works only if we have only one subsession:
+            if (fNumStreamStates != 1 || fStreamStates[0].subsession == nullptr)
+            {
+                client_connection->handleCmd_bad();
 
-            fStreamStates[i].subsession = subsession;
+                return;
+            }
 
-            fStreamStates[i].tcpSocketNum = -1; // for now; may get set for RTP-over-TCP streaming
-                
-            fStreamStates[i].streamToken = nullptr; // for now; it may be changed by the "getStreamParameters()" call that comes later
-        }
-    }
+            trackNum = 0;
 
-    // Look up information for the specified subsession (track):
-    ServerMediaSubsession* subsession = nullptr;
-
-    unsigned trackNum;
-
-    if (!trackId.empty() && trackId[0] != '\0')
-    {   // normal case
-        for (trackNum = 0; trackNum < fNumStreamStates; ++trackNum) 
-        {
             subsession = fStreamStates[trackNum].subsession;
-
-            if (subsession != nullptr && strcmp(trackId.c_str(), subsession->trackId()) == 0) break;
         }
-        if (trackNum >= fNumStreamStates)
+
+        void*& token = fStreamStates[trackNum].streamToken; // alias
+
+        if (token != nullptr)
         {
-            // The specified track id doesn't exist, so this request fails:
-            client_connection->handleCmd_notFound();
+            // We already handled a "SETUP" for this track (to the same client),
+            // so stop any existing streaming of it, before we set it up again:
+            subsession->pauseStream(fOurSessionId, token);
 
-            return;
+            _our_server.unnoteTCPStreamingOnSocket(fStreamStates[trackNum].tcpSocketNum, this, trackNum);
+
+            subsession->deleteStream(fOurSessionId, token);
         }
-    }
-    else 
-    {
-        // Weird case: there was no track id in the URL.
-        // This works only if we have only one subsession:
-        if (fNumStreamStates != 1 || fStreamStates[0].subsession == nullptr)
+
+        // Look for a "Transport:" header in the request string, to extract client parameters:
+        StreamingMode streamingMode;
+
+        std::string streamingModeString; // set when RAW_UDP streaming is specified
+
+        std::string clientsDestinationAddressStr;
+
+        u_int8_t clientsDestinationTTL;
+
+        portNumBits clientRTPPortNum, clientRTCPPortNum;
+
+        unsigned char rtpChannelId, rtcpChannelId;
+
+        parseTransportHeader(full_request_string.c_str(),
+            full_request_string.size(),
+            streamingMode,
+            streamingModeString,
+            clientsDestinationAddressStr,
+            clientsDestinationTTL,
+            clientRTPPortNum,
+            clientRTCPPortNum,
+            rtpChannelId,
+            rtcpChannelId);
+
+        if ((streamingMode == StreamingMode::RTP_TCP && rtpChannelId == 0xFF) ||
+            (streamingMode != StreamingMode::RTP_TCP && client_connection->client_output_socket() != client_connection->client_input_socket()))
         {
-            client_connection->handleCmd_bad();
+            // An anomolous situation, caused by a buggy client.  Either:
+            //     1/ TCP streaming was requested, but with no "interleaving=" fields.  (QuickTime Player sometimes does this.), or
+            //     2/ TCP streaming was not requested, but we're doing RTSP-over-HTTP tunneling (which implies TCP streaming).
+            // In either case, we assume TCP streaming, and set the RTP and RTCP channel ids to proper values:
+            streamingMode = StreamingMode::RTP_TCP;
 
-            return;
+            rtpChannelId = fTCPStreamIdCount;
+
+            rtcpChannelId = fTCPStreamIdCount + 1;
         }
 
-        trackNum = 0;
+        if (streamingMode == StreamingMode::RTP_TCP)
+        {
+            fTCPStreamIdCount += 2;
+        }
 
-        subsession = fStreamStates[trackNum].subsession;
-    }
+        Port clientRTPPort(clientRTPPortNum);
 
-    void*& token = fStreamStates[trackNum].streamToken; // alias
+        Port clientRTCPPort(clientRTCPPortNum);
 
-    if (token != nullptr) 
-    {
-        // We already handled a "SETUP" for this track (to the same client),
-        // so stop any existing streaming of it, before we set it up again:
-        subsession->pauseStream(fOurSessionId, token);
+        // Next, check whether a "Range:" or "x-playNow:" header is present in the request.
+        // This isn't legal, but some clients do this to combine "SETUP" and "PLAY":
+        double rangeStart = 0.0, rangeEnd = 0.0;
 
-        _our_server.unnoteTCPStreamingOnSocket(fStreamStates[trackNum].tcpSocketNum, this, trackNum);
+        std::unique_ptr<char[]> absStart_ptr;
 
-        subsession->deleteStream(fOurSessionId, token);
-    }
+        std::unique_ptr<char[]> absEnd_ptr;
 
-    // Look for a "Transport:" header in the request string, to extract client parameters:
-    StreamingMode streamingMode;
+        char* absStart_ = absStart_ptr.get(); char* absEnd_ = absEnd_ptr.get();
 
-    std::string streamingModeString; // set when RAW_UDP streaming is specified
+        Boolean startTimeIsNow;
 
-    std::string clientsDestinationAddressStr;
+        std::unique_ptr<char[]> t;
 
-    u_int8_t clientsDestinationTTL;
+        if (parseRangeHeader(full_request_string.c_str(), rangeStart, rangeEnd, absStart_, absEnd_, startTimeIsNow))
+        {
+            fStreamAfterSETUP = true;
+        }
+        else if (parsePlayNowHeader(full_request_string.c_str()))
+        {
+            fStreamAfterSETUP = true;
+        }
+        else
+        {
+            fStreamAfterSETUP = false;
+        }
 
-    portNumBits clientRTPPortNum, clientRTCPPortNum;
+        // Then, get server parameters from the 'subsession':
+        if (streamingMode == StreamingMode::RTP_TCP)
+        {
+            // Note that we'll be streaming over the RTSP TCP connection:
+            fStreamStates[trackNum].tcpSocketNum = client_connection->client_output_socket();
 
-    unsigned char rtpChannelId, rtcpChannelId;
+            _our_server.noteTCPStreamingOnSocket(fStreamStates[trackNum].tcpSocketNum, this, trackNum);
+        }
 
-    parseTransportHeader(full_request_string.c_str(), 
-                            full_request_string.size(),
-                            streamingMode, 
-                            streamingModeString,
-                            clientsDestinationAddressStr, 
-                            clientsDestinationTTL,
-                            clientRTPPortNum, 
-                            clientRTCPPortNum,
-                            rtpChannelId,
-                            rtcpChannelId);
+        netAddressBits destinationAddress = 0;
 
-    if ((streamingMode == StreamingMode::RTP_TCP && rtpChannelId == 0xFF) ||
-        (streamingMode != StreamingMode::RTP_TCP && client_connection->client_output_socket() != client_connection->client_input_socket()))
-    {
-        // An anomolous situation, caused by a buggy client.  Either:
-        //     1/ TCP streaming was requested, but with no "interleaving=" fields.  (QuickTime Player sometimes does this.), or
-        //     2/ TCP streaming was not requested, but we're doing RTSP-over-HTTP tunneling (which implies TCP streaming).
-        // In either case, we assume TCP streaming, and set the RTP and RTCP channel ids to proper values:
-        streamingMode = StreamingMode::RTP_TCP;
-
-        rtpChannelId = fTCPStreamIdCount; 
-            
-        rtcpChannelId = fTCPStreamIdCount + 1;
-    }
-
-    if (streamingMode == StreamingMode::RTP_TCP)
-    {
-        fTCPStreamIdCount += 2;
-    }
-
-    Port clientRTPPort(clientRTPPortNum);
-
-    Port clientRTCPPort(clientRTCPPortNum);
-
-    // Next, check whether a "Range:" or "x-playNow:" header is present in the request.
-    // This isn't legal, but some clients do this to combine "SETUP" and "PLAY":
-    double rangeStart = 0.0, rangeEnd = 0.0;
-
-    std::unique_ptr<char[]> absStart_ptr;
-
-    std::unique_ptr<char[]> absEnd_ptr;
-
-    char* absStart_ = absStart_ptr.get(); char* absEnd_ = absEnd_ptr.get();
-
-    Boolean startTimeIsNow;
-
-    std::unique_ptr<char[]> t;
-
-    if (parseRangeHeader(full_request_string.c_str(), rangeStart, rangeEnd, absStart_, absEnd_, startTimeIsNow)) 
-    {
-        fStreamAfterSETUP = true;
-    }
-    else if (parsePlayNowHeader(full_request_string.c_str())) 
-    {
-        fStreamAfterSETUP = true;
-    }
-    else 
-    {
-        fStreamAfterSETUP = false;
-    }
-
-    // Then, get server parameters from the 'subsession':
-    if (streamingMode == StreamingMode::RTP_TCP) 
-    {
-        // Note that we'll be streaming over the RTSP TCP connection:
-        fStreamStates[trackNum].tcpSocketNum = client_connection->client_output_socket();
-
-        _our_server.noteTCPStreamingOnSocket(fStreamStates[trackNum].tcpSocketNum, this, trackNum);
-    }
-
-    netAddressBits destinationAddress = 0;
-
-    u_int8_t destinationTTL = 255;
+        u_int8_t destinationTTL = 255;
 
 #ifdef RTSP_ALLOW_CLIENT_DESTINATION_SETTING
-    if (clientsDestinationAddressStr != nullptr)
-    {
-        // Use the client-provided "destination" address.
-        // Note: This potentially allows the server to be used in denial-of-service
-        // attacks, so don't enable this code unless you're sure that clients are
-        // trusted.
-        destinationAddress = our_inet_addr(clientsDestinationAddressStr.c_str());
-    }
-    // Also use the client-provided TTL.
-    destinationTTL = clientsDestinationTTL;
-#endif
-
-    Port serverRTPPort(0);
-
-    Port serverRTCPPort(0);
-
-    // Make sure that we transmit on the same interface that's used by the client (in case we're a multi-homed server):
-    struct sockaddr_in sourceAddr; SOCKLEN_T namelen = sizeof sourceAddr;
-
-	getsockname(client_connection->client_input_socket(), reinterpret_cast<struct sockaddr*>(&sourceAddr), reinterpret_cast<socklen_t*>(&namelen));
-        
-    netAddressBits origSendingInterfaceAddr = SendingInterfaceAddr;
-        
-    netAddressBits origReceivingInterfaceAddr = ReceivingInterfaceAddr;
-
-    // NOTE: The following might not work properly, so we ifdef it out for now:
-#ifdef HACK_FOR_MULTIHOMED_SERVERS
-    ReceivingInterfaceAddr = SendingInterfaceAddr = sourceAddr.sin_addr.s_addr;
-#endif
-
-    subsession->getStreamParameters(fOurSessionId, 
-                                    client_connection->client_addr().sin_addr.s_addr,
-                                    clientRTPPort, 
-                                    clientRTCPPort,
-                                    fStreamStates[trackNum].tcpSocketNum,
-                                    rtpChannelId, 
-                                    rtcpChannelId,
-                                    destinationAddress,
-                                    destinationTTL, 
-                                    fIsMulticast,
-                                    serverRTPPort, 
-                                    serverRTCPPort,
-                                    fStreamStates[trackNum].streamToken);
-
-    SendingInterfaceAddr = origSendingInterfaceAddr;
-
-    ReceivingInterfaceAddr = origReceivingInterfaceAddr;
-
-    AddressString destAddrStr(destinationAddress);
-
-    AddressString sourceAddrStr(sourceAddr);
-        
-    char timeoutParameterString[100];
-
-    if (_our_server.fReclamationSeconds > 0) 
-    {
-        sprintf(timeoutParameterString, ";timeout=%u", _our_server.fReclamationSeconds);
-    }
-    else 
-    {
-        timeoutParameterString[0] = '\0';
-    }
-
-    if (fIsMulticast)
-    {
-        switch (streamingMode)
+        if (clientsDestinationAddressStr != nullptr)
         {
+            // Use the client-provided "destination" address.
+            // Note: This potentially allows the server to be used in denial-of-service
+            // attacks, so don't enable this code unless you're sure that clients are
+            // trusted.
+            destinationAddress = our_inet_addr(clientsDestinationAddressStr.c_str());
+        }
+        // Also use the client-provided TTL.
+        destinationTTL = clientsDestinationTTL;
+#endif
+
+        Port serverRTPPort(0);
+
+        Port serverRTCPPort(0);
+
+        // Make sure that we transmit on the same interface that's used by the client (in case we're a multi-homed server):
+        struct sockaddr_in sourceAddr; SOCKLEN_T namelen = sizeof sourceAddr;
+
+        getsockname(client_connection->client_input_socket(), reinterpret_cast<struct sockaddr*>(&sourceAddr), reinterpret_cast<socklen_t*>(&namelen));
+
+        netAddressBits origSendingInterfaceAddr = SendingInterfaceAddr;
+
+        netAddressBits origReceivingInterfaceAddr = ReceivingInterfaceAddr;
+
+        // NOTE: The following might not work properly, so we ifdef it out for now:
+#ifdef HACK_FOR_MULTIHOMED_SERVERS
+        ReceivingInterfaceAddr = SendingInterfaceAddr = sourceAddr.sin_addr.s_addr;
+#endif
+
+        subsession->getStreamParameters(fOurSessionId,
+            client_connection->client_addr().sin_addr.s_addr,
+            clientRTPPort,
+            clientRTCPPort,
+            fStreamStates[trackNum].tcpSocketNum,
+            rtpChannelId,
+            rtcpChannelId,
+            destinationAddress,
+            destinationTTL,
+            fIsMulticast,
+            serverRTPPort,
+            serverRTCPPort,
+            fStreamStates[trackNum].streamToken);
+
+        SendingInterfaceAddr = origSendingInterfaceAddr;
+
+        ReceivingInterfaceAddr = origReceivingInterfaceAddr;
+
+        AddressString destAddrStr(destinationAddress);
+
+        AddressString sourceAddrStr(sourceAddr);
+
+        char timeoutParameterString[100];
+
+        if (_our_server.fReclamationSeconds > 0)
+        {
+            sprintf(timeoutParameterString, ";timeout=%u", _our_server.fReclamationSeconds);
+        }
+        else
+        {
+            timeoutParameterString[0] = '\0';
+        }
+
+        if (fIsMulticast)
+        {
+            switch (streamingMode)
+            {
             case StreamingMode::RTP_UDP:
             {
-                snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
-                            client_connection->response_buffer_size(),
-                            "RTSP/1.0 200 OK\r\n"
-                            "CSeq: %s\r\n"
-                            "%s"
-                            "Transport: RTP/AVP;multicast;destination=%s;source=%s;port=%d-%d;ttl=%d\r\n"
-                            "Session: %08X%s\r\n\r\n",
-                            cseq.c_str(),
-                            dateHeader(),
-                            destAddrStr.val(), 
-                            sourceAddrStr.val(), 
-                            ntohs(serverRTPPort.num()), 
-                            ntohs(serverRTCPPort.num()), 
-                            destinationTTL,
-                            fOurSessionId, 
-                            timeoutParameterString);
-                
+                snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
+                    client_connection->response_buffer_size(),
+                    "RTSP/1.0 200 OK\r\n"
+                    "CSeq: %s\r\n"
+                    "%s"
+                    "Transport: RTP/AVP;multicast;destination=%s;source=%s;port=%d-%d;ttl=%d\r\n"
+                    "Session: %08X%s\r\n\r\n",
+                    cseq.c_str(),
+                    dateHeader(),
+                    destAddrStr.val(),
+                    sourceAddrStr.val(),
+                    ntohs(serverRTPPort.num()),
+                    ntohs(serverRTCPPort.num()),
+                    destinationTTL,
+                    fOurSessionId,
+                    timeoutParameterString);
+
                 break;
             }
 
-            case StreamingMode::RTP_TCP: 
+            case StreamingMode::RTP_TCP:
             {
                 // multicast streams can't be sent via TCP
                 client_connection->handleCmd_unsupportedTransport();
@@ -618,105 +626,107 @@ void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_rtsp_c
                 break;
             }
 
-            case StreamingMode::RAW_UDP: 
+            case StreamingMode::RAW_UDP:
             {
-                snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
-                            client_connection->response_buffer_size(),
-                            "RTSP/1.0 200 OK\r\n"
-                            "CSeq: %s\r\n"
-                            "%s"
-                            "Transport: %s;multicast;destination=%s;source=%s;port=%d;ttl=%d\r\n"
-                            "Session: %08X%s\r\n\r\n",
-                            cseq.c_str(),
-                            dateHeader(),
-                            streamingModeString.c_str(), 
-                            destAddrStr.val(), 
-                            sourceAddrStr.val(), 
-                            ntohs(serverRTPPort.num()), 
-                            destinationTTL,
-                            fOurSessionId, 
-                            timeoutParameterString);
+                snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
+                    client_connection->response_buffer_size(),
+                    "RTSP/1.0 200 OK\r\n"
+                    "CSeq: %s\r\n"
+                    "%s"
+                    "Transport: %s;multicast;destination=%s;source=%s;port=%d;ttl=%d\r\n"
+                    "Session: %08X%s\r\n\r\n",
+                    cseq.c_str(),
+                    dateHeader(),
+                    streamingModeString.c_str(),
+                    destAddrStr.val(),
+                    sourceAddrStr.val(),
+                    ntohs(serverRTPPort.num()),
+                    destinationTTL,
+                    fOurSessionId,
+                    timeoutParameterString);
 
                 break;
+            }
             }
         }
-    }
-    else
-    {
-        switch (streamingMode) 
+        else
         {
-            case StreamingMode::RTP_UDP: 
+            switch (streamingMode)
             {
-                snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
-                            client_connection->response_buffer_size(),
-                            "RTSP/1.0 200 OK\r\n"
-                            "CSeq: %s\r\n"
-                            "%s"
-                            "Transport: RTP/AVP;unicast;destination=%s;source=%s;client_port=%d-%d;server_port=%d-%d\r\n"
-                            "Session: %08X%s\r\n\r\n",
-                            cseq.c_str(),
-                            dateHeader(),
-                            destAddrStr.val(), 
-                            sourceAddrStr.val(), 
-                            ntohs(clientRTPPort.num()), 
-                            ntohs(clientRTCPPort.num()), 
-                            ntohs(serverRTPPort.num()), 
-                            ntohs(serverRTCPPort.num()),
-                            fOurSessionId, 
-                            timeoutParameterString);
+            case StreamingMode::RTP_UDP:
+            {
+                snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
+                    client_connection->response_buffer_size(),
+                    "RTSP/1.0 200 OK\r\n"
+                    "CSeq: %s\r\n"
+                    "%s"
+                    "Transport: RTP/AVP;unicast;destination=%s;source=%s;client_port=%d-%d;server_port=%d-%d\r\n"
+                    "Session: %08X%s\r\n\r\n",
+                    cseq.c_str(),
+                    dateHeader(),
+                    destAddrStr.val(),
+                    sourceAddrStr.val(),
+                    ntohs(clientRTPPort.num()),
+                    ntohs(clientRTCPPort.num()),
+                    ntohs(serverRTPPort.num()),
+                    ntohs(serverRTCPPort.num()),
+                    fOurSessionId,
+                    timeoutParameterString);
 
                 break;
             }
-            case StreamingMode::RTP_TCP: 
+            case StreamingMode::RTP_TCP:
             {
-                if (!_our_server.allow_streaming_rtp_over_tcp()) 
+                if (!_our_server.allow_streaming_rtp_over_tcp())
                 {
                     client_connection->handleCmd_unsupportedTransport();
                 }
-                else 
+                else
                 {
-                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
-                                client_connection->response_buffer_size(),
-                                "RTSP/1.0 200 OK\r\n"
-                                "CSeq: %s\r\n"
-                                "%s"
-                                "Transport: RTP/AVP/TCP;unicast;destination=%s;source=%s;interleaved=%d-%d\r\n"
-                                "Session: %08X%s\r\n\r\n",
-                                cseq.c_str(),
-                                dateHeader(),
-                                destAddrStr.val(), 
-                                sourceAddrStr.val(),
-                                rtpChannelId, 
-                                rtcpChannelId,
-                                fOurSessionId, 
-                                timeoutParameterString);
+                    snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
+                        client_connection->response_buffer_size(),
+                        "RTSP/1.0 200 OK\r\n"
+                        "CSeq: %s\r\n"
+                        "%s"
+                        "Transport: RTP/AVP/TCP;unicast;destination=%s;source=%s;interleaved=%d-%d\r\n"
+                        "Session: %08X%s\r\n\r\n",
+                        cseq.c_str(),
+                        dateHeader(),
+                        destAddrStr.val(),
+                        sourceAddrStr.val(),
+                        rtpChannelId,
+                        rtcpChannelId,
+                        fOurSessionId,
+                        timeoutParameterString);
                 }
 
                 break;
             }
-            case StreamingMode::RAW_UDP: 
+            case StreamingMode::RAW_UDP:
             {
-                snprintf(reinterpret_cast<char*>(client_connection->response_buffer()), 
-                            client_connection->response_buffer_size(),
-                            "RTSP/1.0 200 OK\r\n"
-                            "CSeq: %s\r\n"
-                            "%s"
-                            "Transport: %s;unicast;destination=%s;source=%s;client_port=%d;server_port=%d\r\n"
-                            "Session: %08X%s\r\n\r\n",
-                            cseq.c_str(),
-                            dateHeader(),
-                            streamingModeString.c_str(), 
-                            destAddrStr.val(), 
-                            sourceAddrStr.val(), 
-                            ntohs(clientRTPPort.num()), 
-                            ntohs(serverRTPPort.num()),
-                            fOurSessionId, 
-                            timeoutParameterString);
-                
+                snprintf(reinterpret_cast<char*>(client_connection->response_buffer()),
+                    client_connection->response_buffer_size(),
+                    "RTSP/1.0 200 OK\r\n"
+                    "CSeq: %s\r\n"
+                    "%s"
+                    "Transport: %s;unicast;destination=%s;source=%s;client_port=%d;server_port=%d\r\n"
+                    "Session: %08X%s\r\n\r\n",
+                    cseq.c_str(),
+                    dateHeader(),
+                    streamingModeString.c_str(),
+                    destAddrStr.val(),
+                    sourceAddrStr.val(),
+                    ntohs(clientRTPPort.num()),
+                    ntohs(serverRTPPort.num()),
+                    fOurSessionId,
+                    timeoutParameterString);
+
                 break;
             }
+            }
         }
-    }
+    });
+   
 }
 
 void _live_rtsp_server::_live_rtsp_client_session::handle_cmd_within_session(RTSPClientConnection* ourClientConnection, char const* cmdName, char const* urlPreSuffix, char const* urlSuffix, char const* fullRequestStr)
