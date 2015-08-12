@@ -34,14 +34,14 @@ struct constant_expresion
     }
 };
 
-static void parseTransportHeader(char const* buf,
-                                 size_t /*buff_len*/,
+static void parseTransportHeader(char const*    buf,
+                                 size_t       /*buff_len*/,
                                  StreamingMode& streamingMode,
-                                 std::string& streamingModeString,
-                                 std::string& destinationAddressStr,
-                                 u_int8_t& destinationTTL,
-                                 portNumBits& clientRTPPortNum,  /* if UDP */
-                                 portNumBits& clientRTCPPortNum, /* if UDP */
+                                 std::string&   streamingModeString,
+                                 std::string&   destinationAddressStr,
+                                 u_int8_t&      destinationTTL,
+                                 portNumBits&   clientRTPPortNum,  /* if UDP */
+                                 portNumBits&   clientRTCPPortNum, /* if UDP */
                                  unsigned char& rtpChannelId,    /* if TCP */
                                  unsigned char& rtcpChannelId    /* if TCP */) 
 {
@@ -257,6 +257,7 @@ int _live_rtsp_server::setup_socket(uint16_t port)
     auto socket = setUpOurSocket(*_get_live_environment().get(), port_);
 
     printf("opened server socket on %d\n", socket);
+
     return socket;
 }
 
@@ -1271,7 +1272,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                 // the entire URL, we re-parse the command to get it:
                 std::unique_ptr<char[]> url(strDupSize(reinterpret_cast<char*>(fRequestBuffer)));
 
-                if (sscanf(reinterpret_cast<char*>(fRequestBuffer), "%*s %s", url) == 1) 
+                if (sscanf(reinterpret_cast<char*>(fRequestBuffer), "%*s %s", url.get()) == 1) 
                 {
                     // Check for special command-specific parameters in a "Transport:" header:
                     bool reuseConnection, deliverViaTCP;
