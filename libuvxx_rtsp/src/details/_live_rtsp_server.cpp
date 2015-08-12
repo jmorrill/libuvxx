@@ -455,15 +455,15 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_
         unsigned char rtpChannelId, rtcpChannelId;
 
         parseTransportHeader(full_request_string.c_str(),
-            full_request_string.size(),
-            streamingMode,
-            streamingModeString,
-            clientsDestinationAddressStr,
-            clientsDestinationTTL,
-            clientRTPPortNum,
-            clientRTCPPortNum,
-            rtpChannelId,
-            rtcpChannelId);
+                             full_request_string.size(),
+                             streamingMode,
+                             streamingModeString,
+                             clientsDestinationAddressStr,
+                             clientsDestinationTTL,
+                             clientRTPPortNum,
+                             clientRTCPPortNum,
+                             rtpChannelId,
+                             rtcpChannelId);
 
         if ((streamingMode == StreamingMode::RTP_TCP && rtpChannelId == 0xFF) ||
             (streamingMode != StreamingMode::RTP_TCP && client_connection->client_output_socket() != client_connection->client_input_socket()))
@@ -529,7 +529,7 @@ uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_
         u_int8_t destinationTTL = 255;
 
 #ifdef RTSP_ALLOW_CLIENT_DESTINATION_SETTING
-        if (clientsDestinationAddressStr != nullptr)
+        if (!clientsDestinationAddressStr.empty())
         {
             // Use the client-provided "destination" address.
             // Note: This potentially allows the server to be used in denial-of-service
@@ -900,8 +900,13 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 
 #ifdef DEBUG
         ptr[newBytesRead] = '\0';
-        fprintf(stderr, "RTSPClientConnection[%p]::handleRequestBytes() %s %d new bytes:%s\n",
-            this, numBytesRemaining > 0 ? "processing" : "read", newBytesRead, ptr);
+
+        fprintf(stderr, 
+                "RTSPClientConnection[%p]::handleRequestBytes() %s %d new bytes:%s\n",
+                this, 
+                numBytesRemaining > 0 ? "processing" : "read", 
+                newBytesRead, 
+                ptr);
 #endif
 
         if (fClientOutputSocket != fClientInputSocket && numBytesRemaining == 0)
@@ -939,7 +944,9 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                 std::unique_ptr<uint8_t[]> decodedBytes(base64Decode(reinterpret_cast<char const*>(ptr - fBase64RemainderCount), numBytesToDecode, decodedSize));
 #ifdef DEBUG
                 fprintf(stderr, "Base64-decoded %d input bytes into %d new bytes:", numBytesToDecode, decodedSize);
+
                 for (unsigned k = 0; k < decodedSize; ++k) fprintf(stderr, "%c", decodedBytes[k]);
+
                 fprintf(stderr, "\n");
 #endif
 
