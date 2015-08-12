@@ -235,26 +235,15 @@ ServerMediaSession* _live_rtsp_server::lookupServerMediaSession(char const* /*st
     return nullptr;
 }
 
-void _live_rtsp_server::begin_lookup_server_media_session(char const* stream_name, bool /*is_first_lookup_in_session*/, _server_media_session_callback_delegate callback)
+uvxx::pplx::task<ServerMediaSession*> _live_rtsp_server::begin_lookup_server_media_session(char const* stream_name, bool /*is_first_lookup_in_session*/)
 {
     if(!__lookup_media_session_delegate)
     {
-        callback(nullptr);
+        return uvxx::pplx::task_from_result<ServerMediaSession*>(nullptr);
     }
     else
     {
-        __lookup_media_session_delegate(stream_name).then([=](pplx::task<ServerMediaSession*> t)
-        {
-            try
-            {
-                auto session = t.get();
-                callback(session);
-            }
-            catch (const std::exception&)
-            {
-                callback(nullptr);
-            }
-        });
+        return __lookup_media_session_delegate(stream_name);
     }
 }
 
@@ -295,14 +284,15 @@ void _live_rtsp_server::_live_rtsp_client_session::note_liveness()
     noteLiveness();
 }
 
-void _live_rtsp_server::_live_rtsp_client_session::begin_handle_setup(_live_rtsp_client_connection* our_client_connection, const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str, std::function<void()> end_setup_callback)
+uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_session::begin_handle_setup(_live_rtsp_client_connection* our_client_connection, const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str)
 {
     std::string cseq = our_client_connection->current_cseq();
 
-    _our_server.begin_lookup_server_media_session(url_pre_suffix.c_str(), true,[=](ServerMediaSession* sms)
+    return  _our_server.begin_lookup_server_media_session(url_pre_suffix.c_str(), true).then([=](uvxx::pplx::task<ServerMediaSession*> t)
     {
+        auto sms = t.get();
+
         handle_cmd_setup(our_client_connection, sms, cseq.c_str(), url_pre_suffix.c_str(), url_suffix.c_str(), full_request_str.c_str());
-        end_setup_callback();
     });
 }
 
@@ -760,7 +750,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleCmd_unsupportedTrans
     RTSPClientConnection::handleCmd_unsupportedTransport();
 }
 
-void _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describe(char const* url_pre_suffix, char const* url_suffix, char const* full_request_str, std::function<void()> end_describe_callback)
+uvxx::pplx::task<void> _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describe(char const* url_pre_suffix, char const* url_suffix, char const* full_request_str)
 {
     char urlTotalSuffix[RTSP_PARAM_STRING_MAX];
 
@@ -777,13 +767,12 @@ void _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describe(char
 
     if (!authenticationOK("DESCRIBE", urlTotalSuffix, full_request_str))
     {
-        end_describe_callback();
-        return;
+        return uvxx::pplx::task_from_result();
     }
   
     std::string cseq = fCurrentCSeq;
 
-    __live_rtsp_server.begin_lookup_server_media_session(urlTotalSuffix, true, [=](ServerMediaSession* session) mutable
+    return __live_rtsp_server.begin_lookup_server_media_session(urlTotalSuffix, true).then([=](ServerMediaSession* session) mutable
     {
         char* sdpDescription = nullptr;
 
@@ -849,8 +838,6 @@ void _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describe(char
         delete[] sdpDescription;
 
         delete[] rtspURL;
-
-        end_describe_callback();
     });
 }
 
@@ -1104,7 +1091,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
             {
                 envir().taskScheduler().disableBackgroundHandling(fOurSocket);
 
-                begin_handle_describe(urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer), [=]() mutable
+                begin_handle_describe(urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer)).then([=]() mutable
                 {
                     send(fClientOutputSocket, 
                          reinterpret_cast<char const*>(fResponseBuffer), 
@@ -1211,7 +1198,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 
                     envir().taskScheduler().disableBackgroundHandling(fOurSocket);
 
-                    clientSession->begin_handle_setup(this, urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer),[=]() mutable
+                    clientSession->begin_handle_setup(this, urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer)).then([=]() mutable
                     {
                         playAfterSetup = clientSession->stream_after_setup_get();
                         
