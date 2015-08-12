@@ -42,8 +42,8 @@ static void parseTransportHeader(char const*    buf,
                                  u_int8_t&      destinationTTL,
                                  portNumBits&   clientRTPPortNum,  /* if UDP */
                                  portNumBits&   clientRTCPPortNum, /* if UDP */
-                                 unsigned char& rtpChannelId,    /* if TCP */
-                                 unsigned char& rtcpChannelId    /* if TCP */) 
+                                 unsigned char& rtpChannelId,      /* if TCP */
+                                 unsigned char& rtcpChannelId      /* if TCP */) 
 {
     // Initialize the result parameters to default values:
     streamingMode = StreamingMode::RTP_UDP;
