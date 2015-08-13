@@ -745,7 +745,6 @@ _live_rtsp_server::_live_rtsp_client_connection::~_live_rtsp_client_connection()
 {
 }
 
-
 void _live_rtsp_server::_live_rtsp_client_connection::handleCmd_unsupportedTransport()
 {
     RTSPClientConnection::handleCmd_unsupportedTransport();

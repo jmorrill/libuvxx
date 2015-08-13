@@ -35,5 +35,5 @@ void _socket_poll_impl::poll_callback(int status, int events)
 
 void _socket_poll_impl::set_callback(std::function<void(int status, socket_poll_event events)> callback)
 {
-    _callback = callback;
+    _callback = std::move(callback);
 }

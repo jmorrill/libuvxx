@@ -8,6 +8,13 @@
 
 using namespace uvxx::rtsp::details;
 
+static uint32_t get_output_max_buffer_size()
+{
+    static const uint32_t MAX_OUTPUT_BUFFER_SIZE = 500 * 1024;
+
+    return MAX_OUTPUT_BUFFER_SIZE;
+}
+
 _server_media_session_impl::_server_media_session_impl()
 {
     __live_server_media_session = _live_server_media_session_ptr(new _live_server_media_session(),
@@ -23,7 +30,7 @@ _server_media_session_impl::_server_media_session_impl()
     
     __live_server_media_session->on_session_closed(std::bind(&_server_media_session_impl::on_session_closed, this));
 
-    OutPacketBuffer::maxSize = 450 * 1024;
+    OutPacketBuffer::maxSize = get_output_max_buffer_size();
 }
 
 _server_media_session_impl::~_server_media_session_impl()
@@ -33,9 +40,9 @@ _server_media_session_impl::~_server_media_session_impl()
         __live_server_media_session->on_session_closed(nullptr);
     }
     
-    for(auto& streams: _stream_sources)
+    for(const auto& streams: _stream_sources)
     {
-        for(auto& clients : streams.second)
+        for(const auto& clients : streams.second)
         {
             clients.second->on_closed_set(nullptr);
         }

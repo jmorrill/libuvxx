@@ -25,6 +25,7 @@ namespace uvxx { namespace net
     socket_poll& socket_poll::operator=(socket_poll&& rhs)
     {
         __socket_poll = std::move(rhs.__socket_poll);
+
         return *this;
     }
 
@@ -50,6 +51,6 @@ namespace uvxx { namespace net
 
     void socket_poll::set_callback(std::function<void(int status, socket_poll_event events)> callback)
     {
-        __socket_poll->set_callback(callback);
+        __socket_poll->set_callback(std::move(callback));
     }
 }}

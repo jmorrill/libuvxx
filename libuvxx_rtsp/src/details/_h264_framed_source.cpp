@@ -37,9 +37,9 @@ void _h264_framed_source::deliver_sample_override(const media_sample& sample)
 
     auto time_since_start = std::chrono::duration_cast<std::chrono::seconds>(now - _start_time);
 
-    static std::chrono::seconds one_second(1);
+    static std::chrono::seconds seconds_to_send_extra_nals(3);
 
-    if(is_key_frame || time_since_start > one_second)
+    if(is_key_frame || time_since_start > seconds_to_send_extra_nals)
     {
         _sps = sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET);
 
@@ -92,6 +92,7 @@ void _h264_framed_source::do_iterative_nal_delivery()
             }
             /* else, fall through next case */
         }
+
         case nal_to_deliver::pps:
         {
             auto pps_length = _pps.length_get();
@@ -114,6 +115,7 @@ void _h264_framed_source::do_iterative_nal_delivery()
             }
             /* else, fall through next case */
         }
+
         case nal_to_deliver::payload:
         {
             if(_payload_size)
@@ -135,8 +137,10 @@ void _h264_framed_source::do_iterative_nal_delivery()
 
             break;
         }
+
         case nal_to_deliver::none: 
-    default: break;
+
+        default: break;
     }
             
     if(has_sample_to_deliver)

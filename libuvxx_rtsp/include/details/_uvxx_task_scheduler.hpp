@@ -64,6 +64,8 @@ namespace uvxx { namespace rtsp { namespace details
 
             void set_handler(BackgroundHandlerProc* handler_proc, void* client_data);
 
+            bool is_socket_valid() const;
+
         private:
             void start_poll();
 
@@ -79,6 +81,8 @@ namespace uvxx { namespace rtsp { namespace details
             net::socket_poll _poller;
 
             BackgroundHandlerProc* _handler_proc;
+
+            bool _is_socket_valid;
         };
 
       private:
