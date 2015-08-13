@@ -146,12 +146,7 @@ void _uvxx_task_scheduler::SingleStep(unsigned /* maxDelayTime */)
 
 void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, BackgroundHandlerProc* handler_proc, void* client_data) 
 {
-    if (socket < 0)
-    {
-        return;
-    }
-
-    /* remove closed/dead socket pollers */
+    /* remove closed / dead socket pollers */
     for (auto it = std::begin(_handlers); it != std::end(_handlers);)
     {
         if (!it->second.is_socket_valid())
@@ -164,13 +159,18 @@ void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, 
         }
     }
 
+    if (socket < 0)
+    {
+        return;
+    }
+
     auto handler_iterator = _handlers.find(socket);
     
-    bool found = handler_iterator != _handlers.end();
+    bool handler_found = handler_iterator != _handlers.end();
 
     if (condition_set == 0 || !handler_proc)
     {
-        if(found)
+        if(handler_found)
         {
             /* It's possible the intention was to stop listening to polled events,
                so instead of needlessing creating/destorying pollers, we wait for
@@ -181,7 +181,7 @@ void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, 
         return;
     }
 
-    if (!found && condition_set)
+    if (!handler_found && condition_set)
     {
 	    _handlers.emplace(std::piecewise_construct, 
 	                      std::forward_as_tuple(socket), 

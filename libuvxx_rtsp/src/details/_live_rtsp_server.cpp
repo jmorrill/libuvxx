@@ -954,7 +954,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                 char c = ptr[fromIndex];
 
                 if (!(c == ' ' || c == '\t' || c == '\r' || c == '\n')) 
-                { // not 'whitespace': space,tab,CR,NL
+                {   // not 'whitespace': space,tab,CR,NL
                     ptr[toIndex++] = c;
                 }
             }
@@ -1001,9 +1001,9 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 
         if (fBase64RemainderCount == 0) 
         { 
-           // no more Base-64 bytes remain to be read/decoded
-           // Look for the end of the message: <CR><LF><CR><LF>
-           if (tmpPtr < fRequestBuffer) tmpPtr = fRequestBuffer;
+            // no more Base-64 bytes remain to be read/decoded
+            // Look for the end of the message: <CR><LF><CR><LF>
+            if (tmpPtr < fRequestBuffer) tmpPtr = fRequestBuffer;
 
             while (tmpPtr < &ptr[newBytesRead - 1]) 
             {
@@ -1067,8 +1067,8 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
             // If there was a "Content-Length:" header, then make sure we've received all of the data that it specified:
             if (ptr + newBytesRead < tmpPtr + 2 + contentLength) break; // we still need more data; subsequent reads will give it to us 
 
-                                                                        // If the request included a "Session:" id, and it refers to a client session that's
-                                                                        // current ongoing, then use this command to indicate 'liveness' on that client session:
+            // If the request included a "Session:" id, and it refers to a client session that's
+            // current ongoing, then use this command to indicate 'liveness' on that client session:
             bool const requestIncludedSessionId = sessionIdStr[0] != '\0';
 
             if (requestIncludedSessionId) 
@@ -1477,6 +1477,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
         {
             delete this;
         }
+
         // Note: The "fRecursionCount" test is for a pathological situation where we reenter the event loop and get called recursively
         // while handling a command (e.g., while handling a "DESCRIBE", to get a SDP description).
         // In such a case we don't want to actually delete ourself until we leave the outermost call.
