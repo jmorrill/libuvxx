@@ -14,7 +14,7 @@ using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::sample_attributes;
 
 rtsp_client client;
-server_media_session server_session;
+std::vector<server_media_session> server_sessions;
 
 void on_sample_callback(const media_sample& sample)
 {
@@ -39,9 +39,9 @@ void on_sample_callback(const media_sample& sample)
         {
             bool key_frame = sample.attribute_get<bool>(ATTRIBUTE_VIDEO_KEYFRAME);
 
-            if(server_session)
+            for(auto& session : server_sessions)
             {
-                server_session.deliver_sample(1, sample);
+                session.deliver_sample(1, sample);
             }
 
             auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
@@ -81,13 +81,15 @@ task<server_media_session> on_session_requested(const std::string& stream_name)
 {
     printf("creating session\n");
 
-    server_session = server_media_session();
+    auto server_session = server_media_session();
 
     media_descriptor descriptor;
 
     descriptor.add_stream_from_attributes(1, "H264", media_attributes());
 
     server_session.set_media_descriptor(descriptor);
+
+    server_sessions.push_back(server_session);
 
     return task_from_result(server_session);
 }

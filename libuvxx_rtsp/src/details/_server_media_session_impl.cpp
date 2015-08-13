@@ -20,7 +20,7 @@ _server_media_session_impl::_server_media_session_impl()
             Medium::close(session);
         }
     });
-
+    
     __live_server_media_session->on_session_closed(std::bind(&_server_media_session_impl::on_session_closed, this));
 
     OutPacketBuffer::maxSize = 450 * 1024;
@@ -32,20 +32,25 @@ _server_media_session_impl::~_server_media_session_impl()
     {
         __live_server_media_session->on_session_closed(nullptr);
     }
-
-    for(auto& s: _stream_sources)
+    
+    for(auto& streams: _stream_sources)
     {
-        s.second->on_closed_set(nullptr);
+        for(auto& clients : streams.second)
+        {
+            clients.second->on_closed_set(nullptr);
+        }
     }
+}
+
+bool _server_media_session_impl::is_session_active()
+{
+    return !_stream_sources.empty();
 }
 
 void _server_media_session_impl::on_session_closed()
 {
-    __live_server_media_session->on_session_closed(nullptr);
-
     __live_server_media_session.reset(static_cast<_live_server_media_session*>(nullptr));
 }
-
 
 _server_media_session_impl::_server_media_session_impl(_server_media_session_impl&& rhs)
 {
@@ -70,17 +75,22 @@ void _server_media_session_impl::set_media_descriptor(const uvxx::rtsp::media_de
 
 void _server_media_session_impl::deliver_sample(int stream_id, const uvxx::rtsp::media_sample& sample)
 {
-    auto it = _stream_sources.find(stream_id);
+    auto streams_iterator = _stream_sources.find(stream_id);
 
-    if(it == _stream_sources.end())
+    if(streams_iterator == _stream_sources.end())
     {
-        //throw std::exception();
         return;
     }
 
-    auto& source = it->second;
-  
-    source->deliver_sample(sample);
+    for(auto& client : streams_iterator->second)
+    {
+        client.second->deliver_sample(sample);
+    }
+}
+
+bool _server_media_session_impl::has_live_session()
+{
+    return __live_server_media_session != nullptr;
 }
 
 void _server_media_session_impl::configure_session()
@@ -104,21 +114,31 @@ void _server_media_session_impl::configure_session()
     }
 }
 
-void _server_media_session_impl::on_framed_source_closed(int stream_id)
+void _server_media_session_impl::on_framed_source_closed(int stream_id, unsigned client_session_id)
 {
-    auto it = _stream_sources.find(stream_id);
+    auto stream_iterator = _stream_sources.find(stream_id);
 
-    if (it == _stream_sources.end())
+    if (stream_iterator == _stream_sources.end())
     {
-        throw std::exception();
+        //throw std::exception();
+        return;
     }
     
-    _stream_sources.erase(it);
+    auto& sessions = stream_iterator->second;
+
+    auto session_iterator = sessions.find(client_session_id);
+
+    if(session_iterator == sessions.end())
+    {
+        return;
+    }
+
+    sessions.erase(session_iterator);
 }
 
-void _server_media_session_impl::on_framed_source_created(int stream_id, unsigned /*client_session_id*/, const std::shared_ptr<_live_framed_source>& source)
+void _server_media_session_impl::on_framed_source_created(int stream_id, unsigned client_session_id, const std::shared_ptr<_live_framed_source>& source)
 {
-    source->on_closed_set(std::bind(&_server_media_session_impl::on_framed_source_closed, this, std::placeholders::_1));
+    source->on_closed_set(std::bind(&_server_media_session_impl::on_framed_source_closed, this, std::placeholders::_1, std::placeholders::_2));
     
-    _stream_sources[stream_id] = source;
+    _stream_sources[stream_id][client_session_id] = source;
 }

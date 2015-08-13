@@ -15,7 +15,7 @@ namespace uvxx { namespace rtsp { namespace details
         };
 
     public:
-        _h264_framed_source(int stream_id);
+        _h264_framed_source(int stream_id, unsigned session_id);
 
         virtual ~_h264_framed_source();
 

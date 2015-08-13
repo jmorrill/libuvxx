@@ -27,7 +27,7 @@ _h264_media_subsession::~_h264_media_subsession()
 
 FramedSource* _h264_media_subsession::createNewStreamSource(unsigned client_session_id, unsigned& estimated_kbps)
 {
-    _source = std::shared_ptr<_h264_framed_source>(new _h264_framed_source(stream_id()), [](_live_framed_source*)
+    _source = std::shared_ptr<_h264_framed_source>(new _h264_framed_source(stream_id(), client_session_id), [](_live_framed_source*)
     {
         /* todo add logic later in case live55 doesn't free */
     });

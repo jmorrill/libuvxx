@@ -18,6 +18,8 @@ namespace uvxx { namespace rtsp { namespace details
 
     using _live_server_media_session_ptr = std::shared_ptr<_live_server_media_session>;
 
+    using _streams_of_clients_map = std::unordered_map<int, std::unordered_map<unsigned, std::shared_ptr<_live_framed_source>>>;
+
     class _server_media_session_impl : public event_dispatcher_object
     {
     public:
@@ -38,15 +40,14 @@ namespace uvxx { namespace rtsp { namespace details
 
         void deliver_sample(int stream_id, const media_sample& sample);
 
-        bool has_live_session()
-        {
-            return __live_server_media_session != nullptr;
-        }
+        bool has_live_session();
+
+        bool is_session_active();
 
     private:
         void on_session_closed();
 
-        void on_framed_source_closed(int stream_id);
+        void on_framed_source_closed(int stream_id, unsigned client_session_id);
 
         void configure_session();
 
@@ -57,7 +58,7 @@ namespace uvxx { namespace rtsp { namespace details
 
         media_descriptor _descriptor;
 
-        std::unordered_map<int, std::shared_ptr<_live_framed_source>> _stream_sources;
+        _streams_of_clients_map _stream_sources;
 
         friend _rtsp_server_impl;
     };

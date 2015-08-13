@@ -4,8 +4,8 @@
 using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
-_h264_framed_source::_h264_framed_source(int stream_id): 
-    _live_framed_source(stream_id), 
+_h264_framed_source::_h264_framed_source(int stream_id, unsigned session_id): 
+    _live_framed_source(stream_id, session_id), 
     _nal_to_deliver(nal_to_deliver::none),
     _payload(400000), 
     _payload_size(0),

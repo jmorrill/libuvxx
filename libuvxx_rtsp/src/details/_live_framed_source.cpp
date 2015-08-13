@@ -4,10 +4,11 @@
 
 using namespace uvxx::rtsp::details;
 
-_live_framed_source::_live_framed_source(int stream_id) : 
+_live_framed_source::_live_framed_source(int stream_id, unsigned client_session_id) : 
     FramedSource(*_get_live_environment().get()),
     _busy_delivering(false),
     _stream_id(stream_id),
+    _client_session_id(client_session_id),
     _is_first_sample(true)
 {
     fTo = nullptr;
@@ -17,13 +18,18 @@ _live_framed_source::~_live_framed_source()
 {
     if (_on_source_closed)
     {
-        _on_source_closed(_stream_id);
+        _on_source_closed(_stream_id, _client_session_id);
     }
 }
 
 int _live_framed_source::stream_id()
 {
     return _stream_id;
+}
+
+unsigned _live_framed_source::session_id()
+{
+    return _client_session_id;
 }
 
 void _live_framed_source::on_closed_set(_framed_source_closed_delegate source_closed)

@@ -15,17 +15,19 @@ namespace uvxx { namespace rtsp
 
 namespace uvxx { namespace rtsp { namespace details
 {
-    using _framed_source_closed_delegate = std::function<void(int stream_id)>;
+    using _framed_source_closed_delegate = std::function<void(int stream_id, unsigned client_session_id)>;
 
     class _live_framed_source : public FramedSource
     {
     public:
-        explicit _live_framed_source(int stream_id);
+        explicit _live_framed_source(int stream_id, unsigned client_session_id);
 
         virtual ~_live_framed_source();
 
     public:
         int stream_id();
+
+        unsigned session_id();
 
         void on_closed_set(_framed_source_closed_delegate source_closed);
 
@@ -41,6 +43,8 @@ namespace uvxx { namespace rtsp { namespace details
 
     private:
         int _stream_id;
+
+        unsigned _client_session_id;
 
         bool _is_first_sample;
 
