@@ -25,16 +25,6 @@ enum class StreamingMode
     RAW_UDP
 };
 
-
-template <int code>
-struct constant_expresion
-{
-    static int value()
-    {
-        return code;
-    }
-};
-
 static void parseTransportHeader(char const*    buf,
                                  size_t       /*buff_len*/,
                                  StreamingMode& streamingMode,
@@ -147,9 +137,9 @@ static bool parsePlayNowHeader(char const* buf) {
 }
 
 // A special version of "parseTransportHeader()", used just for parsing the "Transport:" header in an incoming "REGISTER" command:
-static void parseTransportHeaderForREGISTER(char const* buf,
-                                            bool &reuseConnection,
-                                            bool& deliverViaTCP,
+static void parseTransportHeaderForREGISTER(char const*  buf,
+                                            bool&        reuseConnection,
+                                            bool&        deliverViaTCP,
                                             std::string& proxyURLSuffix) 
 {
     // Initialize the result parameters to default values:
@@ -541,7 +531,6 @@ task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_
         // Also use the client-provided TTL.
         destinationTTL = clientsDestinationTTL;
 #endif
-
         Port serverRTPPort(0);
 
         Port serverRTCPPort(0);
@@ -774,10 +763,8 @@ task<void> _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describ
     
     struct pointer_holder
     {
-        pointer_holder() : session(nullptr)
-        {
-        }
-
+        pointer_holder() = default;
+       
         _live_server_media_session* session = nullptr;
     };
 
@@ -801,14 +788,15 @@ task<void> _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describ
         try
         {
             loaded_task.get();
-        }catch(std::exception& e)
+        }
+        catch(std::exception&)
         {
-            printf(e.what());
+
         }
         
         auto session = session_holder->session;
 
-        if(session == nullptr)
+        if(!session)
         {
             return;
         }
@@ -1164,7 +1152,8 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                     {
                         envir().taskScheduler().setBackgroundHandling(fOurSocket, 
                                                                       SOCKET_READABLE | SOCKET_EXCEPTION, 
-                                                                      incomingRequestHandler, this);
+                                                                      incomingRequestHandler, 
+                                                                      this);
                     }
                 });
 
@@ -1220,6 +1209,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                 if (clientSession != nullptr) 
                 {
                     auto request_buffer = fRequestBuffer;
+
                     auto response_buffer = fResponseBuffer;
 
                     std::string urlPreSuffix_ = urlPreSuffix;
