@@ -86,6 +86,7 @@
     <ProjectGuid>{A75D232B-1970-4910-AED3-D0BF54232C62}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libuvxx_rtsp</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

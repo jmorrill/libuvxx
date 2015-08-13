@@ -36,7 +36,7 @@ task<void> _live_server_media_subsession::preload_sdp_line()
 
     unsigned estimated_kbps = 0;
 
-    auto input_source = std::shared_ptr<FramedSource>(createNewStreamSource(0, estimated_kbps), [=](FramedSource* source)
+    auto input_source = std::shared_ptr<FramedSource>(createNewStreamSource(0, estimated_kbps), [=](FramedSource* /*source*/)
     {
         _dummy_rtp_sink = nullptr;
     });
@@ -50,7 +50,7 @@ task<void> _live_server_media_subsession::preload_sdp_line()
 
     dummy_addr.s_addr = 0;
 
-    std::shared_ptr<Groupsock> dummy_group_sock(createGroupsock(dummy_addr, 0), [](Groupsock* group_sock)
+    std::shared_ptr<Groupsock> dummy_group_sock(createGroupsock(dummy_addr, 0), [](Groupsock* /*group_sock*/)
     {
     });
 
