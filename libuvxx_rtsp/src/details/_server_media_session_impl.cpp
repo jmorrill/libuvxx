@@ -32,10 +32,17 @@ _server_media_session_impl::~_server_media_session_impl()
     {
         __live_server_media_session->on_session_closed(nullptr);
     }
+
+    for(auto& s: _stream_sources)
+    {
+        s.second->on_closed_set(nullptr);
+    }
 }
 
 void _server_media_session_impl::on_session_closed()
 {
+    __live_server_media_session->on_session_closed(nullptr);
+
     __live_server_media_session.reset(static_cast<_live_server_media_session*>(nullptr));
 }
 
@@ -105,7 +112,7 @@ void _server_media_session_impl::on_framed_source_closed(int stream_id)
     {
         throw std::exception();
     }
-
+    
     _stream_sources.erase(it);
 }
 

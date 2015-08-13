@@ -3,10 +3,10 @@
 
 using namespace uvxx::rtsp::details;
 
-thread_local _usage_environment_ptr _live_environment_;
-
 _usage_environment_ptr uvxx::rtsp::details::_get_live_environment()
 {
+    static thread_local _usage_environment_ptr _live_environment_;
+
     if (_live_environment_)
     {
         return _live_environment_;
@@ -14,7 +14,7 @@ _usage_environment_ptr uvxx::rtsp::details::_get_live_environment()
 
     auto scheduler = std::make_unique<_uvxx_task_scheduler>(1000000);
 
-    _live_environment_ = _usage_environment_ptr(BasicUsageEnvironment::createNew(*scheduler),
+     _live_environment_ = _usage_environment_ptr(BasicUsageEnvironment::createNew(*scheduler),
     [](UsageEnvironment* environment)
     {
         auto& task_scheduler = environment->taskScheduler();

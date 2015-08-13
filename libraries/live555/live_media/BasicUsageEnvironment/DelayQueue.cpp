@@ -90,6 +90,13 @@ const DelayInterval ETERNITY(INT_MAX, MILLION-1);
 // used internally to make the implementation work
 
 
+static DelayInterval getEternityDelayInterval()
+{
+    static const DelayInterval eternity(INT_MAX, MILLION - 1);
+    return eternity;
+    
+}
+
 ///// DelayQueueEntry /////
 
 intptr_t DelayQueueEntry::tokenCounter = 0;
@@ -111,7 +118,7 @@ void DelayQueueEntry::handleTimeout() {
 ///// DelayQueue /////
 
 DelayQueue::DelayQueue()
-  : DelayQueueEntry(ETERNITY) {
+  : DelayQueueEntry(getEternityDelayInterval()) {
   fLastSyncTime = TimeNow();
 }
 

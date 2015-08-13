@@ -30,6 +30,16 @@ namespace uvxx { namespace rtsp
 
         server_media_session& operator=(server_media_session&& session);
 
+        bool operator==(std::nullptr_t /*rhs*/)
+        {
+            return !__server_media_session_impl;
+        }
+
+        void operator=(std::nullptr_t /*rhs*/)
+        {
+            __server_media_session_impl = nullptr;
+        }
+
         virtual ~server_media_session();
 
     public:

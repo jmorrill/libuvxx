@@ -501,9 +501,6 @@
 #ifndef __ULLACCUM_MIN__
 #define __ULLACCUM_MIN__ 0.0ULLK
 #endif
-#ifndef __GCC_HAVE_DWARF2_CFI_ASM
-#define __GCC_HAVE_DWARF2_CFI_ASM 1
-#endif
 #ifndef __GXX_ABI_VERSION
 #define __GXX_ABI_VERSION 1002
 #endif
@@ -627,9 +624,6 @@
 #ifndef __STDC_IEC_559_COMPLEX__
 #define __STDC_IEC_559_COMPLEX__ 1
 #endif
-#ifndef __ARM_NEON__
-#define __ARM_NEON__ 1
-#endif
 #ifndef __DEC64_EPSILON__
 #define __DEC64_EPSILON__ 1E-15DD
 #endif
@@ -662,9 +656,6 @@
 #endif
 #ifndef __UDQ_FBIT__
 #define __UDQ_FBIT__ 64
-#endif
-#ifndef DEBUG
-#define DEBUG 1
 #endif
 #ifndef __INT8_TYPE__
 #define __INT8_TYPE__ signed char
@@ -963,9 +954,6 @@
 #ifndef __UINT64_TYPE__
 #define __UINT64_TYPE__ long long unsigned int
 #endif
-#ifndef __ARM_NEON
-#define __ARM_NEON 1
-#endif
 #ifndef __LLFRACT_MAX__
 #define __LLFRACT_MAX__ 0X7FFFFFFFFFFFFFFFP-63LLR
 #endif
@@ -974,9 +962,6 @@
 #endif
 #ifndef __INT_FAST8_TYPE__
 #define __INT_FAST8_TYPE__ signed char
-#endif
-#ifndef _DEBUG
-#define _DEBUG 1
 #endif
 #ifndef __ULLACCUM_EPSILON__
 #define __ULLACCUM_EPSILON__ 0x1P-32ULLK

@@ -14,7 +14,7 @@ using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::sample_attributes;
 
 rtsp_client client;
-std::shared_ptr<server_media_session> server_session;
+server_media_session server_session;
 
 void on_sample_callback(const media_sample& sample)
 {
@@ -41,7 +41,7 @@ void on_sample_callback(const media_sample& sample)
 
             if(server_session)
             {
-                server_session->deliver_sample(1, sample);
+                server_session.deliver_sample(1, sample);
             }
 
             auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
@@ -81,17 +81,15 @@ task<server_media_session> on_session_requested(const std::string& stream_name)
 {
     printf("creating session\n");
 
-    auto session = std::make_shared<server_media_session>();
+    server_session = server_media_session();
 
     media_descriptor descriptor;
 
     descriptor.add_stream_from_attributes(1, "H264", media_attributes());
 
-    session->set_media_descriptor(descriptor);
+    server_session.set_media_descriptor(descriptor);
 
-    server_session = session;
-
-    return task_from_result(*server_session.get());
+    return task_from_result(server_session);
 }
 
 int main(int argc, char* argv[])
@@ -114,7 +112,7 @@ int main(int argc, char* argv[])
 
         client.on_stream_closed_set(stream_closed);
 
-        client.credentials_set("admin", "hv3515");
+        client.credentials_set("admin", "12345");
 
         client.protocol_set(transport_protocol::udp);
 
