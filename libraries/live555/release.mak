@@ -20,8 +20,8 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -s -ffunction-sections -O3 -ffunction-sections -O0  -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64  -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a
-CXXFLAGS := -s -ffunction-sections -O3 -ffunction-sections -O0  -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64  -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a
+CFLAGS := -s -ffunction-sections  -ffunction-sections -O0  -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
+CXXFLAGS := -s -ffunction-sections  -ffunction-sections -O0  -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
 ASFLAGS := 
 LDFLAGS := -s -Wl,-gc-sections
 COMMONFLAGS := 

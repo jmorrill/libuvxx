@@ -20,10 +20,10 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -s -ffunction-sections -O3 -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a
-CXXFLAGS := -s -ffunction-sections -O3 -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a
+CFLAGS := -s -ffunction-sections -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
+CXXFLAGS := -s -ffunction-sections -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
 ASFLAGS := 
-LDFLAGS := -s -ffunction-sections -O3 -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -fexceptions -fnon-call-exceptions -fno-common -march=armv7-a -mtune=cortex-a8 -mfpu=neon
+LDFLAGS := -s -ffunction-sections  -flto  -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -std=c++1y -pthread -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
 COMMONFLAGS := 
 
 START_GROUP := -Wl,--start-group

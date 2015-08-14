@@ -206,6 +206,9 @@
 #ifndef __DEC32_EPSILON__
 #define __DEC32_EPSILON__ 1E-6DF
 #endif
+#ifndef __OPTIMIZE__
+#define __OPTIMIZE__ 1
+#endif
 #ifndef __CHAR_UNSIGNED__
 #define __CHAR_UNSIGNED__ 1
 #endif
@@ -546,9 +549,6 @@
 #ifndef __UHA_FBIT__
 #define __UHA_FBIT__ 8
 #endif
-#ifndef __NO_INLINE__
-#define __NO_INLINE__ 1
-#endif
 #ifndef __SFRACT_MIN__
 #define __SFRACT_MIN__ (-0.5HR-0.5HR)
 #endif
@@ -596,6 +596,9 @@
 #endif
 #ifndef __STDC_IEC_559_COMPLEX__
 #define __STDC_IEC_559_COMPLEX__ 1
+#endif
+#ifndef __ARM_NEON__
+#define __ARM_NEON__ 1
 #endif
 #ifndef __DEC64_EPSILON__
 #define __DEC64_EPSILON__ 1E-15DD
@@ -917,6 +920,9 @@
 #endif
 #ifndef __UINT64_TYPE__
 #define __UINT64_TYPE__ long long unsigned int
+#endif
+#ifndef __ARM_NEON
+#define __ARM_NEON 1
 #endif
 #ifndef __LLFRACT_MAX__
 #define __LLFRACT_MAX__ 0X7FFFFFFFFFFFFFFFP-63LLR

@@ -630,6 +630,9 @@
 #ifndef __STDC_IEC_559_COMPLEX__
 #define __STDC_IEC_559_COMPLEX__ 1
 #endif
+#ifndef __ARM_NEON__
+#define __ARM_NEON__ 1
+#endif
 #ifndef __DEC64_EPSILON__
 #define __DEC64_EPSILON__ 1E-15DD
 #endif
@@ -959,6 +962,9 @@
 #endif
 #ifndef __UINT64_TYPE__
 #define __UINT64_TYPE__ long long unsigned int
+#endif
+#ifndef __ARM_NEON
+#define __ARM_NEON 1
 #endif
 #ifndef __LLFRACT_MAX__
 #define __LLFRACT_MAX__ 0X7FFFFFFFFFFFFFFFP-63LLR

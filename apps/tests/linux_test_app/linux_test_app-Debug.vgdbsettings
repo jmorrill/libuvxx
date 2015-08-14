@@ -89,7 +89,12 @@
     </MakeCommandTemplate>
   </Build>
   <Debug xsi:type="com.visualgdb.debug.remote">
-    <AdditionalStartupCommands />
+    <AdditionalStartupCommands>
+      <GDBPreStartupCommands>
+        <string>handle SIGPIPE nostop noprint pass</string>
+      </GDBPreStartupCommands>
+      <GDBStartupCommands />
+    </AdditionalStartupCommands>
     <AdditionalGDBSettings>
       <FilterSpuriousStoppedNotifications>false</FilterSpuriousStoppedNotifications>
       <ForceSingleThreadedMode>false</ForceSingleThreadedMode>
@@ -123,8 +128,7 @@
     <LaunchGDBSettings xsi:type="GDBLaunchParametersNewInstance">
       <DebuggedProgram>$(TargetPath)</DebuggedProgram>
       <GDBServerPort>2000</GDBServerPort>
-      <ProgramArguments>"rtsp://admin:hv3515@10.1.30.55"</ProgramArguments>
-      <ProgramEnvironment>handle SIGPIPE nostop noprint pass</ProgramEnvironment>
+      <ProgramArguments>"rtsp://admin:hv3515@10.1.30.190"</ProgramArguments>
     </LaunchGDBSettings>
     <GenerateCtrlBreakInsteadOfCtrlC>false</GenerateCtrlBreakInsteadOfCtrlC>
     <DeploymentTargetPath>/tmp/$(TargetFileName)</DeploymentTargetPath>

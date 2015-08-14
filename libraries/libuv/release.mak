@@ -20,8 +20,8 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -s -ffunction-sections -O3 -fexceptions  -march=armv7-a
-CXXFLAGS := -s -ffunction-sections -O3 -fexceptions  -march=armv7-a
+CFLAGS := -s -ffunction-sections -fexceptions -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
+CXXFLAGS := -s -ffunction-sections -fexceptions -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
 ASFLAGS := 
 LDFLAGS := -s -Wl,-gc-sections  -ggdb -ffunction-sections -O3 -fexceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto-partition=none
 COMMONFLAGS := 

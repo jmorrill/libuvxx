@@ -233,8 +233,6 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 
 void _media_framer_base::on_rtcp_bye(void* client_data)
 {
-    assert(client_data);
-    
     auto framer = static_cast<_media_framer_base*>(client_data);
     
     if (framer->_stream_closed_delegate)

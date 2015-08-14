@@ -20,10 +20,10 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -s -ffunction-sections -O3 -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -march=armv7-a -flto -flto-partition=none
-CXXFLAGS := -s -ffunction-sections -O3 -std=c++1y -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -march=armv7-a
+CFLAGS := -s -ffunction-sections  -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -march=armv7-a -flto -flto-partition=none  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
+CXXFLAGS := -s -ffunction-sections  -std=c++1y -Wno-unused-parameter -Wextra -fno-common -pthread  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
 ASFLAGS := 
-LDFLAGS := -s -Wl,-gc-sections -ggdb -ffunction-sections -O3 -std=c++1y -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -march=armv7-a -mtune=cortex-a8 -mfpu=neon -flto -flto-partition=none
+LDFLAGS := -s -Wl,-gc-sections -ggdb -ffunction-sections  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
 COMMONFLAGS := 
 
 START_GROUP := -Wl,--start-group

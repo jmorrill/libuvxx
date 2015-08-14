@@ -20,8 +20,8 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -ggdb -ffunction-sections -O3 -std=c++1y -Wall -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -D_NO_ASYNCRTIMP -Wno-unknown-pragmas
-CXXFLAGS := -ggdb -ffunction-sections -O3 -std=c++1y -Wall -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -D_NO_ASYNCRTIMP -Wno-unknown-pragmas
+CFLAGS := -ggdb -ffunction-sections -O0 -std=c++1y -Wall -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -D_NO_ASYNCRTIMP -Wno-unknown-pragmas
+CXXFLAGS := -ggdb -ffunction-sections -O0 -std=c++1y -Wall -Wno-unused-parameter -Wextra -fno-common -pthread -fexceptions -fnon-call-exceptions -D_NO_ASYNCRTIMP -Wno-unknown-pragmas
 ASFLAGS := 
 LDFLAGS := -Wl,-gc-sections
 COMMONFLAGS := 

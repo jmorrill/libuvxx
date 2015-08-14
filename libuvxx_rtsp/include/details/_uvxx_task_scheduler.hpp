@@ -62,9 +62,11 @@ namespace uvxx { namespace rtsp { namespace details
 
             void set_socket(int socket);
 
-            void set_handler(BackgroundHandlerProc* handler_proc, void* client_data);
+            void set_handler(int condition_set, BackgroundHandlerProc* handler_proc, void* client_data);
+            
+            bool is_socket_valid();
 
-            bool is_socket_valid() const;
+            int socket();
 
         private:
             void start_poll();
