@@ -175,6 +175,7 @@ namespace uvxx { namespace details
         friend uvxx::fs::details::_directory_impl;
         friend ::crossplat::threadpool;
         friend uvxx::pplx::details::_ContextCallback;
+        friend void uvxx::pplx::details::begin_invoke_on_current(std::function<void()>);
     };
 }}
 #endif

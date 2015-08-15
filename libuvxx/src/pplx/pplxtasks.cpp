@@ -1,14 +1,13 @@
 #include "pplx/pplxtasks.h"
 #include "details/_event_dispatcher_impl.hpp"
-#include <iostream>
-#include "event_dispatcher.hpp"
 
 namespace uvxx { namespace pplx { namespace details 
 {
-    
     void begin_invoke_on_current(std::function<void()> method)
     {
-        uvxx::event_dispatcher::current_dispatcher().begin_invoke(std::move(method));
+        auto dispatcher = uvxx::details::_event_dispatcher_impl::current_dispatcher();
+
+        dispatcher->begin_invoke_impl_unsafe(std::move(std::move(method)));
     }
     
     bool _ContextCallback::_IsCurrentOriginSTA()
