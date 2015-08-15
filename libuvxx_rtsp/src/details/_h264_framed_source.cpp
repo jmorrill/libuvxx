@@ -39,7 +39,7 @@ void _h264_framed_source::deliver_sample_override(const media_sample& sample)
 
     static std::chrono::seconds seconds_to_send_extra_nals(3);
 
-    if(is_key_frame || time_since_start > seconds_to_send_extra_nals)
+    if(is_key_frame || time_since_start < seconds_to_send_extra_nals)
     {
         _sps = sample.attribute_blob_get(sample_attributes::ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET);
 
