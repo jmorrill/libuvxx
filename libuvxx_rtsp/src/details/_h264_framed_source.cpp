@@ -88,6 +88,8 @@ void _h264_framed_source::do_iterative_nal_delivery()
 
                 has_sample_to_deliver = true;
 
+                _sps = nullptr;
+                
                 break;
             }
             /* else, fall through next case */
@@ -111,6 +113,8 @@ void _h264_framed_source::do_iterative_nal_delivery()
 
                 has_sample_to_deliver = true;
 
+                _pps = nullptr;
+                
                 break;
             }
             /* else, fall through next case */
