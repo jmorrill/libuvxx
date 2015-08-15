@@ -1,21 +1,17 @@
 #include <stdio.h>
 #include <algorithm>
-
-#include "NetCommon.h"
 #include "details/_uvxx_task_scheduler.hpp"
 
 #ifndef MILLION
 #define MILLION 1000000
 #endif
 
-#define SOCKET_WAIT_FOR_DEATH -1
-
 using namespace uvxx;
 using namespace uvxx::net;
 using namespace uvxx::rtsp::details;
 
 _uvxx_task_scheduler::_uvxx_task_scheduler(unsigned maxSchedulerGranularity)
-  : BasicTaskScheduler0(), 
+    : BasicTaskScheduler0(),
     fMaxSchedulerGranularity(maxSchedulerGranularity)
 {
     _timer.timeout_set(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::microseconds(maxSchedulerGranularity)));
@@ -25,7 +21,7 @@ _uvxx_task_scheduler::_uvxx_task_scheduler(unsigned maxSchedulerGranularity)
     _timer.start();
 }
 
-_uvxx_task_scheduler::~_uvxx_task_scheduler() 
+_uvxx_task_scheduler::~_uvxx_task_scheduler()
 {
 
 }
@@ -54,10 +50,10 @@ TaskToken _uvxx_task_scheduler::scheduleDelayedTask(int64_t microseconds, TaskFu
 void _uvxx_task_scheduler::set_next_timeout()
 {
     DelayInterval const& timeToDelay = fDelayQueue.timeToNextAlarm();
-  
+
     int64_t milliseconds = (timeToDelay.seconds() * 1000ll) + (timeToDelay.useconds() / 1000ll);
 
-    if(milliseconds < 0)
+    if (milliseconds < 0)
     {
         milliseconds = 0;
     }
@@ -79,17 +75,17 @@ void _uvxx_task_scheduler::triggerEvent(EventTriggerId eventTriggerId, void* cli
     set_next_timeout();
 }
 
-void _uvxx_task_scheduler::schedulerTickTask(void* clientData) 
+void _uvxx_task_scheduler::schedulerTickTask(void* clientData)
 {
     static_cast<_uvxx_task_scheduler*>(clientData)->schedulerTickTask();
 }
 
-void _uvxx_task_scheduler::schedulerTickTask() 
+void _uvxx_task_scheduler::schedulerTickTask()
 {
     scheduleDelayedTask(fMaxSchedulerGranularity, schedulerTickTask, this);
 }
 
-void _uvxx_task_scheduler::SingleStep(unsigned /* maxDelayTime */) 
+void _uvxx_task_scheduler::SingleStep(unsigned /* maxDelayTime */)
 {
     if (fTriggersAwaitingHandling != 0)
     {
@@ -98,33 +94,33 @@ void _uvxx_task_scheduler::SingleStep(unsigned /* maxDelayTime */)
             /* Common-case optimization for a single event trigger */
             fTriggersAwaitingHandling &= ~fLastUsedTriggerMask;
 
-            if (fTriggeredEventHandlers[fLastUsedTriggerNum]) 
+            if (fTriggeredEventHandlers[fLastUsedTriggerNum])
             {
                 (*fTriggeredEventHandlers[fLastUsedTriggerNum])(fTriggeredEventClientDatas[fLastUsedTriggerNum]);
             }
-        } 
-        else 
+        }
+        else
         {
-            /* Look for an event trigger that needs handling 
-               making sure that we make forward progress through all possible triggers */
+            /* Look for an event trigger that needs handling
+            making sure that we make forward progress through all possible triggers */
             unsigned i = fLastUsedTriggerNum;
 
             EventTriggerId mask = fLastUsedTriggerMask;
 
-            do 
+            do
             {
                 i = (i + 1) % MAX_NUM_EVENT_TRIGGERS;
 
                 mask >>= 1;
 
-                if (mask == 0) 
+                if (mask == 0)
                 {
                     mask = 0x80000000;
                 }
 
-                if ((fTriggersAwaitingHandling & mask) != 0) 
+                if ((fTriggersAwaitingHandling & mask) != 0)
                 {
-                    fTriggersAwaitingHandling &=~ mask;
+                    fTriggersAwaitingHandling &= ~mask;
 
                     if (fTriggeredEventHandlers[i])
                     {
@@ -144,20 +140,19 @@ void _uvxx_task_scheduler::SingleStep(unsigned /* maxDelayTime */)
 
     /* handle any delayed event that may have come due. */
     fDelayQueue.handleAlarm();
+
+    prune_dead_pollers();
 }
 
-void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, BackgroundHandlerProc* handler_proc, void* client_data) 
-{
-    if (socket < 0)
-    {
-        return;
-    }
 
-    /* remove closed / dead socket pollers */
+void _uvxx_task_scheduler::prune_dead_pollers()
+{
     for (auto it = std::begin(_handlers); it != std::end(_handlers);)
     {
-        if (!it->second.is_socket_valid() && it->second.socket() != socket)
+        if (it->second.has_disabled_poll_timed_out())
         {
+            printf("pruned socket poller for %d", it->second.socket());
+
             it = _handlers.erase(it);
         }
         else
@@ -165,39 +160,46 @@ void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, 
             ++it;
         }
     }
+}
+
+void _uvxx_task_scheduler::setBackgroundHandling(int socket, int condition_set, BackgroundHandlerProc* handler_proc, void* client_data)
+{
+    if (socket < 0)
+    {
+        return;
+    }
 
     auto handler_iterator = _handlers.find(socket);
-    
-    bool handler_found = handler_iterator != _handlers.end();
+
+    bool found = handler_iterator != _handlers.end();
 
     if (condition_set == 0 || !handler_proc)
     {
-        if(handler_found)
+        if (found)
         {
-            /* It's possible the intention was to stop listening to polled events,
-               so instead of needlessing creating/destorying pollers, we wait for
-               the socket to be closed or invalidated  */
-            handler_iterator->second.set_condition_set(SOCKET_WAIT_FOR_DEATH);
+            handler_iterator->second.set_condition_set(0);
         }
 
         return;
     }
 
-    if (!handler_found)
+    if (!found)
     {
-	    _handlers.emplace(std::piecewise_construct, 
-	                      std::forward_as_tuple(socket), 
-	                      std::forward_as_tuple(socket, condition_set, handler_proc, client_data));
+        _handlers.emplace(std::piecewise_construct,
+                          std::forward_as_tuple(socket),
+                          std::forward_as_tuple(socket, condition_set, handler_proc, client_data));
     }
     else
     {
         auto& handler = handler_iterator->second;
 
         handler.set_handler(condition_set, handler_proc, client_data);
+
+        handler.set_condition_set(condition_set);
     }
 }
 
-void _uvxx_task_scheduler::moveSocketHandling(int old_socket, int new_socket) 
+void _uvxx_task_scheduler::moveSocketHandling(int old_socket, int new_socket)
 {
     if (old_socket < 0 || new_socket < 0)
     {
@@ -218,16 +220,17 @@ void _uvxx_task_scheduler::moveSocketHandling(int old_socket, int new_socket)
     }
 }
 
-_uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(int socket, 
-                                                                           int condition_set, 
-                                                                           BackgroundHandlerProc* handler_proc, 
-                                                                           void* client_data) : 
+_uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(int socket,
+    int condition_set,
+    BackgroundHandlerProc* handler_proc,
+    void* client_data) :
     _socket(socket),
     _condition_set(condition_set),
     _client_data(client_data),
     _poller(socket),
     _handler_proc(handler_proc),
-    _is_socket_valid(true)
+    _is_socket_valid(true),
+    _poll_disabled_since(std::chrono::high_resolution_clock::time_point::max())
 {
     _poller.set_callback(std::bind(&socket_handler_descriptor::poll_callback, this, std::placeholders::_1, std::placeholders::_2));
 
@@ -236,7 +239,7 @@ _uvxx_task_scheduler::socket_handler_descriptor::socket_handler_descriptor(int s
 
 _uvxx_task_scheduler::socket_handler_descriptor& _uvxx_task_scheduler::socket_handler_descriptor::operator=(socket_handler_descriptor&& rhs)
 {
-    if(this != &rhs)
+    if (this != &rhs)
     {
         _client_data = rhs._client_data;
 
@@ -287,14 +290,14 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_condition_set(int cond
     }
 
     _condition_set = condition_set;
-    
-    if (condition_set == SOCKET_WAIT_FOR_DEATH)
+
+    if(_condition_set == 0)
     {
-        _poller.stop();
+        stop_poll();
         
         return;
     }
-    
+
     start_poll();
 }
 
@@ -302,44 +305,30 @@ void _uvxx_task_scheduler::socket_handler_descriptor::set_handler(int condition_
 {
     bool had_handler = _handler_proc != nullptr;
 
-    bool poller_stopped = _condition_set == SOCKET_WAIT_FOR_DEATH;
-    
+    bool was_polling = _poller.is_polling();
+
     _handler_proc = handler_proc;
 
     _client_data = client_data;
 
     _condition_set = condition_set;
-    
-    if ((_handler_proc && !had_handler) || poller_stopped)
+
+    if (_condition_set == 0)
+    {
+        stop_poll();
+
+        return;
+    }
+
+    if ((_handler_proc && !had_handler) || (_handler_proc && !was_polling))
     {
         start_poll();
     }
-    
-    if(!_handler_proc)
-    {
-        _poller.stop();
-    }
-}
 
-bool _uvxx_task_scheduler::socket_handler_descriptor::is_socket_valid()
-{
-    if(!_is_socket_valid)
+    if (!_handler_proc)
     {
-        return false;
+        stop_poll();
     }
-    
-    int error = 0;
-
-    socklen_t len = sizeof(error);
-    
-    int result = getsockopt(_socket, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&error), &len);
-    
-    if (result != 0)
-    {
-        _is_socket_valid = false;
-    }
-    
-    return _is_socket_valid;
 }
 
 int _uvxx_task_scheduler::socket_handler_descriptor::socket()
@@ -360,23 +349,16 @@ void _uvxx_task_scheduler::socket_handler_descriptor::start_poll()
 {
     socket_poll_event events = static_cast<socket_poll_event>(0);
 
-    if (_condition_set == SOCKET_WAIT_FOR_DEATH)
+    if (_condition_set & SOCKET_READABLE)
     {
-        return;
+        events |= socket_poll_event::Readable;
     }
-    else
-    {
-        if (_condition_set & SOCKET_READABLE)
-        {
-            events |= socket_poll_event::Readable;
-        }
 
-        if (_condition_set & SOCKET_WRITABLE)
-        {
-            events |= socket_poll_event::Writeable;
-        }
+    if (_condition_set & SOCKET_WRITABLE)
+    {
+        events |= socket_poll_event::Writeable;
     }
-    
+
     _poller.start(events);
 }
 
@@ -404,10 +386,47 @@ void _uvxx_task_scheduler::socket_handler_descriptor::poll_callback(int status, 
         mask |= SOCKET_EXCEPTION;
     }
 
-    if (_condition_set & SOCKET_EXCEPTION || 
-        _condition_set & SOCKET_WRITABLE  || 
+    if (_condition_set & SOCKET_EXCEPTION ||
+        _condition_set & SOCKET_WRITABLE ||
         _condition_set & SOCKET_READABLE)
     {
         _handler_proc(_client_data, mask);
+    }
+}
+
+void _uvxx_task_scheduler::socket_handler_descriptor::stop_poll()
+{
+    _poll_disabled_since = std::chrono::high_resolution_clock::now();
+
+    _poller.stop();
+}
+
+bool _uvxx_task_scheduler::socket_handler_descriptor::has_disabled_poll_timed_out()
+{
+    if(_poller.is_polling())
+    {
+        return false;
+    }
+
+    auto now = std::chrono::high_resolution_clock::now();
+
+    auto time_since_start = std::chrono::duration_cast<std::chrono::seconds>(now - _poll_disabled_since);
+
+    static std::chrono::seconds zero_seconds(0);
+
+    if(time_since_start < zero_seconds)
+    {
+        return false;
+    }
+
+    static std::chrono::seconds seconds_to_timeout(10);
+
+    if(time_since_start > seconds_to_timeout)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }

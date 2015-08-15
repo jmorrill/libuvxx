@@ -17,12 +17,26 @@ _socket_poll_impl::~_socket_poll_impl()
 
 void _socket_poll_impl::start(int events)
 {
-    _poll.start(events);
+    if(_poll.start(events) == 0)
+    {
+        _is_polling = true;
+    }
+    else
+    {
+        _is_polling = false;
+    }
 }
 
 void _socket_poll_impl::stop()
 {
     _poll.stop();
+
+    _is_polling = false;
+}
+
+bool _socket_poll_impl::is_polling()
+{
+    return _is_polling;
 }
 
 void _socket_poll_impl::poll_callback(int status, int events)

@@ -28,6 +28,8 @@ namespace uvxx { namespace net { namespace details
 
         void stop();
 
+        bool is_polling();
+
     private:
         void poll_callback(int status, int events);
 
@@ -35,5 +37,7 @@ namespace uvxx { namespace net { namespace details
         std::function<void(int status, socket_poll_event events)> _callback;
 
         uvxx::details::_uv_poll _poll;
+
+        bool _is_polling;
     };
 }}}

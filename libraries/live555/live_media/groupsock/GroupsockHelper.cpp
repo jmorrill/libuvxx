@@ -116,20 +116,14 @@ int setupDatagramSocket(UsageEnvironment& env, Port port) {
 #if defined(__WIN32__) || defined(_WIN32)
   // Windoze doesn't properly handle SO_REUSEPORT or IP_MULTICAST_LOOP
 #else
-//#ifdef SO_REUSEPORT
-    //int res = setsockopt(newSocket,
-        //SOL_SOCKET,
-        //SO_REUSEPORT,
-        //(const char*)&reuseFlag,
-        //sizeof reuseFlag);
-    //
-    //printf("%d", res);
-  //if (res < 0) {
+#ifdef SO_REUSEPORT
+  if (setsockopt(newSocket, SOL_SOCKET, SO_REUSEPORT,
+		 (const char*)&reuseFlag, sizeof reuseFlag) < 0) {
     //socketErr(env, "setsockopt(SO_REUSEPORT) error: ");
     //closeSocket(newSocket);
     //return -1;
-  //}
-//#endif
+  }
+#endif
 
 #ifdef IP_MULTICAST_LOOP
   const u_int8_t loop = 1;
@@ -246,14 +240,14 @@ int setupStreamSocket(UsageEnvironment& env,
 #if defined(__WIN32__) || defined(_WIN32)
   // Windoze doesn't properly handle SO_REUSEPORT
 #else
-//#ifdef SO_REUSEPORT
-  //if (setsockopt(newSocket, SOL_SOCKET, SO_REUSEPORT,
-		 //(const char*)&reuseFlag, sizeof reuseFlag) < 0) {
-    //socketErr(env, "setsockopt(SO_REUSEPORT) error: ");
-    //closeSocket(newSocket);
-    //return -1;
-  //}
-//#endif
+#ifdef SO_REUSEPORT
+  if (setsockopt(newSocket, SOL_SOCKET, SO_REUSEPORT,
+		 (const char*)&reuseFlag, sizeof reuseFlag) < 0) {
+    socketErr(env, "setsockopt(SO_REUSEPORT) error: ");
+    closeSocket(newSocket);
+    return -1;
+  }
+#endif
 #endif
 #endif
 

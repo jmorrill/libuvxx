@@ -17,13 +17,13 @@ namespace uvxx { namespace details
         poll->_callback(status, events);
     }
 
-    void _uv_poll::start(int events)
+    int _uv_poll::start(int events)
     {
-        uv_poll_start(*this, events, poll_callback);
+        return uv_poll_start(*this, events, poll_callback);
     }
 
-    void _uv_poll::stop()
+    int _uv_poll::stop()
     {
-        uv_poll_stop(*this);
+        return uv_poll_stop(*this);
     }
 }}

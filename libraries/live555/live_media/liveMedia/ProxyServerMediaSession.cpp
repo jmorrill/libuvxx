@@ -131,7 +131,7 @@ ProxyServerMediaSession::~ProxyServerMediaSession() {
   Medium::close(fTranscodingTable);
   Medium::close(fClientMediaSession);
   Medium::close(fProxyRTSPClient);
-  delete fPresentationTimeSessionNormalizer;
+  Medium::close(fPresentationTimeSessionNormalizer);
 }
 
 char const* ProxyServerMediaSession::url() const {
@@ -201,9 +201,7 @@ static void continueAfterDESCRIBE(RTSPClient* rtspClient, int resultCode, char* 
 }
 
 static void continueAfterSETUP(RTSPClient* rtspClient, int resultCode, char* resultString) {
-  if (resultCode == 0) {
-    ((ProxyRTSPClient*)rtspClient)->continueAfterSETUP();
-  }
+  ((ProxyRTSPClient*)rtspClient)->continueAfterSETUP(resultCode);
   delete[] resultString;
 }
 
@@ -322,7 +320,14 @@ void ProxyRTSPClient::continueAfterLivenessCommand(int resultCode, Boolean serve
 
 #define SUBSESSION_TIMEOUT_SECONDS 10 // how many seconds to wait for the last track's "SETUP" to be done (note below)
 
-void ProxyRTSPClient::continueAfterSETUP() {
+void ProxyRTSPClient::continueAfterSETUP(int resultCode) {
+  if (resultCode != 0) {
+    // The "SETUP" command failed, so reset the connection with the 'back-end' server and start over,
+    // just as if a periodic 'liveness' check with the 'back-end' server had failed:
+    continueAfterLivenessCommand(resultCode, fServerSupportsGetParameter);
+    return;
+  }
+
   if (fVerbosityLevel > 0) {
     envir() << *this << "::continueAfterSETUP(): head codec: " << fSetupQueueHead->codecName()
 	    << "; numSubsessions " << fSetupQueueHead->fParentSession->numSubsessions() << "\n\tqueue:";
@@ -760,7 +765,7 @@ PresentationTimeSessionNormalizer::PresentationTimeSessionNormalizer(UsageEnviro
 
 PresentationTimeSessionNormalizer::~PresentationTimeSessionNormalizer() {
   while (fSubsessionNormalizers != NULL) {
-    delete fSubsessionNormalizers;
+    Medium::close(fSubsessionNormalizers);
   }
 }
 

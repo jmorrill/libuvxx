@@ -18,7 +18,7 @@
 #define __UINT_LEAST16_MAX__ 65535
 #endif
 #ifndef __ARM_SIZEOF_WCHAR_T
-#define __ARM_SIZEOF_WCHAR_T 32
+#define __ARM_SIZEOF_WCHAR_T 4
 #endif
 #ifndef __ATOMIC_ACQUIRE
 #define __ATOMIC_ACQUIRE 2
@@ -153,7 +153,7 @@
 #define __LFRACT_IBIT__ 0
 #endif
 #ifndef __GNUC_PATCHLEVEL__
-#define __GNUC_PATCHLEVEL__ 1
+#define __GNUC_PATCHLEVEL__ 3
 #endif
 #ifndef __LFRACT_MAX__
 #define __LFRACT_MAX__ 0X7FFFFFFFP-31LR
@@ -178,6 +178,9 @@
 #endif
 #ifndef __FRACT_MAX__
 #define __FRACT_MAX__ 0X7FFFP-15R
+#endif
+#ifndef __thumb2__
+#define __thumb2__ 1
 #endif
 #ifndef __UFRACT_FBIT__
 #define __UFRACT_FBIT__ 16
@@ -580,7 +583,7 @@
 #define __FLT_MANT_DIG__ 24
 #endif
 #ifndef __VERSION__
-#define __VERSION__ "4.9.1"
+#define __VERSION__ "4.9.3 20150113 (prerelease)"
 #endif
 #ifndef __ULLFRACT_FBIT__
 #define __ULLFRACT_FBIT__ 64
@@ -642,6 +645,9 @@
 #ifndef __LLACCUM_FBIT__
 #define __LLACCUM_FBIT__ 31
 #endif
+#ifndef __LINARO_SPIN__
+#define __LINARO_SPIN__ 3
+#endif
 #ifndef __INT_FAST32_TYPE__
 #define __INT_FAST32_TYPE__ int
 #endif
@@ -662,6 +668,9 @@
 #endif
 #ifndef __INT8_TYPE__
 #define __INT8_TYPE__ signed char
+#endif
+#ifndef __thumb__
+#define __thumb__ 1
 #endif
 #ifndef __cpp_digit_separators
 #define __cpp_digit_separators 201309
@@ -692,6 +701,9 @@
 #endif
 #ifndef __SIG_ATOMIC_MAX__
 #define __SIG_ATOMIC_MAX__ 2147483647
+#endif
+#ifndef __LINARO_RELEASE__
+#define __LINARO_RELEASE__ 201501
 #endif
 #ifndef __GCC_ATOMIC_WCHAR_T_LOCK_FREE
 #define __GCC_ATOMIC_WCHAR_T_LOCK_FREE 2
@@ -848,6 +860,9 @@
 #endif
 #ifndef __SIZEOF_FLOAT__
 #define __SIZEOF_FLOAT__ 4
+#endif
+#ifndef __THUMBEL__
+#define __THUMBEL__ 1
 #endif
 #ifndef __USQ_FBIT__
 #define __USQ_FBIT__ 32
@@ -1167,14 +1182,13 @@
 #endif
 
 // --- Include directories begin --- //
-//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9
-//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9/backward
-//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/include
-//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/include-fixed
-//c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include
-//c:/sysgcc/raspberry/lib/gcc/../../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/arm-linux-gnueabihf/c++/4.9
-//c:\sysgcc\raspberry\bin\../arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf
-//c:\sysgcc\raspberry\bin\../arm-linux-gnueabihf/sysroot/usr/include
+//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3
+//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3/arm-linux-gnueabihf
+//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3/backward
+//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/include
+//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/include-fixed
+//c:\sysgcc\linaro\bin\../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include
+//c:\sysgcc\linaro\bin\../arm-linux-gnueabihf/libc/usr/include
 //include
 //../libraries/live555/live_media/liveMedia/include
 //../libraries/live555/live_media/groupsock/include
@@ -1185,13 +1199,11 @@
 
 
 // --- Library directories begin --- //
-//c:/sysgcc/raspberry/bin/../lib/gcc/arm-linux-gnueabihf/4.9/
-//c:/sysgcc/raspberry/bin/../lib/gcc/arm-linux-gnueabihf/
-//c:/sysgcc/raspberry/bin/../lib/gcc/
-//c:/sysgcc/raspberry/bin/../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/lib/
-//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/lib/arm-linux-gnueabihf/
-//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/lib/
-//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf/
-//c:/sysgcc/raspberry/bin/../arm-linux-gnueabihf/sysroot/usr/lib/
+//c:/sysgcc/linaro/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/
+//c:/sysgcc/linaro/bin/../lib/gcc/arm-linux-gnueabihf/
+//c:/sysgcc/linaro/bin/../lib/gcc/
+//c:/sysgcc/linaro/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/lib/
+//c:/sysgcc/linaro/bin/../arm-linux-gnueabihf/libc/lib/
+//c:/sysgcc/linaro/bin/../arm-linux-gnueabihf/libc/usr/lib/
 // --- Library directories begin --- //
 

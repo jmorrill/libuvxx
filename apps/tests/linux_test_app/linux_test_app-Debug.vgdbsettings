@@ -4,7 +4,7 @@
   <Project xsi:type="com.visualgdb.project.linux">
     <CustomSourceDirectories>
       <Directories />
-      <PathStyle>MinGWUnixSlash</PathStyle>
+      <PathStyle>RemoteUnix</PathStyle>
     </CustomSourceDirectories>
     <BuildHost>
       <Transport>None</Transport>
@@ -39,7 +39,7 @@
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>
     <IgnoreFileTransferErrors>false</IgnoreFileTransferErrors>
     <RemoveRemoteDirectoryOnClean>false</RemoveRemoteDirectoryOnClean>
-    <SkipDeploymentTests>false</SkipDeploymentTests>
+    <SkipDeploymentTests>true</SkipDeploymentTests>
     <MainSourceDirectoryForLocalBuilds>$(ProjectDir)</MainSourceDirectoryForLocalBuilds>
   </Project>
   <Build xsi:type="com.visualgdb.build.make">
@@ -47,23 +47,23 @@
     <MakeConfigurationName>Debug</MakeConfigurationName>
     <AdditionalMakeArguments />
     <Toolchain>
-      <Name>Raspberry-Jessie</Name>
-      <Location>C:\SysGCC\raspberry</Location>
+      <Name>arm-linux-gnueabihf</Name>
+      <Location>C:\SysGCC\linaro</Location>
       <UnixSystem>false</UnixSystem>
-      <GCC>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gcc.exe</GCC>
-      <GXX>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-g++.exe</GXX>
-      <GDB>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-gdb.exe</GDB>
-      <AR>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-ar.exe</AR>
-      <OBJCOPY>C:\SysGCC\raspberry\bin\arm-linux-gnueabihf-objcopy.exe</OBJCOPY>
-      <Make>C:\SysGCC\raspberry\bin\make.exe</Make>
+      <GCC>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-gcc.exe</GCC>
+      <GXX>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-g++.exe</GXX>
+      <GDB>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-gdb.exe</GDB>
+      <AR>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-ar.exe</AR>
+      <OBJCOPY>C:\SysGCC\linaro\bin\arm-linux-gnueabihf-objcopy.exe</OBJCOPY>
+      <Make>$(VISUALGDB_DIR)\make.exe</Make>
       <AdditionalPathDirectories>
-        <string>C:\SysGCC\raspberry\bin</string>
+        <string>C:\SysGCC\linaro\bin</string>
       </AdditionalPathDirectories>
       <RequireCmdExe>true</RequireCmdExe>
       <RequireCtrlBreak>false</RequireCtrlBreak>
       <SourceDirMapping>
         <Directories />
-        <PathStyle>MinGWUnixSlash</PathStyle>
+        <PathStyle>RemoteUnix</PathStyle>
       </SourceDirMapping>
     </Toolchain>
     <MakeCommandTemplate>
@@ -72,7 +72,7 @@
         <Transport>None</Transport>
       </RemoteHost>
       <Command>cmd.exe</Command>
-      <Arguments>/c "C:\SysGCC\raspberry\bin\make.exe"</Arguments>
+      <Arguments>/c "$(VISUALGDB_DIR)\make.exe"</Arguments>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>
       <Environment>
         <Records>
@@ -82,7 +82,7 @@
           </Record>
           <Record>
             <VariableName>PATH</VariableName>
-            <Value>%PATH%;C:\SysGCC\raspberry\bin</Value>
+            <Value>%PATH%;C:\SysGCC\linaro\bin</Value>
           </Record>
         </Records>
       </Environment>
@@ -91,9 +91,12 @@
   <Debug xsi:type="com.visualgdb.debug.remote">
     <AdditionalStartupCommands>
       <GDBPreStartupCommands>
+        <string>set architecture arm</string>
         <string>handle SIGPIPE nostop noprint pass</string>
       </GDBPreStartupCommands>
-      <GDBStartupCommands />
+      <GDBStartupCommands>
+        <string>set architecture arm</string>
+      </GDBStartupCommands>
     </AdditionalStartupCommands>
     <AdditionalGDBSettings>
       <FilterSpuriousStoppedNotifications>false</FilterSpuriousStoppedNotifications>

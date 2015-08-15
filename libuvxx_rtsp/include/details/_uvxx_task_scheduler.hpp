@@ -40,6 +40,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         virtual void triggerEvent(EventTriggerId eventTriggerId, void* clientData = nullptr) override;
 
+        void prune_dead_pollers();
+
         class socket_handler_descriptor
         {
         public:
@@ -63,16 +65,18 @@ namespace uvxx { namespace rtsp { namespace details
             void set_socket(int socket);
 
             void set_handler(int condition_set, BackgroundHandlerProc* handler_proc, void* client_data);
-            
-            bool is_socket_valid();
 
             int socket();
+
+            bool has_disabled_poll_timed_out();
 
         private:
             void start_poll();
 
             void poll_callback(int status, net::socket_poll_event events);
 
+            void stop_poll();
+            
         private:
             int _socket;
 
@@ -85,6 +89,8 @@ namespace uvxx { namespace rtsp { namespace details
             BackgroundHandlerProc* _handler_proc;
 
             bool _is_socket_valid;
+
+            std::chrono::high_resolution_clock::time_point _poll_disabled_since;
         };
 
       private:

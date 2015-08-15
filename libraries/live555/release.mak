@@ -5,11 +5,11 @@
 BINARYDIR := Release
 
 #Toolchain
-CC := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-gcc.exe
-CXX := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-g++.exe
+CC := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-gcc.exe
+CXX := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-g++.exe
 LD := $(CXX)
-AR := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-ar.exe
-OBJCOPY := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-objcopy.exe
+AR := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-ar.exe
+OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
 PREPROCESSOR_MACROS := SO_NOSIGPIPE NDEBUG RELEASE __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
@@ -20,8 +20,8 @@ ADDITIONAL_LINKER_INPUTS :=
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
 
-CFLAGS := -s -ffunction-sections  -ffunction-sections -O0  -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
-CXXFLAGS := -s -ffunction-sections  -ffunction-sections -O0  -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64  -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
+CFLAGS := -s -ffunction-sections  -ffunction-sections  -DBSD=1 -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
+CXXFLAGS := -s -ffunction-sections  -ffunction-sections  -DBSD=1 -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -O3 -pipe -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -mfpu=neon -mvectorize-with-neon-quad
 ASFLAGS := 
 LDFLAGS := -s -Wl,-gc-sections
 COMMONFLAGS := 

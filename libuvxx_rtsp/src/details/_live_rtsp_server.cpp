@@ -245,9 +245,21 @@ int _live_rtsp_server::setup_socket(uint16_t port)
 {
     Port port_(port);
 
-    auto socket = setUpOurSocket(*_get_live_environment().get(), port_);
+    auto environment = _get_live_environment();
 
-    printf("opened server socket on %d\n", socket);
+    auto socket = setUpOurSocket(*environment.get(), port_);
+
+    if (socket <= 0)
+    {
+        environment->reportBackgroundError();
+        
+        printf("\n");
+    }
+    else
+    {
+        printf("opened server socket on port %d with socket %d\n", port, socket);
+    }
+
 
     return socket;
 }
@@ -727,7 +739,7 @@ _live_rtsp_server::_live_rtsp_client_connection::_live_rtsp_client_connection(_l
     RTSPClientConnectionSupportingHTTPStreaming(our_server, client_socket, client_addr),
     __live_rtsp_server(our_server)
 {
-                
+    increaseSendBufferTo(envir(), client_socket, 128 * 1024);
 }
 
 _live_rtsp_server::_live_rtsp_client_connection::~_live_rtsp_client_connection()
@@ -743,7 +755,7 @@ task<void> _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describ
 {
     std::string url_total_suffix;
 
-    url_total_suffix.reserve(RTSP_PARAM_STRING_MAX);
+    url_total_suffix.reserve(2 * RTSP_PARAM_STRING_MAX);
 
     if (url_pre_suffix[0] != '\0') 
     {
@@ -1171,7 +1183,7 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
                     // because that has a special use (by "OnDemandServerMediaSubsession").)
 
                     // But first, make sure that we're authenticated to perform this command:
-                    char urlTotalSuffix[RTSP_PARAM_STRING_MAX];
+                    char urlTotalSuffix[2 * RTSP_PARAM_STRING_MAX];
 
                     urlTotalSuffix[0] = '\0';
 

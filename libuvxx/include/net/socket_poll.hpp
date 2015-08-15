@@ -42,6 +42,8 @@ namespace uvxx { namespace net
 
         bool operator==(std::nullptr_t rhs);
 
+        bool is_polling();
+
     private:
        std::shared_ptr<details::_socket_poll_impl> __socket_poll;
     };

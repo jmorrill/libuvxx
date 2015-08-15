@@ -49,6 +49,11 @@ namespace uvxx { namespace net
         return operator bool();
     }
 
+    bool socket_poll::is_polling()
+    {
+        return __socket_poll->is_polling();
+    }
+
     void socket_poll::set_callback(std::function<void(int status, socket_poll_event events)> callback)
     {
         __socket_poll->set_callback(std::move(callback));

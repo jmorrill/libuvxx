@@ -15,9 +15,9 @@ namespace uvxx { namespace details
     public:
         _uv_poll(_uv_loop* uv_loop, int fd, std::function<void(int status, int events)> callback);
 
-        void start(int events);
+        int start(int events);
 
-        void stop();
+        int stop();
     private:
         static void poll_callback(uv_poll_t * handle, int status, int events);
 

@@ -5,11 +5,11 @@
 BINARYDIR := Release
 
 #Toolchain
-CC := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-gcc.exe
-CXX := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-g++.exe
+CC := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-gcc.exe
+CXX := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-g++.exe
 LD := $(CXX)
-AR := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-ar.exe
-OBJCOPY := C:/SysGCC/raspberry/bin/arm-linux-gnueabihf-objcopy.exe
+AR := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-ar.exe
+OBJCOPY := C:/SysGCC/linaro/bin/arm-linux-gnueabihf-objcopy.exe
 
 #Additional flags
 PREPROCESSOR_MACROS := NDEBUG RELEASE __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
