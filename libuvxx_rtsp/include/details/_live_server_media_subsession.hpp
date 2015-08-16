@@ -3,6 +3,7 @@
 
 #include "event_dispatcher_object.hpp"
 #include "event_dispatcher_frame.hpp"
+#include "media_attributes.hpp"
 
 namespace uvxx { namespace rtsp { namespace details 
 {
@@ -13,7 +14,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _live_server_media_subsession : public OnDemandServerMediaSubsession, public event_dispatcher_object
     {
     public:
-        explicit _live_server_media_subsession(int stream_id);
+        explicit _live_server_media_subsession(int stream_id, const media_attributes& attributes);
 
         _live_server_media_subsession(const _live_server_media_subsession&) = delete;
 
@@ -59,6 +60,8 @@ namespace uvxx { namespace rtsp { namespace details
         RTPSink* _dummy_rtp_sink;
 
         int _stream_id;
+
+        media_attributes _attributes;
     };
 
 }}}

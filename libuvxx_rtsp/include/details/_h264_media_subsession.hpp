@@ -3,6 +3,10 @@
 #include "event_dispatcher_frame.hpp"
 #include "_live_server_media_subsession.hpp"
 
+namespace uvxx { namespace rtsp {
+    class media_attributes;
+}}
+
 namespace uvxx { namespace rtsp { namespace details 
 {
     class _live_framed_source;
@@ -14,7 +18,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _h264_media_subsession : public _live_server_media_subsession
     {
     public:
-        explicit _h264_media_subsession(int stream_id);
+        explicit _h264_media_subsession(int stream_id, const media_attributes&);
 
         _h264_media_subsession(const _h264_media_subsession&) = delete;
 

@@ -5,6 +5,7 @@
 #include "details/_live_server_media_session.hpp"
 #include "details/_server_media_session_impl.hpp"
 #include "details/_h264_media_subsession.hpp"
+#include "details/_audio_media_subsession.hpp"
 
 using namespace uvxx::rtsp::details;
 
@@ -104,17 +105,27 @@ void _server_media_session_impl::configure_session()
 {
     auto& streams = _descriptor.get_streams();
 
-    for(auto& stream : streams)
+    auto frame_source_created_callback = std::bind(&_server_media_session_impl::on_framed_source_created,
+                                                   this,
+                                                   std::placeholders::_1,
+                                                   std::placeholders::_2,
+                                                   std::placeholders::_3);
+
+    for(const auto& stream : streams)
     {
         if(stream.codec_name() == "H264")
         {
-            auto subsession = new _h264_media_subsession(stream.stream_id());
+            auto subsession = new _h264_media_subsession(stream.stream_id(), stream.attributes());
 
-            subsession->framed_source_created_set(std::bind(&_server_media_session_impl::on_framed_source_created, 
-                                                            this, 
-                                                            std::placeholders::_1, 
-                                                            std::placeholders::_2, 
-                                                            std::placeholders::_3));
+            subsession->framed_source_created_set(frame_source_created_callback);
+
+            __live_server_media_session->addSubsession(subsession);
+        } 
+        else if (stream.codec_name() == "PCMA")
+        {
+            auto subsession = new _audio_media_subsession(stream.stream_id(), stream.codec_name(), stream.attributes());
+
+            subsession->framed_source_created_set(frame_source_created_callback);
 
             __live_server_media_session->addSubsession(subsession);
         }

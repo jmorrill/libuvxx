@@ -59,6 +59,12 @@ void on_sample_callback(const media_sample& sample)
 
             auto channels = sample.attribute_get<int>(ATTRIBUTE_AUDIO_CHANNEL_COUNT);
 
+
+            for (auto& session : server_sessions)
+            {
+                session.deliver_sample(2, sample);
+            }
+
             //printf("\tfreq: %d", samples_per_second);
 
             //printf("\tchannels: %d", channels);
@@ -81,11 +87,18 @@ task<server_media_session> on_session_requested(const std::string& stream_name)
 {
     printf("creating session\n");
 
+    //if(!server_sessions.empty())
+    //{
+    //    return task_from_result(server_sessions[0]);
+    //}
+
     auto server_session = server_media_session();
 
     media_descriptor descriptor;
 
     descriptor.add_stream_from_attributes(1, "H264", media_attributes());
+
+    descriptor.add_stream_from_attributes(2, "PCMA", media_attributes());
 
     server_session.set_media_descriptor(descriptor);
 

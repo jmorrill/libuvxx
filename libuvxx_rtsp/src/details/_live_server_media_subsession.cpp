@@ -1,17 +1,19 @@
 #include "H264VideoRTPSink.hh"
 #include "pplx/pplpp.hpp"
+
+#include "media_attributes.hpp"
 #include "details/_live_common.hpp"
 #include "details/_live_server_media_subsession.hpp"
 
 using namespace uvxx::pplx;
+using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
-
-_live_server_media_subsession::_live_server_media_subsession(int stream_id) :
+_live_server_media_subsession::_live_server_media_subsession(int stream_id, const media_attributes& attributes) :
     OnDemandServerMediaSubsession(*_get_live_environment().get(), false),
     _dummy_rtp_sink(nullptr),
-    _stream_id(stream_id)
-   
+    _stream_id(stream_id),
+    _attributes(attributes)
 {
   
     printf("_live_server_media_subsession ctor %p\n", this);

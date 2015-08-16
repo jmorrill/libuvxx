@@ -2,10 +2,10 @@
 #include "FramedSource.hh"
 
 #include "event_dispatcher_object.hpp"
-#include "media_descriptor.hpp"
 #include "media_sample.hpp"
 #include "sample_attributes.hpp"
 #include "media_sample.hpp"
+#include "media_descriptor.hpp"
 
 namespace uvxx { namespace rtsp 
 {

@@ -219,15 +219,32 @@ ServerMediaSession* _live_rtsp_server::lookupServerMediaSession(char const* /*st
     return nullptr;
 }
 
-task<_live_server_media_session*> _live_rtsp_server::begin_lookup_server_media_session(const std::string& stream_name, bool /*is_first_lookup_in_session*/)
+task<_live_server_media_session*> _live_rtsp_server::begin_lookup_server_media_session(const std::string& stream_name, bool is_first_lookup_in_session)
 {
+    if(!is_first_lookup_in_session)
+    {
+        auto session = RTSPServer::lookupServerMediaSession(stream_name.c_str());
+
+        if(session)
+        {
+            return task_from_result<_live_server_media_session*>(static_cast<_live_server_media_session*>(session));
+        }
+    }
+
     if(!__lookup_media_session_delegate)
     {
         return task_from_result<_live_server_media_session*>(nullptr);
     }
     else
     {
-        return __lookup_media_session_delegate(stream_name);
+        return __lookup_media_session_delegate(stream_name).then([=](task<_live_server_media_session*> t)
+        {
+            auto result = t.get();
+
+            addServerMediaSession(t.get());
+
+            return t.get();
+        });
     }
 }
 
@@ -285,7 +302,7 @@ task<void> _live_rtsp_server::_live_rtsp_client_session::begin_handle_setup(_liv
 {
     std::string cseq = our_client_connection->current_cseq();
 
-    return  _our_server.begin_lookup_server_media_session(url_pre_suffix.c_str(), true).then([=](task<_live_server_media_session*> t)
+    return  _our_server.begin_lookup_server_media_session(url_pre_suffix.c_str(), fOurServerMediaSession == nullptr).then([=](task<_live_server_media_session*> t)
     {
         auto sms = t.get();
 

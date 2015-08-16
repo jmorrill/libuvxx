@@ -4,7 +4,9 @@
 #include "pplx/pplpp.hpp"
 #include "details/_h264_media_subsession.hpp"
 #include "details/_h264_framed_source.hpp"
+#include "media_attributes.hpp"
 
+using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::details;
 
 void _h264_media_subsession::after_playing_dummy_callback(void* clientData) 
@@ -14,8 +16,8 @@ void _h264_media_subsession::after_playing_dummy_callback(void* clientData)
     subsess->after_playing_dummy();
 }
 
-_h264_media_subsession::_h264_media_subsession(int stream_id) :
-    _live_server_media_subsession(stream_id)
+_h264_media_subsession::_h264_media_subsession(int stream_id, const uvxx::rtsp::media_attributes& attributes) :
+    _live_server_media_subsession(stream_id, attributes)
 {
    
 }
