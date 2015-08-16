@@ -241,7 +241,7 @@ task<_live_server_media_session*> _live_rtsp_server::begin_lookup_server_media_s
         {
             auto result = t.get();
 
-            addServerMediaSession(t.get());
+	        addServerMediaSession(result);
 
             return t.get();
         });

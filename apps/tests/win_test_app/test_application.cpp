@@ -87,11 +87,6 @@ task<server_media_session> on_session_requested(const std::string& stream_name)
 {
     printf("creating session\n");
 
-    //if(!server_sessions.empty())
-    //{
-    //    return task_from_result(server_sessions[0]);
-    //}
-
     auto server_session = server_media_session();
 
     media_descriptor descriptor;
