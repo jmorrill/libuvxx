@@ -110,7 +110,7 @@ task<server_media_session> on_session_requested(const std::string& stream_name)
 
 int main(int argc, char* argv[])
 {
-   
+	signal(SIGPIPE, SIG_IGN);
     
     if (argc < 2)
     {
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
 
         client.credentials_set("admin", "12345");
 
-        client.protocol_set(transport_protocol::udp);
+        client.protocol_set(transport_protocol::tcp);
 
         client.open(argv[1]).then([=]
         {

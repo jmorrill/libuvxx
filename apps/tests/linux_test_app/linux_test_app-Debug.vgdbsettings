@@ -131,7 +131,7 @@
     <LaunchGDBSettings xsi:type="GDBLaunchParametersNewInstance">
       <DebuggedProgram>$(TargetPath)</DebuggedProgram>
       <GDBServerPort>2000</GDBServerPort>
-      <ProgramArguments>"rtsp://admin:hv3515@10.1.30.190"</ProgramArguments>
+      <ProgramArguments>rtsp://root:hv3515@10.1.30.113/axis-media/media.amp</ProgramArguments>
     </LaunchGDBSettings>
     <GenerateCtrlBreakInsteadOfCtrlC>false</GenerateCtrlBreakInsteadOfCtrlC>
     <DeploymentTargetPath>/tmp/$(TargetFileName)</DeploymentTargetPath>
@@ -164,5 +164,8 @@
     <CFLAGS>-D__cplusplus=201103L</CFLAGS>
     <CXXFLAGS>-D__cplusplus=201103L</CXXFLAGS>
     <ExternalSourceFileList />
+    <ExtraSettings>
+      <HideErrorsInSystemHeaders>false</HideErrorsInSystemHeaders>
+    </ExtraSettings>
   </CodeSense>
 </VisualGDBProjectSettings2>
