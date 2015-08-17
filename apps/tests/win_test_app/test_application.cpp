@@ -41,7 +41,7 @@ void on_sample_callback(const media_sample& sample)
 
             for(auto& session : server_sessions)
             {
-                session.deliver_sample(1, sample);
+                session.deliver_sample(sample.stream_number(), sample);
             }
 
             auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
@@ -62,7 +62,7 @@ void on_sample_callback(const media_sample& sample)
 
             for (auto& session : server_sessions)
             {
-                session.deliver_sample(2, sample);
+                session.deliver_sample(sample.stream_number(), sample);
             }
 
             //printf("\tfreq: %d", samples_per_second);
@@ -89,13 +89,16 @@ task<server_media_session> on_session_requested(const std::string& stream_name)
 
     auto server_session = server_media_session();
 
-    media_descriptor descriptor;
+    try
+    {
+        media_descriptor descriptor = client.media_descriptor_get();
 
-    descriptor.add_stream_from_attributes(1, "H264", media_attributes());
-
-    descriptor.add_stream_from_attributes(2, "PCMA", media_attributes());
-
-    server_session.set_media_descriptor(descriptor);
+        server_session.set_media_descriptor(descriptor);
+    }
+    catch (const std::exception&e)
+    {
+        return task_from_result(server_session);
+    }
 
     server_sessions.push_back(server_session);
 

@@ -30,7 +30,7 @@ namespace uvxx { namespace rtsp { namespace details
     protected:
         virtual ServerMediaSession* lookupServerMediaSession(char const* stream_name, Boolean is_first_lookup_in_session = true) override;
 
-        virtual uvxx::pplx::task<_live_server_media_session*> begin_lookup_server_media_session(const std::string& stream_name, bool is_first_lookup_in_session);
+        virtual uvxx::pplx::task<_live_server_media_session*> begin_lookup_server_media_session(const std::string& stream_name, bool is_first_lookup_in_session, uint32_t client_session_id);
 
         virtual ClientSession* createNewClientSession(u_int32_t session_id) override;
 

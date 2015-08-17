@@ -219,8 +219,10 @@ ServerMediaSession* _live_rtsp_server::lookupServerMediaSession(char const* /*st
     return nullptr;
 }
 
-task<_live_server_media_session*> _live_rtsp_server::begin_lookup_server_media_session(const std::string& stream_name, bool is_first_lookup_in_session)
+task<_live_server_media_session*> _live_rtsp_server::begin_lookup_server_media_session(const std::string& stream_name, bool is_first_lookup_in_session, uint32_t client_session_id)
 {
+    printf("begin_lookup_server_media_session client session id %u\n", client_session_id);
+
     if(!is_first_lookup_in_session)
     {
         auto session = RTSPServer::lookupServerMediaSession(stream_name.c_str());
@@ -301,8 +303,8 @@ void _live_rtsp_server::_live_rtsp_client_session::note_liveness()
 task<void> _live_rtsp_server::_live_rtsp_client_session::begin_handle_setup(_live_rtsp_client_connection* our_client_connection, const std::string& url_pre_suffix, const std::string& url_suffix, const std::string& full_request_str)
 {
     std::string cseq = our_client_connection->current_cseq();
-
-    return  _our_server.begin_lookup_server_media_session(url_pre_suffix.c_str(), fOurServerMediaSession == nullptr).then([=](task<_live_server_media_session*> t)
+       
+    return  _our_server.begin_lookup_server_media_session(url_pre_suffix.c_str(), fOurServerMediaSession == nullptr, fOurSessionId).then([=](task<_live_server_media_session*> t)
     {
         auto sms = t.get();
 
@@ -346,7 +348,7 @@ task<void> _live_rtsp_server::_live_rtsp_client_session::handle_cmd_setup(_live_
             trackId->clear();
 
             // Check again:
-            return _our_server.begin_lookup_server_media_session(streamName, fOurServerMediaSession == nullptr);
+            return _our_server.begin_lookup_server_media_session(streamName, fOurServerMediaSession == nullptr, fOurSessionId);
         }
 
         return task_from_result(live_server_media_session);
@@ -799,7 +801,7 @@ task<void> _live_rtsp_server::_live_rtsp_client_connection::begin_handle_describ
 
     auto session_holder = std::make_shared<pointer_holder>();
 
-    return __live_rtsp_server.begin_lookup_server_media_session(url_total_suffix, true).then([=](_live_server_media_session* session) mutable
+    return __live_rtsp_server.begin_lookup_server_media_session(url_total_suffix, true, fClientSessionId).then([=](_live_server_media_session* session) mutable
     {
         if (session == nullptr)
         {

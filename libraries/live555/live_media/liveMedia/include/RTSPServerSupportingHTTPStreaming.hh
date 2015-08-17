@@ -62,7 +62,7 @@ public: // should be protected, but some old compilers complain otherwise
   protected:
     static void afterStreaming(void* clientData);
 
-  private:
+  protected:
     u_int32_t fClientSessionId;
     FramedSource* fStreamSource;
     ByteStreamMemoryBufferSource* fPlaylistSource;

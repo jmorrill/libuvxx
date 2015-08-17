@@ -82,6 +82,18 @@ stream_statistics _streaming_media_session_impl::stream_statistics_get(int strea
     throw std::out_of_range("streamid does not exist");
 }
 
+media_descriptor _streaming_media_session_impl::media_descriptor_get() const
+{
+    media_descriptor descriptor;
+
+    for (auto& framer : _media_framers)
+    {
+        descriptor.add_stream_from_attributes(framer->stream_number(), framer->codec_name(), framer->working_sample());
+    }
+
+    return descriptor;
+}
+
 void _streaming_media_session_impl::read_stream_sample()
 {
     for (auto& framer : _media_framers)

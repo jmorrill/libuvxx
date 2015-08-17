@@ -24,6 +24,8 @@ namespace uvxx { namespace rtsp { namespace sample_attributes {
 
     /* audio attributes */
     static const std::string ATTRIBUTE_AUDIO_BITS_PER_SAMPLE = "sample.audio.bits_per_sample";
+
+    /* uint32_t */
     static const std::string ATTRIBUTE_AUDIO_CHANNEL_COUNT = "sample.audio.sample_count";
     static const std::string ATTRIBUTE_AUDIO_SAMPLES_PER_SECOND = "sample.audio.samples_per_second";
 

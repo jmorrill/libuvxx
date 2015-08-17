@@ -70,6 +70,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         stream_statistics stream_statistics_get(int stream_id) const;
 
+        media_descriptor media_descriptor_get() const;
+
     private:
         pplx::task<void> setup(const std::shared_ptr<std::vector<media_subsession>>& subsessions);
 

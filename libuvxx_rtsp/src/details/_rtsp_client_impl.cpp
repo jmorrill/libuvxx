@@ -179,6 +179,16 @@ stream_statistics _rtsp_client_impl::stream_statistics_get(int stream_id) const
     return _streaming_session->stream_statistics_get(stream_id);
 }
 
+media_descriptor _rtsp_client_impl::media_descriptor_get() const
+{
+    if(_streaming_session == nullptr)
+    {
+        throw std::runtime_error("rtsp stream not active");
+    }
+
+    return _streaming_session->media_descriptor_get();
+}
+
 transport_protocol _rtsp_client_impl::protocol() const
 {
     verify_access();

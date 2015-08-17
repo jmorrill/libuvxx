@@ -86,6 +86,11 @@ stream_statistics rtsp_client::stream_statistics_get(int stream_id) const
     return __rtsp_client_imp->stream_statistics_get(stream_id);
 }
 
+media_descriptor rtsp_client::media_descriptor_get()
+{
+    return __rtsp_client_imp->media_descriptor_get();
+}
+
 void rtsp_client::read_stream_sample() const
 {
     __rtsp_client_imp->read_stream_sample();

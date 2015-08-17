@@ -24,10 +24,12 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
 
         _qos_stats& qos_stats_get();
 
+        media_sample working_sample();
+
+        const std::string codec_name() const;
+
     protected:
         virtual void sample_receieved(bool packet_marker_bit);
-
-        media_sample working_sample();
 
         void do_sample_callback();
 

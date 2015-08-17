@@ -143,6 +143,11 @@ media_sample _media_framer_base::working_sample()
     return _sample;
 }
 
+const std::string _media_framer_base::codec_name() const
+{
+    return _subsession.codec_name();
+}
+
 void _media_framer_base::sample_receieved(bool /*packet_marker_bit*/)
 {
     do_sample_callback();

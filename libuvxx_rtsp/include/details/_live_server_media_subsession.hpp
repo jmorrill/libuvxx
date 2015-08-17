@@ -50,6 +50,8 @@ namespace uvxx { namespace rtsp { namespace details
 
         std::shared_ptr<_live_framed_source> _source;
 
+        media_attributes get_attributes();
+
     private:
         framed_source_created_delegate _framed_source_created;
 

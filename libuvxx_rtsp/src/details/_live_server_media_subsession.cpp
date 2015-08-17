@@ -164,3 +164,8 @@ bool _live_server_media_subsession::check_for_aux_sdp_line()
     
     return false;
 }
+
+media_attributes _live_server_media_subsession::get_attributes()
+{
+    return _attributes;
+}
