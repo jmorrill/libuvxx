@@ -5,7 +5,7 @@ using namespace uvxx::rtsp;
 using namespace uvxx::rtsp::sample_attributes;
 using namespace uvxx::rtsp::details::media_framers;
 
-static const int BITS_PER_SAMPLE = 8;
+static const uint32_t BITS_PER_SAMPLE = 8;
 
 _g711_audio_framer::_g711_audio_framer(const media_subsession& subsession) : _media_framer_base(subsession)
 {
