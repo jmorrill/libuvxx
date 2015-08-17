@@ -4,8 +4,7 @@
 
 #include "details/_live_server_media_session.hpp"
 #include "details/_server_media_session_impl.hpp"
-#include "details/_h264_media_subsession.hpp"
-#include "details/_audio_media_subsession.hpp"
+#include "details/_server_media_subsession_factory.hpp"
 
 using namespace uvxx::rtsp::details;
 
@@ -113,18 +112,10 @@ void _server_media_session_impl::configure_session()
 
     for(const auto& stream : streams)
     {
-        if(stream.codec_name() == "H264")
+        auto subsession = _create_server_media_subsession(stream);
+
+        if(subsession)
         {
-            auto subsession = new _h264_media_subsession(stream.stream_id(), stream.attributes());
-
-            subsession->framed_source_created_set(frame_source_created_callback);
-
-            __live_server_media_session->addSubsession(subsession);
-        } 
-        else if (stream.codec_name() == "PCMA")
-        {
-            auto subsession = new _audio_media_subsession(stream.stream_id(), stream.codec_name(), stream.attributes());
-
             subsession->framed_source_created_set(frame_source_created_callback);
 
             __live_server_media_session->addSubsession(subsession);
