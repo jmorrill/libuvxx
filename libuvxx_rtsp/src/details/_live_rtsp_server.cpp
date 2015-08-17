@@ -1248,17 +1248,38 @@ void _live_rtsp_server::_live_rtsp_client_connection::handleRequestBytes(int new
 
                     envir().taskScheduler().disableBackgroundHandling(fOurSocket);
 
+                    std::string session_id_string = sessionIdStr;
+
                     clientSession->begin_handle_setup(this, urlPreSuffix, urlSuffix, reinterpret_cast<char const*>(fRequestBuffer)).
                     then([=]() mutable
                     {
-                        playAfterSetup = clientSession->stream_after_setup_get();
+                        bool const requested_included_session_id = session_id_string.length() > 0;
+                       
+                        _live_rtsp_client_session* client_session = nullptr;
+
+                        if (requested_included_session_id)
+                        {
+                            client_session = static_cast<_live_rtsp_client_session*>(__live_rtsp_server.fClientSessions->Lookup(session_id_string.c_str()));
+
+                            if (client_session != nullptr)
+                            {
+                                client_session->note_liveness();
+                            }
+                        }
+
+                        auto play_after_setup = false;
+                        
+                        if (client_session)
+                        {
+                            play_after_setup = client_session->stream_after_setup_get();
+                        }
                         
                         send(fClientOutputSocket, 
                              reinterpret_cast<char const*>(response_buffer), 
                              strlen(reinterpret_cast<char*>(response_buffer)), 
                              0);
 
-                        if (playAfterSetup)
+                        if (play_after_setup && client_session)
                         {
                             // The client has asked for streaming to commence now, rather than after a
                             // subsequent "PLAY" command.  So, simulate the effect of a "PLAY" command:
