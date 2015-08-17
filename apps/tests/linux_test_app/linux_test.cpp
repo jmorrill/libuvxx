@@ -31,10 +31,10 @@ void on_sample_callback(const media_sample& sample)
         }
 
         /* printf("codec: %s\t size: %d\t pts: %lld s:%u",
-        sample.codec_name().c_str(),
-        sample.size(),
-        sample.presentation_time().count(),
-        sample.stream_number());*/
+            sample.codec_name().c_str(),
+            sample.size(),
+            sample.presentation_time().count(),
+            sample.stream_number());*/
 
         auto major_type = sample.attribute_get<sample_major_type>(ATTRIBUTE_SAMPLE_MAJOR_TYPE);
 
@@ -44,16 +44,16 @@ void on_sample_callback(const media_sample& sample)
 
             for (auto& session : server_sessions)
             {
-                session.deliver_sample(1, sample);
+                session.deliver_sample(sample.stream_number(), sample);
             }
 
             auto video_size = sample.attribute_get<video_dimensions>(ATTRIBUTE_VIDEO_DIMENSIONS);
 
-            // printf("\twxh: %dx%d", video_size.width, video_size.height);
+           // printf("\twxh: %dx%d", video_size.width, video_size.height);
 
             if (key_frame)
             {
-                //   printf("\tkey_frame");
+             //   printf("\tkey_frame");
             }
         }
         else if (major_type == sample_major_type::audio)
@@ -62,10 +62,12 @@ void on_sample_callback(const media_sample& sample)
 
             auto channels = sample.attribute_get<int>(ATTRIBUTE_AUDIO_CHANNEL_COUNT);
 
+
             for (auto& session : server_sessions)
             {
-                session.deliver_sample(2, sample);
+                session.deliver_sample(sample.stream_number(), sample);
             }
+
             //printf("\tfreq: %d", samples_per_second);
 
             //printf("\tchannels: %d", channels);
@@ -90,13 +92,16 @@ task<server_media_session> on_session_requested(const std::string& stream_name)
 
     auto server_session = server_media_session();
 
-    media_descriptor descriptor;
+    try
+    {
+        media_descriptor descriptor = client.media_descriptor_get();
 
-    descriptor.add_stream_from_attributes(1, "H264", media_attributes());
-
-    descriptor.add_stream_from_attributes(2, "PCMA", media_attributes());
-
-    server_session.set_media_descriptor(descriptor);
+        server_session.set_media_descriptor(descriptor);
+    }
+    catch (const std::exception&e)
+    {
+        return task_from_result(server_session);
+    }
 
     server_sessions.push_back(server_session);
 
@@ -105,7 +110,7 @@ task<server_media_session> on_session_requested(const std::string& stream_name)
 
 int main(int argc, char* argv[])
 {
-    signal(SIGPIPE, SIG_IGN);
+   
     
     if (argc < 2)
     {
@@ -136,7 +141,7 @@ int main(int argc, char* argv[])
         }).then([]
         {
             client.read_stream_sample();
-        }).then([=]
+        }).then([]
         {
             return create_timer_task(std::chrono::milliseconds(55000));
         }).then([](task<void> t)

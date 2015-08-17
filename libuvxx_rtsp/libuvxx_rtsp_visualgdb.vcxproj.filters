@@ -142,6 +142,15 @@
     <ClInclude Include="include\details\_audio_media_subsession.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\_server_media_subsession_factory.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\media_framers\_g726_audio_framer.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\media_framers\_mpa_audio_framer.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
@@ -204,9 +213,6 @@
     <ClCompile Include="src\details\_h264_media_subsession.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="src\details\_g711_audio_framer.cpp">
-      <Filter>Source files</Filter>
-    </ClCompile>
     <ClCompile Include="src\details\_live_common.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
@@ -235,6 +241,18 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\_audio_media_subsession.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\media_framers\_g726_audio_framer.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\media_framers\_mpa_audio_framer.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_server_media_subsession_factory.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\media_framers\_g711_audio_framer.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

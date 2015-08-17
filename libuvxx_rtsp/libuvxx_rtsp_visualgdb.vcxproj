@@ -118,6 +118,8 @@
   <ItemGroup>
     <ClInclude Include="include\details\media_framers\h26x\sps_parser.hpp" />
     <ClInclude Include="include\details\media_framers\_g711_audio_framer.hpp" />
+    <ClInclude Include="include\details\media_framers\_g726_audio_framer.hpp" />
+    <ClInclude Include="include\details\media_framers\_mpa_audio_framer.hpp" />
     <ClInclude Include="include\details\media_framers\_qos_stats.hpp" />
     <ClInclude Include="include\details\media_framers\_h264_framer.hpp" />
     <ClInclude Include="include\details\media_framers\_media_framer_base.hpp" />
@@ -140,6 +142,7 @@
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />
     <ClInclude Include="include\details\_rtsp_server_impl.hpp" />
     <ClInclude Include="include\details\_server_media_session_impl.hpp" />
+    <ClInclude Include="include\details\_server_media_subsession_factory.hpp" />
     <ClInclude Include="include\details\_streaming_media_session_impl.hpp" />
     <ClInclude Include="include\details\_uvxx_task_scheduler.hpp" />
     <ClInclude Include="include\media_attributes.hpp" />
@@ -157,8 +160,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp" />
+    <ClCompile Include="src\details\media_framers\_g711_audio_framer.cpp" />
+    <ClCompile Include="src\details\media_framers\_g726_audio_framer.cpp" />
+    <ClCompile Include="src\details\media_framers\_mpa_audio_framer.cpp" />
     <ClCompile Include="src\details\_audio_media_subsession.cpp" />
-    <ClCompile Include="src\details\_g711_audio_framer.cpp" />
     <ClCompile Include="src\details\media_framers\_qos_stats.cpp" />
     <ClCompile Include="src\details\media_framers\_h264_framer.cpp" />
     <ClCompile Include="src\details\media_framers\_media_framer_base.cpp" />
@@ -178,6 +183,7 @@
     <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
     <ClCompile Include="src\details\_rtsp_server_impl.cpp" />
     <ClCompile Include="src\details\_server_media_session_impl.cpp" />
+    <ClCompile Include="src\details\_server_media_subsession_factory.cpp" />
     <ClCompile Include="src\details\_streaming_media_session_impl.cpp" />
     <ClCompile Include="src\details\_uvxx_task_scheduler.cpp" />
     <ClCompile Include="src\media_attributes.cpp" />
