@@ -771,6 +771,9 @@
 #ifndef __INTPTR_MAX__
 #define __INTPTR_MAX__ 2147483647
 #endif
+#ifndef ALLOW_SERVER_PORT_REUSE
+#define ALLOW_SERVER_PORT_REUSE 1
+#endif
 #ifndef __QQ_FBIT__
 #define __QQ_FBIT__ 7
 #endif

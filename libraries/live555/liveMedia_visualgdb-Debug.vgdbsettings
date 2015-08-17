@@ -157,5 +157,8 @@
     <CFLAGS>-D_WIN32  -U_WIN32</CFLAGS>
     <CXXFLAGS>-D_WIN32  -U_WIN32</CXXFLAGS>
     <ExternalSourceFileList />
+    <ExtraSettings>
+      <HideErrorsInSystemHeaders>false</HideErrorsInSystemHeaders>
+    </ExtraSettings>
   </CodeSense>
 </VisualGDBProjectSettings2>
