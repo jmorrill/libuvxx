@@ -26,6 +26,7 @@ namespace uvxx { namespace rtsp { namespace sample_attributes {
     static const std::string ATTRIBUTE_AUDIO_BITS_PER_SAMPLE = "sample.audio.bits_per_sample";       /* uint32_t */
     static const std::string ATTRIBUTE_AUDIO_CHANNEL_COUNT = "sample.audio.sample_count";            /* uint32_t */
     static const std::string ATTRIBUTE_AUDIO_SAMPLES_PER_SECOND = "sample.audio.samples_per_second"; /* uint32_t */
+    static const std::string ATTRIBUTE_AUDIO_BITRATE = "sample.audio.bitrate";                       /* uint32_t */
 
     /* h26x attributes */
     static const std::string ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET = "sample.h26x.sps"; /* blob */

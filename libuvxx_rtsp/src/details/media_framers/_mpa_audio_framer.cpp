@@ -30,7 +30,7 @@ enum class channel_mode
     SingleChannel
 };
 
-static const uint16_t sampling_rates[4][3] =
+static const uint32_t sampling_rates[4][3] =
 {
     { 11025, 12000, 8000, },  /* MPEG 2.5 */
     { 0,     0,     0, },     /* reserved */
@@ -38,7 +38,7 @@ static const uint16_t sampling_rates[4][3] =
     { 44100, 48000, 32000 }   /* MPEG 1   */
 };
 
-static const uint16_t bitrate_table[2][3][15]
+static const uint32_t bitrate_table[2][3][15]
 {
     {    /* MPEG 1 */
         { 0,32,64,96,128,160,192,224,256,288,320,352,384,416,448, },  /* Layer1 */
@@ -88,7 +88,9 @@ public:
                 return;
             }
 
-            _bitrate = bitrate_table[low_sampling_frequencies][static_cast<int>(layer)][bitrate_index] * 1000;
+            _bitrate = bitrate_table[low_sampling_frequencies][static_cast<size_t>(layer)][bitrate_index];
+
+            _bitrate *= 1000; /* kbps */
 
             /* fuck if I know */
             if (_bitrate == 0)    
@@ -127,12 +129,12 @@ public:
         }
     }
 
-    uint16_t bitrate()
+    uint32_t bitrate()
     {
         return _bitrate;
     }
 
-    uint16_t samples_per_second()
+    uint32_t samples_per_second()
     {
         return _samples_per_second;
     }
@@ -143,9 +145,9 @@ public:
     }
 
 private:
-    uint16_t _bitrate = 0;
+    uint32_t _bitrate = 0;
 
-    uint16_t _samples_per_second = 0;
+    uint32_t _samples_per_second = 0;
 
     uint8_t _channel_count = 0;
 
@@ -177,6 +179,8 @@ void _mpa_audio_framer::sample_receieved(bool packet_marker_bit)
     sample.attribute_set(ATTRIBUTE_AUDIO_CHANNEL_COUNT, parser.channel_count());
 
     sample.attribute_set(ATTRIBUTE_AUDIO_SAMPLES_PER_SECOND, parser.samples_per_second());
+
+    sample.attribute_set(ATTRIBUTE_AUDIO_BITRATE, parser.bitrate());
 
     _media_framer_base::sample_receieved(packet_marker_bit);
 }
