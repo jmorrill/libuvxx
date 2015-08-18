@@ -32,6 +32,7 @@
       </FileMasks>
       <TransferNewFilesOnly>true</TransferNewFilesOnly>
       <IncludeSubdirectories>true</IncludeSubdirectories>
+      <SelectedDirectories />
     </MainSourceTransferCommand>
     <AllowChangingHostForMainCommands>false</AllowChangingHostForMainCommands>
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>
@@ -157,5 +158,8 @@
   <UserDefinedVariables />
   <CodeSense>
     <Enabled>Unknown</Enabled>
+    <ExtraSettings>
+      <HideErrorsInSystemHeaders>false</HideErrorsInSystemHeaders>
+    </ExtraSettings>
   </CodeSense>
 </VisualGDBProjectSettings2>

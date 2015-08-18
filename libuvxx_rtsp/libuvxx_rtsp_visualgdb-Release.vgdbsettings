@@ -32,6 +32,7 @@
       </FileMasks>
       <TransferNewFilesOnly>true</TransferNewFilesOnly>
       <IncludeSubdirectories>true</IncludeSubdirectories>
+      <SelectedDirectories />
     </MainSourceTransferCommand>
     <AllowChangingHostForMainCommands>false</AllowChangingHostForMainCommands>
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>
@@ -165,5 +166,8 @@
     <CFLAGS>-D__cplusplus=201103L</CFLAGS>
     <CXXFLAGS>-D__cplusplus=201103L</CXXFLAGS>
     <ExternalSourceFileList />
+    <ExtraSettings>
+      <HideErrorsInSystemHeaders>false</HideErrorsInSystemHeaders>
+    </ExtraSettings>
   </CodeSense>
 </VisualGDBProjectSettings2>

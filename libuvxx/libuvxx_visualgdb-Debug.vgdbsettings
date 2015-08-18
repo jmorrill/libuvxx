@@ -154,8 +154,11 @@
   <UserDefinedVariables />
   <CodeSense>
     <Enabled>True</Enabled>
-    <CFLAGS>-D__cplusplus=201103L</CFLAGS>
-    <CXXFLAGS>-D__cplusplus=201103L</CXXFLAGS>
+    <CFLAGS />
+    <CXXFLAGS />
     <ExternalSourceFileList />
+    <ExtraSettings>
+      <HideErrorsInSystemHeaders>false</HideErrorsInSystemHeaders>
+    </ExtraSettings>
   </CodeSense>
 </VisualGDBProjectSettings2>
