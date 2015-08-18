@@ -15,8 +15,6 @@ uint8_t get_payload_type(uint8_t default_payload_format_code, const std::string&
 
     auto sampling_frequency = attributes.attribute_get<uint32_t>(ATTRIBUTE_AUDIO_SAMPLES_PER_SECOND);
 
-    auto bits_per_sample = attributes.attribute_get<uint32_t>(ATTRIBUTE_AUDIO_BITS_PER_SAMPLE);
-
     if(codec_name == "PCMU")
     {
         if(sampling_frequency == 80000 && channel_count == 1)
@@ -98,7 +96,7 @@ FramedSource* _audio_media_subsession::createNewStreamSource(unsigned client_ses
     return _source.get();
 }
 
-RTPSink* _audio_media_subsession::createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* input_source)
+RTPSink* _audio_media_subsession::createNewRTPSink(Groupsock* rtp_groupsock, unsigned char rtp_payload_type_if_dynamic, FramedSource* /*input_source*/)
 {
     auto attributes = get_attributes();
 

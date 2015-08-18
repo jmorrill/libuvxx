@@ -11,8 +11,6 @@ _g726_audio_framer::_g726_audio_framer(const media_subsession& subsession) : _me
 {
     auto sample = _media_framer_base::working_sample();
 
-    int bits_per_sample = 16;
-
     auto codec_name = _subsession.codec_name();
 
     sample.attribute_set(ATTRIBUTE_AUDIO_BITS_PER_SAMPLE, BITS_PER_SAMPLE);
