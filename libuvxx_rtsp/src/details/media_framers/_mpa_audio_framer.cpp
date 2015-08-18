@@ -62,7 +62,7 @@ public:
         if ((data[0] == 0xFF) && ((data[1] & 0xE0) == 0xE0) && ((data[2] & 0xF0) != 0xF0))
         {
             /* get mpeg version (bits 11 and 12) */
-            auto version = static_cast<mpa_version>((data[1] >> 3) & 0x03);    /* mask only the right 2 bits */
+            auto version = static_cast<mpa_version>((data[1] >> 3) & 0x03); /* mask only the right 2 bits */
 
             bool low_sampling_frequencies = false;
 
@@ -101,7 +101,7 @@ public:
             /* sampling rate (bit 20 & 21) */
             uint8_t sampling_rate_index = static_cast<uint8_t>((data[2] >> 2) & 0x03);
 
-            if (sampling_rate_index == 0x03)        // all bits set is reserved
+            if (sampling_rate_index == 0x03) /* all bits set are reserved */
             {
                 return;
             }
@@ -116,7 +116,7 @@ public:
                  _channel_count = 2;
                  break;
              case channel_mode::JointStereo: 
-                 _channel_count = 4;
+                 _channel_count = 2;
                  break;
              case channel_mode::DualChannel: 
                  _channel_count = 2;
@@ -150,7 +150,6 @@ private:
     uint32_t _samples_per_second = 0;
 
     uint8_t _channel_count = 0;
-
 };
 
 static const uint32_t BITS_PER_SAMPLE = 16;

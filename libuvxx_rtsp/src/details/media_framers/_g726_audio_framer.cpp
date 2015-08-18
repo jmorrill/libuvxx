@@ -12,12 +12,16 @@ _g726_audio_framer::_g726_audio_framer(const media_subsession& subsession) : _me
     auto sample = _media_framer_base::working_sample();
 
     auto codec_name = _subsession.codec_name();
+    
+    uint32_t bitrate = 64 * 1000;
 
     sample.attribute_set(ATTRIBUTE_AUDIO_BITS_PER_SAMPLE, BITS_PER_SAMPLE);
 
     sample.attribute_set(ATTRIBUTE_AUDIO_CHANNEL_COUNT, _subsession.channel_count());
 
     sample.attribute_set(ATTRIBUTE_AUDIO_SAMPLES_PER_SECOND, _subsession.rtp_timestamp_frequency());
+
+    sample.attribute_set(ATTRIBUTE_AUDIO_BITRATE, bitrate);
 }
 
 _g726_audio_framer::~_g726_audio_framer()
