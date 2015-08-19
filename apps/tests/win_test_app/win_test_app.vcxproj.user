@@ -5,7 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>rtsp://root:hv3515@10.1.30.113/axis-media/media.amp</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>rtsp://wc2.dartmouth.edu/mpeg4/media.amp</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
