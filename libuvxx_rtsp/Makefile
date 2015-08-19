@@ -35,7 +35,7 @@ error:
 	$(error Invalid configuration, please check your inputs)
 endif
 
-SOURCEFILES := src/details/media_framers/h26x/sps_parser.cpp src/details/media_framers/mpeg4es/_mpeg4es_parser.cpp src/details/media_framers/_g711_audio_framer.cpp src/details/media_framers/_g726_audio_framer.cpp src/details/media_framers/_mpa_audio_framer.cpp src/details/media_framers/_mpeg4_framer.cpp src/details/_audio_media_subsession.cpp src/details/media_framers/_qos_stats.cpp src/details/media_framers/_h264_framer.cpp src/details/media_framers/_media_framer_base.cpp src/details/_h264_framed_source.cpp src/details/_h264_media_subsession.cpp src/details/_live_common.cpp src/details/_live_environment_base.cpp src/details/_live_framed_source.cpp src/details/_live_rtsp_client.cpp src/details/_live_rtsp_server.cpp src/details/_live_server_media_session.cpp src/details/_live_server_media_subsession.cpp src/details/_media_attributes_impl.cpp src/details/_media_descriptor_impl.cpp src/details/_media_sample_impl.cpp src/details/_media_session_impl.cpp src/details/_rtsp_client_impl.cpp src/details/_rtsp_server_impl.cpp src/details/_server_media_session_impl.cpp src/details/_server_media_subsession_factory.cpp src/details/_streaming_media_session_impl.cpp src/details/_uvxx_task_scheduler.cpp src/media_attributes.cpp src/media_descriptor.cpp src/media_sample.cpp src/media_session.cpp src/rtsp_client.cpp src/rtsp_server.cpp src/server_media_session.cpp
+SOURCEFILES := src/details/media_framers/h26x/sps_parser.cpp src/details/media_framers/mpeg4es/_mpeg4es_parser.cpp src/details/media_framers/_g711_audio_framer.cpp src/details/media_framers/_g726_audio_framer.cpp src/details/media_framers/_mpa_audio_framer.cpp src/details/media_framers/_mpeg4_framer.cpp src/details/_audio_media_subsession.cpp src/details/media_framers/_qos_stats.cpp src/details/media_framers/_h264_framer.cpp src/details/media_framers/_media_framer_base.cpp src/details/_h264_framed_source.cpp src/details/_h264_media_subsession.cpp src/details/_live_common.cpp src/details/_live_environment_base.cpp src/details/_live_framed_source.cpp src/details/_live_rtsp_client.cpp src/details/_live_rtsp_server.cpp src/details/_live_server_media_session.cpp src/details/_live_server_media_subsession.cpp src/details/_media_attributes_impl.cpp src/details/_media_descriptor_impl.cpp src/details/_media_sample_impl.cpp src/details/_media_session_impl.cpp src/details/_mpeg4es_framed_source.cpp src/details/_mpeg4es_media_subsession.cpp src/details/_rtsp_client_impl.cpp src/details/_rtsp_server_impl.cpp src/details/_server_media_session_impl.cpp src/details/_server_media_subsession_factory.cpp src/details/_streaming_media_session_impl.cpp src/details/_uvxx_task_scheduler.cpp src/media_attributes.cpp src/media_descriptor.cpp src/media_sample.cpp src/media_session.cpp src/rtsp_client.cpp src/rtsp_server.cpp src/server_media_session.cpp
 EXTERNAL_LIBS := ../libuvxx/$(BINARYDIR)/libuvxx.a ../libraries/live555/$(BINARYDIR)/libliveMedia.a
 EXTERNAL_LIBS_COPIED := $(foreach lib, $(EXTERNAL_LIBS),$(BINARYDIR)/$(notdir $(lib)))
 
@@ -266,6 +266,14 @@ $(BINARYDIR)/_media_sample_impl.o : src/details/_media_sample_impl.cpp $(all_mak
 
 
 $(BINARYDIR)/_media_session_impl.o : src/details/_media_session_impl.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_mpeg4es_framed_source.o : src/details/_mpeg4es_framed_source.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/_mpeg4es_media_subsession.o : src/details/_mpeg4es_media_subsession.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 

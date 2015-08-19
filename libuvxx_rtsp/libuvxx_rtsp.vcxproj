@@ -30,6 +30,7 @@
     <ClInclude Include="include\details\_audio_framed_source.hpp" />
     <ClInclude Include="include\details\_media_descriptor_impl.hpp" />
     <ClInclude Include="include\details\_media_sample_impl.hpp" />
+    <ClInclude Include="include\details\_mpeg4es_media_subsession.hpp" />
     <ClInclude Include="include\details\_rtsp_server_impl.hpp" />
     <ClInclude Include="include\details\_server_media_session_impl.hpp" />
     <ClInclude Include="include\details\_audio_media_subsession.hpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="include\stream_statistics.hpp" />
     <ClInclude Include="include\details\_media_attributes_impl.h" />
     <ClInclude Include="include\details\media_framers\mpeg4es\_mpeg4es_parser.hpp" />
+    <ClInclude Include="include\details\_mpeg4es_framed_source.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\mpeg4es\_mpeg4es_parser.cpp" />
@@ -77,6 +79,8 @@
     <ClCompile Include="src\details\_media_sample_impl.cpp" />
     <ClCompile Include="src\details\_media_session_impl.cpp" />
     <ClCompile Include="src\details\media_framers\_mpa_audio_framer.cpp" />
+    <ClCompile Include="src\details\_mpeg4es_framed_source.cpp" />
+    <ClCompile Include="src\details\_mpeg4es_media_subsession.cpp" />
     <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
     <ClCompile Include="src\details\_rtsp_client_impl_helpers.hpp">
       <FileType>CppHeader</FileType>

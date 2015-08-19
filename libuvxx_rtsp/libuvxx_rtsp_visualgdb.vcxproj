@@ -141,6 +141,8 @@
     <ClInclude Include="include\details\_media_descriptor_impl.hpp" />
     <ClInclude Include="include\details\_media_sample_impl.hpp" />
     <ClInclude Include="include\details\_media_session_impl.hpp" />
+    <ClInclude Include="include\details\_mpeg4es_framed_source.hpp" />
+    <ClInclude Include="include\details\_mpeg4es_media_subsession.hpp" />
     <ClInclude Include="include\details\_rtsp_client_impl.hpp" />
     <ClInclude Include="include\details\_rtsp_server_impl.hpp" />
     <ClInclude Include="include\details\_server_media_session_impl.hpp" />
@@ -184,6 +186,8 @@
     <ClCompile Include="src\details\_media_descriptor_impl.cpp" />
     <ClCompile Include="src\details\_media_sample_impl.cpp" />
     <ClCompile Include="src\details\_media_session_impl.cpp" />
+    <ClCompile Include="src\details\_mpeg4es_framed_source.cpp" />
+    <ClCompile Include="src\details\_mpeg4es_media_subsession.cpp" />
     <ClCompile Include="src\details\_rtsp_client_impl.cpp" />
     <ClCompile Include="src\details\_rtsp_server_impl.cpp" />
     <ClCompile Include="src\details\_server_media_session_impl.cpp" />

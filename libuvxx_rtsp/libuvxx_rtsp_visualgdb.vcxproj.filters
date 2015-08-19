@@ -157,6 +157,12 @@
     <ClInclude Include="include\details\media_framers\mpeg4es\_mpeg4es_parser.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\details\_mpeg4es_framed_source.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\details\_mpeg4es_media_subsession.hpp">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\h26x\sps_parser.cpp">
@@ -265,6 +271,12 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\details\media_framers\mpeg4es\_mpeg4es_parser.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_mpeg4es_framed_source.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\details\_mpeg4es_media_subsession.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>
