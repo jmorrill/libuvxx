@@ -19,6 +19,8 @@ namespace uvxx { namespace rtsp { namespace details { namespace media_framers
     private:
         void initialize_sequence_parameter_set();
 
+        void parse_sample_data(uvxx::rtsp::media_sample& sample);
+
     private:
         std::vector<uint8_t> _config_data;
 

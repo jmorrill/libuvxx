@@ -5,7 +5,7 @@ namespace uvxx { namespace rtsp { namespace sample_attributes {
 
     struct video_dimensions
     {
-        int width; int height;
+        int32_t width; int32_t height;
     };
 
     enum class sample_major_type
