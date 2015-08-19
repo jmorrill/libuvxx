@@ -52,6 +52,7 @@
     <ClInclude Include="include\server_media_session.hpp" />
     <ClInclude Include="include\stream_statistics.hpp" />
     <ClInclude Include="include\details\_media_attributes_impl.h" />
+    <ClInclude Include="include\details\media_framers\mpeg4es\_mpeg4es_parser.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\details\media_framers\_g711_audio_framer.cpp" />
