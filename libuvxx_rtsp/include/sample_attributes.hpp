@@ -31,4 +31,7 @@ namespace uvxx { namespace rtsp { namespace sample_attributes {
     /* h26x attributes */
     static const std::string ATTRIBUTE_H26X_SEQUENCE_PARAMETER_SET = "sample.h26x.sps"; /* blob */
     static const std::string ATTRIBUTE_H26X_PICTURE_PARAMETER_SET = "sample.h26x.pps";  /* blob */
+
+    /* mpeg4es attributes */
+    static const std::string ATTRIBUTE_MPEG4_CONFIG_DATA = "sample.config_data"; /* blob */
 }}}

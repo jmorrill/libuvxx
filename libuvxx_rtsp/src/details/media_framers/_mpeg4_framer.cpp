@@ -11,41 +11,6 @@ using namespace uvxx::rtsp::details::media_framers::mpeg4es;
 
 static const char * CONFIG_ATTRIBUTE = "config";
 
-static bool set_to_vector_if_unequal(std::vector<uint8_t>& buffer, const media_sample& sample)
-{
-    bool are_equal = true;
-
-    for (; ;)
-    {
-        if (buffer.size() != sample.size())
-        {
-            are_equal = false;
-
-            break;
-        }
-
-        auto sample_data = sample.data();
-
-        auto buffer_data = buffer.data();
-
-        if (memcmp(sample_data, buffer_data, sample.size()))
-        {
-            are_equal = false;
-        }
-
-        break;
-    }
-
-    if (are_equal)
-    {
-        return false;
-    }
-
-    buffer = std::vector<uint8_t>(sample.data(), sample.data() + sample.size());
-
-    return true;
-}
-
 _mpeg4_framer::_mpeg4_framer(const media_subsession& subsession) :
     _media_framer_base(subsession),
     _has_received_key_frame(false),
@@ -66,6 +31,8 @@ _mpeg4_framer::_mpeg4_framer(const media_subsession& subsession) :
     auto sample = working_sample();
 
     parse_sample_data(sample);
+
+    sample.attribute_blob_set(ATTRIBUTE_MPEG4_CONFIG_DATA, _config_data);
 }
 
 _mpeg4_framer::~_mpeg4_framer()
@@ -82,10 +49,8 @@ void _mpeg4_framer::sample_receieved(bool packet_marker_bit)
     _media_framer_base::sample_receieved(packet_marker_bit);
 }
 
-void _mpeg4_framer::parse_sample_data(uvxx::rtsp::media_sample& sample)
+void _mpeg4_framer::parse_sample_data(uvxx::rtsp::media_sample& sample )
 {
-    bool key_frame = false;
-
     mpeg4es_parser parser(sample.data(), sample.size());
 
     auto width = parser.video_width();
