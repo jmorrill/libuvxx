@@ -129,7 +129,6 @@ void _server_media_session_impl::on_framed_source_closed(int stream_id, unsigned
 
     if (stream_iterator == _stream_sources.end())
     {
-        //throw std::exception();
         return;
     }
     
