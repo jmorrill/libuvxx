@@ -12,16 +12,14 @@ static const uint32_t VIDEO_OBJECT_PLANE          = 0x000001B6;
 
 mpeg4es_parser::mpeg4es_parser(const uint8_t * data, size_t data_size) :
     _is_key_frame(false),
-    _current_bit(0)
+    _current_bit(0),
+    _buffer(data),
+    _buffer_length(data_size)
 {
-    if (data_size == 0 || !data)
+    if (!_buffer || !data)
     {
         return;
     }
-
-    _buffer = data;
-
-    _buffer_length = data_size;
 
     try
     {
