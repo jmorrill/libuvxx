@@ -22,11 +22,9 @@ _mpeg4_framer::_mpeg4_framer(const media_subsession& subsession) :
 
     uint32_t config_count = 0;
 
-    auto unsafe_ptr = parseGeneralConfigStr(config_data.c_str(), config_count);
+    std::unique_ptr<uint8_t[]> unsafe_ptr( parseGeneralConfigStr(config_data.c_str(), config_count));
 
-    _config_data = std::vector<uint8_t>(unsafe_ptr, unsafe_ptr + config_count);
-
-    delete[] unsafe_ptr;
+    _config_data = std::vector<uint8_t>(unsafe_ptr.get(), unsafe_ptr.get() + config_count);
 
     auto sample = working_sample();
 

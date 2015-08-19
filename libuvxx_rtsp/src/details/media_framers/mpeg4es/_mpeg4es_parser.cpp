@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "details/media_framers/mpeg4es/_mpeg4es_parser.hpp"
 
 using namespace uvxx::rtsp::details::media_framers::mpeg4es;
