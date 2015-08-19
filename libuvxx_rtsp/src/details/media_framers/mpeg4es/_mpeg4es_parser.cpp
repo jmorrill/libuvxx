@@ -104,7 +104,7 @@ uint32_t mpeg4es_parser::read_next_start_code()
 
     start_code = (_buffer[0 + (offset)] << 24) |
                  (_buffer[1 + (offset)] << 16) |
-                 (_buffer[2 + (offset)] << 8) | _buffer[3 + (offset)];
+                 (_buffer[2 + (offset)] << 8)  | _buffer[3 + (offset)];
 
     /* move bit pointer */
     read_bits(32);
@@ -223,20 +223,20 @@ void mpeg4es_parser::parse_layer()
 
                 switch (aspect_ratio_info)
                 {
-                case 1: parx = 1; pary = 1; break;
+                    case 1: parx = 1; pary = 1; break;
 
-                case 2: parx = 12; pary = 11; break;
+                    case 2: parx = 12; pary = 11; break;
 
-                case 3: parx = 10; pary = 11; break;
+                    case 3: parx = 10; pary = 11; break;
 
-                case 4: parx = 16; pary = 11; break;
+                    case 4: parx = 16; pary = 11; break;
 
-                case 5: parx = 40; pary = 33; break;
+                    case 5: parx = 40; pary = 33; break;
 
-                case 15:
-                    parx = static_cast<uint8_t>(read_bits(8));
+                    case 15:
+                        parx = static_cast<uint8_t>(read_bits(8));
 
-                    pary = static_cast<uint8_t>(read_bits(8));
+                        pary = static_cast<uint8_t>(read_bits(8));
                     break;
                 }
 
