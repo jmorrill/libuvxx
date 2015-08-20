@@ -19,7 +19,7 @@ namespace uvxx { namespace rtsp { namespace details
     class _rtsp_server_impl : public event_dispatcher_object, protected _live_environment_base
     {
     public:
-        _rtsp_server_impl(uint16_t port);
+        explicit _rtsp_server_impl(uint16_t port);
 
         _rtsp_server_impl(const _rtsp_server_impl&) = delete;
 
