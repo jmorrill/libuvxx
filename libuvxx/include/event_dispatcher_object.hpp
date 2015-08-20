@@ -38,8 +38,6 @@ namespace uvxx
         void verify_access() const;
 
     private:
-        uvxx::event_dispatcher _event_dispatcher;
-
         std::shared_ptr<uvxx::details::_event_dispatcher_object_impl> __event_dispatcher_object_impl;
 
         friend event_dispatcher_frame;
