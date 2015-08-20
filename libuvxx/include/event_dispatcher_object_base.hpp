@@ -44,22 +44,22 @@ namespace uvxx
 
         bool operator=(std::nullptr_t rhs)
         {
-            return _container->_impl = nullptr;
+            return _container->__impl = nullptr;
         }
 
         operator bool()
         {
-            return (_container->_impl != nullptr);
+            return (_container->__impl != nullptr);
         }
 
         bool operator==(std::nullptr_t rhs)
         {
-            return (_container->_impl == nullptr);
+            return (_container->__impl == nullptr);
         }
 
         bool operator !=(std::nullptr_t rhs)
         {
-            return (_container->_impl != nullptr);
+            return (_container->__impl != nullptr);
         }
 
         virtual ~event_dispatcher_object_base()
@@ -68,12 +68,12 @@ namespace uvxx
         }
 
     protected:
-       void private_impl_set(const std::shared_ptr<INTERNAL_IMPL_T>& impl)
-       {
-           _container->__impl = impl;
-       }
+        void private_impl_set(const std::shared_ptr<INTERNAL_IMPL_T>& impl)
+        {
+            _container->__impl = impl;
+        }
 
-        std::shared_ptr<INTERNAL_IMPL_T>& private_impl()
+        std::shared_ptr<INTERNAL_IMPL_T>& private_impl() const 
         {
             return _container->__impl;
         }

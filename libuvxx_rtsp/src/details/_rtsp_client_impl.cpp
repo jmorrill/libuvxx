@@ -129,11 +129,11 @@ task<void> _rtsp_client_impl::setup(const std::shared_ptr<std::vector<media_subs
     {
         auto& subsession = subsessions_->at(i);
 
-        subsession.__media_subsession->initiate();
+        subsession.private_impl()->initiate();
 
         _setup_event = _current_event = task_completion_event<void>();
 
-        _last_rtsp_command_id = _live_client->sendSetupCommand(*(subsession.__media_subsession)->live_media_subsession(),
+        _last_rtsp_command_id = _live_client->sendSetupCommand(*(subsession.private_impl())->live_media_subsession(),
                                                                setup_callback,
                                                                false,
                                                                _protocol == transport_protocol::tcp ? true : false);
@@ -212,7 +212,7 @@ task<void> _rtsp_client_impl::play(std::vector<media_subsession> subsessions_)
 
             _play_event = _current_event = task_completion_event<void>();
 
-            _last_rtsp_command_id = _live_client->sendPlayCommand(*(subsession.__media_subsession)->live_media_subsession(), play_callback);
+            _last_rtsp_command_id = _live_client->sendPlayCommand(*(subsession.private_impl())->live_media_subsession(), play_callback);
 
             _timeout_timer.start();
 

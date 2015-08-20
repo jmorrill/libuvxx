@@ -5,6 +5,7 @@
 #include "rtsp_misc.hpp"
 #include "stream_statistics.hpp"
 #include "media_descriptor.hpp"
+#include "event_dispatcher_object_base.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -26,18 +27,12 @@ namespace uvxx { namespace rtsp
 
     using stream_closed_delegate = std::function<void(int stream_number)>;
     
-    class rtsp_client : public event_dispatcher_object
+    class rtsp_client : public event_dispatcher_object_base<details::_rtsp_client_impl>
     {
     public:
         rtsp_client();
 
         rtsp_client(const rtsp_client& client) = default;
-
-        virtual rtsp_client& operator=(const rtsp_client&) = default;
-
-        rtsp_client(rtsp_client&& rhs);
-
-        virtual rtsp_client& operator=(rtsp_client&& rhs);
 
     public:
         pplx::task<void> open(const std::string& url) const;
@@ -71,8 +66,5 @@ namespace uvxx { namespace rtsp
         stream_statistics stream_statistics_get(int stream_id) const;
 
         media_descriptor media_descriptor_get();
-
-    private:
-        details::_rtsp_client_impl_ptr __rtsp_client_imp;
     };
 }}

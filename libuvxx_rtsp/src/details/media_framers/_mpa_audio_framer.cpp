@@ -79,7 +79,7 @@ public:
             auto layer = static_cast<mpa_layer>(3 - ((data[1] >> 1) & 0x03));
 
             /* inverted protection bit 15 */
-            bool has_crc = !((data[1]) & 0x01);
+            /* bool has_crc = !((data[1]) & 0x01);*/
 
             uint8_t bitrate_index = static_cast<uint8_t>((data[2] >> 4) & 0x0F);
 

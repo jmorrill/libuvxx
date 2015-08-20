@@ -6,12 +6,7 @@ using namespace uvxx::rtsp::details;
 
 media_subsession::media_subsession(const _media_subsession_impl_ptr& _media_subsession)
 {
-    __media_subsession = _media_subsession;
-}
-
-media_subsession::media_subsession(media_subsession&& rhs)
-{
-    *this = std::move(rhs);
+    private_impl_set(_media_subsession);
 }
 
 media_subsession::media_subsession()
@@ -19,57 +14,39 @@ media_subsession::media_subsession()
 
 }
 
-bool media_subsession::operator=(std::nullptr_t /*rhs*/)
+details::_media_subsession_impl_ptr& media_subsession::media_subsession_impl_get()
 {
-    __media_subsession.reset();
-    return true;
-}
-
-bool media_subsession::operator==(std::nullptr_t /*rhs*/)
-{
-    return __media_subsession.get() != nullptr;
-}
-
-
-media_subsession& media_subsession::operator=(media_subsession&& rhs)
-{
-    __media_subsession = std::move(rhs.__media_subsession);
-    return *this;
+    return private_impl();
 }
 
 std::string media_subsession::codec_name() const
 {
-    return __media_subsession->codec_name();
+    return private_impl()->codec_name();
 }
 
 std::string media_subsession::get_attribute(const std::string& attribute_name) const
 {
-    return __media_subsession->get_attribute(attribute_name);
+    return private_impl()->get_attribute(attribute_name);
 }
 
 int media_subsession::stream_number() const
 {
-    return __media_subsession->stream_number();
+    return private_impl()->stream_number();
 }
 
 std::string media_subsession::medium_name() const
 {
-    return __media_subsession->medium_name();
+    return private_impl()->medium_name();
 }
 
 uint32_t media_subsession::rtp_timestamp_frequency()
 {
-    return __media_subsession->rtp_timestamp_frequency();
+    return private_impl()->rtp_timestamp_frequency();
 }
 
 uint32_t media_subsession::channel_count() const
 {
-    return __media_subsession->channel_count();
-}
-
-media_session::media_session(media_session&& rhs)
-{
-    *this = std::move(rhs);
+    return private_impl()->channel_count();
 }
 
 media_session::media_session()
@@ -77,35 +54,19 @@ media_session::media_session()
 
 }
 
-media_session::media_session(const _media_session_impl_ptr& _media_session) : __media_session(_media_session)
+media_session::media_session(const _media_session_impl_ptr& _media_session) 
 {
-
-}
-
-media_session& media_session::operator=(media_session&& rhs)
-{
-    __media_session = std::move(rhs.__media_session);
-    return *this;
-}
-
-void media_session::operator=(std::nullptr_t)
-{
-    __media_session = nullptr;
-}
-
-bool media_session::operator==(std::nullptr_t)
-{
-    return __media_session != nullptr;
+    private_impl_set(_media_session);
 }
 
 size_t media_session::subsession_count() const
 {
-    return __media_session->subsessions().size();
+    return private_impl()->subsessions().size();
 }
 
  media_subsession media_session::subsession(size_t index) const
 {
-    return media_subsession(__media_session->subsessions().at(index));
+    return media_subsession(private_impl()->subsessions().at(index));
 }
 
 std::vector<media_subsession> media_session::subsessions() const

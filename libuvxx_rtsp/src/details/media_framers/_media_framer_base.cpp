@@ -26,7 +26,7 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
     _was_synced(false),
     _use_rtp_marker_for_pts(false)
 {
-    auto live_subsession = subsession.__media_subsession->live_media_subsession();
+    auto live_subsession = subsession.private_impl()->live_media_subsession();
    
     FramedSource* framed_source = live_subsession->readSource();
 
@@ -72,7 +72,7 @@ _media_framer_base::_media_framer_base(const media_subsession& subsession) :
 
 _media_framer_base::~_media_framer_base()
 {
-    auto live_subsession = _subsession.__media_subsession->live_media_subsession();
+    auto live_subsession = _subsession.private_impl()->live_media_subsession();
 
     FramedSource* subsessionSource = live_subsession->readSource();
 
@@ -101,7 +101,7 @@ void _media_framer_base::on_stream_closed_set(stream_closed_delegate callback)
 
 void _media_framer_base::continue_reading()
 {
-    auto live_subsession = _subsession.__media_subsession->live_media_subsession();
+    auto live_subsession = _subsession.private_impl()->live_media_subsession();
 
     FramedSource* framed_source = live_subsession->readSource();
 
@@ -172,7 +172,7 @@ void _media_framer_base::on_after_getting_frame(unsigned packet_data_size, unsig
 {
     static uint64_t ONE_MILLION = 1000000ull;
 
-    auto live_subsession = _subsession.__media_subsession->live_media_subsession();
+    auto live_subsession = _subsession.private_impl()->live_media_subsession();
 
     FramedSource* framed_source = live_subsession->readSource();
 

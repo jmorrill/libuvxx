@@ -1,5 +1,5 @@
 #pragma once
-#include "event_dispatcher_object.hpp"
+#include "event_dispatcher_object_base.hpp"
 
 namespace uvxx { namespace rtsp { namespace details
 {
@@ -25,22 +25,12 @@ namespace uvxx { namespace rtsp { namespace details
 
 namespace uvxx { namespace rtsp 
 {
-    class media_subsession : public event_dispatcher_object
+    class media_subsession : public event_dispatcher_object_base<details::_media_subsession_impl>
     {
     public:
         explicit media_subsession(const details::_media_subsession_impl_ptr& _media_subsession);
 
         media_subsession(const media_subsession&) = default;
-
-        virtual media_subsession& operator=(const media_subsession&) = default;
-
-        media_subsession(media_subsession&& rhs);
-
-        virtual media_subsession& operator=(media_subsession&& rhs);
-
-        virtual bool operator=(std::nullptr_t rhs);
-
-        virtual bool operator==(std::nullptr_t rhs);
 
     public:
         std::string codec_name() const;
@@ -58,7 +48,7 @@ namespace uvxx { namespace rtsp
     private:
         media_subsession();
 
-        std::shared_ptr<details::_media_subsession_impl> __media_subsession;
+        details::_media_subsession_impl_ptr& media_subsession_impl_get();
 
         friend std::allocator<media_subsession>;
 
@@ -69,7 +59,7 @@ namespace uvxx { namespace rtsp
         friend details::media_framers::_media_framer_base;
     };
 
-    class media_session : public event_dispatcher_object
+    class media_session : public event_dispatcher_object_base<details::_media_session_impl>
     {
     public:
         media_session();
@@ -82,23 +72,11 @@ namespace uvxx { namespace rtsp
 
         virtual media_session& operator=(const media_session&) = default;
 
-        media_session(media_session&& dispatcher);
-
-        virtual media_session& operator=(media_session&& rhs);
-
-        virtual void operator=(std::nullptr_t);
-
-        virtual bool operator==(std::nullptr_t);
-
     public:
         std::vector<media_subsession> subsessions() const;
 
         size_t subsession_count() const;
         
         media_subsession subsession(size_t index) const;
-
-    private:
-        details::_media_session_impl_ptr __media_session;
-
     };
 }}
