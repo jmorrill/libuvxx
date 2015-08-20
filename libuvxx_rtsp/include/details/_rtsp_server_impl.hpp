@@ -21,6 +21,10 @@ namespace uvxx { namespace rtsp { namespace details
     public:
         _rtsp_server_impl(uint16_t port);
 
+        _rtsp_server_impl(const _rtsp_server_impl&) = delete;
+
+        _rtsp_server_impl& operator=(const _rtsp_server_impl&) = delete;
+
     public:
         uint16_t port();
 

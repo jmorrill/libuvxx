@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 
         client.credentials_set("admin", "12345");
 
-        client.protocol_set(transport_protocol::udp);
+        client.protocol_set(transport_protocol::tcp);
 
         client.open(argv[1]).then([=]
         {
@@ -122,10 +122,9 @@ int main(int argc, char* argv[])
             {
                 printf("timeout\n");
             }
-            catch (const std::exception& e)
+            catch (const std::exception& turn_down_for)
             {
-                printf("exception: ");
-                printf(e.what());
+                printf(turn_down_for.what());
             }
 
             //event_dispatcher::current_dispatcher().begin_shutdown();
